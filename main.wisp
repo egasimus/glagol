@@ -1,23 +1,22 @@
-sampler
-  (use "postmelodic")
-
-jack
-  (use "jack")
-
-web
-  (use "web")
+use sampler
+use jack
+use web
 
 samplers
   []
 
-add-sampler
-  (fn [after client-name port-number])
+fn add-sampler
+  ; creates a new instance of postmelodic and adds it to the gui
+  ([client-name port-number] (add-sampler samplers.length client-name port-number))
+  ;([after client-name port-number])
 
-remove-sampler
-  (fn [index])
+fn remove-sampler
+  ; kills the specified instance of postmelodic and removes it from the gui
+  ([index])
 
-send-osc
-  (fn [index address & args])
+fn send-osc
+  ; relays an osc message to the specified instance of postmelodic
+  ([index address & args])
 
 server
   (web.server { :port 2097 }

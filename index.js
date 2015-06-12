@@ -119,6 +119,7 @@ function loadFile (err, data) {
     { debug: false
     , extensions: ['.wisp'] };
   browserify(options)
+    .transform('stylify')
     .add('editor.js')
     .bundle(function (error, bundled) {
         if (error) throw error;

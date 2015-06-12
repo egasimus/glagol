@@ -14,6 +14,7 @@
     "insert-css": "^0.2.0",
     "jsonstream": "^1.0.3",
     "send-data": "^7.0.0",
+    "stylify": "^1.2.0",
     "virtual-dom": "^2.0.1",
     "wisp": "^0.10.0"
   }

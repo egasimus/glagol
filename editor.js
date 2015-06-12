@@ -1,15 +1,22 @@
 var create    = require('virtual-dom/create-element')
-  , h         = require('virtual-dom/h');
+  , h         = require('virtual-dom/h')
+  , insertCss = require('insert-css')
+  , http      = require('http-browserify');
 
 document.replaceChild(createBody(), document.firstChild);
+insertCss(require('./style.styl'));
 getForms();
 
 function createBody () {
-  return create(h('html', h('head'), h('body', h('p', 'loading...'))));
+  return create(
+    h( 'html'
+     , [ h( 'head'
+          , h( 'title', 'Editor' ) )
+       , h( 'body'
+          , h('p', 'loading...' ) ) ] ) );
 };
 
 function getForms () {
-  var http = require('http-browserify')
 
   http.get({ path: '/forms' }, function (res) {
     var data = '';

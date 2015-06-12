@@ -50,7 +50,16 @@ function processForms (read, source) {
     return src.join("\n");
   }
 
+  function arrayToObject(arr) {
+    var obj = { metadata: arr.metadata };
+    for (var i = 0; i < arr.length; i++) {
+      obj[i] = arr[i];
+    }
+    return obj
+  }
+
   function exposeMetadata(f) {
+    if (f instanceof Array) f = arrayToObject(f);
     Object.defineProperty(f, 'metadata', { enumerable: true });
     f.metadata.type   = f.constructor.type;
     f.metadata.source = getSource(f);
@@ -138,8 +147,6 @@ function loadFile (err, source) {
           if (req.url === '/') {
             sendHTML(req, res, { body: '<body><script>' + bundled + '</script>' });
           } else if (req.url === '/forms') {
-            
-            forms.map(function(f){console.log('>', f.tail.tail)});
             sendJSON(req, res, forms);
           }
         }).listen("4194");

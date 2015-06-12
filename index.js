@@ -5,11 +5,12 @@ STATE_DEF  = "def";
 KEYWORDS   = ["use", "fn", "def"];
 var ast      = require('../wisp/ast.js')
   , sequence = require('../wisp/sequence.js');
-function processForms (read) {
+function processForms (read, source) {
 
   if (read.error) throw new Error("Reader error: " + read.error);
 
-  var forms  = read.forms
+  var lines  = source.split("\n")
+    , forms  = read.forms
     , output = []
     , error  = []
     , state  = STATE_INIT
@@ -20,9 +21,10 @@ function processForms (read) {
     return f.metadata.type === 'wisp.symbol' && f.namespace === undefined;
   }
 
-  function exitState(val, meta) {
-    if (meta) val = ast.withMeta(val, meta);
-    output.push(val);
+  function exitState(f, meta) {
+    if (meta) val = ast.withMeta(f, meta);
+    Object.defineProperty(f, 'metadata', { enumerable: true });
+    output.push(f);
     state = STATE_INIT;
     arg   = null;
     meta  = null;
@@ -35,9 +37,23 @@ function processForms (read) {
                   : ''));
   }
 
-  function enableMetadata(f) {
+  function getSource(f) {
+    var src  = []
+      , meta = f.metadata;
+    for (var l = meta.start.line; l <= meta.end.line; l++) {
+      src.push(
+        l === meta.start.line ? lines[l].substr(meta.start.column)  :
+        l === meta.end.line   ? lines[l].substr(0, meta.end.column) :
+        lines[l]
+      );
+    }
+    return src.join("\n");
+  }
+
+  function exposeMetadata(f) {
     Object.defineProperty(f, 'metadata', { enumerable: true });
-    f.metadata.type = f.constructor.type
+    f.metadata.type   = f.constructor.type;
+    f.metadata.source = getSource(f);
     return f;
   }
 
@@ -45,12 +61,9 @@ function processForms (read) {
     var form = forms[i]
       , type = form.constructor.type;
 
-    form = enableMetadata(form);
-
-    console.log("->", form);
+    form = exposeMetadata(form);
 
     if (state === STATE_INIT) {
-      console.log('init', form, isSymbol(form));
 
       if (isSymbol(form) && form.name === 'use') {
         state = STATE_USE;
@@ -98,21 +111,19 @@ var wisp       = require("../wisp/compiler.js")
   , sendHTML   = require("send-data/html")
   , sendJSON   = require("send-data/json")
   , browserify = require("browserify");
-function loadFile (err, data) {
+function loadFile (err, source) {
 
   // wisp ast
-  var forms = processForms(wisp.readForms(data, 'main.wisp'))
+  var forms = processForms(wisp.readForms(source, 'main.wisp'), source);
 
   // js ast
   var ast = wisp.analyzeForms(forms);
-  console.log("\n", ast);
 
   // js code
   var options =
-    { "source-uri": "foobar"
-    , "source": data };
+    { 'source-uri': 'main.wisp'
+    , 'source':     source };
   var output = wisp.generate.bind(null, options).apply(null, ast.ast);
-  console.log("\n", output);
 
   // live editor
   options =
@@ -123,12 +134,13 @@ function loadFile (err, data) {
     .add('editor.js')
     .bundle(function (error, bundled) {
         if (error) throw error;
-        console.log(bundled);
         http.createServer(function (req, res) {
           if (req.url === '/') {
             sendHTML(req, res, { body: '<body><script>' + bundled + '</script>' });
           } else if (req.url === '/forms') {
-            sendJSON(req, res, JSON.stringify(forms));
+            
+            forms.map(function(f){console.log('>', f.tail.tail)});
+            sendJSON(req, res, forms);
           }
         }).listen("4194");
     });

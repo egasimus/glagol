@@ -3,7 +3,7 @@ use jack
 use web
 
 samplers
-  []
+  [4 5 6]
 
 fn add-sampler
   ([index client-name port-number] (add-sampler samplers.length client-name port-number))

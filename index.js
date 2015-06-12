@@ -96,6 +96,7 @@ function processForms (read) {
 var wisp       = require("../wisp/compiler.js")
   , http       = require("http")
   , sendHTML   = require("send-data/html")
+  , sendJSON   = require("send-data/json")
   , browserify = require("browserify");
 function loadFile (err, data) {
 
@@ -107,18 +108,27 @@ function loadFile (err, data) {
   console.log("\n", ast);
 
   // js code
-  var options = { "source-uri": "foobar", "source": data };
+  var options =
+    { "source-uri": "foobar"
+    , "source": data };
   var output = wisp.generate.bind(null, options).apply(null, ast.ast);
   console.log("\n", output);
 
   // live editor
-  browserify({debug: false, extensions: ['.wisp']})
+  options =
+    { debug: false
+    , extensions: ['.wisp'] };
+  browserify(options)
     .add('editor.js')
     .bundle(function (error, bundled) {
         if (error) throw error;
         console.log(bundled);
         http.createServer(function (req, res) {
-          sendHTML(req, res, { body: '<body><script>' + bundled + '</script>' });
+          if (req.url === '/') {
+            sendHTML(req, res, { body: '<body><script>' + bundled + '</script>' });
+          } else if (req.url === '/forms') {
+            sendJSON(req, res, JSON.stringify(forms));
+          }
         }).listen("4194");
     });
   // ugh

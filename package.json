@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "browserify": "^10.2.4",
     "send-data": "^7.0.0",
     "virtual-dom": "^2.0.1",
     "wisp": "^0.10.0"

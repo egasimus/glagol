@@ -93,19 +93,10 @@ function processForms (read) {
 }
 
 
-function makePage(forms) {
-  return '' + 
-    '<head><style>* { font-family: sans-serif; color: #555; }</style></head>' +
-    '<body><script>var forms = ' + JSON.stringify(forms) + '</script>' + 
-    '<script>forms.map(function(f){ ' +
-    'var el = document.createElement("div"); console.log(JSON.serialize(f));' +
-    ' el.innerHTML = f; document.body.appendChild(el)})</script></body>';
-}
-
-
-var wisp     = require("../wisp/compiler.js")
-  , http     = require("http")
-  , sendHTML = require("send-data/html");
+var wisp       = require("../wisp/compiler.js")
+  , http       = require("http")
+  , sendHTML   = require("send-data/html")
+  , browserify = require("browserify");
 function loadFile (err, data) {
 
   // wisp ast
@@ -121,9 +112,16 @@ function loadFile (err, data) {
   console.log("\n", output);
 
   // live editor
-  http.createServer(function (req, res) {
-    sendHTML(req, res, { body: makePage(forms) });
-  }).listen("4194");
+  browserify({debug: false, extensions: ['.wisp']})
+    .add('editor.js')
+    .bundle(function (error, bundled) {
+        if (error) throw error;
+        console.log(bundled);
+        http.createServer(function (req, res) {
+          sendHTML(req, res, { body: '<body><script>' + bundled + '</script>' });
+        }).listen("4194");
+    });
+  // ugh
 
 }
 

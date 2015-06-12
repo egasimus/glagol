@@ -49,13 +49,13 @@ function renderUse (f) {
 function renderDef (f) {
   console.log("-->", f);
   return h('div.form.def', 
-    [ f.tail.head.name
-    , f.tail.tail.metadata.source ]);
+    [ h('.name', f.tail.head.name)
+    , h('.code', '  ' + f.tail.tail.head.metadata.source) ]);
 }
 
 function renderFn (f) {
   return h('div.form.defn',
     [ h('label', 'fn')
-    , f.tail.head.name
-    , f.tail.tail.metadata.source ]);
+    , h('.name', f.tail.head.name)
+    , h('.code', '  ' + f.tail.tail.head.metadata.source) ]);
 }

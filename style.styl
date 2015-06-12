@@ -4,23 +4,25 @@
 body
   background #fafafa
   color #424242
-  margin 0
+  margin 6px 0
 
 .form
+  font-family monospace
+  font-size 13px
+  line-height 18px
+
   position relative
-  padding 3px 6px
+  padding 6px
   margin-left 48px
   display block
   cursor pointer
-  &:first-child
-    margin-top 3px
   &:hover 
     background #f0f0f0
 
   label
     position absolute
     display inline-block
-    top 6px
+    top 7px
     height 20px
     width auto
     right 100%
@@ -31,4 +33,7 @@ body
     padding-right 3px
 
   .name
-    display inline-block
+    font-weight bold
+
+  .code
+    white-space pre

@@ -118,7 +118,15 @@ function processForms (read, source) {
 }
 
 
-function requireModule (context, pathspec) {
+var path = require('path');
+function findModule(name) {
+  return path.resolve(path.join('.', 'lib', name + '.wisp'));
+}
+
+
+function useModule (context, name) {
+  console.log("Loading", findModule(name));
+  context[name] = require(findModule(name));
 }
 
 
@@ -145,28 +153,31 @@ function loadFile (err, source) {
 
   // repl
   var context = { exports: {} };
-  context.use = requireModule.bind(null, context);
+  context.use = useModule.bind(null, context);
   Object.keys(ast).map(function(k) { context[k] = ast[k] });
   vm.createContext(context);
-  vm.runInContext(output.code, context);
+  //vm.runInContext(output.code, context);
 
   // live editor
   options =
     { debug: false
     , extensions: ['.wisp'] };
+  var bundled = null;
   browserify(options)
     .transform('stylify')
     .add('editor.js')
-    .bundle(function (error, bundled) {
+    .bundle(function (error, output) {
       if (error) throw error;
-      http.createServer(function (req, res) {
-        if (req.url === '/') {
-          sendHTML(req, res, { body: '<body><script>' + bundled + '</script>' });
-        } else if (req.url === '/forms') {
-          sendJSON(req, res, forms);
-        }
-      }).listen("4194");
+      bundled = output;
     });
+
+  http.createServer(function (req, res) {
+    if (req.url === '/') {
+      sendHTML(req, res, { body: '<body><script>' + bundled + '</script>' });
+    } else if (req.url === '/forms') {
+      sendJSON(req, res, forms);
+    }
+  }).listen("4194");
   // ugh
 
 }

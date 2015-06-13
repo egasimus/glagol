@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "browserify": "^10.2.4",
+    "colors": "^1.1.0",
     "http-browserify": "^1.7.0",
     "insert-css": "^0.2.0",
     "jsonstream": "^1.0.3",

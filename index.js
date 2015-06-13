@@ -6,6 +6,7 @@ KEYWORDS   = ["use", "fn", "def"];
 
 var ast        = require('wisp/ast.js')
   , browserify = require("browserify")
+  , colors     = require('colors/safe')
   , fs         = require('fs')
   , http       = require("http")
   , path       = require('path')
@@ -23,11 +24,7 @@ function loadFile (err, source) {
   var compiled = compileSource(source, 'main.wisp');
 
   // repl
-  var context = { exports: {} };
-  context.use = useModule.bind(null, context);
-  Object.keys(ast).map(function(k) { context[k] = ast[k] });
-  vm.createContext(context);
-  //vm.runInContext(output.code, context);
+  vm.runInContext(output.code, makeContext('main'));
 
   // bundle code
   options =
@@ -61,6 +58,36 @@ function compileSource (source, fullpath) {
       options   = { 'source-uri': fullpath , 'source': source }
       output    = wisp.generate.bind(null, options).apply(null, processed.ast);
   return output;
+}
+
+function makeContext (name) {
+  var context =
+    { exports: {}
+    , log: getLogger(name) };
+  context.use = useModule.bind(null, context);
+  Object.keys(ast).map(function(k) { context[k] = ast[k] });
+  return vm.createContext(context);
+}
+
+function getLogger (from) {
+  return function logger () {
+    var args = [];
+    for (var i = 0; i < arguments.length; i++) args.push(arguments[i]);
+    console.log(colors.yellow(from), args.join(" "));
+  }
+}
+
+function useModule (context, name) {
+  var fullpath  = findModule(name)
+    , source    = fs.readFileSync(fullpath, { encoding: 'utf8' })
+    , output    = compileSource(source, fullpath)
+    , context   = makeContext(name);
+  vm.runInContext(output.code, context);
+  return context;
+}
+
+function findModule (name) {
+  return path.resolve(path.join('.', 'lib', name + '.wisp'));
 }
 
 function preprocess (read, source) {
@@ -183,18 +210,4 @@ function preprocess (read, source) {
 
   return output;
 
-}
-
-function useModule (context, name) {
-fs.readFile('main.wisp', { encoding: 'utf8' }, loadFile);
-  var fullpath  = findModule(name)
-    , source    = fs.readFileSync(fullpath, { encoding: 'utf8' })
-    , output    = compileSource(source, fullpath);
-  console.log(name, output.code);
-  return {};
-  //context[name] = require(findModule(name));
-}
-
-function findModule(name) {
-  return path.resolve(path.join('.', 'lib', name + '.wisp'));
 }

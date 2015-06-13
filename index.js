@@ -24,7 +24,7 @@ function loadFile (err, source) {
   var compiled = compileSource(source, 'main.wisp');
 
   // repl
-  vm.runInContext(output.code, makeContext('main'));
+  vm.runInContext(compiled.output.code, makeContext('main'));
 
   // bundle code
   options =
@@ -44,7 +44,7 @@ function loadFile (err, source) {
     if (req.url === '/') {
       sendHTML(req, res, { body: '<body><script>' + bundled + '</script>' });
     } else if (req.url === '/forms') {
-      sendJSON(req, res, forms);
+      sendJSON(req, res, compiled.forms);
     } else if (req.url === '/repl') {
       console.log(request.method);
     }
@@ -57,7 +57,7 @@ function compileSource (source, fullpath) {
       processed = wisp.analyzeForms(forms)
       options   = { 'source-uri': fullpath , 'source': source }
       output    = wisp.generate.bind(null, options).apply(null, processed.ast);
-  return output;
+  return { forms: forms, processed: processed, output: output }
 }
 
 function makeContext (name) {
@@ -80,7 +80,7 @@ function getLogger (from) {
 function useModule (context, name) {
   var fullpath  = findModule(name)
     , source    = fs.readFileSync(fullpath, { encoding: 'utf8' })
-    , output    = compileSource(source, fullpath)
+    , output    = compileSource(source, fullpath).output
     , context   = makeContext(name);
   vm.runInContext(output.code, context);
   return context;
@@ -192,6 +192,8 @@ function preprocess (read, source) {
 
       if (state === STATE_USE) {
         exitState(list(sym('def'), makePrivate(sym(f.name)), list(sym('use'), f.name)));
+        meta = meta || {};
+        meta.use = true;
 
       } else if (state === STATE_FN) {
         if (arg === null) {

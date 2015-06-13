@@ -1,5 +1,6 @@
-(defn server [] (log "Hi, I'm a server!"))
+(defn server [options & args]
+  (log "Hi, I'm a server!" (JSON.stringify options)))
 
-(defn page [])
+(defn page [route script])
 
 (defn socket [])

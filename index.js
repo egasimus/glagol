@@ -21,7 +21,7 @@ function processForms (read, source) {
     return f.metadata.type === 'wisp.symbol' && f.namespace === undefined;
   }
 
-  function exitState(f, meta) {
+  function exitState(f) {
     if (meta) val = ast.withMeta(f, meta);
     Object.defineProperty(f, 'metadata', { enumerable: true });
     output.push(f);
@@ -66,6 +66,9 @@ function processForms (read, source) {
     return f;
   }
 
+  var sym  = ast.symbol.bind(null, undefined)
+    , list = sequence.list;
+
   for (var i = 0; i < forms.length; i++) {
     var form = forms[i]
       , type = form.constructor.type;
@@ -94,16 +97,16 @@ function processForms (read, source) {
       if (state === STATE_USE) {
         exitState(sequence.list(
           ast.symbol(undefined, 'use'),
-          form), meta);
+          form.name));
       } else if (state === STATE_FN) {
         if (arg === null) arg = form;
         else exitState(sequence.list(
           ast.symbol(undefined, 'defn'),
-          arg, form), meta);
+          arg, form));
       } else if (state === STATE_DEF) {
         exitState(sequence.list(
           ast.symbol(undefined, 'def'),
-          arg, form), meta);
+          arg, form));
       }
 
     }
@@ -115,24 +118,37 @@ function processForms (read, source) {
 }
 
 
+function requireModule (context, pathspec) {
+}
+
+
 var wisp       = require("../wisp/compiler.js")
   , http       = require("http")
   , sendHTML   = require("send-data/html")
   , sendJSON   = require("send-data/json")
-  , browserify = require("browserify");
+  , browserify = require("browserify")
+  , vm         = require("vm");
+  //, vm2        = require("vm2");
 function loadFile (err, source) {
 
   // wisp ast
   var forms = processForms(wisp.readForms(source, 'main.wisp'), source);
 
   // js ast
-  var ast = wisp.analyzeForms(forms);
+  var processed = wisp.analyzeForms(forms);
 
   // js code
   var options =
     { 'source-uri': 'main.wisp'
     , 'source':     source };
-  var output = wisp.generate.bind(null, options).apply(null, ast.ast);
+  var output = wisp.generate.bind(null, options).apply(null, processed.ast);
+
+  // repl
+  var context = { exports: {} };
+  context.use = requireModule.bind(null, context);
+  Object.keys(ast).map(function(k) { context[k] = ast[k] });
+  vm.createContext(context);
+  vm.runInContext(output.code, context);
 
   // live editor
   options =
@@ -142,14 +158,14 @@ function loadFile (err, source) {
     .transform('stylify')
     .add('editor.js')
     .bundle(function (error, bundled) {
-        if (error) throw error;
-        http.createServer(function (req, res) {
-          if (req.url === '/') {
-            sendHTML(req, res, { body: '<body><script>' + bundled + '</script>' });
-          } else if (req.url === '/forms') {
-            sendJSON(req, res, forms);
-          }
-        }).listen("4194");
+      if (error) throw error;
+      http.createServer(function (req, res) {
+        if (req.url === '/') {
+          sendHTML(req, res, { body: '<body><script>' + bundled + '</script>' });
+        } else if (req.url === '/forms') {
+          sendJSON(req, res, forms);
+        }
+      }).listen("4194");
     });
   // ugh
 

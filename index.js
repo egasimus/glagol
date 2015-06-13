@@ -4,32 +4,32 @@ STATE_FN   = "fn";
 STATE_DEF  = "def";
 KEYWORDS   = ["use", "fn", "def"];
 
-var ast        = require('../wisp/ast.js')
+var ast        = require('wisp/ast.js')
   , browserify = require("browserify")
   , fs         = require('fs')
   , http       = require("http")
   , path       = require('path')
   , sendHTML   = require("send-data/html")
   , sendJSON   = require("send-data/json")
-  , sequence   = require('../wisp/sequence.js')
+  , sequence   = require('wisp/sequence.js')
   , vm         = require("vm")
-  , wisp       = require("../wisp/compiler.js");
+  , wisp       = require("wisp/compiler.js");
   //, vm2        = require("vm2");
 
 fs.readFile('main.wisp', { encoding: 'utf8' }, loadFile);
 
 function loadFile (err, source) {
 
-  var compiled = compileSource(source);
+  var compiled = compileSource(source, 'main.wisp');
 
   // repl
   var context = { exports: {} };
   context.use = useModule.bind(null, context);
   Object.keys(ast).map(function(k) { context[k] = ast[k] });
   vm.createContext(context);
-  vm.runInContext(output.code, context);
+  //vm.runInContext(output.code, context);
 
-  // live editor
+  // bundle code
   options =
     { debug: false
     , extensions: ['.wisp'] };
@@ -42,21 +42,23 @@ function loadFile (err, source) {
       bundled = output;
     });
 
+  // live editor
   http.createServer(function (req, res) {
     if (req.url === '/') {
       sendHTML(req, res, { body: '<body><script>' + bundled + '</script>' });
     } else if (req.url === '/forms') {
       sendJSON(req, res, forms);
+    } else if (req.url === '/repl') {
+      console.log(request.method);
     }
   }).listen("4194");
-  // ugh
 
 }
 
-function compileSource (source) {
+function compileSource (source, fullpath) {
   var forms     = preprocess(wisp.readForms(source, 'main.wisp'), source)
       processed = wisp.analyzeForms(forms)
-      options   = { 'source-uri': 'main.wisp' , 'source': source }
+      options   = { 'source-uri': fullpath , 'source': source }
       output    = wisp.generate.bind(null, options).apply(null, processed.ast);
   return output;
 }
@@ -122,6 +124,12 @@ function preprocess (read, source) {
     return f;
   }
 
+  function makePrivate(f) {
+    f = ast.withMeta(f, { 'private': true });
+    Object.defineProperty(f, 'metadata', { enumerable: true });
+    return f;
+  } 
+
   var sym  = ast.symbol.bind(null, undefined)
     , list = sequence.list;
 
@@ -134,15 +142,19 @@ function preprocess (read, source) {
       if (isSymbol(f) && f.name === 'use') {
         state = STATE_USE;
         meta  = f.metadata;
+
       } else if (isSymbol(f) && f.name === 'fn') {
         state = STATE_FN;
         meta  = f.metadata;
+
       } else if (isSymbol(f)) {
         state = STATE_DEF;
         meta  = f.metadata;
         arg   = f;
+
       } else if (f.metadata.type === 'wisp.list') {
         output.push(f);
+
       } else unexpectedForm(f, i);
 
     } else {
@@ -150,14 +162,17 @@ function preprocess (read, source) {
       if (isSymbol(f) && KEYWORDS.indexOf(f.name) != -1) {
         unexpectedForm(f, i);
       }
+
       if (state === STATE_USE) {
-        exitState(list(sym('def'), sym(f.name), list(sym('use'), f.name)));
+        exitState(list(sym('def'), makePrivate(sym(f.name)), list(sym('use'), f.name)));
+
       } else if (state === STATE_FN) {
         if (arg === null) {
           arg = f;
         } else {
           exitState(list(sym('defn'), arg, f));
         }
+
       } else if (state === STATE_DEF) {
         exitState(list(sym('def'), arg, f));
       }
@@ -174,7 +189,7 @@ function useModule (context, name) {
 fs.readFile('main.wisp', { encoding: 'utf8' }, loadFile);
   var fullpath  = findModule(name)
     , source    = fs.readFileSync(fullpath, { encoding: 'utf8' })
-    , output    = compileSource(source);
+    , output    = compileSource(source, fullpath);
   console.log(name, output.code);
   return {};
   //context[name] = require(findModule(name));

@@ -3,9 +3,65 @@ STATE_USE  = "use";
 STATE_FN   = "fn";
 STATE_DEF  = "def";
 KEYWORDS   = ["use", "fn", "def"];
-var ast      = require('../wisp/ast.js')
-  , sequence = require('../wisp/sequence.js');
-function processForms (read, source) {
+
+var ast        = require('../wisp/ast.js')
+  , browserify = require("browserify")
+  , fs         = require('fs')
+  , http       = require("http")
+  , path       = require('path')
+  , sendHTML   = require("send-data/html")
+  , sendJSON   = require("send-data/json")
+  , sequence   = require('../wisp/sequence.js')
+  , vm         = require("vm")
+  , wisp       = require("../wisp/compiler.js");
+  //, vm2        = require("vm2");
+
+fs.readFile('main.wisp', { encoding: 'utf8' }, loadFile);
+
+function loadFile (err, source) {
+
+  var compiled = compileSource(source);
+
+  // repl
+  var context = { exports: {} };
+  context.use = useModule.bind(null, context);
+  Object.keys(ast).map(function(k) { context[k] = ast[k] });
+  vm.createContext(context);
+  vm.runInContext(output.code, context);
+
+  // live editor
+  options =
+    { debug: false
+    , extensions: ['.wisp'] };
+  var bundled = null;
+  browserify(options)
+    .transform('stylify')
+    .add('editor.js')
+    .bundle(function (error, output) {
+      if (error) throw error;
+      bundled = output;
+    });
+
+  http.createServer(function (req, res) {
+    if (req.url === '/') {
+      sendHTML(req, res, { body: '<body><script>' + bundled + '</script>' });
+    } else if (req.url === '/forms') {
+      sendJSON(req, res, forms);
+    }
+  }).listen("4194");
+  // ugh
+
+}
+
+function compileSource (source) {
+  var forms     = preprocess(wisp.readForms(source, 'main.wisp'), source)
+      processed = wisp.analyzeForms(forms)
+      options   = { 'source-uri': 'main.wisp' , 'source': source }
+      output    = wisp.generate.bind(null, options).apply(null, processed.ast);
+  return output;
+}
+
+function preprocess (read, source) {
 
   if (read.error) throw new Error("Reader error: " + read.error);
 
@@ -114,22 +170,6 @@ function processForms (read, source) {
 
 }
 
-
-function compileSource (source) {
-  var forms     = processForms(wisp.readForms(source, 'main.wisp'), source)
-      processed = wisp.analyzeForms(forms)
-      options   = { 'source-uri': 'main.wisp' , 'source': source }
-      output    = wisp.generate.bind(null, options).apply(null, processed.ast);
-  return output;
-}
-
-
-var path = require('path');
-function findModule(name) {
-  return path.resolve(path.join('.', 'lib', name + '.wisp'));
-}
-
-
 function useModule (context, name) {
 fs.readFile('main.wisp', { encoding: 'utf8' }, loadFile);
   var fullpath  = findModule(name)
@@ -140,49 +180,6 @@ fs.readFile('main.wisp', { encoding: 'utf8' }, loadFile);
   //context[name] = require(findModule(name));
 }
 
-
-var wisp       = require("../wisp/compiler.js")
-  , http       = require("http")
-  , sendHTML   = require("send-data/html")
-  , sendJSON   = require("send-data/json")
-  , browserify = require("browserify")
-  , vm         = require("vm");
-  //, vm2        = require("vm2");
-function loadFile (err, source) {
-
-  var compiled = compileSource(source);
-
-  // repl
-  var context = { exports: {} };
-  context.use = useModule.bind(null, context);
-  Object.keys(ast).map(function(k) { context[k] = ast[k] });
-  vm.createContext(context);
-  vm.runInContext(output.code, context);
-
-  // live editor
-  options =
-    { debug: false
-    , extensions: ['.wisp'] };
-  var bundled = null;
-  browserify(options)
-    .transform('stylify')
-    .add('editor.js')
-    .bundle(function (error, output) {
-      if (error) throw error;
-      bundled = output;
-    });
-
-  http.createServer(function (req, res) {
-    if (req.url === '/') {
-      sendHTML(req, res, { body: '<body><script>' + bundled + '</script>' });
-    } else if (req.url === '/forms') {
-      sendJSON(req, res, forms);
-    }
-  }).listen("4194");
-  // ugh
-
+function findModule(name) {
+  return path.resolve(path.join('.', 'lib', name + '.wisp'));
 }
-
-
-var fs = require('fs');
-fs.readFile('main.wisp', { encoding: 'utf8' }, loadFile);

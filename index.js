@@ -70,43 +70,40 @@ function processForms (read, source) {
     , list = sequence.list;
 
   for (var i = 0; i < forms.length; i++) {
-    var form = forms[i]
-      , type = form.constructor.type;
-
-    form = exposeMetadata(form);
+    var f    = exposeMetadata(forms[i])
+      , type = f.constructor.type;
 
     if (state === STATE_INIT) {
 
-      if (isSymbol(form) && form.name === 'use') {
+      if (isSymbol(f) && f.name === 'use') {
         state = STATE_USE;
-        meta  = form.metadata;
-      } else if (isSymbol(form) && form.name === 'fn') {
+        meta  = f.metadata;
+      } else if (isSymbol(f) && f.name === 'fn') {
         state = STATE_FN;
-        meta  = form.metadata;
-      } else if (isSymbol(form)) {
+        meta  = f.metadata;
+      } else if (isSymbol(f)) {
         state = STATE_DEF;
-        meta  = form.metadata;
-        arg   = form;
-      } else unexpectedForm(form, i);
+        meta  = f.metadata;
+        arg   = f;
+      } else if (f.metadata.type === 'wisp.list') {
+        output.push(f);
+      } else unexpectedForm(f, i);
 
     } else {
 
-      if (isSymbol(form) && KEYWORDS.indexOf(form.name) != -1) {
-        unexpectedForm(form, i);
+      if (isSymbol(f) && KEYWORDS.indexOf(f.name) != -1) {
+        unexpectedForm(f, i);
       }
       if (state === STATE_USE) {
-        exitState(sequence.list(
-          ast.symbol(undefined, 'use'),
-          form.name));
+        exitState(list(sym('def'), sym(f.name), list(sym('use'), f.name)));
       } else if (state === STATE_FN) {
-        if (arg === null) arg = form;
-        else exitState(sequence.list(
-          ast.symbol(undefined, 'defn'),
-          arg, form));
+        if (arg === null) {
+          arg = f;
+        } else {
+          exitState(list(sym('defn'), arg, f));
+        }
       } else if (state === STATE_DEF) {
-        exitState(sequence.list(
-          ast.symbol(undefined, 'def'),
-          arg, form));
+        exitState(list(sym('def'), arg, f));
       }
 
     }
@@ -118,6 +115,15 @@ function processForms (read, source) {
 }
 
 
+function compileSource (source) {
+  var forms     = processForms(wisp.readForms(source, 'main.wisp'), source)
+      processed = wisp.analyzeForms(forms)
+      options   = { 'source-uri': 'main.wisp' , 'source': source }
+      output    = wisp.generate.bind(null, options).apply(null, processed.ast);
+  return output;
+}
+
+
 var path = require('path');
 function findModule(name) {
   return path.resolve(path.join('.', 'lib', name + '.wisp'));
@@ -125,8 +131,13 @@ function findModule(name) {
 
 
 function useModule (context, name) {
-  console.log("Loading", findModule(name));
-  context[name] = require(findModule(name));
+fs.readFile('main.wisp', { encoding: 'utf8' }, loadFile);
+  var fullpath  = findModule(name)
+    , source    = fs.readFileSync(fullpath, { encoding: 'utf8' })
+    , output    = compileSource(source);
+  console.log(name, output.code);
+  return {};
+  //context[name] = require(findModule(name));
 }
 
 
@@ -139,24 +150,14 @@ var wisp       = require("../wisp/compiler.js")
   //, vm2        = require("vm2");
 function loadFile (err, source) {
 
-  // wisp ast
-  var forms = processForms(wisp.readForms(source, 'main.wisp'), source);
-
-  // js ast
-  var processed = wisp.analyzeForms(forms);
-
-  // js code
-  var options =
-    { 'source-uri': 'main.wisp'
-    , 'source':     source };
-  var output = wisp.generate.bind(null, options).apply(null, processed.ast);
+  var compiled = compileSource(source);
 
   // repl
   var context = { exports: {} };
   context.use = useModule.bind(null, context);
   Object.keys(ast).map(function(k) { context[k] = ast[k] });
   vm.createContext(context);
-  //vm.runInContext(output.code, context);
+  vm.runInContext(output.code, context);
 
   // live editor
   options =

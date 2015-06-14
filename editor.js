@@ -100,6 +100,5 @@ function executeCode(f, code) {
     { method: 'POST'
     , path:   '/repl' },
     function (res) { console.log(code); });
-  req.write(code);
-  req.end();
+  req.end(code);
 }

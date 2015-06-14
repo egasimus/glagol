@@ -1,3 +1,4 @@
+PORT       = "4194";
 STATE_INIT = "init";
 STATE_USE  = "use";
 STATE_FN   = "fn";
@@ -48,7 +49,9 @@ function loadFile (err, source) {
     } else if (req.url === '/repl') {
       console.log(request.method);
     }
-  }).listen("4194");
+  }).listen(PORT);
+
+  getLogger('init')('Listening on', PORT);
 
 }
 

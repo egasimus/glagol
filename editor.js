@@ -32,10 +32,15 @@ function getForms () {
 
 function parseForms (forms) {
   forms.map(function (f) {
+    console.log(f);
     document.body.appendChild(create((
-      f.head.name === 'use'  ? renderUse :
-      f.head.name === 'def'  ? renderDef :
-      f.head.name === 'defn' ? renderFn  : null)(f)));
+      f.head.name === 'def'
+        ? (f.metadata.source.indexOf("use ") === 0)
+          ? renderUse
+          : renderDef
+        : f.head.name === 'defn'
+          ? renderFn
+          : null)(f)));
   });
 }
 
@@ -43,7 +48,7 @@ function renderUse (f) {
   console.log(f);
   return h('div.form.use',
     [ h('label', 'use')
-    , h('.name', f.tail.head) ]);
+    , h('.name', f.tail.head.name) ]);
 }
 
 function renderDef (f) {

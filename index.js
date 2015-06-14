@@ -26,11 +26,10 @@ fs.readFile('main.wisp', { encoding: 'utf8' }, loadFile);
 
 function loadFile (err, source) {
 
-  var compiled = compileSource(source, 'main.wisp');
-
-  // repl
+  var compiled = compileSource(source, 'main.wisp')
+    , context  = makeContext('main');
   process.nextTick(function(){
-    vm.runInContext(compiled.output.code, makeContext('main'));
+    vm.runInContext(compiled.output.code, context);
   })
 
   // bundle code
@@ -60,6 +59,7 @@ function loadFile (err, source) {
         });
         req.on('end', function () {
           log("Executing:\n" + data);
+          vm.runInContext(compileSource(data, 'repl').output.code, context);
           sendJSON(req, res, {});
         });
       }

@@ -96,13 +96,10 @@ function updateForm (f, val) {
 }
 
 function executeCode(f, code) {
-  console.log(code);
   var req = http.request(
     { method: 'POST'
     , path:   '/repl' },
-    function (res) {
-      console.log(555);
-    });
+    function (res) { console.log(code); });
   req.write(code);
   req.end();
 }

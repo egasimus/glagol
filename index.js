@@ -114,13 +114,25 @@ function findModule (name) {
 }
 
 function makeAtom (value) {
+
   var atom = observ(value);
+
   return {
-    get:      function ()    { return atom() },
-    watch:    function (cb)  { atom(cb)      },
-    set:      function (val) { atom.set(val) },
-    metadata: value.metadata
+    metadata: value.metadata,
+
+    get:    function ()    { return atom() },
+    watch:  function (cb)  { atom(cb)      },
+    set:    function (val) { atom.set(val) },
+    update: function (cb)  {
+      var val = atom();
+      if (val.destroy) {
+        val.destroy(function () { atom.set(cb(val)) });
+      } else {
+        atom.set(cb(val));
+      }
+    }
   }
+
 }
 
 function preprocess (read, source) {

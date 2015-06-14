@@ -89,7 +89,7 @@ function onFormKeyUp (f, ed, evt) {
 
 function updateForm (f, val) {
   if (f.head.name === 'def') {
-    executeCode(f, "(%1.set\n%2)"
+    executeCode(f, "(%1.update\n(fn [] %2))"
       .replace("%1", f.tail.head.name)
       .replace("%2", val));
   }

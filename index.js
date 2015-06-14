@@ -6,16 +6,18 @@ STATE_DEF  = "def";
 KEYWORDS   = ["use", "fn", "def"];
 
 var ast        = require('wisp/ast.js')
-  , browserify = require("browserify")
+  , browserify = require('browserify')
   , colors     = require('colors/safe')
   , fs         = require('fs')
-  , http       = require("http")
+  , http       = require('http')
+  , observ     = require('observ')
   , path       = require('path')
-  , sendHTML   = require("send-data/html")
-  , sendJSON   = require("send-data/json")
+  , runtime    = require('wisp/runtime.js')
+  , sendHTML   = require('send-data/html')
+  , sendJSON   = require('send-data/json')
   , sequence   = require('wisp/sequence.js')
-  , vm         = require("vm")
-  , wisp       = require("wisp/compiler.js");
+  , vm         = require('vm')
+  , wisp       = require('wisp/compiler.js');
   //, vm2        = require("vm2");
 
 var log = getLogger('editor');
@@ -71,9 +73,13 @@ function makeContext (name) {
   var context =
     { exports: {}
     , log:     getLogger(name)
-    , require: function (module) { return require(module); } };
+    , require: function (module) { return require(module) }
+    , atom:    function (value)  { return makeAtom(value) } };
   context.use = useModule.bind(null, context);
-  Object.keys(ast).map(function(k) { context[k] = ast[k] });
+  [ ast
+  , sequence
+  , runtime ].map(
+    function(m) { Object.keys(m).map(function(k) { context[k] = m[k] })});
   return vm.createContext(context);
 }
 
@@ -96,6 +102,16 @@ function useModule (context, name) {
 
 function findModule (name) {
   return path.resolve(path.join('.', 'lib', name + '.wisp'));
+}
+
+function makeAtom (value) {
+  return value;
+  var atom = observ(value);
+  return {
+    get:   function ()    { return atom() },
+    watch: function (cb)  { atom(cb)      },
+    set:   function (val) { atom.set(val) }
+  }
 }
 
 function preprocess (read, source) {
@@ -148,13 +164,14 @@ function preprocess (read, source) {
     for (var i = 0; i < arr.length; i++) {
       obj[i] = arr[i];
     }
+    obj.metadata.type = 'array';
     return obj
   }
 
   function exposeMetadata(f) {
     if (f instanceof Array) f = arrayToObject(f);
     Object.defineProperty(f, 'metadata', { enumerable: true });
-    f.metadata.type   = f.constructor.type;
+    if (!f.metadata.type) f.metadata.type = f.constructor.type;
     f.metadata.source = getSource(f);
     return f;
   }
@@ -211,7 +228,7 @@ function preprocess (read, source) {
         }
 
       } else if (state === STATE_DEF) {
-        exitState(list(sym('def'), arg, f));
+        exitState(list(sym('def'), arg, list(sym('atom'), f)));
       }
 
     }

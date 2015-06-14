@@ -52,6 +52,7 @@ function renderUse (f) {
 }
 
 function renderDef (f) {
+  //debugger;
   var src = f.tail.tail.head.metadata ?
     f.tail.tail.head.metadata.source : f.tail.tail.head;
   return h('div.form.def', 

@@ -1,6 +1,3 @@
-(ns none (:require [wisp.runtime  :refer [=]]
-                   [wisp.sequence :refer [map first]]))
-
 (def ^:private browserify (require "browserify"))
 (def ^:private send-html  (require "send-data/html"))
 (def ^:private send-json  (require "send-data/json"))
@@ -23,7 +20,7 @@
   ;(log "Hi, I'm a server!" (JSON.stringify options))
   ;(log args))
 
-(defn get-route-matcher [req res]
+(defn- get-route-matcher [req res]
   (fn [endpoint]
     (if (endpoint.route req)
       endpoint.handler)))
@@ -39,9 +36,9 @@
     (bundler.add script)
     (bundler.bundle (fn [err output]
       (if err (throw err))
-      (set! bundle (str "<body><script>" output "</body>"))))
+      (set! bundle (str "<body><script>" output "</script>"))))
     (HTTPEndpoint.
-      (fn [req] (= req.url route))
+      (fn [req]     (= req.url route))
       (fn [req res] (send-html req res { :body bundle })))))
 
 (deftype HTTPEndpoint [route handler])

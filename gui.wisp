@@ -1,1 +1,1 @@
-foo
+alert("FOO");

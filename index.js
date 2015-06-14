@@ -18,6 +18,8 @@ var ast        = require('wisp/ast.js')
   , wisp       = require("wisp/compiler.js");
   //, vm2        = require("vm2");
 
+var log = getLogger('editor');
+
 fs.readFile('main.wisp', { encoding: 'utf8' }, loadFile);
 
 function loadFile (err, source) {
@@ -25,7 +27,9 @@ function loadFile (err, source) {
   var compiled = compileSource(source, 'main.wisp');
 
   // repl
-  vm.runInContext(compiled.output.code, makeContext('main'));
+  process.nextTick(function(){
+    vm.runInContext(compiled.output.code, makeContext('main'));
+  })
 
   // bundle code
   options =
@@ -51,7 +55,7 @@ function loadFile (err, source) {
     }
   }).listen(PORT);
 
-  getLogger('init')('Listening on', PORT);
+  log('Listening on', PORT);
 
 }
 
@@ -66,7 +70,8 @@ function compileSource (source, fullpath) {
 function makeContext (name) {
   var context =
     { exports: {}
-    , log: getLogger(name) };
+    , log:     getLogger(name)
+    , require: function (module) { return require(module); } };
   context.use = useModule.bind(null, context);
   Object.keys(ast).map(function(k) { context[k] = ast[k] });
   return vm.createContext(context);

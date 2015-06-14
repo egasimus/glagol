@@ -105,12 +105,12 @@ function findModule (name) {
 }
 
 function makeAtom (value) {
-  return value;
   var atom = observ(value);
   return {
-    get:   function ()    { return atom() },
-    watch: function (cb)  { atom(cb)      },
-    set:   function (val) { atom.set(val) }
+    get:      function ()    { return atom() },
+    watch:    function (cb)  { atom(cb)      },
+    set:      function (val) { atom.set(val) },
+    metadata: value.metadata
   }
 }
 

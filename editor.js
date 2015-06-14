@@ -32,7 +32,6 @@ function getForms () {
 
 function parseForms (forms) {
   forms.map(function (f) {
-    console.log(f);
     document.body.appendChild(create((
       f.head.name === 'def'
         ? (f.metadata.source.indexOf("use ") === 0)
@@ -45,16 +44,15 @@ function parseForms (forms) {
 }
 
 function renderUse (f) {
-  console.log(f);
   return h('div.form.use',
     [ h('label', 'use')
     , h('.name', f.tail.head.name) ]);
 }
 
 function renderDef (f) {
-  //debugger;
-  var src = f.tail.tail.head.metadata ?
-    f.tail.tail.head.metadata.source : f.tail.tail.head;
+  var src = f.tail.tail.head.tail.head.metadata ?
+    f.tail.tail.head.tail.head.metadata.source :
+    f.tail.tail.head.tail.head
   return h('div.form.def', 
     [ h('.name', f.tail.head.name)
     , h('.code', '  ' + src) ]);

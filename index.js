@@ -53,7 +53,16 @@ function loadFile (err, source) {
     } else if (req.url === '/forms') {
       sendJSON(req, res, compiled.forms);
     } else if (req.url === '/repl') {
-      console.log(request.method);
+      if (req.method === 'POST') {
+        var data = '';
+        req.on('data', function (buf) {
+          data += buf;
+        });
+        req.on('end', function () {
+          log("Executing:\n" + data);
+          sendJSON(req, res, {});
+        });
+      }
     }
   }).listen(PORT);
 

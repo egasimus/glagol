@@ -23,24 +23,32 @@ function getForms () {
       data += buf;
     });
     res.on('end', function () {
-      // todo remove dual parse, conduct streaming parse
+      // todo streaming parse
       document.body.innerHTML = "";
-      parseForms(JSON.parse(data));
+      JSON.parse(data).map(parseForm);
     });
   });
 }
 
-function parseForms (forms) {
-  forms.map(function (f) {
-    document.body.appendChild(create((
-      f.head.name === 'def'
-        ? (f.metadata.source.indexOf("use ") === 0)
-          ? renderUse
-          : renderDef
-        : f.head.name === 'defn'
-          ? renderFn
-          : null)(f)));
+function parseForm (f) {
+  var el = create((
+    f.head.name === 'def'
+      ? (f.metadata.source.indexOf("use ") === 0)
+        ? renderUse
+        : renderDef
+      : f.head.name === 'defn'
+        ? renderFn
+        : null)(f));
+  el.addEventListener('click', function (evt) {
+    if (evt.target.classList.contains('code')) {
+      evt.target.contentEditable = true;
+      evt.target.focus();
+      evt.target.addEventListener('blur', function () {
+        evt.target.contentEditable = false;
+      })
+    }
   });
+  document.body.appendChild(el);
 }
 
 function renderUse (f) {

@@ -12,7 +12,7 @@ body
   line-height 18px
 
   position relative
-  padding 6px
+  padding 5px
   margin-left 48px
   display block
   cursor pointer
@@ -37,3 +37,9 @@ body
 
   .code
     white-space pre
+    border 1px solid transparent
+    &[contenteditable]
+      background white
+    &:focus
+      border 1px solid #ddd;
+      outline none

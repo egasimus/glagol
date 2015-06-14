@@ -19,6 +19,8 @@
 (def route-404 (fn [req res]
   (send-html req res { :body "404" })))
 
+(deftype HTTPEndpoint [route handler])
+
 (defn page [route script]
   (let [bundle  "<body>loading..."
         options { :debug false :extensions [".wisp"] }
@@ -31,7 +33,5 @@
     (HTTPEndpoint.
       (fn [req]     (= req.url route))
       (fn [req res] (send-html req res { :body bundle })))))
-
-(deftype HTTPEndpoint [route handler])
 
 (defn socket [])

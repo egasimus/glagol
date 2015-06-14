@@ -39,15 +39,7 @@ function parseForm (f) {
       : f.head.name === 'defn'
         ? renderFn
         : null)(f));
-  el.addEventListener('click', function (evt) {
-    if (evt.target.classList.contains('code')) {
-      evt.target.contentEditable = true;
-      evt.target.focus();
-      evt.target.addEventListener('blur', function () {
-        evt.target.contentEditable = false;
-      })
-    }
-  });
+  el.addEventListener('click', onFormClick.bind(null, f));
   document.body.appendChild(el);
 }
 
@@ -71,4 +63,38 @@ function renderFn (f) {
     [ h('label', 'fn')
     , h('.name', f.tail.head.name)
     , h('.code', '  ' + f.tail.tail.head.metadata.source) ]);
+}
+
+function onFormClick (f, evt) {
+  var ed = evt.target
+  if (ed.classList.contains('code')) {
+    ed.contentEditable = true;
+    ed.classList.add('editing');
+    ed.focus();
+    var onKeyUp = onFormKeyUp.bind(null, f, ed);
+    ed.addEventListener('keyup', onKeyUp);
+    ed.addEventListener('blur', function blur () {
+      ed.contentEditable = false;
+      ed.classList.remove('editing');
+      ed.removeEventListener('keyup', onKeyUp);
+    })
+  }
+}
+
+function onFormKeyUp (f, ed, evt) {
+  if (evt.ctrlKey && evt.which === 13) { // Ctrl+Enter
+    updateForm(f, ed.innerText);
+  }
+}
+
+function updateForm (f, val) {
+  if (f.head.name === 'def') {
+    executeCode(f, "(%1.set\n%2)"
+      .replace("%1", f.tail.head.name)
+      .replace("%2", val));
+  }
+}
+
+function executeCode(f, code) {
+  console.log(code);
 }

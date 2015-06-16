@@ -17,13 +17,17 @@
   (fn [req res]
     (let [matcher (fn [endpoint] (if (endpoint.route req) endpoint.handler))
           match   (first (filter matcher args))]
-      (if match (match.handler req res)
+      (if match
+        (match.handler req res)
         (route-404 req res)))))
 
 (deftype HTTPEndpoint [route handler])
 
 (defn endpoint [route handler]
   (HTTPEndpoint. (fn [req] (= req.url route)) handler))
+
+(defn template [output]
+  (str "<head><meta charset=\"utf-8\"></head><body><script>" output "</script>"))
 
 (defn page [route script]
   (let [bundle  "<body>loading...!"
@@ -36,7 +40,7 @@
     (bundler.add script)
     (bundler.bundle (fn [err output]
       (if err (throw err))
-      (set! bundle (str "<body><script>" output "</script>"))))
+      (set! bundle (template output))))
     (HTTPEndpoint. route handler)))
 
 (def route-404 (fn [req res]

@@ -100,9 +100,20 @@ function updateForm (f, val) {
 }
 
 function executeCode(f, code) {
+  console.log("executing", code);
   var req = http.request(
     { method: 'POST'
     , path:   '/repl' },
-    function (res) { console.log(code); });
+    function (res) {
+      var data = '';
+      res.on('data', function (buf) { data += buf });
+      res.on('end',  function () {
+        console.log(JSON.parse(data));
+      });
+      //res.on('end', function () {
+        //data = JSON.parse(data);
+        //console.log(data);
+      //});
+    });
   req.end(code);
 }

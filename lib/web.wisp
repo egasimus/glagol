@@ -44,7 +44,7 @@
     (bundler.add script)
     (bundler.bundle bundled)
     (watcher.on "update" (fn [ids]
-      (log "rebuilding" (colors.green script) "because of" (colors.blue ids))
+      (log "rebuilding" (colors.green script) "bundle because of" (colors.blue ids))
       (bundler.bundle bundled)))
     (endpoint route handler (fn [] (watcher.close)))))
 

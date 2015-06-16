@@ -54,8 +54,8 @@ function loadMain (err, source) {
           req.on('end', function () {
             log("executing", data);
             try {
-              vm.runInContext(compileSource(data, 'repl').output.code, context);
-              sendJSON(req, res, "OK");
+              var result = vm.runInContext(compileSource(data, 'repl').output.code, context);
+              sendJSON(req, res, JSON.stringify(result || null));
             } catch (e) {
               log(colors.red('error'), e);
               sendJSON(req, res, JSON.stringify(e));

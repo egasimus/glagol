@@ -20,6 +20,7 @@ var ast        = require('wisp/ast.js')
   , wisp       = require('wisp/compiler.js');
   //, vm2        = require("vm2");
 
+var preprocessor = useModule('./preprocess.wisp', true);
 var log = getLogger('editor');
 
 fs.readFile('main.wisp', { encoding: 'utf8' }, loadFile);
@@ -70,25 +71,34 @@ function loadFile (err, source) {
 
 }
 
-function compileSource (source, fullpath) {
-  var forms     = preprocess(wisp.readForms(source, 'main.wisp'), source)
-      processed = wisp.analyzeForms(forms)
-      options   = { 'source-uri': fullpath , 'source': source }
-      output    = wisp.generate.bind(null, options).apply(null, processed.ast);
+function compileSource (source, fullpath, raw) {
+  raw = raw || false;
+  var forms     = wisp.readForms(source, 'main.wisp')
+    , forms     = raw ? forms.forms : preprocess(forms, source);
+
+  var processed = wisp.analyzeForms(forms)
+  if (processed.error) throw new Error("Compile error: " + processed.error);
+
+  var options   = { 'source-uri': fullpath , 'source': source }
+    , output    = wisp.generate.bind(null, options).apply(null, processed.ast);
+
   return { forms: forms, processed: processed, output: output }
 }
 
 function makeContext (name) {
   var context =
-    { exports: {}
-    , log:     getLogger(name)
-    , require: function (module) { return require(module) }
-    , atom:    function (value)  { return makeAtom(value) } };
-  context.use = useModule.bind(null, context);
+    { exports:      {}
+    , log:          getLogger(name)
+    , use:          useModule
+    , isInstanceOf: function (a, b)   { return a instanceof b  }
+    , require:      function (module) { return require(module) }
+    , atom:         function (value)  { return makeAtom(value) } };
+
   [ ast
   , sequence
   , runtime ].map(
     function(m) { Object.keys(m).map(function(k) { context[k] = m[k] })});
+
   return vm.createContext(context);
 }
 
@@ -100,13 +110,14 @@ function getLogger (from) {
   }
 }
 
-function useModule (context, name) {
-  var fullpath  = findModule(name)
+function useModule (name, raw) {
+  raw = raw || false;
+  var fullpath  = raw ? name : findModule(name)
     , source    = fs.readFileSync(fullpath, { encoding: 'utf8' })
-    , output    = compileSource(source, fullpath).output
+    , output    = compileSource(source, fullpath, raw).output
     , context   = makeContext(name);
-  vm.runInContext(output.code, context);
-  return context;
+  vm.runInContext(output.code, context, { filename: name });
+  return context.exports;
 }
 
 function findModule (name) {

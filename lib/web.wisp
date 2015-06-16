@@ -1,7 +1,10 @@
 (def ^:private colors     (require "colors/safe"))
 (def ^:private browserify (require "browserify"))
+(def ^:private preprocess (require "./preprocess.js"))
+(def ^:private runtime    (require "./runtime.js"))
 (def ^:private send-html  (require "send-data/html"))
 (def ^:private send-json  (require "send-data/json"))
+(def ^:private through    (require "through"))
 (def ^:private watchify   (require "watchify"))
 
 (defn server [options & args]
@@ -40,7 +43,19 @@
         handler (fn [req res] (send-html req res { :body bundle }))
         bundled (fn [err out] (if err (throw err)) (set! bundle (template out)))]
     (bundler.transform "stylify")
-    (bundler.transform "wispify")
+    (bundler.transform (fn [file]
+      (let [data
+              ""
+            wispy
+              (= (file.index-of ".wisp") (- file.length 5))
+            write 
+              (fn [buf] (set! data (+ data buf)))
+            end
+              (fn []
+                (this.queue
+                  (if wispy (.-code (.-output (runtime.compile-source data file))) data))
+                (this.queue null))]
+        (through write end))))
     (bundler.add script)
     (bundler.bundle bundled)
     (watcher.on "update" (fn [ids]

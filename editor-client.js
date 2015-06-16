@@ -16,18 +16,20 @@ function createBody () {
           , h('p', 'loading...' ) ) ] ) );
 };
 
-function getForms () {
-  http.get({ path: '/forms' }, function (res) {
+function handleStreamingResponse(cb) {
+  return function (res) {
     var data = '';
-    res.on('data', function (buf) {
-      data += buf;
-    });
-    res.on('end', function () {
-      // todo streaming parse
-      document.body.innerHTML = "";
-      JSON.parse(data).map(parseForm);
-    });
-  });
+    res.on('data', function (buf) { data += buf; });
+    res.on('end',  function ()    { cb(data);    });
+  }
+}
+
+function getForms () {
+  http.get({ path: '/forms' }, handleStreamingResponse(function (data) {
+    // todo streaming parse
+    document.body.innerHTML = "";
+    JSON.parse(data).map(parseForm);
+  }));
 }
 
 function parseForm (f) {
@@ -106,13 +108,9 @@ function saveSession () {
   var req = http.request(
     { method: 'POST'
     , path:   '/save' },
-    function (res) {
-      var data = '';
-      res.on('data', function (buf) { data += buf });
-      res.on('end',  function () {
-        console.log(JSON.parse(data));
-      });
-    });
+    handleStreamingResponse(function (data) {
+      console.log(JSON.parse(data));
+    }));
   req.end("");
 }
 
@@ -120,12 +118,8 @@ function executeCode(f, code) {
   var req = http.request(
     { method: 'POST'
     , path:   '/repl' },
-    function (res) {
-      var data = '';
-      res.on('data', function (buf) { data += buf });
-      res.on('end',  function () {
-        console.log(JSON.parse(data));
-      });
-    });
+    handleStreamingResponse(function (data) {
+      console.log(JSON.parse(data));
+    }));
   req.end(code);
 }

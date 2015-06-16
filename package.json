@@ -19,6 +19,7 @@
     "q": "^1.4.1",
     "send-data": "^7.0.0",
     "stylify": "^1.2.0",
+    "through": "^2.3.7",
     "virtual-dom": "^2.0.1",
     "watchify": "^3.2.2",
     "wisp": "^0.10.0",

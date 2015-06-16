@@ -76,7 +76,7 @@ function onFormClick (f, evt) {
     ed.addEventListener('blur', function blur () {
       ed.contentEditable = false;
       ed.classList.remove('editing');
-      ed.removeEventListener('keyup', onKey);
+      ed.removeEventListener('keydown', onKey);
     })
   }
 }

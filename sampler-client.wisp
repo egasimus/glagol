@@ -1,13 +1,15 @@
-(let [create     (require "virtual-dom/create-element")
-      h          (require "virtual-dom/h")
-      insert-css (require "insert-css")
-      sampler  (fn []
-        (h ".sampler" [
-          (h ".sampler-controls" [
-            (h ".sampler-label" "Sample 1")
-            (h ".sampler-button" "Play")])
-          (h ".sampler-waveform")]))
-      new-body (create
-        (h "html" [(h "head") (h "body" [(sampler) (sampler)])]))]
-  (document.replaceChild new-body document.firstChild)
-  (insert-css (require "./sampler.styl")))
+use dom
+
+fn sampler
+  ([index] (dom/tree
+    [ ".sampler"
+      [ [ ".sampler-controls"
+          [ [ ".sampler-label"  (str "Sample " index) ]
+            [ ".sampler-button" "Play"                ] ] ]
+        [ ".sampler-waveform" ] ] ] ) )
+
+new-body
+  (let [bod (dom/create (dom/tree ["html" [["head"]] [["body" [(sampler) (sampler)]]]]))]
+    (document.replaceChild new-body document.firstChild)
+    (dom/add-style (require "./sampler.styl"))
+    bod)

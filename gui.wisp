@@ -5,7 +5,7 @@
         (h ".sampler" [
           (h ".sampler-controls" [
             (h ".sampler-label" "Sample 1")
-            (h ".sampler-play" "Play")])
+            (h ".sampler-button" "Play")])
           (h ".sampler-waveform")]))
       new-body (create
         (h "html" [(h "head") (h "body" [(sampler) (sampler)])]))]

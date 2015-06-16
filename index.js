@@ -51,9 +51,14 @@ function loadMain (err, source) {
             data += buf;
           });
           req.on('end', function () {
-            log("Executing:\n" + data);
-            vm.runInContext(compileSource(data, 'repl').output.code, context);
-            sendJSON(req, res, {});
+            log("executing", data);
+            try {
+              vm.runInContext(compileSource(data, 'repl').output.code, context);
+              sendJSON(req, res, "OK");
+            } catch (e) {
+              log(colors.red('error'), e);
+              sendJSON(req, res, JSON.stringify(e));
+            }
           });
         }}));
 

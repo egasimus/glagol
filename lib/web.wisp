@@ -22,10 +22,12 @@
         (match.handler req res)
         (route-404 req res)))))
 
-(deftype HTTPEndpoint [route handler])
+(deftype HTTPEndpoint [route handler destroy])
 
-(defn endpoint [route handler]
-  (HTTPEndpoint. (fn [req] (= req.url route)) handler))
+(defn endpoint
+  ([route handler] (endpoint route handler (fn [])))
+  ([route handler destroy]
+    (HTTPEndpoint. (fn [req] (= req.url route)) handler destroy)))
 
 (defn template [output]
   (str "<head><meta charset=\"utf-8\"></head><body><script>" output "</script>"))
@@ -35,17 +37,28 @@
         options (assoc watchify.args :debug false :extensions [".wisp"])
         bundler (browserify options)
         watcher (watchify bundler)
-        route   (fn [req] (= req.url route))
         handler (fn [req res] (send-html req res { :body bundle }))
-        bundled (fn [err out] (if err (throw err)) (log "bundled" script) (set! bundle (template out)))]
+        bundled (fn [err out] (if err (throw err)) (set! bundle (template out)))]
     (bundler.transform "stylify")
     (bundler.transform "wispify")
     (bundler.add script)
     (bundler.bundle bundled)
     (watcher.on "update" (fn [ids]
-      (log "updated" ids)
+      (log "rebuilding" (colors.green script) "because of" (colors.blue ids))
       (bundler.bundle bundled)))
-    (HTTPEndpoint. route handler)))
+    (endpoint route handler (fn [] (watcher.close)))))
+
+(defn atom [route atom-instance]
+  (endpoint route (fn [req res]
+    (cond
+      (= req.method "GET")
+        (send-json req res (atom-instance))
+      (= req.method "POST")
+        (let [data ""]
+          (req.on "data" (fn [buf] (set! data (+ data buf))))
+          (req.on "end"  (fn []
+            (log "posted to" (colors.green route) "value" (colors.blue data))
+            (send-json req res "OK"))))))))
 
 (def route-404 (fn [req res]
   (send-html req res { :body "404" })))

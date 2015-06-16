@@ -71,25 +71,29 @@ function onFormClick (f, evt) {
     ed.contentEditable = true;
     ed.classList.add('editing');
     ed.focus();
-    var onKeyUp = onFormKeyUp.bind(null, f, ed);
-    ed.addEventListener('keyup', onKeyUp);
+    var onKey = onFormKeyDown.bind(null, f, ed);
+    ed.addEventListener('keydown', onKey);
     ed.addEventListener('blur', function blur () {
       ed.contentEditable = false;
       ed.classList.remove('editing');
-      ed.removeEventListener('keyup', onKeyUp);
+      ed.removeEventListener('keyup', onKey);
     })
   }
 }
 
-function onFormKeyUp (f, ed, evt) {
+function onFormKeyDown (f, ed, evt) {
   if (evt.ctrlKey && evt.which === 13) { // Ctrl+Enter
     updateForm(f, ed.innerText);
+  } else if (evt.keyCode === 9) {
+    evt.preventDefault();
+  } else if (evt.keyCode === 27) {
+    ed.blur();
   }
 }
 
 function updateForm (f, val) {
   if (f.head.name === 'def') {
-    executeCode(f, "(%1.update\n(fn [] %2))"
+    executeCode(f, "(%1.update (fn []\n%2))"
       .replace("%1", f.tail.head.name)
       .replace("%2", val));
   }

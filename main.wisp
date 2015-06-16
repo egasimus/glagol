@@ -24,7 +24,7 @@ the-answer-to-life-the-universe-and-everything
 server
   (web/server { :port (+ 2055 @the-answer-to-life-the-universe-and-everything) 
                 :name "postmelodic-gui" }
-    (web/page   "/" "gui.wisp"))
+    (web/page "/" "gui.wisp"))
     ;(web/socket "/"
       ;"/list"   samplers
       ;"/add"    (apply add-sampler    args)

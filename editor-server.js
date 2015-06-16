@@ -45,12 +45,18 @@ function loadMain (err, source) {
       '/forms', function (req, res) { sendJSON(req, res, compiled.forms) }),
 
     web.endpoint(
+      '/save',  function (req, res) {
+        if (req.method === 'POST') {
+          req.on('end', function () {
+            sendJSON(req, res, "OK");
+          });
+        }}),
+
+    web.endpoint(
       '/repl',  function (req, res) {
         if (req.method === 'POST') {
           var data = '';
-          req.on('data', function (buf) {
-            data += buf;
-          });
+          req.on('data', function (buf) { data += buf });
           req.on('end', function () {
             log("executing", data);
             try {

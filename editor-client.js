@@ -82,8 +82,11 @@ function onFormClick (f, evt) {
 }
 
 function onFormKeyDown (f, ed, evt) {
-  if (evt.ctrlKey && evt.which === 13) { // Ctrl+Enter
+  if (evt.ctrlKey && evt.which === 13) {        // C-<Enter>
     updateForm(f, ed.innerText);
+  } else if (evt.ctrlKey && evt.which === 83) { // C-S
+    evt.preventDefault();
+    saveSession();
   } else if (evt.keyCode === 9) {
     evt.preventDefault();
   } else if (evt.keyCode === 27) {
@@ -99,8 +102,21 @@ function updateForm (f, val) {
   }
 }
 
+function saveSession () {
+  var req = http.request(
+    { method: 'POST'
+    , path:   '/save' },
+    function (res) {
+      var data = '';
+      res.on('data', function (buf) { data += buf });
+      res.on('end',  function () {
+        console.log(JSON.parse(data));
+      });
+    });
+  req.end("");
+}
+
 function executeCode(f, code) {
-  console.log("executing", code);
   var req = http.request(
     { method: 'POST'
     , path:   '/repl' },
@@ -110,10 +126,6 @@ function executeCode(f, code) {
       res.on('end',  function () {
         console.log(JSON.parse(data));
       });
-      //res.on('end', function () {
-        //data = JSON.parse(data);
-        //console.log(data);
-      //});
     });
   req.end(code);
 }

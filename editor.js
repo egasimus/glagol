@@ -4,7 +4,7 @@ var create    = require('virtual-dom/create-element')
   , http      = require('http-browserify');
 
 document.replaceChild(createBody(), document.firstChild);
-insertCss(require('./style.styl'));
+insertCss(require('./editor.styl'));
 getForms();
 
 function createBody () {

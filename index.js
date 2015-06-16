@@ -20,7 +20,9 @@ var ast        = require('wisp/ast.js')
   , wisp       = require('wisp/compiler.js');
   //, vm2        = require("vm2");
 
-var preprocessor = useModule('./preprocess.wisp', true);
+var preprocessor = requireWisp('./preprocess.wisp', true)
+  , web          = requireWisp('web');
+
 var log = getLogger('editor');
 
 fs.readFile('main.wisp', { encoding: 'utf8' }, loadFile);
@@ -33,41 +35,30 @@ function loadFile (err, source) {
     vm.runInContext(compiled.output.code, context);
   })
 
-  // bundle code
-  options =
-    { debug: false
-    , extensions: ['.wisp'] };
-  var bundled = null;
-  browserify(options)
-    .transform('stylify')
-    .add('editor.js')
-    .bundle(function (error, output) {
-      if (error) throw error;
-      bundled = output;
-    });
-
   // live editor
-  http.createServer(function (req, res) {
-    if (req.url === '/') {
-      sendHTML(req, res, { body: '<body><script>' + bundled + '</script>' });
-    } else if (req.url === '/forms') {
-      sendJSON(req, res, compiled.forms);
-    } else if (req.url === '/repl') {
-      if (req.method === 'POST') {
-        var data = '';
-        req.on('data', function (buf) {
-          data += buf;
-        });
+
+  web.server( { name: "editor"
+              , port: 4194
+              } ,
+    web.page(
+      '/',      'editor.js'),
+
+    web.endpoint(
+      '/forms', function (req, res) { sendJSON(req, res, compiled.forms) }),
+
+    web.endpoint(
+      '/repl',  function (req, res) {
+        if (req.method === 'POST') {
+          var data = '';
+          req.on('data', function (buf) {
+            data += buf;
+          });
         req.on('end', function () {
           log("Executing:\n" + data);
           vm.runInContext(compileSource(data, 'repl').output.code, context);
           sendJSON(req, res, {});
         });
-      }
-    }
-  }).listen(PORT);
-
-  log('Listening on', PORT);
+      }}));
 
 }
 
@@ -89,7 +80,7 @@ function makeContext (name) {
   var context =
     { exports:      {}
     , log:          getLogger(name)
-    , use:          useModule
+    , use:          requireWisp
     , isInstanceOf: function (a, b)   { return a instanceof b  }
     , require:      function (module) { return require(module) }
     , atom:         function (value)  { return makeAtom(value) } };
@@ -110,7 +101,7 @@ function getLogger (from) {
   }
 }
 
-function useModule (name, raw) {
+function requireWisp (name, raw) {
   raw = raw || false;
   var fullpath  = raw ? name : findModule(name)
     , source    = fs.readFileSync(fullpath, { encoding: 'utf8' })

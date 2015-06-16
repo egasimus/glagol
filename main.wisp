@@ -22,7 +22,8 @@ the-answer-to-life-the-universe-and-everything
   42
 
 server
-  (web/server { :port (+ 2055 (the-answer-to-life-the-universe-and-everything.get)) }
+  (web/server { :port (+ 2055 (the-answer-to-life-the-universe-and-everything.get)) 
+                :name "postmelodic-gui" }
     (web/page   "/" "gui.wisp"))
     ;(web/socket "/"
       ;"/list"   samplers

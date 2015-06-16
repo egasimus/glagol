@@ -35,6 +35,10 @@
 (defn template [output]
   (str "<head><meta charset=\"utf-8\"></head><body><script>" output "</script>"))
 
+(defn- compiled [data file]
+  (str "var use=require('./runtime.js').requireWisp;"
+    (.-code (.-output (runtime.compile-source data file)))))
+
 (defn page [route script]
   (let [bundle  "<body>loading...!"
         options (assoc watchify.args :debug false :extensions [".wisp"])
@@ -53,7 +57,7 @@
             end
               (fn []
                 (this.queue
-                  (if wispy (.-code (.-output (runtime.compile-source data file))) data))
+                  (if wispy (compiled data file) data))
                 (this.queue null))]
         (through write end))))
     (bundler.add script)

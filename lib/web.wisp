@@ -48,11 +48,11 @@
       (bundler.bundle bundled)))
     (endpoint route handler (fn [] (watcher.close)))))
 
-(defn atom [route atom-instance]
+(defn variable [route atom-instance]
   (endpoint route (fn [req res]
     (cond
       (= req.method "GET")
-        (send-json req res (atom-instance))
+        (send-json req res @atom-instance)
       (= req.method "POST")
         (let [data ""]
           (req.on "data" (fn [buf] (set! data (+ data buf))))

@@ -32,6 +32,7 @@
         route   (fn [req] (= req.url route))
         handler (fn [req res] (send-html req res { :body bundle }))]
     (bundler.transform "stylify")
+    (bundler.transform "wispify")
     (bundler.add script)
     (bundler.bundle (fn [err output]
       (if err (throw err))

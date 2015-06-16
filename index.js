@@ -65,7 +65,7 @@ function loadFile (err, source) {
 function compileSource (source, fullpath, raw) {
   raw = raw || false;
   var forms     = wisp.readForms(source, 'main.wisp')
-    , forms     = raw ? forms.forms : preprocess(forms, source);
+    , forms     = raw ? forms.forms : preprocess(forms, source, fullpath);
 
   var processed = wisp.analyzeForms(forms)
   if (processed.error) throw new Error("Compile error: " + processed.error);
@@ -76,6 +76,10 @@ function compileSource (source, fullpath, raw) {
   return { forms: forms, processed: processed, output: output }
 }
 
+function importIntoContext (context, obj) {
+  Object.keys(obj).map(function(k) { context[k] = obj[k] });
+}
+
 function makeContext (name) {
   var context =
     { exports:      {}
@@ -83,12 +87,12 @@ function makeContext (name) {
     , use:          requireWisp
     , isInstanceOf: function (a, b)   { return a instanceof b  }
     , require:      function (module) { return require(module) }
-    , atom:         function (value)  { return makeAtom(value) } };
+    , atom:         function (value)  { return makeAtom(value) }
+    , deref:        function (atom)   { return atom.get()      } };
 
   [ ast
   , sequence
-  , runtime ].map(
-    function(m) { Object.keys(m).map(function(k) { context[k] = m[k] })});
+  , runtime ].map(importIntoContext.bind(null, context));
 
   return vm.createContext(context);
 }
@@ -137,7 +141,7 @@ function makeAtom (value) {
 
 }
 
-function preprocess (read, source) {
+function preprocess (read, source, fullpath) {
 
   if (read.error) throw new Error("Reader error: " + read.error);
 

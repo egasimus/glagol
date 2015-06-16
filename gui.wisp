@@ -1,1 +1,1 @@
-alert("FOO");
+(alert "FOO")

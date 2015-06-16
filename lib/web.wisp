@@ -2,6 +2,7 @@
 (def ^:private browserify (require "browserify"))
 (def ^:private send-html  (require "send-data/html"))
 (def ^:private send-json  (require "send-data/json"))
+(def ^:private watchify   (require "watchify"))
 
 (defn server [options & args]
   (let [http    (require "http")
@@ -31,16 +32,19 @@
 
 (defn page [route script]
   (let [bundle  "<body>loading...!"
-        options { :debug false :extensions [".wisp"] }
+        options (assoc watchify.args :debug false :extensions [".wisp"])
         bundler (browserify options)
+        watcher (watchify bundler)
         route   (fn [req] (= req.url route))
-        handler (fn [req res] (send-html req res { :body bundle }))]
+        handler (fn [req res] (send-html req res { :body bundle }))
+        bundled (fn [err out] (if err (throw err)) (log "bundled" script) (set! bundle (template out)))]
     (bundler.transform "stylify")
     (bundler.transform "wispify")
     (bundler.add script)
-    (bundler.bundle (fn [err output]
-      (if err (throw err))
-      (set! bundle (template output))))
+    (bundler.bundle bundled)
+    (watcher.on "update" (fn [ids]
+      (log "updated" ids)
+      (bundler.bundle bundled)))
     (HTTPEndpoint. route handler)))
 
 (def route-404 (fn [req res]

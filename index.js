@@ -6,14 +6,11 @@ STATE_DEF  = "def";
 KEYWORDS   = ["use", "fn", "def"];
 
 var ast        = require('wisp/ast.js')
-  , browserify = require('browserify')
   , colors     = require('colors/safe')
   , fs         = require('fs')
-  , http       = require('http')
   , observ     = require('observ')
   , path       = require('path')
   , runtime    = require('wisp/runtime.js')
-  , sendHTML   = require('send-data/html')
   , sendJSON   = require('send-data/json')
   , sequence   = require('wisp/sequence.js')
   , vm         = require('vm')
@@ -25,9 +22,9 @@ var preprocessor = requireWisp('./preprocess.wisp', true)
 
 var log = getLogger('editor');
 
-fs.readFile('main.wisp', { encoding: 'utf8' }, loadFile);
+fs.readFile('main.wisp', { encoding: 'utf8' }, loadMain);
 
-function loadFile (err, source) {
+function loadMain (err, source) {
 
   var compiled = compileSource(source, 'main.wisp')
     , context  = makeContext('main');
@@ -53,12 +50,12 @@ function loadFile (err, source) {
           req.on('data', function (buf) {
             data += buf;
           });
-        req.on('end', function () {
-          log("Executing:\n" + data);
-          vm.runInContext(compileSource(data, 'repl').output.code, context);
-          sendJSON(req, res, {});
-        });
-      }}));
+          req.on('end', function () {
+            log("Executing:\n" + data);
+            vm.runInContext(compileSource(data, 'repl').output.code, context);
+            sendJSON(req, res, {});
+          });
+        }}));
 
 }
 

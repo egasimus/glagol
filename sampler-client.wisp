@@ -10,4 +10,4 @@
       new-body (create
         (h "html" [(h "head") (h "body" [(sampler) (sampler)])]))]
   (document.replaceChild new-body document.firstChild)
-  (insert-css (require "./gui.styl")))
+  (insert-css (require "./sampler.styl")))

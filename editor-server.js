@@ -1,4 +1,5 @@
 PORT       = "4194";
+FILE       = "sampler-server.wisp";
 STATE_INIT = "init";
 STATE_USE  = "use";
 STATE_FN   = "fn";
@@ -22,11 +23,11 @@ var preprocessor = requireWisp('./preprocess.wisp', true)
 
 var log = getLogger('editor');
 
-fs.readFile('main.wisp', { encoding: 'utf8' }, loadMain);
+fs.readFile(FILE, { encoding: 'utf8' }, loadMain);
 
 function loadMain (err, source) {
 
-  var compiled = compileSource(source, 'main.wisp')
+  var compiled = compileSource(source, FILE)
     , context  = makeContext('main');
   process.nextTick(function(){
     vm.runInContext(compiled.output.code, context);
@@ -38,7 +39,7 @@ function loadMain (err, source) {
               , port: 4194
               } ,
     web.page(
-      '/',      'editor.js'),
+      '/',      'editor-client.js'),
 
     web.endpoint(
       '/forms', function (req, res) { sendJSON(req, res, compiled.forms) }),
@@ -66,7 +67,7 @@ function loadMain (err, source) {
 
 function compileSource (source, fullpath, raw) {
   raw = raw || false;
-  var forms     = wisp.readForms(source, 'main.wisp')
+  var forms     = wisp.readForms(source, FILE)
     , forms     = raw ? forms.forms : preprocess(forms, source, fullpath);
 
   var processed = wisp.analyzeForms(forms)

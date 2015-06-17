@@ -1,4 +1,5 @@
-use dom
+dom
+  (require "./lib/dom.wisp")
 
 fn sampler
   ([index] (dom/tree

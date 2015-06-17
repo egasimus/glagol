@@ -32,6 +32,7 @@ function importIntoContext (context, obj) {
 var makeContext = exports.makeContext = function makeContext (name) {
   var context =
     { exports:      {}
+    , __dirname:    __dirname
     , log:          logging.getLogger(name)
     , use:          requireWisp
     , isInstanceOf: function (a, b)   { return a instanceof b  }

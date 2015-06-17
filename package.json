@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "brfs": "^1.4.0",
     "browserify": "^10.2.4",
     "colors": "^1.1.0",
     "http-browserify": "^1.7.0",

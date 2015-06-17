@@ -1,6 +1,5 @@
 (def ^:private colors     (require "colors/safe"))
 (def ^:private browserify (require "browserify"))
-(def ^:private preprocess (require "./preprocess.js"))
 (def ^:private runtime    (require "./runtime.js"))
 (def ^:private send-html  (require "send-data/html"))
 (def ^:private send-json  (require "send-data/json"))
@@ -32,35 +31,40 @@
   ([route handler destroy]
     (HTTPEndpoint. (fn [req] (= req.url route)) handler destroy)))
 
-(defn template [output]
+(defn- template [output]
   (str "<head><meta charset=\"utf-8\"></head><body><script>" output "</script>"))
 
 (defn- compiled [data file]
-  (str "var use=require('./runtime.js').requireWisp;"
+  (str "var use=require('runtime').requireWisp;"
     (.-code (.-output (runtime.compile-source data file)))))
+
+(defn- wispify [file]
+  (let [data
+          ""
+        wispy
+          (= (file.index-of ".wisp") (- file.length 5))
+        write
+          (fn [buf] (set! data (+ data buf)))
+        end
+          (fn []
+            (this.queue
+              (if wispy (compiled data file) data))
+            (this.queue null))]
+    (through write end)))
 
 (defn page [route script]
   (let [bundle  "<body>loading...!"
-        options (assoc watchify.args :debug false :extensions [".wisp"])
+        options (assoc watchify.args :debug false :extensions [".wisp"] :basedir __dirname)
         bundler (browserify options)
         watcher (watchify bundler)
         handler (fn [req res] (send-html req res { :body bundle }))
         bundled (fn [err out] (if err (throw err)) (set! bundle (template out)))]
-    (bundler.transform "stylify")
-    (bundler.transform (fn [file]
-      (let [data
-              ""
-            wispy
-              (= (file.index-of ".wisp") (- file.length 5))
-            write 
-              (fn [buf] (set! data (+ data buf)))
-            end
-              (fn []
-                (this.queue
-                  (if wispy (compiled data file) data))
-                (this.queue null))]
-        (through write end))))
+    (bundler.require "./runtime.js" { :expose "runtime" })
+    (bundler.transform "./node_modules/stylify")
+    (bundler.transform wispify)
+    ;(bundler.transform "brfs")
     (bundler.add script)
+    (log "bundling" (colors.green script))
     (bundler.bundle bundled)
     (watcher.on "update" (fn [ids]
       (log "rebuilding" (colors.green script) "bundle because of" (colors.blue ids))

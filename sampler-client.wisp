@@ -8,8 +8,14 @@ use "./lib/dom.wisp"
             ;[ ".sampler-button" "Play"                ] ] ]
         ;[ ".sampler-waveform" ] ] ] ) )
 
-;new-body
-  ;(let [bod (dom/create (dom/tree ["html" [["head"]] [["body" [(sampler) (sampler)]]]]))]
-    ;(document.replaceChild new-body document.firstChild)
-    ;(dom/add-style (require "./sampler.styl"))
-    ;bod)
+template
+  (dom/el "html" [(dom/el "head") (dom/el "body")])
+
+init
+  (let
+    [ doc (dom/create @template) ]
+    (document.replaceChild doc document.firstChild)
+    (dom/add-style (require "./sampler.styl"))
+    doc)
+
+;(let [doc (dom/create (dom/tree ["html" [["head"] ["body" [(sampler) (sampler)]]]]))]

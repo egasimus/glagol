@@ -12,15 +12,34 @@ var templates = {
          , h( 'body'
             , h('p', 'loading...' ) ) ] );
   },
-  bar:  function templateBar  (files) {
+  bar:  function templateBar (files) {
     var active = true;
     return h( '.bar',
       files.map(function(file) {
         var el = h('.bar-file' + (active ? '.active' : ''), file);
         active = false;
         return el; }) );
+  },
+  use:  function templateUse (f) {
+    return h('div.form.use',
+      [ h('label', 'use')
+      , h('.name', f.tail.head.name) ]);
+  },
+  def:  function templateDef (f) {
+    var src = f.tail.tail.head.tail.head.metadata ?
+      f.tail.tail.head.tail.head.metadata.source :
+      f.tail.tail.head.tail.head
+    return h('div.form.def',
+      [ h('.name', f.tail.head.name)
+      , h('.code', '  ' + src) ]);
+  },
+  fn:   function templateFn (f) {
+    return h('div.form.defn',
+      [ h('label', 'fn')
+      , h('.name', f.tail.head.name)
+      , h('.code', '  ' + f.tail.tail.head.metadata.source) ]);
   }
-}
+};
 
 document.replaceChild(create(templates.body()), document.firstChild);
 insertCss(require('./editor.styl'));
@@ -65,41 +84,18 @@ function getForms (file) {
 
 function renderForms (forms) {
   console.log("rendering forms", forms);
-}
-
-function parseForm (f) {
-  var el = create((
-    f.head.name === 'def'
-      ? (f.metadata.source.indexOf("use ") === 0)
-        ? renderUse
-        : renderDef
-      : f.head.name === 'defn'
-        ? renderFn
-        : null)(f));
-  el.addEventListener('click', onFormClick.bind(null, f));
-  document.body.appendChild(el);
-}
-
-function renderUse (f) {
-  return h('div.form.use',
-    [ h('label', 'use')
-    , h('.name', f.tail.head.name) ]);
-}
-
-function renderDef (f) {
-  var src = f.tail.tail.head.tail.head.metadata ?
-    f.tail.tail.head.tail.head.metadata.source :
-    f.tail.tail.head.tail.head
-  return h('div.form.def', 
-    [ h('.name', f.tail.head.name)
-    , h('.code', '  ' + src) ]);
-}
-
-function renderFn (f) {
-  return h('div.form.defn',
-    [ h('label', 'fn')
-    , h('.name', f.tail.head.name)
-    , h('.code', '  ' + f.tail.tail.head.metadata.source) ]);
+  forms.map(function renderForm (f) {
+    var el = create((
+      f.head.name === 'def'
+        ? (f.metadata.source.indexOf("use ") === 0)
+          ? templates.use
+          : templates.def
+        : f.head.name === 'defn'
+          ? templates.fn
+          : null)(f));
+    el.addEventListener('click', onFormClick.bind(null, f));
+    document.body.appendChild(el);
+  })
 }
 
 function onFormClick (f, evt) {

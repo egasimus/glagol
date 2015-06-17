@@ -13,7 +13,7 @@ var wisp =
 
 var compileSource = exports.compileSource = function compileSource (source, fullpath, raw) {
   raw = raw || false;
-  var forms     = wisp.compiler.readForms(source, FILE)
+  var forms     = wisp.compiler.readForms(source, fullpath)
     , forms     = raw ? forms.forms : preprocess(forms, source, fullpath);
 
   var processed = wisp.compiler.analyzeForms(forms)

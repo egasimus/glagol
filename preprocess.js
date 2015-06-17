@@ -1,3 +1,9 @@
+STATE_INIT = "init";
+STATE_USE  = "use";
+STATE_FN   = "fn";
+STATE_DEF  = "def";
+KEYWORDS   = ["use", "fn", "def"];
+
 var wisp = { ast:      require('wisp/ast.js')
            , sequence: require('wisp/sequence.js') };
 

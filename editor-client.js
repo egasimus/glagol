@@ -3,18 +3,29 @@ var create    = require('virtual-dom/create-element')
   , insertCss = require('insert-css')
   , http      = require('http-browserify');
 
-document.replaceChild(createBody(), document.firstChild);
-insertCss(require('./editor.styl'));
-getForms();
+var templates = {
+  body: function templateBody () {
+    return h( 'html'
+       , [ h( 'head'
+            , h( 'title', 'Editor' ) )
+         , h( 'body'
+            , h('p', 'loading...' ) ) ] );
+  },
+  bar:  function templateBar  (files) {
+    var active = true;
+    return h( '.bar',
+      files.map(function(file) {
+        var el = h('.bar-file' + (active ? '.active' : ''), file);
+        active = false;
+        return el; }) );
+  }
+}
 
-function createBody () {
-  return create(
-    h( 'html'
-     , [ h( 'head'
-          , h( 'title', 'Editor' ) )
-       , h( 'body'
-          , h('p', 'loading...' ) ) ] ) );
-};
+console.log(create(templates.body()));
+document.replaceChild(create(templates.body()), document.firstChild);
+insertCss(require('./editor.styl'));
+getFiles();
+//getForms();
 
 function handleStreamingResponse(cb) {
   return function (res) {
@@ -22,6 +33,13 @@ function handleStreamingResponse(cb) {
     res.on('data', function (buf) { data += buf; });
     res.on('end',  function ()    { cb(data);    });
   }
+}
+
+function getFiles () {
+  http.get({ path: '/files' }, handleStreamingResponse(function (data) {
+    document.body.innerHTML = "";
+    document.body.appendChild(create(templates.bar(JSON.parse(data))));
+  }));
 }
 
 function getForms () {

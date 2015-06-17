@@ -1,34 +1,44 @@
-PORT       = "4194";
-FILE       = "sampler-server.wisp";
-STATE_INIT = "init";
-STATE_USE  = "use";
-STATE_FN   = "fn";
-STATE_DEF  = "def";
-KEYWORDS   = ["use", "fn", "def"];
-
+// third-party deps
 var colors   = require('colors/safe')
   , fs       = require('fs')
   , sendJSON = require('send-data/json')
   , vm       = require('vm');
 
-var runtime = require('./runtime.js')
-  , logging = require('./logging.js')
-  , web     = runtime.requireWisp('web');
+// own deps
+var Q        = require('q')
+  , runtime  = require('./runtime.js')
+  , logging  = require('./logging.js')
+  , web      = runtime.requireWisp('web');
 
-var log     = logging.getLogger('editor');
+// state
+var log      = logging.getLogger('editor')
+  , files    = {};
 
-fs.readFile(FILE, { encoding: 'utf8' }, loadMain);
+// poehali!
+startServer();
+loadFile("sampler-server.wisp").then(executeFile);
+loadFile("sampler-client.wisp");
 
-function loadMain (err, source) {
+function loadFile (file) {
+  var defer = Q.defer();
+  fs.readFile(file, { encoding: 'utf8' },
+    function fileLoaded (err, source) {
+      if (err) defer.reject(err);
+      files[file] =
+        { source:   source
+        , compiled: runtime.compileSource(source, file) };
+      defer.resolve(file);
+    });
+  return defer.promise;
+}
 
-  var compiled = runtime.compileSource(source, FILE)
-    , context  = runtime.makeContext('main');
+function executeFile (key) {
   process.nextTick(function(){
-    vm.runInContext(compiled.output.code, context);
+    vm.runInContext(files[key].compiled.code, runtime.makeContext(key));
   })
+}
 
-  // live editor
-
+function startServer () {
   web.server( { name: "editor"
               , port: 4194
               } ,
@@ -36,7 +46,14 @@ function loadMain (err, source) {
       '/',      'editor-client.js'),
 
     web.endpoint(
-      '/forms', function (req, res) { sendJSON(req, res, compiled.forms) }),
+      '/files', function (req, res) {
+        sendJSON(req, res, Object.keys(files));
+      }),
+
+    web.endpoint(
+      '/forms', function (req, res) {
+        sendJSON(req, res, compiled.forms)
+      }),
 
     web.endpoint(
       '/save',  function (req, res) {
@@ -62,5 +79,4 @@ function loadMain (err, source) {
             }
           });
         }}));
-
 }

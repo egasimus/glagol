@@ -2,15 +2,15 @@
   box-sizing border-box
 
 body
-  background #fafafa
+  background #f8f8f8
   color #424242
   margin 6px 0
-
-.form
   font-family monospace
   font-size 13px
   line-height 18px
 
+
+.form
   position relative
   padding 5px
   margin-left 48px
@@ -44,3 +44,24 @@ body
     &:focus
       border 1px solid #ddd;
       outline none
+
+.bar
+  position fixed
+  bottom 0
+  left 0
+  right 0
+  height 24px
+  background #ddd
+  display flex
+
+  &-file
+    height 24px
+    line-height 24px
+    padding 0 6px
+    cursor pointer
+
+    &.active
+      background #f8f8f8
+
+    &:hover
+      background #fff

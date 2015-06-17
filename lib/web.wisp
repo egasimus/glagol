@@ -27,9 +27,10 @@
 (deftype HTTPEndpoint [route handler destroy])
 
 (defn endpoint
-  ([route handler] (endpoint route handler (fn [])))
+  ([route handler]
+    (endpoint route handler (fn [])))
   ([route handler destroy]
-    (HTTPEndpoint. (fn [req] (= req.url route)) handler destroy)))
+    (HTTPEndpoint. (fn [req] (= route (aget (req.url.split "?") 0))) handler destroy)))
 
 (defn- template [output]
   (str "<head><meta charset=\"utf-8\"></head><body><script>" output "</script>"))

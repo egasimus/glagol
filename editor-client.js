@@ -1,7 +1,8 @@
 var create    = require('virtual-dom/create-element')
   , h         = require('virtual-dom/h')
+  , http      = require('http-browserify')
   , insertCss = require('insert-css')
-  , http      = require('http-browserify');
+  , Q         = require('q');
 
 var templates = {
   body: function templateBody () {
@@ -21,10 +22,9 @@ var templates = {
   }
 }
 
-console.log(create(templates.body()));
 document.replaceChild(create(templates.body()), document.firstChild);
 insertCss(require('./editor.styl'));
-getFiles();
+getFiles().then(renderFiles).then(loadFirstFile).done();
 //getForms();
 
 function handleStreamingResponse(cb) {
@@ -36,18 +36,35 @@ function handleStreamingResponse(cb) {
 }
 
 function getFiles () {
+  var defer = Q.defer();
   http.get({ path: '/files' }, handleStreamingResponse(function (data) {
     document.body.innerHTML = "";
-    document.body.appendChild(create(templates.bar(JSON.parse(data))));
+    defer.resolve(JSON.parse(data));
   }));
+  return defer.promise;
 }
 
-function getForms () {
-  http.get({ path: '/forms' }, handleStreamingResponse(function (data) {
+function renderFiles (files) {
+  document.body.appendChild(create(templates.bar(files)));
+  return files;
+}
+
+function loadFirstFile (files) {
+  console.log(files);
+  getForms(files[0]).then(renderForms).done();
+}
+
+function getForms (file) {
+  var defer = Q.defer();
+  http.get({ path: '/forms?file=' + file }, handleStreamingResponse(function (data) {
+    defer.resolve(JSON.parse(data));
     // todo streaming parse
-    document.body.innerHTML = "";
-    JSON.parse(data).map(parseForm);
   }));
+  return defer.promise;
+}
+
+function renderForms (forms) {
+  console.log("rendering forms", forms);
 }
 
 function parseForm (f) {

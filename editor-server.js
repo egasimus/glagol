@@ -2,6 +2,7 @@
 var colors   = require('colors/safe')
   , fs       = require('fs')
   , sendJSON = require('send-data/json')
+  , url      = require('url')
   , vm       = require('vm');
 
 // own deps
@@ -52,7 +53,7 @@ function startServer () {
 
     web.endpoint(
       '/forms', function (req, res) {
-        sendJSON(req, res, compiled.forms)
+        sendJSON(req, res, files[url.parse(req.url, true).query.file].compiled.forms);
       }),
 
     web.endpoint(

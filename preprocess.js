@@ -103,7 +103,12 @@ var preprocess = module.exports = function preprocess (read, source, fullpath) {
       }
 
       if (state === STATE_USE) {
-        exitState(list(sym('def'), makePrivate(sym(f.name)), list(sym('use'), f.name)));
+        if (f instanceof String) {
+          var alias = f.match(new RegExp("([^/]+?).wisp"))[1]; 
+          exitState(list(sym('def'), makePrivate(sym(alias)), list(sym('require'), f)));
+        } else {
+          exitState(list(sym('def'), makePrivate(sym(f.name)), list(sym('use'), f.name)));
+        }
         meta = meta || {};
         meta.use = true;
 

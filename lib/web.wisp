@@ -35,7 +35,7 @@
   (str "<head><meta charset=\"utf-8\"></head><body><script>" output "</script>"))
 
 (defn- compiled [data file]
-  (str "var use=require('runtime').requireWisp;"
+  (str "var use=require('runtime').requireWisp;var atom=require('runtime').makeAtom;"
     (.-code (.-output (runtime.compile-source data file)))))
 
 (defn- wispify [file]
@@ -48,7 +48,8 @@
         end
           (fn []
             (this.queue
-              (if wispy (compiled data file) data))
+              (if wispy (let [output (compiled data file)] (log output) output)
+                        data))
             (this.queue null))]
     (through write end)))
 

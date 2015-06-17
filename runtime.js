@@ -61,7 +61,7 @@ function findModule (name) {
   return path.resolve(path.join('.', 'lib', name + '.wisp'));
 }
 
-function makeAtom (value) {
+var makeAtom = exports.makeAtom = function makeAtom (value) {
 
   var atom = observ(value);
 

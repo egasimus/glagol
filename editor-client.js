@@ -44,7 +44,9 @@ var templates = {
     function templateBody () {
       var s = state();
       var bodyContents = s.files ? [ templates.bar() ] : [];
-      if (s.forms) s.forms.map(function (f) { bodyContents.push(templates.form(f)) });
+      if (s.forms) s.forms.map(function (f, i) {
+        bodyContents.push(templates.form(f, i))
+      });
       return bodyContents;
     },
 
@@ -66,7 +68,8 @@ var templates = {
     },
 
   form:
-    function templateForm (f) {
+    function templateForm (f, i) {
+      var active = f === state().activeForm;
       return (
         f.head.name === 'def'
           ? (f.metadata.source.indexOf("use ") === 0)
@@ -74,35 +77,41 @@ var templates = {
             : templates.def
           : f.head.name === 'defn'
             ? templates.fn
-            : null)(f);
+            : null)(f, active, i);
     },
 
   use:
-    function templateUse (f) {
-      return h('div.form.use',
+    function templateUse (f, active, i) {
+      return h('div.form.use' + (active ? '.active' : ''),
+        { dataset: { index: i }
+        , onclick: emit('form-selected')},
         [ h('label', 'use')
         , h('.name', f.tail.head.name) ]);
     },
 
   def:
-    function templateDef (f) {
+    function templateDef (f, active, i) {
       var src = f.tail.tail.head.tail.head.metadata ?
         f.tail.tail.head.tail.head.metadata.source :
         f.tail.tail.head.tail.head
-      return h('div.form.def',
+      return h('div.form.def' + (active ? '.active' : ''),
+        { dataset: { index: i }
+        , onclick: emit('form-selected')},
         [ h('.name', f.tail.head.name)
         , h('.code',
-            { onclick: emit('form-clicked') },
+            { contentEditable: active ? 'true' : 'inherit' },
             '  ' + src) ]);
     },
 
   fn:
-    function templateFn (f) {
-      return h('div.form.defn',
+    function templateFn (f, active, i) {
+      return h('div.form.defn' + (active ? '.active' : ''),
+        { dataset: { index: i }
+        , onclick: emit('form-selected')},
         [ h('label', 'fn')
         , h('.name', f.tail.head.name)
         , h('.code',
-            { onclick: emit('form-clicked') },
+            { contentEditable: active ? 'true' : 'inherit' },
             '  ' + f.tail.tail.head.metadata.source) ]);
     }
 
@@ -152,11 +161,17 @@ function getForms (file) {
 // event handlers
 
 events.on("file-selected", function (evt) {
-  if (evt.target.dataset.index) {
-    updateState({ activeFile: state().files[evt.target.dataset.index] });
+  if (evt.currentTarget.dataset.index) {
+    updateState({ activeFile: state().files[evt.currenTarget.dataset.index] });
     getForms(state().activeFile).done();
   }
-})
+});
+
+events.on("form-selected", function (evt) {
+  if (evt.currentTarget.dataset.index) {
+    updateState({ activeForm: state().forms[evt.currentTarget.dataset.index] });
+  }
+});
 
 function onFormClick (f, evt) {
   var ed = evt.target

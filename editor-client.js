@@ -20,7 +20,6 @@ function updateState (changes) {
 var events = new (require('eventemitter2').EventEmitter2)();
 function emit (evt) {
   return function (arg) {
-    console.log(evt, arg);
     events.emit(evt, arg);
   }
 }
@@ -51,19 +50,18 @@ var templates = {
 
   bar:
     function templateBar (files) {
-      var active = true;
       return h( '.bar',
-        state().files.map(function(file) {
-          var el = templates.barFile(file, active);
-          active = false;
+        state().files.map(function(file, i) {
+          var el = templates.barFile(file, i);
           return el; }) );
     },
 
   barFile:
-    function templateBarFile (file, active) {
+    function templateBarFile (file, i) {
       return h(
-        '.bar-file' + (active ? '.active' : ''),
-        { onclick: emit('file-clicked') },
+        '.bar-file' + (state().activeFile === file ? '.active' : ''),
+        { dataset: { index: i }
+        , onclick: emit('file-selected') },
         file);
     },
 
@@ -127,7 +125,7 @@ function init () {
   view.node = require('virtual-dom/create-element')(view.tree);
   document.replaceChild(view.node, document.firstChild);
   insertCss(require('./editor.styl'));
-  getFiles().then(loadFirstFile).done();
+  getFiles().then(getFirstFile).then(getForms).done();
 }
 init();
 
@@ -135,19 +133,30 @@ function getFiles () {
   return loadValue('files', '/files', Q.defer());
 }
 
-function loadFirstFile (files) {
-  getForms(files[0]);
+function getFirstFile (files) {
+  var deferred = Q.defer();
+  if (files.length > 0) {
+    updateState({ activeFile: files[0] });
+    deferred.resolve(files[0]);
+  } else {
+    deferred.reject(new Error("No files loaded"));
+  }
+  return deferred.promise;
 }
 
 function getForms (file) {
-  return loadValue('forms', '/forms?file=' + file);
+  return loadValue('forms', '/forms?file=' + file, Q.defer());
 }
 
 
 // event handlers
-function onBarFileClick (evt) {
-  console.log("BANG!", arguments);
-}
+
+events.on("file-selected", function (evt) {
+  if (evt.target.dataset.index) {
+    updateState({ activeFile: state().files[evt.target.dataset.index] });
+    getForms(state().activeFile).done();
+  }
+})
 
 function onFormClick (f, evt) {
   var ed = evt.target

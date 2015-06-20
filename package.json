@@ -13,6 +13,8 @@
     "brfs": "^1.4.0",
     "browserify": "^10.2.4",
     "colors": "^1.1.0",
+    "dom-delegator": "^13.1.0",
+    "eventemitter2": "^0.4.14",
     "http-browserify": "^1.7.0",
     "insert-css": "^0.2.0",
     "jsonstream": "^1.0.3",

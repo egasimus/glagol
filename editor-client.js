@@ -91,7 +91,7 @@ var templates = {
         , onclick: emit('form-selected') },
         [ h('label', f.type)
         , f.name ? h('.name', f.name)
-                 : h('input.name', { placeholder: 'enter name...' })
+                 : h('input.name.focus-me', { placeholder: 'enter name...' })
         , f.body ? h('.code', '  ' + f.body)
                    : undefined ]);
     },
@@ -106,6 +106,12 @@ state(function updateView () {
     , patches = require('virtual-dom/diff')(view.tree, newTree);
   view.node = require('virtual-dom/patch')(view.node, patches);
   view.tree = newTree;
+
+  var focused = false;
+  Array.prototype.map.call(document.getElementsByClassName('focus-me'), function (el) {
+    if (!focused) { el.focus(); focused = true; }
+    el.classList.remove('focus-me');
+  });
 })
 
 
@@ -152,26 +158,39 @@ function getForms (filename) {
 keymap =
   { navigate:
     { 13: 'execute-form'  // <Enter>
-    , 65: 'add-form'      // a
+    , 65: 'add-atom'      // a
     , 67: 'call-form'     // c
     , 68: 'delete-form'   // d
     , 69: 'edit-form'     // e
+    , 70: 'add-fn'        // f
     , 72: 'previous-tab'  // h
     , 74: 'next-form'     // j
     , 75: 'previous-form' // k
-    , 76: 'next-tab' }    // l
-  , newform:
-    { 27: 'delete-form' }
+    , 76: 'next-tab'      // l
+    }
+  , name:
+    { 13: 'go-to-code'    // <Enter>
+    , 27: 'blur-form'     // <Esc>
+    }
 }
 
 document.addEventListener('keydown', function (evt) {
-  var mode = null;
-  if (document.activeElement === document.body) {
+  var active = document.activeElement
+    , mode   = null;
+  if (active === document.body) {
     mode = 'navigate';
-  } else if (document.activeElement.parentElement.classList.contains('type-new')) {
-    mode = 'newform';
+  } else if (active.parentElement.classList.contains('form')) {
+    if (active.classList.contains('name')) {
+      mode = 'name';
+    } else if (active.classList.contains('code')) {
+      mode = 'code';
+    }
   }
+  //} else if (document.activeElement.parentElement.classList.contains('type-new')) {
+    //mode = 'newform';
+  //}
   if (mode && keymap[mode] && keymap[mode][evt.which]) {
+    evt.preventDefault();
     events.emit(keymap[mode][evt.which])
   } else {
     console.log('keypress', evt.which);
@@ -200,33 +219,48 @@ events.on("previous-tab", function () {
   updateState({ activeFile: files[next] });
 });
 
+events.on("form-selected", function (evt) {
+  if (evt.currentTarget.dataset.index) {
+    var s     = state()
+      , files = s.files;
+    files[s.activeFile].activeForm = parseInt(evt.currentTarget.dataset.index);
+    updateState();
+  }
+});
+
 events.on("next-form", function () {
   var s      = state()
-    , file   = s.files[s.activeFile]
-    , active = parseInt(file.activeForm);
-  if (active || active === 0) {
-    file.activeForm = active + 1;
+    , file   = s.files[s.activeFile];
+  if (file.activeForm || file.activeForm === 0) {
+    file.activeForm++;
     if (file.activeForm >= file.forms.length) file.activeForm = 0;
   } else {
     file.activeForm = 0;
   }
   updateState();
-})
+});
 
 events.on("previous-form", function () {
   var s     = state()
     , file  = s.files[s.activeFile];
-  file.activeForm = (parseInt(file.activeForm) || file.forms.length) - 1;
+  file.activeForm = (file.activeForm || file.forms.length) - 1;
   updateState();
-})
+});
 
-events.on("add-form", function () {
+events.on("add-atom", function () {
   var s     = state()
     , files = s.files
     , file  = files[s.activeFile]
-    , forms = file.forms
-    , i     = file.activeForm;
-  file.forms.splice(file.activeForm + 1, 0, { type: 'new' });
+  file.forms.splice(file.activeForm + 1, 0, { type: 'atom' });
+  file.activeForm += 1;
+  updateState({ files: files });
+});
+
+events.on("add-fn", function () {
+  var s     = state()
+    , files = s.files
+    , file  = files[s.activeFile]
+  file.forms.splice(file.activeForm + 1, 0, { type: 'fn' });
   file.activeForm += 1;
   updateState({ files: files });
 });
@@ -239,14 +273,11 @@ events.on("delete-form", function (evt) {
   updateState({ files: files });
 });
 
-events.on("form-selected", function (evt) {
-  if (evt.currentTarget.dataset.index) {
-    var s     = state()
-      , files = s.files;
-    files[s.activeFile].activeForm = evt.currentTarget.dataset.index;
-    updateState({ files: files });
-  }
-});
+events.on("go-to-code", function (evt) {
+  var s = state();
+  console.log(s.files[s.activeFile]);
+  console.log(document.getElementsByClassName('form')[s.files[s.activeFile].activeForm]);
+})
 
 events.on("execute-file", function (evt) {
   post('/run').then(function (data) {

@@ -170,13 +170,15 @@ keymap =
     , 75: 'previous-form' // k
     , 76: 'next-tab'      // l
     , 77: 'move-form'     // m
+    , 87: 'save-file'     // w
     }
   , name:
     { 13: 'go-to-code'    // <Enter>
     , 27: 'blur-form'     // <Esc>
     }
   , code:
-    { 27: 'blur-form' }   // <Esc>
+    {  9: 'insert-tab'    // <Tab>
+    , 27: 'blur-form' }   // <Esc>
 }
 
 document.addEventListener('keydown', function (evt) {
@@ -199,11 +201,31 @@ document.addEventListener('keydown', function (evt) {
   }
 });
 
+
 events.on("file-selected", function (evt) {
   if (evt.currentTarget.dataset.filename) {
     updateState({ activeFile: evt.currentTarget.dataset.filename });
   }
 });
+
+events.on("save-file", function (evt) {
+  var s = state();
+  console.log("Saving file", s.activeFile);
+  var source = "";
+  s.files[s.activeFile].forms.map(function (f, i) {
+    if (i > 0) source += "\n\n";
+    if (f.type === 'use') {
+      source += "use " + f.name;
+    } else if (f.type === 'fn') {
+      source += "fn " + f.name + "\n  " + f.body;
+    } else if (f.type === 'atom') {
+      source += f.name + "\n  " + f.body;
+    }
+  })
+  post('/save?file=' + s.activeFile, source).then(function (response) {
+    console.log("Saved", s.activeFile, ":", response);
+  }).done()
+})
 
 events.on("next-tab", function () {
   var s     = state()

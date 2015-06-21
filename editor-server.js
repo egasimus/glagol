@@ -83,9 +83,16 @@ function startServer () {
 
     web.endpoint(
       '/save',  function (req, res) {
+        console.log("saving")
         if (req.method === 'POST') {
+          var data = '';
+          req.on('data', function (buf) { data += buf });
           req.on('end', function () {
-            sendJSON(req, res, "OK");
+            console.log(data);
+            fs.writeFile(url.parse(req.url, true).query.file, data, function (err) {
+              if (err) throw err;
+              sendJSON(req, res, "OK");
+            })
           });
         }}),
 

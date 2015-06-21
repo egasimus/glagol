@@ -44,7 +44,8 @@ var templates = {
         , body = [];
 
       if (s.files) {
-        body.push(templates.bar());
+        body.push(templates.tabBar());
+        body.push(templates.toolBar());
         console.log(s.files, s.activeFile, s.files[s.activeFile]);
         (s.files[s.activeFile].forms || []).map(function (f, i) {
           console.log(s.activeFile, i, f.metadata.source)
@@ -57,21 +58,28 @@ var templates = {
       return body;
     },
 
-  bar:
-    function templateBar (files) {
-      return h( '.bar',
+  tabBar:
+    function templateBar () {
+      return h( '.tab-bar',
         Object.keys(state().files).map(function(file, i) {
-          var el = templates.barFile(file, i);
+          var el = templates.tab(file, i);
           return el; }) );
     },
 
-  barFile:
+  tab:
     function templateBarFile (filename, i) {
       return h(
-        '.bar-file' + (state().activeFile == filename ? '.active' : ''),
+        '.tab-bar-file' + (state().activeFile == filename ? '.active' : ''),
         { dataset: { filename: filename }
         , onclick: emit('file-selected') },
         filename);
+    },
+
+  toolBar:
+    function templateToolBar () {
+      return h( '.toolbar', [
+        h( '.toolbar-button', { onclick: emit('execute-file') }, "execute file" )
+      ] )
     },
 
   form:
@@ -191,19 +199,11 @@ events.on("form-selected", function (evt) {
   }
 });
 
-function onFormClick (f, evt) {
-  var ed = evt.target
-  if (ed.classList.contains('code')) {
-    ed.classList.add('editing');
-    ed.focus();
-    var onKey = onFormKeyDown.bind(null, f, ed);
-    ed.addEventListener('keydown', onKey);
-    ed.addEventListener('blur', function blur () {
-      ed.classList.remove('editing');
-      ed.removeEventListener('keydown', onKey);
-    })
-  }
-}
+events.on("execute-file", function (evt) {
+  post('/run').then(function (data) {
+    console.log(JSON.parse(data));
+  }).done();
+})
 
 function onFormKeyDown (f, ed, evt) {
   if (evt.ctrlKey && evt.which === 13) {        // C-<Enter>
@@ -229,33 +229,37 @@ function updateForm (f, val) {
 }
 
 function saveSession () {
-  var req = http.request(
-    { method: 'POST'
-    , path:   '/save' },
-    handleStreamingResponse(function (data) {
-      console.log(JSON.parse(data));
-    }));
-  req.end("");
+  post('/save').then(function (data) {
+    console.log(JSON.parse(data));
+  }).done();
 }
 
 function executeCode(f, code) {
-  var req = http.request(
-    { method: 'POST'
-    , path:   '/repl' },
-    handleStreamingResponse(function (data) {
-      console.log(JSON.parse(data));
-    }));
-  req.end(code);
+  post('/repl', code).then(function (data) {
+    console.log(JSON.parse(data));
+  }).done();
 }
 
 
 // utilities
-function handleStreamingResponse(cb) {
+function handleStreamingResponse (cb) {
   return function (res) {
     var data = '';
     res.on('data', function (buf) { data += buf; });
     res.on('end',  function ()    { cb(data);    });
   }
+}
+
+function post (url, data) {
+  var deferred = Q.defer();
+  var req = http.request(
+    { method: 'POST'
+    , path:   url },
+    handleStreamingResponse(function (data) {
+      deferred.resolve(data);
+    }));
+  req.end(data || "");
+  return deferred.promise;
 }
 
 function concurrently (cb) {

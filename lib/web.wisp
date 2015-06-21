@@ -21,7 +21,9 @@
     (let [matcher (fn [endpoint] (if (endpoint.route req) endpoint.handler))
           match   (first (filter matcher args))]
       (if match
-        (match.handler req res)
+        (try
+          (match.handler req res)
+          (catch error (route-error error req res)))
         (route-404 req res)))))
 
 (deftype HTTPEndpoint [route handler destroy])
@@ -88,7 +90,10 @@
             (log "posted to" (colors.green route) "value" (colors.blue data))
             (send-json req res "OK"))))))))
 
-(def route-404 (fn [req res]
-  (send-html req res { :body "404" })))
+(defn route-404 [req res]
+  (send-html req res { :body "404" }))
+
+(defn route-error [error req res]
+  (send-json req res error))
 
 (defn socket [])

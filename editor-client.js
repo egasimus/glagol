@@ -1,12 +1,10 @@
 var h         = require('virtual-dom/h')
   , http      = require('http-browserify')
-  , insertCss = require('insert-css')
-  , Observ    = require('observ')
   , Q         = require('q');
 
 
 // state
-var state = Observ({});
+var state = require('observ')({});
 function updateState (changes) {
   var snapshot = state();
   Object.keys(changes).map(function (k) {
@@ -53,7 +51,7 @@ var templates = {
   bar:
     function templateBar (files) {
       return h( '.bar',
-        state().files.map(function(file, i) {
+        Object.keys(state().files).map(function(file, i) {
           var el = templates.barFile(file, i);
           return el; }) );
     },
@@ -129,32 +127,37 @@ state(function updateView () {
 
 
 // load data from server
+init();
+
 function init () {
   view.tree = templates.document();
   view.node = require('virtual-dom/create-element')(view.tree);
   document.replaceChild(view.node, document.firstChild);
-  insertCss(require('./editor.styl'));
-  getFiles().then(getFirstFile).then(getForms).done();
+  require('insert-css')(require('./editor.styl'));
+  getFiles().then(concurrently(getForms)).done();
 }
-init();
 
 function getFiles () {
-  return loadValue('files', '/files', Q.defer());
-}
-
-function getFirstFile (files) {
   var deferred = Q.defer();
-  if (files.length > 0) {
-    updateState({ activeFile: files[0] });
-    deferred.resolve(files[0]);
-  } else {
-    deferred.reject(new Error("No files loaded"));
-  }
+  http.get({ path: '/files' }, handleStreamingResponse(function (data) {
+    var files = {};
+    JSON.parse(data).map(function (filename) { files[filename] = {} });
+    updateState({ files: files });
+    deferred.resolve(Object.keys(files));
+  }));
   return deferred.promise;
 }
 
-function getForms (file) {
-  return loadValue('forms', '/forms?file=' + file, Q.defer());
+function getForms (filename) {
+  var deferred = Q.defer();
+  http.get({ path: '/forms?file=' + filename }, handleStreamingResponse(function (data) {
+    var forms = JSON.parse(data)
+      , files = state().files;
+    files[filename].forms = forms;
+    updateState({ files: files });
+    deferred.resolve(forms);
+  }));
+  return deferred.promise;
 }
 
 
@@ -162,8 +165,8 @@ function getForms (file) {
 
 events.on("file-selected", function (evt) {
   if (evt.currentTarget.dataset.index) {
-    updateState({ activeFile: state().files[evt.currenTarget.dataset.index] });
-    getForms(state().activeFile).done();
+    updateState({ activeFile: state().files[evt.currentTarget.dataset.index] });
+    //getForms(state().activeFile).done();
   }
 });
 
@@ -176,13 +179,11 @@ events.on("form-selected", function (evt) {
 function onFormClick (f, evt) {
   var ed = evt.target
   if (ed.classList.contains('code')) {
-    ed.contentEditable = true;
     ed.classList.add('editing');
     ed.focus();
     var onKey = onFormKeyDown.bind(null, f, ed);
     ed.addEventListener('keydown', onKey);
     ed.addEventListener('blur', function blur () {
-      ed.contentEditable = false;
       ed.classList.remove('editing');
       ed.removeEventListener('keydown', onKey);
     })
@@ -242,13 +243,8 @@ function handleStreamingResponse(cb) {
   }
 }
 
-function loadValue (name, url, deferred) {
-  http.get({ path: url }, handleStreamingResponse(function (data) {
-    var value = JSON.parse(data);
-    var diff  = [];
-    diff[name] = value;
-    updateState(diff);
-    if (deferred) deferred.resolve(value);
-  }));
-  if (deferred) return deferred.promise;
+function concurrently (cb) {
+  return function runConcurrently (args) {
+    return Q.allSettled(args.map(cb));
+  }
 }

@@ -75,7 +75,8 @@ var templates = {
 
   form:
     function templateForm (f, i) {
-      var active = f === state().activeForm;
+      var s      = state()
+        , active = i == s.files[s.activeFile].activeForm;
       return (
         f.head.name === 'def'
           ? (f.metadata.source.indexOf("use ") === 0)
@@ -182,7 +183,10 @@ events.on("file-selected", function (evt) {
 
 events.on("form-selected", function (evt) {
   if (evt.currentTarget.dataset.index) {
-    updateState({ activeForm: state().forms[evt.currentTarget.dataset.index] });
+    var s     = state()
+      , files = s.files;
+    files[s.activeFile].activeForm = evt.currentTarget.dataset.index;
+    updateState({ files: files });
   }
 });
 

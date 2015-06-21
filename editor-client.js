@@ -47,6 +47,7 @@ var templates = {
         body.push(templates.bar());
         console.log(s.files, s.activeFile, s.files[s.activeFile]);
         (s.files[s.activeFile].forms || []).map(function (f, i) {
+          console.log(s.activeFile, i, f.metadata.source)
           body.push(templates.form(f, i));
         })
       } else {
@@ -106,7 +107,7 @@ var templates = {
         , onclick: emit('form-selected')},
         [ h('.name', f.tail.head.name)
         , h('.code',
-            { contentEditable: active ? 'true' : 'inherit' },
+            {}, //{ contentEditable: active ? 'true' : 'inherit' },
             '  ' + src) ]);
     },
 
@@ -118,7 +119,7 @@ var templates = {
         [ h('label', 'fn')
         , h('.name', f.tail.head.name)
         , h('.code',
-            { contentEditable: active ? 'true' : 'inherit' },
+            {}, //{ contentEditable: active ? 'true' : 'inherit' },
             '  ' + f.tail.tail.head.metadata.source) ]);
     }
 

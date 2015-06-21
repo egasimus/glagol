@@ -169,13 +169,14 @@ keymap =
     , 74: 'next-form'     // j
     , 75: 'previous-form' // k
     , 76: 'next-tab'      // l
+    , 77: 'move-form'     // m
     }
   , name:
     { 13: 'go-to-code'    // <Enter>
     , 27: 'blur-form'     // <Esc>
     }
   , code:
-    { 13: 'blur-form' }   // <Esc>
+    { 27: 'blur-form' }   // <Esc>
 }
 
 document.addEventListener('keydown', function (evt) {
@@ -183,12 +184,12 @@ document.addEventListener('keydown', function (evt) {
     , mode   = null;
   if (active === document.body) {
     mode = 'navigate';
-  } else if (active.parentElement.classList.contains('form')) {
-    if (active.classList.contains('name')) {
-      mode = 'name';
-    } else if (active.classList.contains('code')) {
-      mode = 'code';
-    }
+  } else if (active.parentElement.classList.contains('form')
+         &&  active.classList.contains('name')) {
+    mode = 'name';
+  } else if (active.tagName === "TEXTAREA"
+         &&  active.parentElement.parentElement.classList.contains('code')) {
+    mode = 'code';
   }
   if (mode && keymap[mode] && keymap[mode][evt.which]) {
     evt.preventDefault();
@@ -274,13 +275,17 @@ events.on("delete-form", function (evt) {
   updateState({ files: files });
 });
 
+events.on("blur-form", function (evt) {
+  document.activeElement.blur();
+})
+
 events.on("go-to-code", function (evt) {
   var s    = state()
     , f    = document.getElementsByClassName('form')[s.files[s.activeFile].activeForm || 0]
     , name = f.getElementsByClassName('name')[0]
     , code = f.getElementsByClassName('code')[0];
   console.log(f.getElementsByClassName('code')[0]);
-  f.getElementsByClassName('code')[0].focus();
+  f.getElementsByClassName('code')[0].childNodes[1].childNodes[0].focus();
 })
 
 events.on("execute-file", function (evt) {

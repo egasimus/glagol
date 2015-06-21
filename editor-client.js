@@ -90,8 +90,10 @@ var templates = {
         { dataset: { index: i }
         , onclick: emit('form-selected') },
         [ h('label', f.type)
-        , h('.name', f.name)
-        , f.body ? h('.code', f.body) : undefined ]);
+        , f.name ? h('.name', f.name)
+                 : h('input.name', { placeholder: 'enter name...' })
+        , f.body ? h('.code', '  ' + f.body)
+                   : undefined ]);
     },
 
 };
@@ -147,37 +149,32 @@ function getForms (filename) {
 
 // event handlers
 
-document.addEventListener('keypress', function (evt) {
-  switch (evt.which) {
-    case 13:  // <Return>
-      events.emit('execute-form');
-      break;
-    case 97:  // a
-      events.emit('add-form');
-      break;
-    case 99:  // c
-      events.emit('call-form');
-      break;
-    case 100: // d
-      events.emit('delete-form');
-      break;
-    case 101: // e
-      events.emit('edit-form');
-      break;
-    case 104: // h
-      events.emit('previous-tab');
-      break;
-    case 106: // j
-      events.emit('next-form');
-      break;
-    case 107: // k
-      events.emit('previous-form');
-      break;
-    case 108: // l
-      events.emit('next-tab');
-      break;
-    default:
-      console.log('keypress', evt.which);
+keymap =
+  { navigate:
+    { 13: 'execute-form'  // <Enter>
+    , 65: 'add-form'      // a
+    , 67: 'call-form'     // c
+    , 68: 'delete-form'   // d
+    , 69: 'edit-form'     // e
+    , 72: 'previous-tab'  // h
+    , 74: 'next-form'     // j
+    , 75: 'previous-form' // k
+    , 76: 'next-tab' }    // l
+  , newform:
+    { 27: 'delete-form' }
+}
+
+document.addEventListener('keydown', function (evt) {
+  var mode = null;
+  if (document.activeElement === document.body) {
+    mode = 'navigate';
+  } else if (document.activeElement.parentElement.classList.contains('type-new')) {
+    mode = 'newform';
+  }
+  if (mode && keymap[mode] && keymap[mode][evt.which]) {
+    events.emit(keymap[mode][evt.which])
+  } else {
+    console.log('keypress', evt.which);
   }
 });
 
@@ -229,10 +226,18 @@ events.on("add-form", function () {
     , file  = files[s.activeFile]
     , forms = file.forms
     , i     = file.activeForm;
-  file.forms.splice(i, 0, { head: {}, name: "foo" });
-  //s.files[s.activeFile].forms.splice(i, {foo: 'bar'});
+  file.forms.splice(file.activeForm + 1, 0, { type: 'new' });
+  file.activeForm += 1;
   updateState({ files: files });
-})
+});
+
+events.on("delete-form", function (evt) {
+  var s     = state()
+    , files = s.files
+    , file  = files[s.activeFile]
+  file.forms.splice(file.activeForm, 1);
+  updateState({ files: files });
+});
 
 events.on("form-selected", function (evt) {
   if (evt.currentTarget.dataset.index) {

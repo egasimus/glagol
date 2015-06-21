@@ -182,11 +182,50 @@ function getForms (filename) {
 
 // event handlers
 
+document.addEventListener('keypress', function (evt) {
+  switch (evt.which) {
+    case 97:  // a
+      events.emit('add-form');
+      break;
+    case 101: // e
+      events.emit('edit-form');
+      break;
+    case 106: // j
+      events.emit('next-form');
+      break;
+    case 107: // k
+      events.emit('previous-form');
+      break;
+    default:
+      console.log('keypress', evt.which);
+  }
+});
+
 events.on("file-selected", function (evt) {
   if (evt.currentTarget.dataset.filename) {
     updateState({ activeFile: evt.currentTarget.dataset.filename });
   }
 });
+
+events.on("next-form", function () {
+  var s      = state()
+    , file   = s.files[s.activeFile]
+    , active = parseInt(file.activeForm);
+  if (active || active === 0) {
+    file.activeForm = active + 1;
+    if (file.activeForm >= file.forms.length) file.activeForm = 0;
+  } else {
+    file.activeForm = 0;
+  }
+  updateState({});
+})
+
+events.on("previous-form", function () {
+  var s     = state()
+    , file  = s.files[s.activeFile];
+  file.activeForm = (parseInt(file.activeForm) || file.forms.length) - 1;
+  updateState({});
+})
 
 events.on("form-selected", function (evt) {
   if (evt.currentTarget.dataset.index) {

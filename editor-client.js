@@ -46,9 +46,7 @@ var templates = {
       if (s.files) {
         body.push(templates.tabBar());
         body.push(templates.toolBar());
-        console.log(s.files, s.activeFile, s.files[s.activeFile]);
         (s.files[s.activeFile].forms || []).map(function (f, i) {
-          console.log(s.activeFile, i, f.metadata.source)
           body.push(templates.form(f, i));
         })
       } else {

@@ -34,8 +34,8 @@ function loadFile (file) {
 }
 
 function executeFile (key) {
-  process.nextTick(function(){
-    vm.runInContext(files[key].compiled.code, runtime.makeContext(key));
+  process.nextTick(function() {
+    vm.runInContext(files[key].compiled.output.code, runtime.makeContext(key));
   })
 }
 

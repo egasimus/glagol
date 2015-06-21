@@ -90,10 +90,12 @@ var templates = {
         { dataset: { index: i }
         , onclick: emit('form-selected') },
         [ h('label', f.type)
-        , f.name ? h('.name', f.name)
-                 : h('input.name.focus-me', { placeholder: 'enter name...' })
-        , f.body ? h('.code', '  ' + f.body)
-                   : undefined ]);
+        , f.name
+            ? h('.name', f.name)
+            : h('input.name.focus-me', { placeholder: 'enter name...' })
+        , f.type === 'use'
+            ? undefined
+            : new (require('./editor-widget.js'))(f.body ? ('  ' + f.body) : '') ]);
     },
 
 };
@@ -172,6 +174,8 @@ keymap =
     { 13: 'go-to-code'    // <Enter>
     , 27: 'blur-form'     // <Esc>
     }
+  , code:
+    { 13: 'blur-form' }   // <Esc>
 }
 
 document.addEventListener('keydown', function (evt) {
@@ -186,9 +190,6 @@ document.addEventListener('keydown', function (evt) {
       mode = 'code';
     }
   }
-  //} else if (document.activeElement.parentElement.classList.contains('type-new')) {
-    //mode = 'newform';
-  //}
   if (mode && keymap[mode] && keymap[mode][evt.which]) {
     evt.preventDefault();
     events.emit(keymap[mode][evt.which])
@@ -274,9 +275,12 @@ events.on("delete-form", function (evt) {
 });
 
 events.on("go-to-code", function (evt) {
-  var s = state();
-  console.log(s.files[s.activeFile]);
-  console.log(document.getElementsByClassName('form')[s.files[s.activeFile].activeForm]);
+  var s    = state()
+    , f    = document.getElementsByClassName('form')[s.files[s.activeFile].activeForm || 0]
+    , name = f.getElementsByClassName('name')[0]
+    , code = f.getElementsByClassName('code')[0];
+  console.log(f.getElementsByClassName('code')[0]);
+  f.getElementsByClassName('code')[0].focus();
 })
 
 events.on("execute-file", function (evt) {

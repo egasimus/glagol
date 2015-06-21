@@ -316,19 +316,6 @@ events.on("execute-file", function (evt) {
   }).done();
 })
 
-function onFormKeyDown (f, ed, evt) {
-  if (evt.ctrlKey && evt.which === 13) {        // C-<Enter>
-    updateForm(f, ed.innerText);
-  } else if (evt.ctrlKey && evt.which === 83) { // C-S
-    evt.preventDefault();
-    saveSession();
-  } else if (evt.keyCode === 9) {
-    evt.preventDefault();
-  } else if (evt.keyCode === 27) {
-    ed.blur();
-  }
-}
-
 
 // server commands
 function updateForm (f, val) {

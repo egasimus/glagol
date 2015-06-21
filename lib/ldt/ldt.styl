@@ -7,7 +7,6 @@
 /* settings you can play with */
 
 .ldt, .ldt label {
-  padding: 4px;
 }
 
 .ldt, .ldt pre, .ldt textarea {
@@ -17,6 +16,7 @@
   color: black;
   margin: 0;
   padding: 0;
+  overflow: hidden;
 }
 
 .ldt textarea {
@@ -29,7 +29,6 @@
 /* settings you shouldn't play with unless you have a good reason */
 
 .ldt {
-  overflow: auto;
   position: relative;
 }
 
@@ -60,7 +59,7 @@
   resize: none;
   min-width: 100%;
   min-height: 100%;
-  overflow: hidden;
+  //overflow: hidden;
   /* IE doesn't support rgba texarea, so use vendor specific alpha filter */
   //filter: alpha(opacity = 20);
 }

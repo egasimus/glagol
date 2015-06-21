@@ -39,6 +39,31 @@ function executeFile (key) {
   })
 }
 
+function getMetaForms (file) {
+  return files[file].compiled.forms.map(metaForm);
+}
+
+function metaForm (f) {
+  var type, name, body;
+  if (f.head.name === 'defn') {
+    type = 'fn';
+    name = f.tail.head.name;
+    body = f.tail.tail.head.metadata.source;
+  } else if (f.head.name === 'def') {
+    if (f.metadata.source.indexOf('use ') === 0) {
+      type = 'use';
+      name = f.tail.head.name;
+    } else {
+      type = 'atom';
+      name = f.tail.head.name;
+      body = f.tail.tail.head.tail.head.metadata ?
+        f.tail.tail.head.tail.head.metadata.source :
+        f.tail.tail.head.tail.head
+    }
+  }
+  return { type: type, name: name, body: body };
+}
+
 function startServer () {
   web.server( { name: "editor"
               , port: 4194
@@ -53,7 +78,7 @@ function startServer () {
 
     web.endpoint(
       '/forms', function (req, res) {
-        sendJSON(req, res, files[url.parse(req.url, true).query.file].compiled.forms);
+        sendJSON(req, res, getMetaForms(url.parse(req.url, true).query.file));
       }),
 
     web.endpoint(

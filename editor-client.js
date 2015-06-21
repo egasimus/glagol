@@ -85,55 +85,14 @@ var templates = {
     function templateForm (f, i) {
       var s      = state()
         , active = i == s.files[s.activeFile].activeForm;
-      return (
-        f.head.name === 'def'
-          ? (f.metadata.source.indexOf("use ") === 0)
-            ? templates.use
-            : templates.def
-          : f.head.name === 'defn'
-            ? templates.fn
-            : templates.wtf)(f, active, i);
-    },
-
-  use:
-    function templateUse (f, active, i) {
-      return h('div.form.use' + (active ? '.active' : ''),
+      return h(
+        'div.form.type-' + f.type + (active ? '.active' : ''),
         { dataset: { index: i }
-        , onclick: emit('form-selected')},
-        [ h('label', 'use')
-        , h('.name', f.tail.head.name) ]);
+        , onclick: emit('form-selected') },
+        [ h('label', f.type)
+        , h('.name', f.name)
+        , f.body ? h('.code', f.body) : undefined ]);
     },
-
-  def:
-    function templateDef (f, active, i) {
-      var src = f.tail.tail.head.tail.head.metadata ?
-        f.tail.tail.head.tail.head.metadata.source :
-        f.tail.tail.head.tail.head
-      return h('div.form.def' + (active ? '.active' : ''),
-        { dataset: { index: i }
-        , onclick: emit('form-selected')},
-        [ h('.name', f.tail.head.name)
-        , h('.code',
-            {}, //{ contentEditable: active ? 'true' : 'inherit' },
-            '  ' + src) ]);
-    },
-
-  fn:
-    function templateFn (f, active, i) {
-      return h('div.form.defn' + (active ? '.active' : ''),
-        { dataset: { index: i }
-        , onclick: emit('form-selected')},
-        [ h('label', 'fn')
-        , h('.name', f.tail.head.name)
-        , h('.code',
-            {}, //{ contentEditable: active ? 'true' : 'inherit' },
-            '  ' + f.tail.tail.head.metadata.source) ]);
-    },
-
-  wtf:
-    function templateWtf (f, active, i) {
-      return h('.wtf', JSON.stringify(arguments))
-    }
 
 };
 
@@ -270,8 +229,7 @@ events.on("add-form", function () {
     , file  = files[s.activeFile]
     , forms = file.forms
     , i     = file.activeForm;
-  file.forms.splice(i, 0,
-    {head: {}, name: "foo"});
+  file.forms.splice(i, 0, { head: {}, name: "foo" });
   //s.files[s.activeFile].forms.splice(i, {foo: 'bar'});
   updateState({ files: files });
 })

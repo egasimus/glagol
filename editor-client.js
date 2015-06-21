@@ -40,12 +40,20 @@ var templates = {
 
   body:
     function templateBody () {
-      var s = state();
-      var bodyContents = s.files ? [ templates.bar() ] : [];
-      if (s.forms) s.forms.map(function (f, i) {
-        bodyContents.push(templates.form(f, i))
-      });
-      return bodyContents;
+      var s    = state()
+        , body = [];
+
+      if (s.files) {
+        body.push(templates.bar());
+        console.log(s.files, s.activeFile, s.files[s.activeFile]);
+        (s.files[s.activeFile].forms || []).map(function (f, i) {
+          body.push(templates.form(f, i));
+        })
+      } else {
+        body = [];
+      }
+
+      return body;
     },
 
   bar:
@@ -57,12 +65,12 @@ var templates = {
     },
 
   barFile:
-    function templateBarFile (file, i) {
+    function templateBarFile (filename, i) {
       return h(
-        '.bar-file' + (state().activeFile === file ? '.active' : ''),
-        { dataset: { index: i }
+        '.bar-file' + (state().activeFile == filename ? '.active' : ''),
+        { dataset: { filename: filename }
         , onclick: emit('file-selected') },
-        file);
+        filename);
     },
 
   form:
@@ -140,10 +148,13 @@ function init () {
 function getFiles () {
   var deferred = Q.defer();
   http.get({ path: '/files' }, handleStreamingResponse(function (data) {
-    var files = {};
-    JSON.parse(data).map(function (filename) { files[filename] = {} });
-    updateState({ files: files });
-    deferred.resolve(Object.keys(files));
+    var filenames = JSON.parse(data)
+      , files     = {};
+    filenames.map(function (filename) { files[filename] = {} });
+    updateState(
+      { files:      files
+      , activeFile: (filenames.length > 0) ? filenames[0] : null });
+    deferred.resolve(filenames);
   }));
   return deferred.promise;
 }
@@ -164,9 +175,8 @@ function getForms (filename) {
 // event handlers
 
 events.on("file-selected", function (evt) {
-  if (evt.currentTarget.dataset.index) {
-    updateState({ activeFile: state().files[evt.currentTarget.dataset.index] });
-    //getForms(state().activeFile).done();
+  if (evt.currentTarget.dataset.filename) {
+    updateState({ activeFile: evt.currentTarget.dataset.filename });
   }
 });
 

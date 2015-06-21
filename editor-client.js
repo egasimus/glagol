@@ -6,6 +6,7 @@ var h         = require('virtual-dom/h')
 // state
 var state = require('observ')({});
 function updateState (changes) {
+  changes = changes || {};
   var snapshot = state();
   Object.keys(changes).map(function (k) {
     snapshot[k] = changes[k];
@@ -91,7 +92,7 @@ var templates = {
             : templates.def
           : f.head.name === 'defn'
             ? templates.fn
-            : null)(f, active, i);
+            : templates.wtf)(f, active, i);
     },
 
   use:
@@ -127,6 +128,11 @@ var templates = {
         , h('.code',
             {}, //{ contentEditable: active ? 'true' : 'inherit' },
             '  ' + f.tail.tail.head.metadata.source) ]);
+    },
+
+  wtf:
+    function templateWtf (f, active, i) {
+      return h('.wtf', JSON.stringify(arguments))
     }
 
 };
@@ -248,14 +254,26 @@ events.on("next-form", function () {
   } else {
     file.activeForm = 0;
   }
-  updateState({});
+  updateState();
 })
 
 events.on("previous-form", function () {
   var s     = state()
     , file  = s.files[s.activeFile];
   file.activeForm = (parseInt(file.activeForm) || file.forms.length) - 1;
-  updateState({});
+  updateState();
+})
+
+events.on("add-form", function () {
+  var s     = state()
+    , files = s.files
+    , file  = files[s.activeFile]
+    , forms = file.forms
+    , i     = file.activeForm;
+  file.forms.splice(i, 0,
+    {head: {}, name: "foo"});
+  //s.files[s.activeFile].forms.splice(i, {foo: 'bar'});
+  updateState({ files: files });
 })
 
 events.on("form-selected", function (evt) {

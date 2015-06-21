@@ -184,17 +184,32 @@ function getForms (filename) {
 
 document.addEventListener('keypress', function (evt) {
   switch (evt.which) {
+    case 13:  // <Return>
+      events.emit('execute-form');
+      break;
     case 97:  // a
       events.emit('add-form');
       break;
+    case 99:  // c
+      events.emit('call-form');
+      break;
+    case 100: // d
+      events.emit('delete-form');
+      break;
     case 101: // e
       events.emit('edit-form');
+      break;
+    case 104: // h
+      events.emit('previous-tab');
       break;
     case 106: // j
       events.emit('next-form');
       break;
     case 107: // k
       events.emit('previous-form');
+      break;
+    case 108: // l
+      events.emit('next-tab');
       break;
     default:
       console.log('keypress', evt.which);
@@ -205,6 +220,22 @@ events.on("file-selected", function (evt) {
   if (evt.currentTarget.dataset.filename) {
     updateState({ activeFile: evt.currentTarget.dataset.filename });
   }
+});
+
+events.on("next-tab", function () {
+  var s     = state()
+    , files = Object.keys(s.files)
+    , next  = files.indexOf(s.activeFile) + 1;
+  if (next >= files.length) next = 0;
+  updateState({ activeFile: files[next] });
+});
+
+events.on("previous-tab", function () {
+  var s     = state()
+    , files = Object.keys(s.files)
+    , next  = files.indexOf(s.activeFile) - 1;
+  if (next < 0) next = files.length - 1;
+  updateState({ activeFile: files[next] });
 });
 
 events.on("next-form", function () {

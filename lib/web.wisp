@@ -1,5 +1,6 @@
 (def ^:private colors     (require "colors/safe"))
 (def ^:private browserify (require "browserify"))
+(def ^:private path       (require "path"))
 (def ^:private runtime    (require "./runtime.js"))
 (def ^:private send-html  (require "send-data/html"))
 (def ^:private send-json  (require "send-data/json"))
@@ -67,7 +68,7 @@
         handler (fn [req res] (send-html req res { :body bundle }))
         bundled (fn [err out]
                   (if err
-                    (log "error:" err)
+                    (log (colors.red "error") err)
                     (set! bundle (template out))))]
     (bundler.require "./runtime.js" { :expose "runtime" })
     (bundler.transform "./node_modules/stylify")
@@ -77,8 +78,10 @@
     (log "bundling" (colors.green script))
     (bundler.bundle bundled)
     (watcher.on "update" (fn [ids]
-      (log "rebuilding" (colors.green script) "bundle because of" (colors.blue ids))
-      (bundler.bundle bundled)))
+      (let [relative-ids (ids.map (fn [id] (path.relative process.cwd id)))]
+        (log "rebuilding" (colors.green script)
+             "bundle because of" (colors.blue relative-ids))
+        (bundler.bundle bundled))))
     (endpoint route handler (fn [] (watcher.close)))))
 
 (defn variable [route atom-instance]

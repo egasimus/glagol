@@ -94,7 +94,7 @@ var templates = {
         [ h('label', f.type)
         , h('input.name' + (nameFocus ? '.focus-me' : ''),
             { placeholder: 'enter name...'
-            , onblur:      emit('blur-form')
+            , onblur:      emit('exit-mode')
             , onfocus:     emit('rename-form')
             , value:       f.name || ''})
         , f.type === 'use'
@@ -115,7 +115,6 @@ state(function updateView () {
   view.tree = newTree;
 
   var focused = false;
-  console.log(document.getElementsByClassName('focus-me')[0])
   Array.prototype.map.call(document.getElementsByClassName('focus-me'), function (el) {
     if (!focused) { el.focus(); focused = true }
     el.classList.remove('focus-me');
@@ -180,7 +179,7 @@ keymap =
     , 87: 'save-file'     // w
     }
   , rename:
-    { 13: 'go-to-code'    // <Enter>
+    { 13: 'end-rename'    // <Enter>
     , 27: 'exit-mode'     // <Esc>
     }
   , edit:
@@ -193,7 +192,7 @@ document.addEventListener('keydown', function (evt) {
     , mode   = state().mode;
   if (mode && keymap[mode] && keymap[mode][evt.which]) {
     evt.preventDefault();
-    events.emit(keymap[mode][evt.which])
+    events.emit(keymap[mode][evt.which], evt);
   } else {
     console.log('keypress', evt.which);
   }
@@ -206,7 +205,7 @@ events.on("file-selected", function (evt) {
   }
 });
 
-events.on("save-file", function (evt) {
+events.on("save-file", function () {
   var s = state();
   console.log("Saving file", s.activeFile);
   var source = "";
@@ -269,25 +268,26 @@ events.on("previous-form", function () {
   updateState();
 });
 
-events.on("add-atom", function () {
+events.on("add-atom", function (evt) {
+  addForm('atom', evt.shiftKey);
+});
+
+events.on("add-fn", function (evt) {
+  addForm('fn', evt.shiftKey);
+});
+
+function addForm(type, above) {
   var s     = state()
     , files = s.files
     , file  = files[s.activeFile]
-  file.forms.splice(file.activeForm + 1, 0, { type: 'atom', name: '', body: '' });
-  file.activeForm += 1;
+    , index = above ? file.activeForm ? file.activeForm     : 0
+                    : file.activeForm ? file.activeForm + 1 : file.forms.length;
+  file.forms.splice(index, 0, { type: type, isNew: true });
+  file.activeForm = index;
   updateState({ files: files, mode: 'rename' });
-});
+}
 
-events.on("add-fn", function () {
-  var s     = state()
-    , files = s.files
-    , file  = files[s.activeFile]
-  file.forms.splice(file.activeForm + 1, 0, { type: 'fn' });
-  file.activeForm += 1;
-  updateState({ files: files, mode: 'rename' });
-});
-
-events.on("delete-form", function (evt) {
+events.on("delete-form", function () {
   var s     = state()
     , files = s.files
     , file  = files[s.activeFile]
@@ -298,30 +298,40 @@ events.on("delete-form", function (evt) {
 events.on("exit-mode", function () {
   document.activeElement.blur();
   updateState({ mode: 'navigate' });
-})
+});
 
 events.on("edit-form", function () {
   updateState({ mode: 'edit' });
-})
+});
 
 events.on("rename-form", function () {
   updateState({ mode: 'rename' });
-})
+});
 
-events.on("go-to-code", function (evt) {
+events.on("end-rename", function () {
+  var s = state()
+    , f = s.files[s.activeFile].forms[s.files[s.activeFile].activeForm];
+  if (f.isNew) {
+    events.emit("edit-form");
+  } else {
+    events.emit("exit-mode");
+  }
+});
+
+events.on("go-to-code", function () {
   var s    = state()
     , f    = document.getElementsByClassName('form')[s.files[s.activeFile].activeForm || 0]
     , name = f.getElementsByClassName('name')[0]
     , code = f.getElementsByClassName('code')[0];
   //console.log(f.getElementsByClassName('code')[0]);
   //f.getElementsByClassName('code')[0].childNodes[1].childNodes[0].focus();
-})
+});
 
-events.on("execute-file", function (evt) {
+events.on("execute-file", function () {
   post('/run').then(function (data) {
     console.log(JSON.parse(data));
   }).done();
-})
+});
 
 
 // server commands

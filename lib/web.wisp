@@ -65,7 +65,10 @@
         bundler (browserify options)
         watcher (watchify bundler)
         handler (fn [req res] (send-html req res { :body bundle }))
-        bundled (fn [err out] (if err (throw err)) (set! bundle (template out)))]
+        bundled (fn [err out]
+                  (if err
+                    (log "error:" err)
+                    (set! bundle (template out))))]
     (bundler.require "./runtime.js" { :expose "runtime" })
     (bundler.transform "./node_modules/stylify")
     (bundler.transform wispify)

@@ -1,6 +1,7 @@
-var h         = require('virtual-dom/h')
-  , http      = require('http-browserify')
-  , Q         = require('q');
+var h    = require('virtual-dom/h')
+  , http = require('http-browserify')
+  , Q    = require('q')
+  , util = require('./util.js');
 
 
 // state
@@ -12,6 +13,12 @@ function updateState (changes) {
     snapshot[k] = changes[k];
   });
   state.set(snapshot);
+}
+function getActiveForm (snapshot) {
+  var file  = snapshot.files[snapshot.activeFile]
+    , index = file.activeForm
+    , form  = file.forms[index];
+  return form;
 }
 
 
@@ -94,7 +101,7 @@ var templates = {
         [ h('label', f.type)
         , h('input.name' + (nameFocus ? '.focus-me' : ''),
             { placeholder: 'enter name...'
-            , onblur:      emit('exit-mode')
+            , onblur:      emit('name-blurred', f)
             , onfocus:     emit('rename-form')
             , value:       f.name || ''})
         , f.type === 'use'
@@ -130,12 +137,12 @@ function init () {
   view.node = require('virtual-dom/create-element')(view.tree);
   document.replaceChild(view.node, document.firstChild);
   require('insert-css')(require('./editor.styl'));
-  getFiles().then(concurrently(getForms)).done();
+  getFiles().then(util.concurrently(getForms)).done();
 }
 
 function getFiles () {
   var deferred = Q.defer();
-  http.get({ path: '/files' }, handleStreamingResponse(function (data) {
+  http.get({ path: '/files' }, util.handleStreamingResponse(function (data) {
     var filenames = JSON.parse(data)
       , files     = {};
     filenames.map(function (filename) { files[filename] = {} });
@@ -149,7 +156,7 @@ function getFiles () {
 
 function getForms (filename) {
   var deferred = Q.defer();
-  http.get({ path: '/forms?file=' + filename }, handleStreamingResponse(function (data) {
+  http.get({ path: '/forms?file=' + filename }, util.handleStreamingResponse(function (data) {
     var forms = JSON.parse(data)
       , files = state().files;
     files[filename].forms = forms;
@@ -219,7 +226,7 @@ events.on("save-file", function () {
       source += f.name + "\n  " + f.body;
     }
   })
-  post('/save?file=' + s.activeFile, source).then(function (response) {
+  util.post('/save?file=' + s.activeFile, source).then(function (response) {
     console.log("Saved", s.activeFile, ":", response);
   }).done()
 })
@@ -296,6 +303,11 @@ events.on("delete-form", function () {
 });
 
 events.on("exit-mode", function () {
+  var s = state()
+    , f = getActiveForm(s);
+  if (s.mode === 'edit') {
+    f.body = document.activeElement.value;
+  }
   document.activeElement.blur();
   updateState({ mode: 'navigate' });
 });
@@ -309,26 +321,19 @@ events.on("rename-form", function () {
 });
 
 events.on("end-rename", function () {
-  var s = state()
-    , f = s.files[s.activeFile].forms[s.files[s.activeFile].activeForm];
+  var f = getActiveForm(state());
+  f.name = document.activeElement.value;
   if (f.isNew) {
+    document.activeElement.blur();
+    delete f.isNew;
     events.emit("edit-form");
   } else {
     events.emit("exit-mode");
   }
 });
 
-events.on("go-to-code", function () {
-  var s    = state()
-    , f    = document.getElementsByClassName('form')[s.files[s.activeFile].activeForm || 0]
-    , name = f.getElementsByClassName('name')[0]
-    , code = f.getElementsByClassName('code')[0];
-  //console.log(f.getElementsByClassName('code')[0]);
-  //f.getElementsByClassName('code')[0].childNodes[1].childNodes[0].focus();
-});
-
 events.on("execute-file", function () {
-  post('/run').then(function (data) {
+  util.post('/run').then(function (data) {
     console.log(JSON.parse(data));
   }).done();
 });
@@ -344,41 +349,13 @@ function updateForm (f, val) {
 }
 
 function saveSession () {
-  post('/save').then(function (data) {
+  util.post('/save').then(function (data) {
     console.log(JSON.parse(data));
   }).done();
 }
 
 function executeCode(f, code) {
-  post('/repl', code).then(function (data) {
+  util.post('/repl', code).then(function (data) {
     console.log(JSON.parse(data));
   }).done();
-}
-
-
-// utilities
-function handleStreamingResponse (cb) {
-  return function (res) {
-    var data = '';
-    res.on('data', function (buf) { data += buf; });
-    res.on('end',  function ()    { cb(data);    });
-  }
-}
-
-function post (url, data) {
-  var deferred = Q.defer();
-  var req = http.request(
-    { method: 'POST'
-    , path:   url },
-    handleStreamingResponse(function (data) {
-      deferred.resolve(data);
-    }));
-  req.end(data || "");
-  return deferred.promise;
-}
-
-function concurrently (cb) {
-  return function runConcurrently (args) {
-    return Q.allSettled(args.map(cb));
-  }
 }

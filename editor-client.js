@@ -4,7 +4,7 @@ var h         = require('virtual-dom/h')
 
 
 // state
-var state = require('observ')({});
+var state = require('observ')({ mode: 'navigate' });
 function updateState (changes) {
   changes = changes || {};
   var snapshot = state();
@@ -76,26 +76,31 @@ var templates = {
 
   toolBar:
     function templateToolBar () {
-      return h( '.toolbar', [
-        h( '.toolbar-button', { onclick: emit('execute-file') }, "execute file" )
-      ] )
+      return h( '.toolbar',
+        [ h( '.toolbar-button', { }, state().mode )
+        , h( '.toolbar-button', { onclick: emit('execute-file') }, "execute file" ) ] )
     },
 
   form:
     function templateForm (f, i) {
-      var s      = state()
-        , active = i == s.files[s.activeFile].activeForm;
+      var s         = state()
+        , active    = i == s.files[s.activeFile].activeForm
+        , nameFocus = s.mode === 'rename' && active
+        , bodyFocus = s.mode === 'edit' && active;
       return h(
         'div.form.type-' + f.type + (active ? '.active' : ''),
         { dataset: { index: i }
         , onclick: emit('form-selected') },
         [ h('label', f.type)
-        , f.name
-            ? h('.name', f.name)
-            : h('input.name.focus-me', { placeholder: 'enter name...' })
+        , h('input.name' + (nameFocus ? '.focus-me' : ''),
+            { placeholder: 'enter name...'
+            , onblur:      emit('blur-form')
+            , onfocus:     emit('rename-form')
+            , value:       f.name || ''})
         , f.type === 'use'
             ? undefined
-            : new (require('./editor-widget.js'))(f.body ? ('  ' + f.body) : '') ]);
+            : new (require('./editor-widget.js'))(
+                (f.body ? ('  ' + f.body) : ''), bodyFocus) ]);
     },
 
 };
@@ -110,8 +115,9 @@ state(function updateView () {
   view.tree = newTree;
 
   var focused = false;
+  console.log(document.getElementsByClassName('focus-me')[0])
   Array.prototype.map.call(document.getElementsByClassName('focus-me'), function (el) {
-    if (!focused) { el.focus(); focused = true; }
+    if (!focused) { el.focus(); focused = true }
     el.classList.remove('focus-me');
   });
 })
@@ -170,29 +176,21 @@ keymap =
     , 75: 'previous-form' // k
     , 76: 'next-tab'      // l
     , 77: 'move-form'     // m
+    , 82: 'rename-form'   // r
     , 87: 'save-file'     // w
     }
-  , name:
+  , rename:
     { 13: 'go-to-code'    // <Enter>
-    , 27: 'blur-form'     // <Esc>
+    , 27: 'exit-mode'     // <Esc>
     }
-  , code:
+  , edit:
     {  9: 'insert-tab'    // <Tab>
-    , 27: 'blur-form' }   // <Esc>
+    , 27: 'exit-mode' }   // <Esc>
 }
 
 document.addEventListener('keydown', function (evt) {
   var active = document.activeElement
-    , mode   = null;
-  if (active === document.body) {
-    mode = 'navigate';
-  } else if (active.parentElement.classList.contains('form')
-         &&  active.classList.contains('name')) {
-    mode = 'name';
-  } else if (active.tagName === "TEXTAREA"
-         &&  active.parentElement.parentElement.classList.contains('code')) {
-    mode = 'code';
-  }
+    , mode   = state().mode;
   if (mode && keymap[mode] && keymap[mode][evt.which]) {
     evt.preventDefault();
     events.emit(keymap[mode][evt.which])
@@ -275,9 +273,9 @@ events.on("add-atom", function () {
   var s     = state()
     , files = s.files
     , file  = files[s.activeFile]
-  file.forms.splice(file.activeForm + 1, 0, { type: 'atom' });
+  file.forms.splice(file.activeForm + 1, 0, { type: 'atom', name: '', body: '' });
   file.activeForm += 1;
-  updateState({ files: files });
+  updateState({ files: files, mode: 'rename' });
 });
 
 events.on("add-fn", function () {
@@ -286,7 +284,7 @@ events.on("add-fn", function () {
     , file  = files[s.activeFile]
   file.forms.splice(file.activeForm + 1, 0, { type: 'fn' });
   file.activeForm += 1;
-  updateState({ files: files });
+  updateState({ files: files, mode: 'rename' });
 });
 
 events.on("delete-form", function (evt) {
@@ -297,8 +295,17 @@ events.on("delete-form", function (evt) {
   updateState({ files: files });
 });
 
-events.on("blur-form", function (evt) {
+events.on("exit-mode", function () {
   document.activeElement.blur();
+  updateState({ mode: 'navigate' });
+})
+
+events.on("edit-form", function () {
+  updateState({ mode: 'edit' });
+})
+
+events.on("rename-form", function () {
+  updateState({ mode: 'rename' });
 })
 
 events.on("go-to-code", function (evt) {
@@ -306,8 +313,8 @@ events.on("go-to-code", function (evt) {
     , f    = document.getElementsByClassName('form')[s.files[s.activeFile].activeForm || 0]
     , name = f.getElementsByClassName('name')[0]
     , code = f.getElementsByClassName('code')[0];
-  console.log(f.getElementsByClassName('code')[0]);
-  f.getElementsByClassName('code')[0].childNodes[1].childNodes[0].focus();
+  //console.log(f.getElementsByClassName('code')[0]);
+  //f.getElementsByClassName('code')[0].childNodes[1].childNodes[0].focus();
 })
 
 events.on("execute-file", function (evt) {

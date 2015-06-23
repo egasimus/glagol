@@ -9,16 +9,22 @@
 (def ^:private watchify   (require "watchify"))
 
 (defn server [options & args]
-  (let [http     (require "http")
-        handler  (get-handler args)
-        srv      (http.create-server handler)
-        deferred (Q.defer)
-        descript { :destroy (fn [cb] (srv.close cb))
-                   :started deferred.promise }]
-    (log (str
-      "server " (if options.name (str (colors.green options.name) " ") "")
-      "listening on " (colors.green options.port)))
-    (srv.listen options.port (fn [] (deferred.resolve descript)))
+  (let [http      (require "http")
+        name      (if options.name (str (colors.green options.name) " ") "")
+        handler   (get-handler args)
+        srv       (http.create-server handler)
+        started   (Q.defer)
+        destroy   (fn [] (let [deferred (Q.defer)]
+                    (srv.close (fn [err]
+                      (if err (deferred.reject err)
+                          (do (log (str "closed server " name
+                                        "on " (colors.green options.port)))
+                              (deferred.resolve)))))
+                    deferred.promise))
+        descript  { :destroy destroy
+                    :started started.promise }]
+    (log (str "server " name "listening on " (colors.green options.port)))
+    (srv.listen options.port (fn [] (started.resolve descript)))
     descript))
 
 (defn- get-handler [args]

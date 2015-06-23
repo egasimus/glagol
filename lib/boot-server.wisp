@@ -28,8 +28,7 @@
               (log "started" (colors.green shortname)))))
         restart
           (fn []
-            (session.stop)
-            (start))
+            (.then (session.stop) start))
 
         dedupe
           nil

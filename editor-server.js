@@ -32,12 +32,9 @@ module.exports = {
     ).then(function (args) {
       server = args[0];
       return args[0];
-    });
-  },
-  stop:  function stop () {
-    return server.destroy();
-  }
-}
+    }); },
+  stop: function stop () {
+    return server.destroy(); } };
 
 function loadFile (file) {
   var defer = Q.defer();
@@ -58,10 +55,6 @@ function executeFile (key) {
   })
 }
 
-function getMetaForms (file) {
-  return files[file].compiled.forms.map(metaForm);
-}
-
 function indent (code) {
   return code;
 }
@@ -73,6 +66,10 @@ function unindent (code) {
     lines[i] = lines[i].substr(2);
   }
   return lines.join("\n");
+}
+
+function getMetaForms (file) {
+  return files[file].compiled.forms.map(metaForm);
 }
 
 function metaForm (f) {

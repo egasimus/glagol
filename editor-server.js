@@ -32,9 +32,23 @@ module.exports = {
     ).then(function (args) {
       server = args[0];
       return args[0];
-    }); },
+    });
+  },
   stop: function stop () {
-    return server.destroy(); } };
+    var cleanup = [];
+    Object.keys(files).map(function(i) {
+      var context = files[i].context;
+      if (context) Object.keys(context).map(function(j) {
+        var instance = context[j];
+        if (context[j].type === "Atom") {
+          cleanup.push(instance.destroy());
+        }
+      });
+    });
+    cleanup.push(server.destroy());
+    return Q.all(cleanup);
+  }
+};
 
 function loadFile (file) {
   var defer = Q.defer();
@@ -51,8 +65,9 @@ function loadFile (file) {
 
 function executeFile (key) {
   process.nextTick(function() {
-    vm.runInContext(files[key].compiled.output.code, runtime.makeContext(key));
-  })
+    var context = files[key].context = runtime.makeContext(key);
+    vm.runInContext(files[key].compiled.output.code, context);
+  });
 }
 
 function indent (code) {

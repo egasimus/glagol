@@ -1,5 +1,7 @@
 require('insert-css')(require('./lib/ldt/ldt.styl'));
 
+var h = require('virtual-dom/h');
+
 var parser = new (require('./lib/ldt/parser.js'))(
   { whitespace: /\s+/,
     comment: /\/\/[^\r\n]*/,
@@ -13,10 +15,9 @@ var EditorWidget = module.exports = function EditorWidget (code, focus) {
 EditorWidget.prototype.type = "Widget";
 
 EditorWidget.prototype.init = function () {
-  var textarea = document.createElement('textarea');
-  textarea.wrap  = 'off';
-  textarea.value = this.code;
-  textarea.classList.add("code");
+  var textarea = require('virtual-dom/create-element')(h('textarea.code',
+    { wrap: 'off'
+    , value: this.code }));
 
   this.decorator = new (require('./lib/ldt/textarea.js'))(textarea, parser);
   if (this.focus)

@@ -1,5 +1,10 @@
 (ns boot (:require [wisp.runtime :refer [= and or str]]))
 
+(def ^:private colors (require "colors/safe"))
+(def ^:private path   (require "path"))
+
+(set! log.from "boot")
+
 ;; bootstrapper.
 ;; enables live reloading of server-side process.
 
@@ -8,16 +13,19 @@
     (let
       [ filename
           session-module.filename
+        shortname
+          (path.relative (process.cwd) filename)
 
         session
           nil
         start
           (fn []
-            (log "Loading session" filename)
+            (log "loading" (colors.green shortname))
             (delete (aget require.cache filename))
             (set! session (require filename))
-            (log "Starting session" filename "\n")
-            (session.start))
+            (log "starting" (colors.green shortname))
+            (.then (session.start) (fn []
+              (log "started" (colors.green shortname)))))
         restart
           (fn []
             (session.stop)
@@ -32,8 +40,8 @@
                 (if (= dedupe stat.mtime) (set! duplicate true))
                 (set! dedupe stat.mtime)))
               (if (not duplicate) (do
-                (log "\n")
-                (if fname (log "File changed:" fname))
+                (if fname (log "\nchanged"
+                  (colors.blue (path.relative (process.cwd) fname))))
                 (restart)))))
 
         chok-opts

@@ -1,5 +1,7 @@
-// bootstrapper
+// wisp translator
 var runtime = require('./runtime.js');
+
+// bootstrapper
 runtime.requireWisp("./lib/boot-server.wisp", true, true)(module);
 
 // third-party deps
@@ -23,12 +25,17 @@ var log      = logging.getLogger('editor')
 // poehali!
 module.exports = {
   start: function start () {
-    server = startServer();
-    loadFile("sampler-server.wisp").then(executeFile);
-    loadFile("sampler-client.wisp");
+    return Q.all(
+      [ startServer()
+      , loadFile("sampler-server.wisp").then(executeFile)
+      , loadFile("sampler-client.wisp") ]
+    ).then(function (args) {
+      server = args[0];
+      return args[0];
+    });
   },
   stop:  function stop () {
-    server.destroy();
+    return server.destroy();
   }
 }
 

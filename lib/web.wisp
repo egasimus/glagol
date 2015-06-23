@@ -1,6 +1,7 @@
 (def ^:private colors     (require "colors/safe"))
 (def ^:private browserify (require "browserify"))
 (def ^:private path       (require "path"))
+(def ^:private Q          (require "q"))
 (def ^:private runtime    (require "./runtime.js"))
 (def ^:private send-html  (require "send-data/html"))
 (def ^:private send-json  (require "send-data/json"))
@@ -8,14 +9,17 @@
 (def ^:private watchify   (require "watchify"))
 
 (defn server [options & args]
-  (let [http    (require "http")
-        handler (get-handler args)
-        srv     (http.create-server handler)]
+  (let [http     (require "http")
+        handler  (get-handler args)
+        srv      (http.create-server handler)
+        deferred (Q.defer)
+        descript { :destroy (fn [cb] (srv.close cb))
+                   :started deferred.promise }]
     (log (str
       "server " (if options.name (str (colors.green options.name) " ") "")
       "listening on " (colors.green options.port)))
-    (srv.listen options.port)
-    { :destroy (fn [cb] (srv.close cb)) }))
+    (srv.listen options.port (fn [] (deferred.resolve descript)))
+    descript))
 
 (defn- get-handler [args]
   (fn [req res]

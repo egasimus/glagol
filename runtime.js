@@ -29,7 +29,10 @@ function importIntoContext (context, obj) {
   Object.keys(obj).map(function(k) { context[k] = obj[k] });
 }
 
-var makeContext = exports.makeContext = function makeContext (name) {
+var makeContext = exports.makeContext = function makeContext (name, elevated) {
+  var _require = function (module) { return require(module) };
+  _require.main = require.main;
+
   var context =
     { exports:      {}
     , __dirname:    __dirname
@@ -37,9 +40,14 @@ var makeContext = exports.makeContext = function makeContext (name) {
     , use:          requireWisp
     , process:      { cwd: process.cwd() }
     , isInstanceOf: function (a, b)   { return a instanceof b  }
-    , require:      function (module) { return require(module) }
+    , require:      _require
     , atom:         function (value)  { return makeAtom(value) }
     , deref:        function (atom)   { return atom.get()      } };
+
+  if (elevated) {
+    context.process = process;
+    context.require = require;
+  }
 
   [ wisp.ast
   , wisp.sequence
@@ -48,12 +56,12 @@ var makeContext = exports.makeContext = function makeContext (name) {
   return vm.createContext(context);
 }
 
-var requireWisp = exports.requireWisp = function requireWisp (name, raw) {
+var requireWisp = exports.requireWisp = function requireWisp (name, raw, elevated) {
   raw = raw || false;
-  var fullpath  = raw ? name : findModule(name)
-    , source    = fs.readFileSync(fullpath, { encoding: 'utf8' })
-    , output    = compileSource(source, fullpath, raw).output
-    , context   = makeContext(name);
+  var fullpath = raw ? name : findModule(name)
+    , source   = fs.readFileSync(fullpath, { encoding: 'utf8' })
+    , output   = compileSource(source, fullpath, raw).output
+    , context  = makeContext(name, elevated);
   vm.runInContext(output.code, context, { filename: name });
   return context.exports;
 }

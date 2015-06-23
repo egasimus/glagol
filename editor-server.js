@@ -1,3 +1,7 @@
+// bootstrapper
+var runtime = require('./runtime.js');
+runtime.requireWisp("./lib/boot-server.wisp", true, true)(module);
+
 // third-party deps
 var colors   = require('colors/safe')
   , fs       = require('fs')
@@ -13,12 +17,20 @@ var Q        = require('q')
 
 // state
 var log      = logging.getLogger('editor')
-  , files    = {};
+  , files    = {}
+  , server   = null;
 
 // poehali!
-startServer();
-loadFile("sampler-server.wisp").then(executeFile);
-loadFile("sampler-client.wisp");
+module.exports = {
+  start: function start () {
+    server = startServer();
+    loadFile("sampler-server.wisp").then(executeFile);
+    loadFile("sampler-client.wisp");
+  },
+  stop:  function stop () {
+    server.destroy();
+  }
+}
 
 function loadFile (file) {
   var defer = Q.defer();
@@ -41,6 +53,10 @@ function executeFile (key) {
 
 function getMetaForms (file) {
   return files[file].compiled.forms.map(metaForm);
+}
+
+function indent (code) {
+  return code;
 }
 
 function unindent (code) {
@@ -74,36 +90,33 @@ function metaForm (f) {
 }
 
 function startServer () {
-  web.server( { name: "editor"
-              , port: 4194
-              } ,
+  return web.server(
+    { name: "editor"
+    , port: 4194     } ,
+
     web.page(
       '/',      'editor-client.js'),
 
     web.endpoint(
       '/files', function (req, res) {
-        sendJSON(req, res, Object.keys(files));
-      }),
+        sendJSON(req, res, Object.keys(files)); }),
 
     web.endpoint(
       '/forms', function (req, res) {
-        sendJSON(req, res, getMetaForms(url.parse(req.url, true).query.file));
-      }),
+        sendJSON(req, res,
+          getMetaForms(url.parse(req.url, true).query.file)); }),
 
     web.endpoint(
       '/save',  function (req, res) {
-        console.log("saving")
         if (req.method === 'POST') {
           var data = '';
           req.on('data', function (buf) { data += buf });
           req.on('end', function () {
-            console.log(data);
-            fs.writeFile(url.parse(req.url, true).query.file, data, function (err) {
-              if (err) throw err;
-              sendJSON(req, res, "OK");
-            })
-          });
-        }}),
+            fs.writeFile(url.parse(req.url, true).query.file, indent(data),
+              function (err) {
+                if (err) throw err;
+                sendJSON(req, res, "OK");
+              }); }); }; }),
 
     web.endpoint(
       '/repl',  function (req, res) {
@@ -117,8 +130,5 @@ function startServer () {
               sendJSON(req, res, JSON.stringify(result || null));
             } catch (e) {
               log(colors.red('error'), e);
-              sendJSON(req, res, JSON.stringify(e));
-            }
-          });
-        }}));
+              sendJSON(req, res, JSON.stringify(e)); } }); }; }));
 }

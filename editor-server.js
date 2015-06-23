@@ -43,6 +43,15 @@ function getMetaForms (file) {
   return files[file].compiled.forms.map(metaForm);
 }
 
+function unindent (code) {
+  var lines = (code || "").split("\n");
+  if (lines.length < 2) return code;
+  for (var i = 1; i < lines.length; i++) {
+    lines[i] = lines[i].substr(2);
+  }
+  return lines.join("\n");
+}
+
 function metaForm (f) {
   var type, name, body;
   if (f.head.name === 'defn') {
@@ -61,7 +70,7 @@ function metaForm (f) {
         f.tail.tail.head.tail.head
     }
   }
-  return { type: type, name: name, body: body };
+  return { type: type, name: name, body: unindent(body) };
 }
 
 function startServer () {

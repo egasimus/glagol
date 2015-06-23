@@ -106,8 +106,7 @@ var templates = {
             , value:       f.name || ''})
         , f.type === 'use'
             ? undefined
-            : new (require('./editor-widget.js'))(
-                (f.body ? ('  ' + f.body) : ''), bodyFocus) ]);
+            : new (require('./editor-widget.js'))(f.body, bodyFocus) ]);
     },
 
 };

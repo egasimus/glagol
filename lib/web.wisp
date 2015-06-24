@@ -6,6 +6,7 @@
 (def ^:private send-html  (require "send-data/html"))
 (def ^:private send-json  (require "send-data/json"))
 (def ^:private through    (require "through"))
+(def ^:private url        (require "url"))
 (def ^:private watchify   (require "watchify"))
 
 (defn server [options & args]
@@ -71,15 +72,18 @@
     (through write end)))
 
 (defn page [route script]
-  (let [bundle  "<body>loading...!"
+  (let [bundle  "document.write('loading...!')"
         options (assoc watchify.args :debug false :extensions [".wisp"] :basedir __dirname)
         bundler (browserify options)
         watcher (watchify bundler)
-        handler (fn [req res] (send-html req res { :body bundle }))
+        handler (fn [req res]
+                  (let [parsed (url.parse req.url true)]
+                    (send-html req res { :body
+                      (if parsed.query.embed bundle (template bundle)) })))
         bundled (fn [err out]
                   (if err
                     (log (colors.red "error") err)
-                    (set! bundle (template out))))]
+                    (set! bundle out)))]
     (bundler.require "./runtime.js" { :expose "runtime" })
     (bundler.transform "./node_modules/stylify")
     (bundler.transform wispify)

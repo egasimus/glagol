@@ -1,5 +1,3 @@
-require('insert-css')(require('./lib/ldt/ldt.styl'));
-
 var h = require('virtual-dom/h');
 
 var parser = new (require('./lib/ldt/parser.js'))(

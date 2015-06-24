@@ -1,7 +1,8 @@
 var h    = require('virtual-dom/h')
   , http = require('http-browserify')
   , Q    = require('q')
-  , util = require('./util.js');
+  , util = require('./util.js')
+  , vdom = require('./lib/vdom.wisp');
 
 
 // state
@@ -41,8 +42,10 @@ var templates = {
                         : templates.body();
 
       return h( 'html'
-         , [ h( 'head'
-              , h( 'title', 'Editor' ) )
+         , [ h( 'head',
+              [ h( 'title', 'Editor'                      )
+              , h( 'style', require('./editor.styl')      )
+              , h( 'style', require('./lib/ldt/ldt.styl') ) ] )
            , h( 'body', bodyContents ) ] );
     },
 
@@ -113,31 +116,11 @@ var templates = {
 
 
 // view
-var view = {};
-state(function updateView () {
-  var newTree = templates.document()
-    , patches = require('virtual-dom/diff')(view.tree, newTree);
-  view.node = require('virtual-dom/patch')(view.node, patches);
-  view.tree = newTree;
-
-  var focused = false;
-  Array.prototype.map.call(document.getElementsByClassName('focus-me'), function (el) {
-    if (!focused) { el.focus(); focused = true }
-    el.classList.remove('focus-me');
-  });
-})
-
+var view = vdom.init(document, templates.document);
+state(vdom.update.bind(null, view));
 
 // load data from server
-init();
-
-function init () {
-  view.tree = templates.document();
-  view.node = require('virtual-dom/create-element')(view.tree);
-  document.replaceChild(view.node, document.firstChild);
-  require('insert-css')(require('./editor.styl'));
-  getFiles().then(util.concurrently(getForms)).done();
-}
+getFiles().then(util.concurrently(getForms)).done();
 
 function getFiles () {
   var deferred = Q.defer();

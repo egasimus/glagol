@@ -2,7 +2,7 @@
 var runtime = require('./runtime.js');
 
 // bootstrapper
-runtime.requireWisp("./lib/boot-server.wisp", true, true)(module);
+runtime.requireWisp("./boot-server.wisp", true, true)(module);
 
 // third-party deps
 var colors   = require('colors/safe')

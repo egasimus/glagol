@@ -2,7 +2,7 @@ body-bg          = #f2f2f2
 body-fg          = #424242
 button-active-bg = #ffffff
 button-border-fg = #dddddd
-form-active-bg   = #ffffff
+form-active-bg   = #fafafa
 form-label-fg    = #5f5f5f
 tab-active-bg    = #f2f2f2
 tab-bar-bg       = #dddddd
@@ -31,27 +31,19 @@ tab-bar-bg       = #dddddd
 
   .form
     position relative
-    padding 5px
-    margin-left 48px
+    padding 5px 5px 5px 48px
     display block
     cursor pointer
-
-    input
-      width 100%
-      border none
-      background none
-      &:focus
-        outline none
 
     &.active
       background form-active-bg
 
-    label
+    .type
       position absolute
       display inline-block
-      height 20px
+      height 24px
       width auto
-      right 100%
+      left 8px
       text-transform uppercase
       font-size 0.75em
       text-align right
@@ -60,6 +52,11 @@ tab-bar-bg       = #dddddd
 
     .name
       font-weight bold
+      width 100%
+      border none
+      background none
+      &:focus
+        outline none
 
     .code
       margin-left 16px

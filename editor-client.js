@@ -87,7 +87,7 @@ var templates = {
         'div.form.type-' + f.type + (active ? '.active' : ''),
         { dataset: { index: i }
         , onclick: emit('form-selected') },
-        [ h('label', f.type)
+        [ h('label.type', f.type)
         , h('input.name' + (nameFocus ? '.focus-me' : ''),
             { placeholder: 'enter name...'
             , onblur:      emit('name-blurred', f)
@@ -269,6 +269,14 @@ events.on("delete-form", function () {
   file.forms.splice(file.activeForm, 1);
   updateState({ files: files });
 });
+
+events.on("execute-form", function () {
+  var s = state()
+    , f = getActiveForm(s);
+  util.post('/update', JSON.stringify(f)).then(function (data) {
+    console.log(JSON.parse(data));
+  }).done();
+})
 
 events.on("exit-mode", function () {
   var s = state()

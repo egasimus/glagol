@@ -133,6 +133,16 @@ function startServer () {
           getMetaForms(url.parse(req.url, true).query.file)); }),
 
     web.endpoint(
+      '/update', function (req, res) {
+        if (req.method === 'POST') {
+          var data = '';
+          req.on('data', function (buf) { data += buf });
+          req.on('end', function () {
+            console.log(JSON.parse(data));
+            sendJSON(req, res, "OK");
+          }); }}),
+
+    web.endpoint(
       '/save',   function (req, res) {
         if (req.method === 'POST') {
           var data = '';

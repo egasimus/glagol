@@ -13,12 +13,25 @@ tab-bar-bg       = #dddddd
 body
   background body-bg
   color      body-fg
-  margin     6px 0
+  margin     0
+  display    flex
+  flex-flow  row wrap
 
 body, input, textarea
   font-family monospace
   font-size 13px
   line-height 18px
+
+.editor, .embedded
+  flex-grow 1
+
+.editor
+  padding 6px
+
+.embedded
+  background #333
+  color      #ddd
+  border     none
 
 .form
   position relative

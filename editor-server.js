@@ -118,19 +118,22 @@ function startServer () {
     , port: 4194     } ,
 
     web.page(
-      '/',      'editor-client.js'),
+      '/',       'boot-client.wisp'),
+
+    web.page(
+      '/editor', 'editor-client.js'),
 
     web.endpoint(
-      '/files', function (req, res) {
+      '/files',  function (req, res) {
         sendJSON(req, res, Object.keys(files)); }),
 
     web.endpoint(
-      '/forms', function (req, res) {
+      '/forms',  function (req, res) {
         sendJSON(req, res,
           getMetaForms(url.parse(req.url, true).query.file)); }),
 
     web.endpoint(
-      '/save',  function (req, res) {
+      '/save',   function (req, res) {
         if (req.method === 'POST') {
           var data = '';
           req.on('data', function (buf) { data += buf });
@@ -142,7 +145,7 @@ function startServer () {
               }); }); }; }),
 
     web.endpoint(
-      '/repl',  function (req, res) {
+      '/repl',   function (req, res) {
         if (req.method === 'POST') {
           var data = '';
           req.on('data', function (buf) { data += buf });

@@ -19,6 +19,8 @@
         focused  false]
     (set! view.node (patch view.node patches)
     (set! view.tree new-tree)
+    (console.log "foo")
+    (console.log (view.context.get-elements-by-class-name "focus-me"))
     (Array.prototype.map.call
       (view.context.get-elements-by-class-name "focus-me")
       (fn [el]

@@ -46,8 +46,11 @@
   ([route handler destroy]
     (HTTPEndpoint. (fn [req] (= route (aget (req.url.split "?") 0))) handler destroy)))
 
-(defn- template [output]
+(defn- document-template [output]
   (str "<head><meta charset=\"utf-8\"></head><body><script>" output "</script>"))
+
+(defn- embed-template [output]
+  (str "(function () { var " output "; return require })()"))
 
 (defn- compiled [data file]
   (str "var use=require('runtime').requireWisp;"
@@ -73,13 +76,17 @@
 
 (defn page [route script]
   (let [bundle  "document.write('loading...!')"
-        options (assoc watchify.args :debug false :extensions [".wisp"] :basedir __dirname)
+        options (assoc watchify.args
+                  :debug      false
+                  :extensions [".wisp"]
+                  :basedir    __dirname)
         bundler (browserify options)
-        watcher (watchify bundler)
+        watcher (watchify   bundler)
         handler (fn [req res]
                   (let [parsed (url.parse req.url true)]
                     (send-html req res { :body
-                      (if parsed.query.embed bundle (template bundle)) })))
+                      ((if parsed.query.embed embed-template document-template)
+                        bundle) })))
         bundled (fn [err out]
                   (if err
                     (log (colors.red "error") err)

@@ -35,34 +35,15 @@ function emit (evt) {
 // templates
 var templates = {
 
-  document:
-    function templateDocument () {
-      var s = state();
-      return h( 'html'
-         , [ h( 'head',
-              [ h( 'title', 'Editor'                      )
-              , h( 'style', require('./editor.styl')      )
-              , h( 'style', require('./lib/ldt/ldt.styl') ) ] )
-           , templates.body() ] );
-    },
-
-  body:
-    function templateBody () {
-      var s = state()
-      return h( 'body',
-        s.loading
-          ? 'loading...'
-          : [ templates.editor()
-            , s.embed ? templates.embedded() : null ]);
-    },
-
   editor:
     function templateEditor () {
       var s = state();
-      return h('.editor',
-        [ templates.tabBar()
+      return h( '.editor',
+        [ h( 'style', require('./editor.styl')      )
+        , h( 'style', require('./lib/ldt/ldt.styl') )
+        , templates.tabBar()
         , templates.toolBar()
-        ].concat(((s.files ? s.files[s.activeFile].forms : []) || []).map(
+        ].concat((s.files ? (s.files[s.activeFile].forms || []) : []).map(
           function (f, i) {
             return templates.form(f, i);
           })));
@@ -117,7 +98,7 @@ var templates = {
 
 
 // view
-var view = vdom.init(document, templates.document);
+var view = vdom.init(document.currentScript.parentElement, templates.editor);
 state(vdom.update.bind(null, view));
 
 // load data from server

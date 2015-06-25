@@ -22,11 +22,7 @@
           (fn []
             (log "loading" (colors.green shortname))
             (delete (aget require.cache filename))
-            ;(try
-            (set! session (try
-              (require filename)
-              (catch e (log "ERROR" e) {})))
-              ;(catch e (log "ERROR" e)))
+            (set! session (require filename))
             (log "starting" (colors.green shortname))
             (.then (session.start) (fn []
               (log "started" (colors.green shortname)))))

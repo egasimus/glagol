@@ -1,4 +1,4 @@
-use "./lib/dom.wisp"
+use "./lib/vdom.wisp"
 
 ;fn sampler
   ;([index] (dom/tree
@@ -10,24 +10,24 @@ use "./lib/dom.wisp"
 
 fn sampler-template
   ([index]
-    (dom/el ".sampler"
-      [ (dom/el ".sampler-controls"
-        [ (dom/el ".sampler-label"  (str "Sample " index))
-          (dom/el ".sampler-button" "Play") ])
-        (dom/el ".sampler-waveform")]))
+    (vdom/h ".sampler"
+      [ (vdom/h ".sampler-controls"
+        [ (vdom/h ".sampler-label"  (str "Sample " index))
+          (vdom/h ".sampler-button" "Play") ])
+        (vdom/h ".sampler-waveform")]))
 
-template
-  (dom/el "html" [
-    (dom/el "head")
-    (dom/el "body" [
+fn template
+  ([]
+    (vdom/h ".samplers" [
       (sampler-template 1)
-      (sampler-template 2)])])
+      (sampler-template 2)]))
 
 init
-  (let
-    [ doc (dom/create @template) ]
-    (document.replaceChild doc document.firstChild)
-    (dom/add-style (require "./sampler.styl"))
-    doc)
+  (vdom/init document.current-script.parent-element template)
+  ;(let
+    ;[ doc (dom/create @template) ]
+    ;(document.replaceChild doc document.firstChild)
+    ;(dom/add-style (require "./sampler.styl"))
+    ;doc)
 
 ;(let [doc (dom/create (dom/tree ["html" [["head"] ["body" [(sampler) (sampler)]]]]))]

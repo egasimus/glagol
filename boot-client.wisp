@@ -19,4 +19,5 @@
 
 (state (fn [i] (console.log i)))
 
-(state.set (assoc (state) :embeds [ "/editor?embed=true" ]))
+(state.set (assoc (state) :embeds [ "http://localhost:4194/editor?embed=true"
+                                    "http://localhost:2097/?embed=true" ]))

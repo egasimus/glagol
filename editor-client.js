@@ -37,40 +37,41 @@ var templates = {
 
   document:
     function templateDocument () {
-      var bodyContents =
-        state().loading ? 'loading...'
-                        : templates.body();
-
+      var s = state();
       return h( 'html'
          , [ h( 'head',
               [ h( 'title', 'Editor'                      )
               , h( 'style', require('./editor.styl')      )
               , h( 'style', require('./lib/ldt/ldt.styl') ) ] )
-           , h( 'body', bodyContents ) ] );
+           , templates.body() ] );
     },
 
   body:
     function templateBody () {
-      var s    = state()
-        , body = [];
+      var s = state()
+      return h( 'body',
+        s.loading
+          ? 'loading...'
+          : [ templates.editor()
+            , s.embed ? templates.embedded() : null ]);
+    },
 
-      if (s.files) {
-        body.push(templates.tabBar());
-        body.push(templates.toolBar());
-        (s.files[s.activeFile].forms || []).map(function (f, i) {
-          body.push(templates.form(f, i));
-        })
-      } else {
-        body = [];
-      }
-
-      return body;
+  editor:
+    function templateEditor () {
+      var s = state();
+      return h('.editor',
+        [ templates.tabBar()
+        , templates.toolBar()
+        ].concat(((s.files ? s.files[s.activeFile].forms : []) || []).map(
+          function (f, i) {
+            return templates.form(f, i);
+          })));
     },
 
   tabBar:
     function templateBar () {
       return h( '.tab-bar',
-        Object.keys(state().files).map(function(file, i) {
+        Object.keys(state().files || {}).map(function(file, i) {
           var el = templates.tab(file, i);
           return el; }) );
     },

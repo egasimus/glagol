@@ -8,6 +8,7 @@
   (vdom/h "html" [
     (vdom/h "head" [
       (vdom/h "meta" { :attributes { :charset "utf-8" } })
+      (vdom/h "style" (require "./global.styl"))
       (vdom/h "title" "étude") ] )
     (vdom/h "body" (.map (.-embeds (state)) (fn [embed]
       (vdom/h "section" { :dataset { :src embed } }

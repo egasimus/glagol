@@ -7,108 +7,94 @@ form-label-fg    = #5f5f5f
 tab-active-bg    = #f2f2f2
 tab-bar-bg       = #dddddd
 
-*
-  box-sizing border-box
+.editor
 
-body
-  background body-bg
-  color      body-fg
-  margin     0
-  display    flex
-  flex-flow  row wrap
-
-body, input, textarea
+  background  body-bg
+  color       body-fg
   font-family monospace
-  font-size 13px
+  font-size   13px
   line-height 18px
 
-.editor, .embedded
-  flex-grow 1
+  input, textarea
+    font-family monospace
+    font-size   13px
+    line-height 18px
 
-.editor
-  padding 6px
-
-.embedded
-  background #333
-  color      #ddd
-  border     none
-
-.form
-  position relative
-  padding 5px
-  margin-left 48px
-  display block
-  cursor pointer
-
-  input
-    width 100%
-    border none
-    background none
-    &:focus
-      outline none
-
-  &.active
-    background form-active-bg
-
-  label
-    position absolute
-    display inline-block
-    top 6px
-    height 20px
-    width auto
-    right 100%
-    text-transform uppercase
-    font-size 0.75em
-    text-align right
-    color form-label-fg
-    padding-right 6px
-
-  .name
-    font-weight bold
-
-  .code
-    margin-left 16px
-
-.toolbar
-  position fixed
-  z-index 0
-  bottom 24px
-  left 0
-  right 0
-  height 36px
-  display flex
-  padding 3px 0
-  justify-content flex-end
-
-  &-button
-    display inline-block
-    //height 36px
-    line-height 24px
-    padding 3px 6px
-    margin 0
+  .form
+    position relative
+    padding 5px
+    margin-left 48px
+    display block
     cursor pointer
-    &:hover
-      border 2px solid button-border-fg
-      padding 1px 4px
-    &:active
-      background button-active-bg
 
-.tab-bar
-  position fixed
-  z-index 1
-  bottom 0
-  left 0
-  right 0
-  height 24px
-  background tab-bar-bg
-  display flex
-
-  &-file
-    height 24px
-    line-height 24px
-    padding 0 6px
-    cursor pointer
+    input
+      width 100%
+      border none
+      background none
+      &:focus
+        outline none
 
     &.active
-      background tab-active-bg
+      background form-active-bg
+
+    label
+      position absolute
+      display inline-block
+      height 20px
+      width auto
+      right 100%
+      text-transform uppercase
+      font-size 0.75em
+      text-align right
+      color form-label-fg
+      padding-right 6px
+
+    .name
       font-weight bold
+
+    .code
+      margin-left 16px
+
+  .toolbar
+    position fixed
+    z-index 0
+    bottom 24px
+    left 0
+    right 0
+    height 36px
+    display flex
+    padding 3px 0
+    justify-content flex-end
+
+    &-button
+      display inline-block
+      //height 36px
+      line-height 24px
+      padding 3px 6px
+      margin 0
+      cursor pointer
+      &:hover
+        border 2px solid button-border-fg
+        padding 1px 4px
+      &:active
+        background button-active-bg
+
+  .tab-bar
+    position fixed
+    z-index 1
+    bottom 0
+    left 0
+    right 0
+    height 24px
+    background tab-bar-bg
+    display flex
+
+    &-file
+      height 24px
+      line-height 24px
+      padding 0 6px
+      cursor pointer
+
+      &.active
+        background tab-active-bg
+        font-weight bold

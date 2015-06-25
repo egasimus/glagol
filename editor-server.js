@@ -96,7 +96,11 @@ function metaForm (f) {
   } else if (f.head.name === 'def') {
     if (f.metadata.source.indexOf('use ') === 0) {
       type = 'use';
-      name = f.tail.head.name;
+      if (f.tail.tail.head.head.name === 'use') {
+        name = f.tail.tail.head.tail.head;
+      } else if (f.tail.tail.head.head.name === 'require') {
+        name = f.tail.tail.head.tail.head.metadata.source;
+      }
     } else {
       type = 'atom';
       name = f.tail.head.name;

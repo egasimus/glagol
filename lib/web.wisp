@@ -1,6 +1,7 @@
 (def ^:private colors     (require "colors/safe"))
 (def ^:private browserify (require "browserify"))
 (def ^:private path       (require "path"))
+(def ^:private Primus     (require "primus"))
 (def ^:private Q          (require "q"))
 (def ^:private runtime    (require "./runtime.js"))
 (def ^:private send-html  (require "send-data/html"))
@@ -9,34 +10,47 @@
 (def ^:private url        (require "url"))
 (def ^:private watchify   (require "watchify"))
 
-(defn server [options & args]
-  (let [http      (require "http")
-        name      (if options.name (str (colors.green options.name) " ") "")
-        handler   (get-handler args)
-        srv       (http.create-server handler)
-        started   (Q.defer)
-        destroy   (fn [] (let [deferred (Q.defer)]
-                    (srv.close (fn [err]
-                      (if err (deferred.reject err)
-                          (do (log (str "closed server " name
-                                        "on " (colors.green options.port)))
-                              (deferred.resolve)))))
-                    deferred.promise))
-        descript  { :destroy destroy
-                    :started started.promise }]
-    (log (str "server " name "listening on " (colors.green options.port)))
-    (srv.listen options.port (fn [] (started.resolve descript)))
-    descript))
+;;
+;; web server instance
+;;
 
-(defn- get-handler [args]
-  (fn [req res]
-    (let [matcher (fn [endpoint] (if (endpoint.route req) endpoint.handler))
-          match   (first (filter matcher args))]
-      (if match
-        (try
-          (match.handler req res)
-          (catch error (route-error error req res)))
-        (route-404 req res)))))
+(defn server [options & endpoints]
+  (let [http
+          (require "http")
+        name
+          (if options.name (str (colors.green options.name) " ") "")
+        handler
+          (fn [req res]
+            (let [matcher (fn [endpoint] (if (endpoint.route req) endpoint.handler))
+                  match   (first (filter matcher endpoints))]
+              (if match
+                (try
+                  (match.handler req res)
+                  (catch error (route-error error req res)))
+              (route-404 req res))))
+        srv
+          (http.create-server handler)
+        started
+          (Q.defer)
+        destroy
+          (fn [] (let [deferred (Q.defer)]
+            (srv.close (fn [err]
+              (if err (deferred.reject err)
+                  (do (log (str "closed server " name
+                                "on " (colors.green options.port)))
+                      (deferred.resolve)))))
+            deferred.promise))
+        descriptor
+          { :destroy destroy
+            :started started.promise }]
+    (log (str "server " name "listening on " (colors.green options.port)))
+    (srv.listen options.port (fn [] (started.resolve descriptor)))
+    descriptor))
+
+;;
+;; generic http endpoint
+;; calls arbitrary function in response to http request
+;;
 
 (deftype HTTPEndpoint [route handler destroy])
 
@@ -46,33 +60,10 @@
   ([route handler destroy]
     (HTTPEndpoint. (fn [req] (= route (aget (req.url.split "?") 0))) handler destroy)))
 
-(defn- document-template [output]
-  (str "<head><meta charset=\"utf-8\"></head><body><script>" output "</script>"))
-
-(defn- embed-template [output]
-  (str "(function () { var " output "; return require })()"))
-
-(defn- compiled [data file]
-  (str "var use=require('runtime').requireWisp;"
-       "var atom=require('runtime').makeAtom;"
-       "var deref=function(a) { return a.get() };"
-    (.-code (.-output (runtime.compile-source data file)))))
-
-(defn- wispify [file]
-  (let [data
-          ""
-        wispy
-          (= (file.index-of ".wisp") (- file.length 5))
-        write
-          (fn [buf] (set! data (+ data buf)))
-        end
-          (fn []
-            (this.queue
-              (if wispy
-                (compiled data file)
-                data))
-            (this.queue null))]
-    (through write end)))
+;;
+;; browserify-based page
+;; automatically updated when any of the included files changes
+;;
 
 (defn page [route script]
   (let [bundle  "document.write('loading...!')"
@@ -105,6 +96,38 @@
         (bundler.bundle bundled))))
     (endpoint route handler (fn [] (watcher.close)))))
 
+(defn- document-template [output]
+  (str "<head><meta charset=\"utf-8\"></head><body><script>" output "</script>"))
+
+(defn- embed-template [output]
+  (str "(function () { var " output "; return require })()"))
+
+(defn- compiled [data file]
+  (str "var use=require('runtime').requireWisp;"
+       "var atom=require('runtime').makeAtom;"
+       "var deref=function(a) { return a.get() };"
+    (.-code (.-output (runtime.compile-source data file)))))
+
+(defn- wispify [file]
+  (let [data
+          ""
+        wispy
+          (= (file.index-of ".wisp") (- file.length 5))
+        write
+          (fn [buf] (set! data (+ data buf)))
+        end
+          (fn []
+            (this.queue
+              (if wispy
+                (compiled data file)
+                data))
+            (this.queue null))]
+    (through write end)))
+
+;;
+;; exposes an atom over rest
+;;
+
 (defn variable [route atom-instance]
   (endpoint route (fn [req res]
     (cond
@@ -117,10 +140,21 @@
             (log "posted to" (colors.green route) "value" (colors.blue data))
             (send-json req res "OK"))))))))
 
+;;
+;; real-time web socket
+;;
+
+(deftype WebSocket [destroy])
+
+(defn socket [route options]
+  (WebSocket. route (fn [] (log "destroying socket" route))))
+
+;;
+;; error routes
+;;
+
 (defn route-404 [req res]
   (send-html req res { :body "404" }))
 
 (defn route-error [error req res]
   (send-json req res error))
-
-(defn socket [])

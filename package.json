@@ -21,6 +21,7 @@
     "insert-css": "^0.2.0",
     "jsonstream": "^1.0.3",
     "observ": "^0.2.0",
+    "primus": "^3.1.1",
     "q": "^1.4.1",
     "send-data": "^7.0.0",
     "stylify": "^1.2.0",

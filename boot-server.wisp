@@ -24,11 +24,11 @@
             (delete (aget require.cache filename))
             (set! session (require filename))
             (log "starting" (colors.green shortname))
-            (.then (session.start) (fn []
-              (log "started" (colors.green shortname)))))
+            (.done (.then (session.start) (fn []
+              (log "started" (colors.green shortname))))))
         restart
           (fn []
-            (.then (session.stop) start))
+            (.done (.then (session.stop) start)))
 
         dedupe
           nil

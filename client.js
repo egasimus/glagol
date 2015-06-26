@@ -95,7 +95,7 @@ var templates = {
             , value:       f.name || ''})
         , f.type === 'use'
             ? undefined
-            : new (require('./editor-widget.js'))(f.body, bodyFocus) ]);
+            : new (require('./widget.js'))(f.body, bodyFocus) ]);
     },
 
 };
@@ -106,7 +106,21 @@ var view = vdom.init(document.currentScript.parentElement, templates.container);
 state(vdom.update.bind(null, view));
 
 // load data from server
-getFiles().then(util.concurrently(getForms)).done();
+getAtoms().done();
+
+function getAtoms () {
+  return Q.Promise(function (resolve, reject, notify) {
+    http.get({ path: '/atoms' }, util.handleStreamingResponse(function (data) {
+      var atoms = JSON.parse(data);
+      console.log(atoms);
+      resolve(atoms);
+    }));
+  });
+}
+
+
+
+//getFiles().then(util.concurrently(getForms)).done();
 
 function getFiles () {
   var deferred = Q.defer();

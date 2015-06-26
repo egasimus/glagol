@@ -7,6 +7,9 @@ runtime.requireWisp("./boot-server.wisp", true, true)(module);
 // third-party deps
 var colors   = require('colors/safe')
   , fs       = require('fs')
+  , glob     = require('glob')
+  , observ   = require('observ')
+  , path     = require('path')
   , sendJSON = require('send-data/json')
   , url      = require('url')
   , vm       = require('vm');
@@ -17,9 +20,10 @@ var Q        = require('q')
   , logging  = require('./logging.js')
   , web      = runtime.requireWisp('web');
 
-// state
+// local state
 var log      = logging.getLogger('editor')
   , files    = {}
+  , ATOMS    = {}
   , server   = null;
 
 // poehali!
@@ -27,8 +31,7 @@ module.exports = {
   start: function start () {
     return Q.all(
       [ startServer()
-      , loadFile("sampler-server.wisp").then(executeFile)
-      , loadFile("sampler-client.wisp") ]
+      , loadProject('../gui') ]
     ).then(function (args) {
       server = args[0];
       return args[0];
@@ -50,74 +53,50 @@ module.exports = {
   }
 };
 
-function loadFile (file) {
-  var defer = Q.defer();
-  fs.readFile(file, { encoding: 'utf8' },
-    function fileLoaded (err, source) {
-      if (err) defer.reject(err);
-      files[file] =
-        { source:   source
-        , compiled: runtime.compileSource(source, file) };
-      defer.resolve(file);
+function loadProject (directory) {
+  return listAtoms(directory).then(concurrently(readAtom));
+}
+
+function listAtoms (directory) {
+  return Q.Promise(function (resolve, reject, notify) {
+    log("loading atoms from", colors.green(directory));
+    glob(path.join(directory, '**', '*'), {}, function (err, atoms) {
+      if (err) reject(err);
+      log("loaded atoms", colors.bold(
+        atoms.map(path.relative.bind(null, directory)).join(" ")));
+      atoms.map(function (atom) { ATOMS[atom] = makeAtom(atom); });
+      console.log(ATOMS);
+      resolve(atoms);
     });
-  return defer.promise;
-}
-
-function executeFile (key) {
-  process.nextTick(function () {
-    var context = files[key].context = runtime.makeContext(key);
-    vm.runInContext(files[key].compiled.output.code, context);
   });
+};
+
+function makeAtom (atom) {
+  return {
+    name:   atom,
+    source: '',
+    value:  observ()
+  }
 }
 
-function executeForm (file, form) {
-  process.nextTick(function () {
-    var context = files[file].context;
-    console.log(context[form.name]) 
+function readAtom (atom) {
+  return Q.Promise(function (resolve, reject, notify) {
+    var deferred = Q.defer();
+    atoms[atom] = deferred.promise;
+    fs.readFile(atom, { encoding: 'utf-8' }, function (err, data) {
+      if (err) reject(err);
+      log(atom, data);
+      ATOMS[atom].set(data);
+      resolve(atom, data);
+    });
   });
-}
+};
 
-function indent (code) {
-  return code;
-}
-
-function unindent (code) {
-  var lines = (code || "").split("\n");
-  if (lines.length < 2) return code;
-  for (var i = 1; i < lines.length; i++) {
-    lines[i] = lines[i].substr(2);
+function concurrently (cb) {
+  return function runConcurrently (args) {
+    return Q.allSettled(args.map(cb));
   }
-  return lines.join("\n");
-}
-
-function getMetaForms (file) {
-  return files[file].compiled.forms.map(metaForm);
-}
-
-function metaForm (f) {
-  var type, name, body;
-  if (f.head.name === 'defn') {
-    type = 'fn';
-    name = f.tail.head.name;
-    body = f.tail.tail.head.metadata.source;
-  } else if (f.head.name === 'def') {
-    if (f.metadata.source.indexOf('use ') === 0) {
-      type = 'use';
-      if (f.tail.tail.head.head.name === 'use') {
-        name = f.tail.tail.head.tail.head;
-      } else if (f.tail.tail.head.head.name === 'require') {
-        name = f.tail.tail.head.tail.head.metadata.source;
-      }
-    } else {
-      type = 'atom';
-      name = f.tail.head.name;
-      body = f.tail.tail.head.tail.head.metadata ?
-        f.tail.tail.head.tail.head.metadata.source :
-        f.tail.tail.head.tail.head
-    }
-  }
-  return { type: type, name: name, body: unindent(body) };
-}
+};
 
 function startServer () {
   return web.server(
@@ -128,16 +107,11 @@ function startServer () {
       '/',       'boot-client.wisp'),
 
     web.page(
-      '/editor', 'editor-client.js'),
+      '/editor', 'client.js'),
 
     web.endpoint(
-      '/files',  function (req, res) {
-        sendJSON(req, res, Object.keys(files)); }),
-
-    web.endpoint(
-      '/forms',  function (req, res) {
-        sendJSON(req, res,
-          getMetaForms(url.parse(req.url, true).query.file)); }),
+      '/atoms',  function (req, res) {
+        sendJSON(req, res, ATOMS); }),
 
     web.endpoint(
       '/update', function (req, res) {

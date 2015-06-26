@@ -1,10 +1,10 @@
 {
-  "name": "postmelodic-gui",
+  "name": "etude",
   "version": "0.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node editor-server.js",
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -16,6 +16,7 @@
     "colors": "^1.1.0",
     "dom-delegator": "^13.1.0",
     "eventemitter2": "^0.4.14",
+    "glob": "^5.0.10",
     "http-browserify": "^1.7.0",
     "insert-css": "^0.2.0",
     "jsonstream": "^1.0.3",

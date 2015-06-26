@@ -2,7 +2,6 @@ var fs         = require('fs')
   , logging    = require('./logging.js')
   , observ     = require('observ')
   , path       = require('path')
-  , preprocess = require('./preprocess.js')
   , vm         = require('vm');
 
 var wisp =
@@ -14,7 +13,7 @@ var wisp =
 var compileSource = exports.compileSource = function compileSource (source, fullpath, raw) {
   raw = raw || false;
   var forms     = wisp.compiler.readForms(source, fullpath)
-    , forms     = raw ? forms.forms : preprocess(forms, source, fullpath);
+    , forms     = forms.forms;
 
   var processed = wisp.compiler.analyzeForms(forms)
   if (processed.error) throw new Error("Compile error: " + processed.error);

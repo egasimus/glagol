@@ -1,1 +1,1 @@
-(defn remove-sampler [index])
+(fn [index])

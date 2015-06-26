@@ -2,10 +2,13 @@
   "name": "gui",
   "version": "0.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "init",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "etude": {
+    "defaultLanguage": "wisp"
+  }
 }

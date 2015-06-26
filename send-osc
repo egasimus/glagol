@@ -1,1 +1,1 @@
-(defn send-osc [index address & args])
+(fn [index address & args])

@@ -65,7 +65,6 @@ function listAtoms (directory) {
       log("loaded atoms", colors.bold(
         atoms.map(path.relative.bind(null, directory)).join(" ")));
       atoms.map(function (atom) { ATOMS[atom] = makeAtom(atom); });
-      console.log(ATOMS);
       resolve(atoms);
     });
   });

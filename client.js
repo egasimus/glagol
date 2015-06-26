@@ -54,16 +54,15 @@ var templates = {
 
   sidebar:
     function templateSidebar () {
-      items = [];
-      items.push(templates.sidebarList(
-        'atoms', Object.keys(state().atoms || {})));
-      return h( '.sidebar', items);
+      return h( '.sidebar',
+        [ templates.sidebarList('selected atoms',   [])
+        , templates.sidebarList('loaded atoms', Object.keys(state().atoms || {})) ]);
     },
 
   sidebarList:
     function templateSidebarList (name, items) {
       return h('.sidebar-list',
-        [ h('.sidebar-list-title',  name)
+        [ h('.sidebar-list-title' + (items.length === 0 ? '.inactive' : ''),  name)
         , h('ul.sidebar-list-body', items.map(templates.sidebarListItem)) ]);
       },
 

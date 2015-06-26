@@ -64,7 +64,7 @@ var templates = {
   tab:
     function templateBarFile (filename, i) {
       return h(
-        '.tab-bar-file' + (state().activeFile == filename ? '.active' : ''),
+        '.tab-bar-file' + (state().activeFile === filename ? '.active' : ''),
         { dataset: { filename: filename }
         , onclick: emit('file-selected') },
         filename);
@@ -273,10 +273,10 @@ events.on("delete-form", function () {
 events.on("execute-form", function () {
   var s = state()
     , f = getActiveForm(s);
-  util.post('/update', JSON.stringify(f)).then(function (data) {
+  util.post('/update?file=' + s.activeFile, JSON.stringify(f)).then(function (data) {
     console.log(JSON.parse(data));
   }).done();
-})
+});
 
 events.on("exit-mode", function () {
   var s = state()

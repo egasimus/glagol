@@ -64,9 +64,16 @@ function loadFile (file) {
 }
 
 function executeFile (key) {
-  process.nextTick(function() {
+  process.nextTick(function () {
     var context = files[key].context = runtime.makeContext(key);
     vm.runInContext(files[key].compiled.output.code, context);
+  });
+}
+
+function executeForm (file, form) {
+  process.nextTick(function () {
+    var context = files[file].context;
+    console.log(context[form.name]) 
   });
 }
 
@@ -138,7 +145,8 @@ function startServer () {
           var data = '';
           req.on('data', function (buf) { data += buf });
           req.on('end', function () {
-            console.log(JSON.parse(data));
+            var file = url.parse(req.url, true).query.file;
+            executeForm(file, JSON.parse(data));
             sendJSON(req, res, "OK");
           }); }}),
 

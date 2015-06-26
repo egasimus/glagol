@@ -6,7 +6,7 @@ var h    = require('virtual-dom/h')
 
 
 // state
-var state = require('observ')({ mode: 'navigate' });
+var state = require('observ')({ mode: 'navigate', atoms: {} });
 function updateState (changes) {
   changes = changes || {};
   var snapshot = state();
@@ -41,9 +41,8 @@ var templates = {
       return h('.container',
         [ h('style', require('./editor.styl')     )
         , h('style', require('./lib/ldt/ldt.styl'))
-        , templates.editor()
-        , templates.toolBar()
-        , templates.tabBar() ]);
+        , templates.sidebar()
+        , templates.editor() ]);
     },
 
   editor:
@@ -53,21 +52,30 @@ var templates = {
         (s.files ? (s.files[s.activeFile].forms || []) : []).map(templates.form));
     },
 
-  tabBar:
-    function templateBar () {
-      return h( '.tab-bar',
-        Object.keys(state().files || {}).map(function(file, i) {
-          var el = templates.tab(file, i);
-          return el; }) );
+  sidebar:
+    function templateSidebar () {
+      items = [];
+      items.push(templates.sidebarList(
+        'atoms', Object.keys(state().atoms || {})));
+      return h( '.sidebar', items);
     },
 
-  tab:
-    function templateBarFile (filename, i) {
-      return h(
-        '.tab-bar-file' + (state().activeFile === filename ? '.active' : ''),
-        { dataset: { filename: filename }
-        , onclick: emit('file-selected') },
-        filename);
+  sidebarList:
+    function templateSidebarList (name, items) {
+      return h('.sidebar-list',
+        [ h('.sidebar-list-title',  name)
+        , h('ul.sidebar-list-body', items.map(templates.sidebarListItem)) ]);
+      },
+
+  sidebarListItem:
+    function templateSidebarListItem (name, i) {
+      console.log("FOO", name, i);
+      return h('li.sidebar-list-item', name);
+      //return h(
+        //'li.sidebar-list-item' + (state().activeFile === filename ? '.active' : ''),
+        //{ dataset: { filename: filename }
+        //, onclick: emit('file-selected') },
+        //filename);
     },
 
   toolBar:
@@ -106,13 +114,12 @@ var view = vdom.init(document.currentScript.parentElement, templates.container);
 state(vdom.update.bind(null, view));
 
 // load data from server
-getAtoms().done();
+getAtoms().then(function (atoms) { updateState({ atoms: atoms }) });
 
 function getAtoms () {
   return Q.Promise(function (resolve, reject, notify) {
     http.get({ path: '/atoms' }, util.handleStreamingResponse(function (data) {
       var atoms = JSON.parse(data);
-      console.log(atoms);
       resolve(atoms);
     }));
   });

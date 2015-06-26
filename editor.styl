@@ -11,9 +11,9 @@ tab-bar-bg       = #dddddd
 
   height         100%
   display        flex
-  flex-direction column
+  flex-direction row
 
-  font-family monospace
+  font-family Inconsolata, monospace
   font-size   13px
   line-height 18px
 
@@ -26,14 +26,41 @@ tab-bar-bg       = #dddddd
     line-height 18px
 
   .editor
-    flex-grow 1
+    flex-grow  1.618
     overflow-y auto
+
+  .sidebar
+    flex-grow      1
+    z-index        1
+    background     tab-bar-bg
+    display        flex
+    flex-direction column
+
+    &-list-title
+      text-transform uppercase
+      font-weight    bold
+      padding        6px 12px 0
+
+    &-list-body
+      list-style none
+      margin     0
+      padding    0 6px
+
+    .tab
+      height      24px
+      line-height 24px
+      padding     0 6px
+      cursor      pointer
+
+      &.active
+        background  tab-active-bg
+        font-weight bold
 
   .form
     position relative
-    padding 5px 5px 5px 48px
-    display block
-    cursor pointer
+    padding  5px 5px 5px 48px
+    display  block
+    cursor   pointer
 
     &.active
       background form-active-bg
@@ -81,20 +108,3 @@ tab-bar-bg       = #dddddd
         padding 1px 4px
       &:active
         background button-active-bg
-
-  .tab-bar
-    flex-shrink 0
-    z-index 1
-    height 24px
-    background tab-bar-bg
-    display flex
-
-    &-file
-      height 24px
-      line-height 24px
-      padding 0 6px
-      cursor pointer
-
-      &.active
-        background tab-active-bg
-        font-weight bold

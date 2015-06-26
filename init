@@ -1,0 +1,1 @@
+(vdom/init document.current-script.parent-element template)

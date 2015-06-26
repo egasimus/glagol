@@ -1,0 +1,4 @@
+(defn template []
+  (vdom/h ".samplers" [
+    (sampler-template 1)
+    (sampler-template 2)]))

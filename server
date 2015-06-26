@@ -1,0 +1,9 @@
+(web/server { :port (+ 2055 @the-answer-to-life-the-universe-and-everything) 
+              :name "postmelodic-gui" }
+  (web/page "/" "sampler-client.wisp"))
+  ;(web/socket "/"
+    ;"/list"   samplers
+    ;"/add"    (apply add-sampler    args)
+    ;"/remove" (apply remove-sampler args)
+    ;"/osc"    (apply send-osc       args)))
+

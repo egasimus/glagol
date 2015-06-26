@@ -1,0 +1,6 @@
+(defn add-sampler
+  [filename port-number]
+    (swap! samplers conj (postmelodic filename port-number))
+    (jack/connect
+      (jack/port filename "output") -> [ (jack/hw "playback_1")
+                                         (jack/hw "playback_2") ]))

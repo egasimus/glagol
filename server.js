@@ -112,8 +112,7 @@ function startServer () {
       '/atoms',  function (req, res) {
         sendJSON(req, res, ATOMS); }),
 
-    //web.socket(
-      //'/socket'),
+    web.socket(),
 
     web.endpoint(
       '/update', function (req, res) {

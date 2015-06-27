@@ -1,5 +1,6 @@
 (def ^:private colors     (require "colors/safe"))
 (def ^:private browserify (require "browserify"))
+(def ^:private http       (require "http"))
 (def ^:private path       (require "path"))
 (def ^:private Primus     (require "primus"))
 (def ^:private Q          (require "q"))
@@ -15,36 +16,39 @@
 ;;
 
 (defn server [options & endpoints]
-  (let [http
-          (require "http")
-        name
+  (let [colored-name
           (if options.name (str (colors.green options.name) " ") "")
+        srv
+          (http.create-server)
+        endpoints
+          (endpoints.map (fn [endpt] (endpt srv)))
         handler
           (fn [req res]
-            (let [matcher (fn [endpoint] (if (endpoint.route req) endpoint.handler))
+            (let [matcher (fn [endpt] (if (endpt.route req) endpt.handler))
                   match   (first (filter matcher endpoints))]
               (if match
                 (try
                   (match.handler req res)
                   (catch error (route-error error req res)))
               (route-404 req res))))
-        srv
-          (http.create-server handler)
         started
           (Q.defer)
         destroy
           (fn [] (let [deferred (Q.defer)]
             (srv.close (fn [err]
               (if err (deferred.reject err)
-                  (do (log (str "closed server " name
+                  (do (log (str "closed server " colored-name
                                 "on " (colors.green options.port)))
                       (deferred.resolve)))))
             deferred.promise))
         descriptor
           { :destroy destroy
             :started started.promise }]
-    (log (str "server " name "listening on " (colors.green options.port)))
-    (srv.listen options.port (fn [] (started.resolve descriptor)))
+    (srv.on "request" handler)
+    (srv.listen options.port (fn []
+      (log (str "server "       colored-name
+                "listening on " (colors.green options.port)))
+      (started.resolve descriptor)))
     descriptor))
 
 ;;
@@ -58,7 +62,9 @@
   ([route handler]
     (endpoint route handler (fn [])))
   ([route handler destroy]
-    (HTTPEndpoint. (fn [req] (= route (aget (req.url.split "?") 0))) handler destroy)))
+    (fn [server]
+      (HTTPEndpoint.
+        (fn [req] (= route (aget (req.url.split "?") 0))) handler destroy))))
 
 ;;
 ;; browserify-based page
@@ -144,10 +150,28 @@
 ;; real-time web socket
 ;;
 
-(deftype WebSocket [destroy])
+(def default-socket-opts
+  { :transformer "websockets"
+    :pathname    "/socket" })
 
-(defn socket [route options]
-  (WebSocket. route (fn [] (log "destroying socket" route))))
+(defn socket
+  ([]
+    (socket {}))
+  ([route options]
+    (socket (assoc options :pathname route)))
+  ([options]
+    (fn [server]
+      (let [options
+              (conj default-socket-opts options)
+            socket
+              (Primus. server options)
+            matcher
+              (fn [req] (= 0 (.indexOf (aget (req.url.split "?") 0) options.pathname)))
+            destroy
+              (fn [] (log "destroying socket" options.pathname))]
+        (HTTPEndpoint. matcher (fn []) destroy)))))
+
+  ;((endpoint (str options.pathname "/primus.js") (fn []) destroy) server)))))
 
 ;;
 ;; error routes

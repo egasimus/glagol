@@ -38,7 +38,7 @@ var makeContext = exports.makeContext = function makeContext (name, elevated) {
     , log:          logging.getLogger(name)
     , use:          requireWisp
     , process:      { cwd: process.cwd() }
-    , isInstanceOf: function (a, b)   { return a instanceof b  }
+    , isInstanceOf: function (type, obj) { return obj instanceof type }
     , require:      _require
     , atom:         function (value)  { return makeAtom(value) }
     , deref:        function (atom)   { return atom.get()      } };

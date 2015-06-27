@@ -4,6 +4,10 @@ var h    = require('virtual-dom/h')
   , util = require('./util.js')
   , vdom = require('./lib/vdom.wisp');
 
+var x = require('sockets/socket/primus.js');
+
+debugger;
+
 // state
 var state = require('observ')(
   { mode:      'navigate'

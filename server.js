@@ -102,6 +102,8 @@ function startServer () {
     { name: "editor"
     , port: 4194     } ,
 
+    web.socket(),
+
     web.page(
       '/',       'boot-client.wisp'),
 
@@ -111,8 +113,6 @@ function startServer () {
     web.endpoint(
       '/atoms',  function (req, res) {
         sendJSON(req, res, ATOMS); }),
-
-    web.socket(),
 
     web.endpoint(
       '/update', function (req, res) {

@@ -1,7 +1,7 @@
-(def ^:private colors     (require "colors/safe"))
 (def ^:private browserify (require "browserify"))
+(def ^:private colors     (require "colors/safe"))
+(def ^:private deumdify   (require "deumdify"))
 (def ^:private http       (require "http"))
-(def ^:private observ     (require "observ"))
 (def ^:private path       (require "path"))
 (def ^:private Primus     (require "primus"))
 (def ^:private Q          (require "q"))
@@ -23,7 +23,7 @@
         srv
           (http.create-server)
         _
-          (set! srv.primuses (observ {}))
+          (set! srv.primuses {})
         endpoints
           (endpoints.map (fn [endpt] (endpt srv)))
         handler
@@ -93,15 +93,18 @@
             (watchify bundler)
           bundled
             (fn [err out]
+              (log (Object.keys bundler) bundler._bundled bundler._external (JSON.stringify bundler._expose))
               (if err
                 (log (colors.red "error") err)
                 (set! bundle out)))
           rebuild
             (fn [ids]
-              (let [relative-ids (ids.map (fn [id] (path.relative process.cwd id)))]
-                (log "rebuilding" (colors.green script)
-                   "bundle because of" (colors.blue relative-ids))
-                (watcher.bundle bundled)))
+              (if ids
+                (let [relative-ids (ids.map (fn [id] (path.relative process.cwd id)))]
+                  (log "rebuilding" (colors.green script)
+                     "bundle because of" (colors.blue relative-ids)))
+                (log "building" (colors.green script) "bundle"))
+              (watcher.bundle bundled))
           handler
             (fn [req res]
               (let [parsed (url.parse req.url true)]
@@ -110,21 +113,24 @@
                     bundle) })))
           require-primuses
             (fn []
-              (let [primuses (server.primuses)]
-                (.map (Object.keys primuses) (fn [primus]
-                  (bundler.require (StrStr. (aget primuses primus))
-                    { :expose (str primus "/primus.js") }))))) ]
+              (log "reqp")
+                (log (Object.keys server.primuses))
+                (.map (Object.keys server.primuses) (fn [primus]
+                  (bundler.require (StrStr. (aget server.primuses primus))
+                    { :expose (str "sockets" primus "/primus.js") })))) ]
+
+      (bundler.plugin deumdify)
 
       (bundler.transform "./node_modules/stylify")
       (bundler.transform wispify)
 
       (bundler.require "./runtime.js" { :expose "runtime" })
       (require-primuses)
+      ;(server.primuses (fn [] (require-primuses) (rebuild)))
       (bundler.add script)
 
-      (bundler.bundle bundled)
+      (rebuild)
       (watcher.on "update" rebuild)
-      (server.primuses require-primuses)
 
       (HTTPEndpoint. (endpoint-matcher route) handler (fn [] (watcher.close))))))
 
@@ -195,7 +201,8 @@
               (fn [req] (= 0 (.indexOf (aget (req.url.split "?") 0) options.pathname)))
             destroy
               (fn [] (log "destroying socket" options.pathname))]
-        (server.primuses.set (assoc (server.primuses) options.pathname (socket.library)))
+        (log "setp")
+        (set! (aget server.primuses options.pathname) (socket.library))
         (HTTPEndpoint. matcher (fn []) destroy)))))
 
   ;((endpoint (str options.pathname "/primus.js") (fn []) destroy) server)))))

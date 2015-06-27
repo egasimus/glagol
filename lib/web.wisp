@@ -20,17 +20,18 @@
           (if options.name (str (colors.green options.name) " ") "")
         srv
           (http.create-server)
-        endpoints
-          (endpoints.map (fn [endpt] (endpt srv)))
+        state
+          (endpoints.reduce (fn [state endpt] (endpt state))
+            { :server srv :endpoints [] :sockets {} })
         handler
           (fn [req res]
             (let [matcher (fn [endpt] (if (endpt.route req) endpt.handler))
-                  match   (first (filter matcher endpoints))]
+                  match   (first (filter matcher state.endpoints))]
               (if match
                 (try
                   (match.handler req res)
-                  (catch error (route-error error req res)))
-              (route-404 req res))))
+                  (catch error (handler-error error req res)))
+              (handler-404 req res))))
         started
           (Q.defer)
         destroy
@@ -43,7 +44,8 @@
             deferred.promise))
         descriptor
           { :destroy destroy
-            :started started.promise }]
+            :started started.promise 
+            :state   state }]
     (srv.on "request" handler)
     (srv.listen options.port (fn []
       (log (str "server "       colored-name
@@ -66,8 +68,9 @@
   ([route handler]
     (endpoint route handler (fn [])))
   ([route handler destroy]
-    (fn [server]
-      (HTTPEndpoint. (endpoint-matcher route) handler destroy))))
+    (fn [state]
+      (assoc state :endpoints (conj state.endpoints
+        (HTTPEndpoint. (endpoint-matcher route) handler destroy))))))
 
 ;;
 ;; browserify-based page
@@ -75,7 +78,7 @@
 ;;
 
 (defn page [route script]
-  (fn [server]
+  (fn [state]
     (let [bundle
             "document.write('loading...!')"
           options
@@ -116,7 +119,8 @@
       (rebuild)
       (watcher.on "update" rebuild)
 
-      (HTTPEndpoint. (endpoint-matcher route) handler (fn [] (watcher.close))))))
+      (assoc state :endpoints (conj state.endpoints
+        (HTTPEndpoint. (endpoint-matcher route) handler (fn [] (watcher.close))))))))
 
 (defn- document-template [output]
   (str "<head><meta charset=\"utf-8\"></head><body><script>" output "</script>"))
@@ -167,8 +171,7 @@
 ;;
 
 (def default-socket-opts
-  { :noServer true
-    :path     "/socket" })
+  { :path "/socket" })
 
 (defn socket
   ([]
@@ -176,23 +179,26 @@
   ([route options]
     (socket (assoc options :path route)))
   ([options]
-    (fn [server]
+    (fn [state]
       (let [options
-              (assoc (conj default-socket-opts options) :server server)
+              (assoc (conj default-socket-opts options) :server state.server)
             socket
               (ws.Server. options)
             matcher
-              (fn [req] (= 0 (.indexOf (aget (req.url.split "?") 0) options.pathname)))
+              (endpoint-matcher options.path)
             destroy
-              (fn [] (log "destroying socket" options.pathname) (socket.close))]
-        (HTTPEndpoint. matcher (fn []) destroy)))))
+              (fn [] (log "destroying socket" options.path) (socket.close))]
+        (assoc state
+          :sockets   (assoc state.sockets options.path socket)
+          :endpoints (conj state.endpoints (HTTPEndpoint.
+            (endpoint-matcher route) (fn []) (fn [] (watcher.close)))))))))
 
 ;;
 ;; error routes
 ;;
 
-(defn route-404 [req res]
+(defn handler-404 [req res]
   (send-html req res { :body "404" }))
 
-(defn route-error [error req res]
+(defn handler-error [error req res]
   (send-json req res error))

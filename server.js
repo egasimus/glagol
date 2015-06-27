@@ -22,9 +22,8 @@ var Q        = require('q')
 
 // local state
 var log      = logging.getLogger('editor')
-  , files    = {}
   , ATOMS    = {}
-  , server   = null;
+  , SERVER   = null;
 
 // poehali!
 module.exports = {
@@ -32,23 +31,11 @@ module.exports = {
     return Q.all(
       [ startServer()
       , loadProject('../gui') ]
-    ).then(function (args) {
-      server = args[0];
-      return args[0];
-    });
+    ).then(connectSocket
+    ).then(socketConnected );
   },
   stop: function stop () {
-    var cleanup = [];
-    Object.keys(files).map(function(i) {
-      var context = files[i].context;
-      if (context) Object.keys(context).map(function(j) {
-        var instance = context[j];
-        if (context[j].type === "Atom") {
-          cleanup.push(instance.destroy());
-        }
-      });
-    });
-    cleanup.push(server.destroy());
+    var cleanup = [SERVER.destroy()];
     return Q.all(cleanup);
   }
 };
@@ -61,7 +48,7 @@ function listAtoms (directory) {
   return Q.Promise(function (resolve, reject, notify) {
     log("loading atoms from", colors.green(directory));
     glob(path.join(directory, '**', '*'), {}, function (err, atoms) {
-      if (err) reject(err);
+      if (err) { log(err); reject(err); }
       log("loaded atoms", colors.bold(
         atoms.map(path.relative.bind(null, directory)).join(" ")));
       atoms.map(function (atom) { ATOMS[atom] = makeAtom(atom); });
@@ -83,12 +70,29 @@ function readAtom (atom) {
     var deferred = Q.defer();
     atoms[atom] = deferred.promise;
     fs.readFile(atom, { encoding: 'utf-8' }, function (err, data) {
-      if (err) reject(err);
+      if (err) { log(err); reject(err); }
       log(atom, data);
       ATOMS[atom].set(data);
       resolve(atom, data);
     });
   });
+};
+
+function connectSocket (args) {
+  log(args[1]);
+  SERVER       = args[0]
+  var project  = args[1]
+    , deferred = Q.defer();
+  var cache = [];
+  SERVER.state.sockets['/socket'].on('connection', function (conn) {
+    deferred.resolve(conn, project);
+  });
+  return deferred.promise;
+}
+
+function socketConnected (conn, project) {
+  log("connected to client over websocket")
+  log(project);
 };
 
 function concurrently (cb) {

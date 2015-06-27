@@ -4,6 +4,9 @@ var h    = require('virtual-dom/h')
   , util = require('./util.js')
   , vdom = require('./lib/vdom.wisp');
 
+var WebSocket = require('ws')
+  , ws        = new WebSocket('ws://localhost:4194/socket');
+
 // state
 var state = require('observ')(
   { mode:      'navigate'

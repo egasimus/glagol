@@ -12,6 +12,7 @@
   "dependencies": {
     "brfs": "^1.4.0",
     "browserify": "^10.2.4",
+    "browserify-shim": "^3.8.9",
     "chokidar": "^1.0.3",
     "colors": "^1.1.0",
     "dom-delegator": "^13.1.0",
@@ -24,6 +25,7 @@
     "primus": "^3.1.1",
     "q": "^1.4.1",
     "send-data": "^7.0.0",
+    "string-stream": "0.0.7",
     "stylify": "^1.2.0",
     "through": "^2.3.7",
     "virtual-dom": "^2.0.1",

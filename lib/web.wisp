@@ -1,12 +1,14 @@
 (def ^:private colors     (require "colors/safe"))
 (def ^:private browserify (require "browserify"))
 (def ^:private http       (require "http"))
+(def ^:private observ     (require "observ"))
 (def ^:private path       (require "path"))
 (def ^:private Primus     (require "primus"))
 (def ^:private Q          (require "q"))
 (def ^:private runtime    (require "./runtime.js"))
 (def ^:private send-html  (require "send-data/html"))
 (def ^:private send-json  (require "send-data/json"))
+(def ^:private StrStr     (require "string-stream"))
 (def ^:private through    (require "through"))
 (def ^:private url        (require "url"))
 (def ^:private watchify   (require "watchify"))
@@ -20,6 +22,8 @@
           (if options.name (str (colors.green options.name) " ") "")
         srv
           (http.create-server)
+        _
+          (set! srv.primuses (observ {}))
         endpoints
           (endpoints.map (fn [endpt] (endpt srv)))
         handler
@@ -58,13 +62,16 @@
 
 (deftype HTTPEndpoint [route handler destroy])
 
+(defn- endpoint-matcher [route]
+  (fn [req]
+    (= route (.-pathname (url.parse req.url)))))
+
 (defn endpoint
   ([route handler]
     (endpoint route handler (fn [])))
   ([route handler destroy]
     (fn [server]
-      (HTTPEndpoint.
-        (fn [req] (= route (aget (req.url.split "?") 0))) handler destroy))))
+      (HTTPEndpoint. (endpoint-matcher route) handler destroy))))
 
 ;;
 ;; browserify-based page
@@ -72,35 +79,54 @@
 ;;
 
 (defn page [route script]
-  (let [bundle  "document.write('loading...!')"
-        options (assoc watchify.args
-                  :debug      false
-                  :extensions [".wisp"]
-                  :basedir    __dirname)
-        bundler (browserify options)
-        watcher (watchify   bundler)
-        handler (fn [req res]
-                  (let [parsed (url.parse req.url true)]
-                    (send-html req res { :body
-                      ((if parsed.query.embed embed-template document-template)
-                        bundle) })))
-        bundled (fn [err out]
-                  (if err
-                    (log (colors.red "error") err)
-                    (set! bundle out)))]
-    (bundler.require "./runtime.js" { :expose "runtime" })
-    (bundler.transform "./node_modules/stylify")
-    (bundler.transform wispify)
-    ;(bundler.transform "brfs")
-    (bundler.add script)
-    (log "bundling" (colors.green script))
-    (bundler.bundle bundled)
-    (watcher.on "update" (fn [ids]
-      (let [relative-ids (ids.map (fn [id] (path.relative process.cwd id)))]
-        (log "rebuilding" (colors.green script)
-             "bundle because of" (colors.blue relative-ids))
-        (bundler.bundle bundled))))
-    (endpoint route handler (fn [] (watcher.close)))))
+  (fn [server]
+    (let [bundle
+            "document.write('loading...!')"
+          options
+            (assoc watchify.args
+              :debug      false
+              :extensions [".wisp"]
+              :basedir    __dirname)
+          bundler
+            (browserify options)
+          watcher
+            (watchify bundler)
+          bundled
+            (fn [err out]
+              (if err
+                (log (colors.red "error") err)
+                (set! bundle out)))
+          rebuild
+            (fn [ids]
+              (let [relative-ids (ids.map (fn [id] (path.relative process.cwd id)))]
+                (log "rebuilding" (colors.green script)
+                   "bundle because of" (colors.blue relative-ids))
+                (watcher.bundle bundled)))
+          handler
+            (fn [req res]
+              (let [parsed (url.parse req.url true)]
+                (send-html req res { :body
+                  ((if parsed.query.embed embed-template document-template)
+                    bundle) })))
+          require-primuses
+            (fn []
+              (let [primuses (server.primuses)]
+                (.map (Object.keys primuses) (fn [primus]
+                  (bundler.require (StrStr. (aget primuses primus))
+                    { :expose (str primus "/primus.js") }))))) ]
+
+      (bundler.transform "./node_modules/stylify")
+      (bundler.transform wispify)
+
+      (bundler.require "./runtime.js" { :expose "runtime" })
+      (require-primuses)
+      (bundler.add script)
+
+      (bundler.bundle bundled)
+      (watcher.on "update" rebuild)
+      (server.primuses require-primuses)
+
+      (HTTPEndpoint. (endpoint-matcher route) handler (fn [] (watcher.close))))))
 
 (defn- document-template [output]
   (str "<head><meta charset=\"utf-8\"></head><body><script>" output "</script>"))
@@ -169,6 +195,7 @@
               (fn [req] (= 0 (.indexOf (aget (req.url.split "?") 0) options.pathname)))
             destroy
               (fn [] (log "destroying socket" options.pathname))]
+        (server.primuses.set (assoc (server.primuses) options.pathname (socket.library)))
         (HTTPEndpoint. matcher (fn []) destroy)))))
 
   ;((endpoint (str options.pathname "/primus.js") (fn []) destroy) server)))))

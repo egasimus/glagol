@@ -10,6 +10,8 @@ var wisp =
   , runtime:  require('wisp/runtime.js')
   , sequence: require('wisp/sequence.js') };
 
+var log = logging.getLogger('runtime');
+
 var compileSource = exports.compileSource = function compileSource (source, fullpath, raw) {
   raw = raw || false;
   var forms     = wisp.compiler.readForms(source, fullpath)

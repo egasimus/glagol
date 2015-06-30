@@ -52,8 +52,9 @@ var templates = {
     function templateEditorAtom (name) {
       var atom = state().atoms[name];
       return h('.editor-atom',
-        [ h('.editor-atom-name', name)
-        , h('.editor-atom-source', atom.source)]); },
+        [ h('.editor-atom-name',   name)
+        , h('.editor-atom-source', new (require('./widget.js'))(atom.source))
+        , h('.editor-atom-btn',    { onclick: emit('atom-execute', name) }, 'run')]); },
 
   sidebar:
     function templateSidebar () {
@@ -133,6 +134,12 @@ events.on('atom-deselect', function (name) {
     return n !== name;
   })})
 });
+
+events.on('atom-execute', function (name) {
+  util.post('/run', name).then(function (value) {
+    console.log("executed", name, ":", value);
+  });
+})
 
 
 // load data from server

@@ -21,7 +21,7 @@ tab-bar-bg       = #dddddd
   color       body-fg
 
   input, textarea
-    font-family monospace
+    font-family Inconsolata, monospace
     font-size   13px
     line-height 18px
 
@@ -30,15 +30,31 @@ tab-bar-bg       = #dddddd
     overflow-y auto
 
     &-atom
-      background #fff
       margin     6px
       padding    6px
+
+      &.selected
+        background white
 
       &-name
         font-weight bold
 
       &-source
         white-space pre
+
+      &-btn
+        display  none
+
+      &:hover .editor-atom-btn
+        display  block
+        cursor   pointer
+        position absolute
+        top      6px
+        right    6px
+        padding  0 6px
+
+        &:hover
+          background white
 
   .sidebar
     width          250px
@@ -67,10 +83,10 @@ tab-bar-bg       = #dddddd
       padding     0 6px
 
       &.selected
-        font-weight bold
+        background body-bg
 
       &:hover
-        background white
+        color black
 
     .tab
       height      24px

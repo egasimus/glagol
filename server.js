@@ -115,6 +115,23 @@ function freezeAtom (atom) {
   };
 }
 
+function runAtom (name) {
+  return Q.Promise(function (resolve, reject) {
+    if (Object.keys(ATOMS).indexOf(name) === -1) {
+      reject("No atom " + name);
+    };
+    resolve(evaluateAtom(ATOMS[name]));
+  })
+}
+
+function evaluateAtom (atom) {
+  var compiled = runtime.compileSource(atom.source(), atom.name);
+  var context = runtime.makeContext(atom.name);
+  var value = vm.runInContext(compiled.output.code, context);
+  log(value);
+  return value;
+}
+
 function connectSocket (args) {
   SERVER       = args[0]
   var project  = args[1]
@@ -152,6 +169,17 @@ function startServer () {
     web.endpoint(
       '/atoms',  function (req, res) {
         sendJSON(req, res, freezeAtoms()) }),
+
+    web.endpoint(
+      '/run', function (req, res) {
+        if (req.method === 'POST') {
+          var data = '';
+          req.on('data', function (buf) { data += buf });
+          req.on('end', function () {
+            runAtom(data).then(function (value) {
+              sendJSON(req, res, value);
+            })
+          }); }}),
 
     web.endpoint(
       '/update', function (req, res) {

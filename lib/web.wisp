@@ -93,7 +93,7 @@
           bundled
             (fn [err out]
               (if err
-                (log (colors.red "error") err)
+                (log (colors.red "error") (str err))
                 (set! bundle out)))
           rebuild
             (fn [ids]

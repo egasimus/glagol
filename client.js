@@ -38,7 +38,7 @@ var templates = {
     function templateContainer () {
       var s = state();
       return h('.container',
-        [ h('style', require('./editor.styl')     )
+        [ h('style', require('./editor.styl'))
         , h('style', require('./lib/ldt/ldt.styl'))
         , templates.sidebar()
         , templates.editor() ]); },
@@ -50,14 +50,16 @@ var templates = {
 
   editorAtom:
     function templateEditorAtom (name) {
-      return h('.editor-atom', name); },
+      var atom = state().atoms[name];
+      return h('.editor-atom',
+        [ h('.editor-atom-name', name)
+        , h('.editor-atom-source', atom.source)]); },
 
   sidebar:
     function templateSidebar () {
       var s = state();
       return h('.sidebar',
-        [ templates.sidebarListSelected(s.selection || [])
-        , templates.sidebarListLoaded(Object.keys(s.atoms || {})) ]); },
+        [ templates.sidebarListLoaded(Object.keys(s.atoms || {})) ]); },
 
   sidebarListSelected:
     function templateSidebarListSelected (items) {
@@ -77,7 +79,11 @@ var templates = {
 
   sidebarListItemLoaded:
     function templateSidebarListItemLoaded (name) {
-      return h('li.sidebar-list-item', { onclick: emit('atom-select', name) }, name); },
+      var s        = state()
+        , selected = s.selection.indexOf(name) > -1;
+      return h('li.sidebar-list-item' + (selected ? '.selected' : ''),
+              { onclick: emit(!selected ? 'atom-select' : 'atom-deselect', name) },
+              name); },
 
   toolBar:
     function templateToolBar () {
@@ -114,13 +120,23 @@ state(vdom.update.bind(null, view));
 
 
 // event handlers
-events.on('atom-select', function (atom) {
-  updateState({ selection: state().selection.concat([atom]) });
-})
+events.on('atom-select', function (name) {
+  var s = state();
+  if (s.selection.indexOf(name) === -1) {
+    updateState({ selection: s.selection.concat([name]) });
+  }
+});
+
+events.on('atom-deselect', function (name) {
+  var s = state();
+  updateState({ selection: s.selection.filter(function (n) {
+    return n !== name;
+  })})
+});
 
 
 // load data from server
-getAtoms().then(function (atoms) { console.log(atoms); updateState({ atoms: atoms }) });
+getAtoms().then(function (atoms) { updateState({ atoms: atoms }) });
 
 function getAtoms () {
   return Q.Promise(function (resolve, reject, notify) {

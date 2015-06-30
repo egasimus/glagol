@@ -22,8 +22,13 @@ var compileSource = exports.compileSource = function compileSource (source, full
 
   var options   = { 'source-uri': fullpath , 'source': source }
     , output    = wisp.compiler.generate.bind(null, options).apply(null, processed.ast);
+  output.code = wrap(output.code);
 
   return { forms: forms, processed: processed, output: output }
+}
+
+function wrap (code) {
+  return 'error=null;try{'+code+'}catch(e){error=e}';
 }
 
 function importIntoContext (context, obj) {

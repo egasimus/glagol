@@ -125,11 +125,16 @@ function runAtom (name) {
 }
 
 function evaluateAtom (atom) {
-  var compiled = runtime.compileSource(atom.source(), atom.name);
-  var context = runtime.makeContext(atom.name);
-  var value = vm.runInContext(compiled.output.code, context);
-  log(value);
-  return value;
+  return Q.Promise(function (resolve, reject) {
+    var compiled = runtime.compileSource(atom.source(), atom.name);
+    var context = runtime.makeContext(atom.name);
+    var value = vm.runInContext(compiled.output.code, context);
+    if (context.error) {
+      reject(context.error);
+    } else {
+      resolve(value);
+    }
+  });
 }
 
 function connectSocket (args) {
@@ -178,43 +183,12 @@ function startServer () {
           req.on('end', function () {
             runAtom(data).then(function (value) {
               sendJSON(req, res, value);
+            }).catch(function (e) {
+              log(colors.red(
+                'error in ' + colors.bold(data) +
+                (e.lineNumber ? (' at ' + colors.bold(e.lineNumber || '??')) : '') +
+                ':'), colors.bold(e.message));
+              sendJSON(req, res, {
+                error: e.message, line: e.lineNumber, file: data });
             })
-          }); }}),
-
-    web.endpoint(
-      '/update', function (req, res) {
-        if (req.method === 'POST') {
-          var data = '';
-          req.on('data', function (buf) { data += buf });
-          req.on('end', function () {
-            var file = url.parse(req.url, true).query.file;
-            executeForm(file, JSON.parse(data));
-            sendJSON(req, res, "OK");
-          }); }}),
-
-    web.endpoint(
-      '/save',   function (req, res) {
-        if (req.method === 'POST') {
-          var data = '';
-          req.on('data', function (buf) { data += buf });
-          req.on('end', function () {
-            fs.writeFile(url.parse(req.url, true).query.file, indent(data),
-              function (err) {
-                if (err) throw err;
-                sendJSON(req, res, "OK");
-              }); }); }; }),
-
-    web.endpoint(
-      '/repl',   function (req, res) {
-        if (req.method === 'POST') {
-          var data = '';
-          req.on('data', function (buf) { data += buf });
-          req.on('end', function () {
-            log("executing", data);
-            try {
-              var result = vm.runInContext(runtime.compileSource(data, 'repl').output.code, context);
-              sendJSON(req, res, JSON.stringify(result || null));
-            } catch (e) {
-              log(colors.red('error'), e);
-              sendJSON(req, res, JSON.stringify(e)); } }); }; }));
-}
+          }); }}))};

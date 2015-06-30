@@ -3,8 +3,6 @@
 (def ^:private colors (require "colors/safe"))
 (def ^:private path   (require "path"))
 
-(set! log.from "boot")
-
 ;; bootstrapper.
 ;; enables live reloading of server-side process.
 

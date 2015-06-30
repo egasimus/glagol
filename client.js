@@ -53,7 +53,7 @@ var templates = {
       var atom = state().atoms[name];
       return h('.editor-atom',
         [ h('.editor-atom-name',   name)
-        , h('.editor-atom-source', new (require('./widget.js'))(atom.source))
+        , h('.editor-atom-source', new (require('./widget.js'))(atom.source.trim()))
         , h('.editor-atom-btn',    { onclick: emit('atom-execute', name) }, 'run')]); },
 
   sidebar:
@@ -97,7 +97,7 @@ var templates = {
       var s         = state()
         , active    = i == s.files[s.activeFile].activeForm
         , nameFocus = s.mode === 'rename' && active
-        , bodyFocus = s.mode === 'edit' && active;
+        , bodyFocus = s.mode === 'edit'   && active;
       return h(
         'div.form.type-' + f.type + (active ? '.active' : ''),
         { dataset: { index: i }
@@ -139,7 +139,7 @@ events.on('atom-execute', function (name) {
   util.post('/run', name).then(function (value) {
     console.log("executed", name, ":", value);
   });
-})
+});
 
 
 // load data from server

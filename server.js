@@ -20,9 +20,12 @@ var Q        = require('q')
   , logging  = require('./logging.js')
   , web      = runtime.requireWisp('web');
 
-// local state
+// local services
 var log      = logging.getLogger('editor')
-  , ATOMS    = {}
+  , events   = new (require('eventemitter2').EventEmitter2)();
+
+// state
+var ATOMS    = {}
   , SERVER   = null;
 
 // poehali!
@@ -41,45 +44,78 @@ module.exports = {
 };
 
 function loadProject (directory) {
-  return listAtoms(directory).then(concurrently(readAtom));
+  return listAtoms(directory).then(initAtoms).then(readAtoms);
+    //concurrently(initAtom)).then(
+    //concurrently(readAtom));
+}
+
+function initAtoms (atomNames) {
+  return Q.allSettled(atomNames.map(function (name) {
+    return initAtom(name);
+  }));
+}
+
+function readAtoms (atoms) {
+  return Q.allSettled(atoms.map(function (promised) {
+    return readAtom(promised.value)
+  }));
 }
 
 function listAtoms (directory) {
-  return Q.Promise(function (resolve, reject, notify) {
+  return Q.Promise(function (resolve, reject) {
     log("loading atoms from", colors.green(directory));
     glob(path.join(directory, '**', '*'), {}, function (err, atoms) {
       if (err) { log(err); reject(err); }
-      log("loaded atoms", colors.bold(
-        atoms.map(path.relative.bind(null, directory)).join(" ")));
-      atoms.map(function (atom) { ATOMS[atom] = makeAtom(atom); });
+      var names = atoms.map(path.relative.bind(null, directory)).join(" ");
+      log("loaded atoms", colors.bold(names));
       resolve(atoms);
     });
   });
 };
 
-function makeAtom (atom) {
+function initAtom (name) {
+  return Q.Promise(function (resolve) {
+    var atom = makeAtom(name);
+    ATOMS[name] = atom;
+    resolve(atom);
+  });
+}
+
+function makeAtom (name, source) {
   return {
-    name:   atom,
-    source: '',
-    value:  observ()
+    name:   name,
+    source: observ((source || '').trim()),
+    value:  observ(undefined)
   }
 }
 
 function readAtom (atom) {
-  return Q.Promise(function (resolve, reject, notify) {
-    var deferred = Q.defer();
-    atoms[atom] = deferred.promise;
-    fs.readFile(atom, { encoding: 'utf-8' }, function (err, data) {
+  return Q.Promise(function (resolve, reject) {
+    fs.readFile(atom.name, { encoding: 'utf-8' }, function (err, source) {
       if (err) { log(err); reject(err); }
-      log(atom, data);
-      ATOMS[atom].set(data);
-      resolve(atom, data);
+      atom.source.set(source);
+      resolve(atom);
     });
-  });
+  })
 };
 
+function freezeAtoms () {
+  var snapshot = {};
+  Object.keys(ATOMS).map(function (key) {
+    snapshot[key] = freezeAtom(ATOMS[key]);
+  });
+  return snapshot;
+}
+
+function freezeAtom (atom) {
+  return {
+    name:   atom.name,
+    source: atom.source(),
+    value:  atom.value()
+  };
+}
+
 function connectSocket (args) {
-  log(args[1]);
   SERVER       = args[0]
   var project  = args[1]
     , deferred = Q.defer();
@@ -92,7 +128,6 @@ function connectSocket (args) {
 
 function socketConnected (conn, project) {
   log("connected to client over websocket")
-  log(project);
 };
 
 function concurrently (cb) {
@@ -116,7 +151,7 @@ function startServer () {
 
     web.endpoint(
       '/atoms',  function (req, res) {
-        sendJSON(req, res, ATOMS); }),
+        sendJSON(req, res, freezeAtoms()) }),
 
     web.endpoint(
       '/update', function (req, res) {

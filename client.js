@@ -54,45 +54,37 @@ var templates = {
       console.log(atom);
       return h('.editor-atom',
         [ h('.editor-atom-name',   name)
-        , atom.error ? h('.editor-atom-result.error', atom.error.message)         : null
-        , atom.value ? h('.editor-atom-result',       JSON.stringify(atom.value)) : null
+        , atom.error
+          ? h('.editor-atom-result.error', atom.error.message)
+          : null
         , h('.editor-atom-source', new (require('./widget.js'))(atom.source.trim()))
+        , atom.value
+          ? h('.editor-atom-result', JSON.stringify(atom.value, null, 2))
+          : null
         , h('.editor-atom-btn',    { onclick: emit('atom-execute', name) }, 'run') ]); },
-
-  editorAtomError:
-    function templateEditorAtomError (error) {
-      return h('.editor-atom-result.error', error.message);
-    },
 
   sidebar:
     function templateSidebar () {
       var s = state();
       return h('.sidebar',
-        [ templates.sidebarListLoaded(Object.keys(s.atoms || {})) ]); },
+        [ templates.sidebarListAtoms(Object.keys(s.atoms || {})) ]); },
 
-  sidebarListSelected:
-    function templateSidebarListSelected (items) {
-      return h('.sidebar-list',
-        [ h('.sidebar-list-title' + (items.length === 0 ? '.inactive' : ''), 'selected atoms')
-        , h('ul.sidebar-list-body', items.map(templates.sidebarListItemSelected)) ]); },
-
-  sidebarListItemSelected:
-    function templateSidebarListItemSelected (name) {
-      return h('li.sidebar-list-item', { onclick: emit('atom-goto', name) }, name); },
-
-  sidebarListLoaded:
+  sidebarListAtoms:
     function templateSidebarListLoaded (items) {
       return h('.sidebar-list',
         [ h('.sidebar-list-title' + (items.length === 0 ? '.inactive' : ''), 'loaded atoms')
-        , h('ul.sidebar-list-body', items.map(templates.sidebarListItemLoaded)) ]); },
+        , h('ul.sidebar-list-body', items.map(templates.sidebarAtom)) ]); },
 
-  sidebarListItemLoaded:
-    function templateSidebarListItemLoaded (name) {
+  sidebarAtom:
+    function templateSidebarAtom (name) {
       var s        = state()
+        , atom     = s.atoms[name]
         , selected = s.selection.indexOf(name) > -1;
       return h('li.sidebar-list-item' + (selected ? '.selected' : ''),
               { onclick: emit(!selected ? 'atom-select' : 'atom-deselect', name) },
-              name); },
+              [ name
+              , atom.error ? h('label.sidebar-atom-label.error') : null
+              , atom.value ? h('label.sidebar-atom-label.ok')    : null ]); },
 
   toolBar:
     function templateToolBar () {

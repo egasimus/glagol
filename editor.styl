@@ -26,8 +26,11 @@ tab-bar-bg       = #dddddd
     line-height 18px
 
   .editor
-    flex-grow  1.618
-    overflow-y auto
+    flex-grow   1.618
+    overflow-y  auto
+    border-left 1px solid #f8f8f8
+    box-shadow  0 0 6px rgba(0,0,0,0.1)
+    z-index     2
 
     &-atom
       margin     6px
@@ -40,6 +43,7 @@ tab-bar-bg       = #dddddd
         font-weight bold
 
       &-source
+        padding     0px 12px
         white-space pre
 
       &-btn
@@ -50,6 +54,8 @@ tab-bar-bg       = #dddddd
         font-weight bold
         margin      0px 0px
         background  #66ff99
+        white-space pre
+        overflow    auto
 
         &.error
           background  #ff9966
@@ -73,6 +79,20 @@ tab-bar-bg       = #dddddd
     flex-direction column
     flex-shrink    0
     overflow       hidden
+
+    &-atom-label
+      display       inline-block
+      width         12px
+      height        12px
+      background    #6f9
+      border-radius 16px
+      position      absolute
+      right         2px
+      top           3px
+      &.ok
+        background #66ff99
+      &.error
+        background #ff9966
 
     &-list-title
       text-transform uppercase

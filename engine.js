@@ -1,6 +1,7 @@
 module.exports =
   { ATOMS:              ATOMS
   , USES:               USES
+  , events:             new (require('eventemitter2').EventEmitter2)()
   , loadDirectory:      loadDirectory
   , listAtoms:          listAtoms
   , initAtoms:          initAtoms
@@ -26,7 +27,9 @@ var colors  = require('colors/safe')
   , url     = require('url')
   , vm      = require('vm');
 
-var log = require('./logging.js').getLogger('engine');
+var log    = require('./logging.js').getLogger('engine')
+  , events = module.exports.events;
+
 var ATOMS = {}
   , USES  = [];
 
@@ -84,7 +87,7 @@ function makeAtom (name, source) {
     , source: observ((source || '').trim()) };
 
   var value = observ(undefined);
-  value(function () { log('updated', atom.name) });
+  value(function () { events.emit('atom-updated', freezeAtom(atom)) });
   atom.value = function valuePlaceholder (listener) {
     if (!listener) {
       value.set(evaluateAtomSync(atom).value());

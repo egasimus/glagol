@@ -14,7 +14,6 @@ var colors   = require('colors/safe')
   , web      = runtime.requireWisp('./lib/web.wisp');
 
 var log      = logging.getLogger('editor')
-  , events   = new (require('eventemitter2').EventEmitter2)();
 var SERVER   = { destroy: function () { log("server not loaded, can't destroy") } };
 
 start();
@@ -27,8 +26,11 @@ function start () {
     SERVER = server;
     Q.when(atoms)
      .then(engine.importDependencies)
-     .then(engine.connectSocket)
-     .then(engine.socketConnected);
+     .done();
+    Q.when(server)
+     .then(connectSocket)
+     .then(socketConnected)
+     .done();
   })
 }
 
@@ -37,18 +39,17 @@ function stop () {
   return Q.all(cleanup);
 }
 
-function connectSocket (args) {
-  SERVER       = args[0]
-  var project  = args[1]
-    , deferred = Q.defer();
-  var cache = [];
-  SERVER.state.sockets['/socket'].on('connection', function (conn) {
-    deferred.resolve(conn, project);
-  });
-  return deferred.promise;
+function connectSocket (server) {
+  return Q.Promise(function (resolve) {
+    server.state.sockets['/socket'].on('connection', resolve);
+  })
 }
 
-function socketConnected (conn, project) {
+function socketConnected (socket) {
+  //engine.events.on()
+  engine.events.on('atom-updated', function (atom) {
+    socket.send(JSON.stringify({ event: 'atom-updated', data: atom }));
+  });
   log("connected to client over websocket")
 };
 

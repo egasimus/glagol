@@ -25,14 +25,14 @@
             { :server srv :endpoints [] :sockets {} })
         handler
           (fn [req res]
-            (log req.method req.url)
             (let [matcher (fn [endpt] (if (endpt.route req) endpt.handler))
                   match   (first (filter matcher state.endpoints))]
               (if match
                 (try
                   (match.handler req res)
                   (catch error (handler-error error req res)))
-              (handler-404 req res))))
+                (handler-404 req res))
+              (log res.status-code req.method req.url)))
         started
           (Q.defer)
         destroy

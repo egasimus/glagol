@@ -4,9 +4,6 @@ var h    = require('virtual-dom/h')
   , util = require('./util.js')
   , vdom = require('./lib/vdom.wisp');
 
-var WebSocket = require('ws')
-  , ws        = new WebSocket('ws://localhost:4194/socket');
-
 // state
 var state = require('observ')(
   { mode:      'navigate'
@@ -28,6 +25,16 @@ function emit (evt) {
   return function (arg) {
     var args2 = args1.concat([].slice.call(arguments, 1));
     events.emit.apply(events, [evt].concat(args2));
+  }
+}
+
+// real-time messaging
+var WebSocket = require('ws')
+  , socket    = new WebSocket('ws://localhost:4194/socket');
+socket.onmessage = function (evt) {
+  var data = JSON.parse(evt.data);
+  if (data.event) {
+    events.emit(data.event, data.data);
   }
 }
 
@@ -136,15 +143,23 @@ events.on('atom-deselect', function (name) {
 });
 
 events.on('atom-execute', function (name) {
+  var atoms = state().atoms
+    , atom  = atoms[name];
+  atom.value = undefined;
+  updateState();
   util.post('/run', name).then(function (result) {
     var result = JSON.parse(result);
-    var atoms = state().atoms
-      , atom  = atoms[name];
     atom.error = result.error ? result : null;
     atom.value = result.error ? null : result.value;
     updateState(); // TODO assoc :(
   });
 });
+
+events.on('atom-updated', function (data) {
+  var atoms = state().atoms;
+  atoms[data.name] = data;
+  updateState();
+})
 
 
 // load data from server

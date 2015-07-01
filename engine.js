@@ -101,19 +101,19 @@ function makeAtom (name, source) {
   return atom;
 }
 
-function freezeAtoms (noValue) {
+function freezeAtoms () {
   var snapshot = {};
   Object.keys(ATOMS).map(function (key) {
-    snapshot[key] = freezeAtom(ATOMS[key], noValue);
+    snapshot[key] = freezeAtom(ATOMS[key]);
   });
   return snapshot;
 }
 
-function freezeAtom (atom, noValue) {
+function freezeAtom (atom) {
   var frozen =
     { name:   atom.name
     , source: atom.source() };
-  if (!noValue) frozen.value = atom.value();
+  if (atom.value.name === 'observable') frozen.value = atom.value();
   return frozen;
 }
 

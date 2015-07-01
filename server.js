@@ -75,7 +75,7 @@ function startServer () {
 
     web.endpoint(
       '/atoms',  function (req, res) {
-        var atoms = engine.freezeAtoms(true);
+        var atoms = engine.freezeAtoms();
         sendJSON(req, res, logging.filterObject(atoms)) }),
 
     web.endpoint(

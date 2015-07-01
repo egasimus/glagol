@@ -11,7 +11,7 @@ var colors   = require('colors/safe')
 
 var log      = logging.getLogger('editor')
   , events   = new (require('eventemitter2').EventEmitter2)();
-var SERVER   = null;
+var SERVER   = { destroy: function () { log("server not loaded, can't destroy") } };
 
 module.exports =
   { start: start
@@ -22,10 +22,11 @@ function start () {
     [ startServer()
     , engine.loadDirectory('../gui') ]
   ).spread(function (server, atoms) {
-    Q.when(atoms).then(
-      engine.importDependencies).then(
-      engine.connectSocket     ).then(
-      engine.socketConnected   );
+    SERVER = server;
+    Q.when(atoms)
+     .then(engine.importDependencies)
+     .then(engine.connectSocket)
+     .then(engine.socketConnected);
   })
 }
 

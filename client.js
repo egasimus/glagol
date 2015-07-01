@@ -54,8 +54,8 @@ var templates = {
       console.log(atom);
       return h('.editor-atom',
         [ h('.editor-atom-name',   name)
-        , atom.error ? h('.editor-atom-result.error', atom.error.message) : null
-        , atom.value ? h('.editor-atom-result',       atom.value)         : null
+        , atom.error ? h('.editor-atom-result.error', atom.error.message)         : null
+        , atom.value ? h('.editor-atom-result',       JSON.stringify(atom.value)) : null
         , h('.editor-atom-source', new (require('./widget.js'))(atom.source.trim()))
         , h('.editor-atom-btn',    { onclick: emit('atom-execute', name) }, 'run') ]); },
 

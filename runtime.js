@@ -38,7 +38,6 @@ function importIntoContext (context, obj) {
 var makeContext = exports.makeContext = function makeContext (name, elevated) {
   var _require = function (module) { return require(module) };
   _require.main = require.main;
-  log(name);
   var context =
     { exports:      {}
     , __dirname:    __dirname

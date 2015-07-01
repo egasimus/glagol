@@ -1,13 +1,13 @@
 var runtime = require('./runtime.js');
 
-runtime.requireWisp("./boot-server.wisp", true, true)(module);
+//runtime.requireWisp("./boot-server.wisp", true, true)(module);
 
 var colors   = require('colors/safe')
   , engine   = require('./engine.js')
   , sendJSON = require('send-data/json')
   , logging  = require('./logging.js')
   , Q        = require('q')
-  , web      = runtime.requireWisp('web');
+  , web      = runtime.requireWisp('./lib/web.wisp');
 
 var log      = logging.getLogger('editor')
   , events   = new (require('eventemitter2').EventEmitter2)();
@@ -16,6 +16,8 @@ var SERVER   = { destroy: function () { log("server not loaded, can't destroy") 
 module.exports =
   { start: start
   , stop:  stop  };
+
+start();
 
 function start () {
   return Q.all(
@@ -50,11 +52,13 @@ function socketConnected (conn, project) {
   log("connected to client over websocket")
 };
 
-function concurrently (cb) {
-  return function runConcurrently (args) {
-    return Q.allSettled(args.map(cb));
-  }
-};
+function logError (e) {
+  log(colors.red(
+    'error in ' + colors.bold(data) +
+    (e.lineNumber ? (' at ' + colors.bold(e.lineNumber || '??')) : '') +
+    ':'), colors.bold(e.message));
+  log(e.stack);
+}
 
 function startServer () {
   return web.server(
@@ -71,7 +75,8 @@ function startServer () {
 
     web.endpoint(
       '/atoms',  function (req, res) {
-        sendJSON(req, res, engine.freezeAtoms()) }),
+        var atoms = engine.freezeAtoms();
+        sendJSON(req, res, logging.filterObject(atoms)) }),
 
     web.endpoint(
       '/run', function (req, res) {
@@ -82,11 +87,7 @@ function startServer () {
             engine.runAtom(data).then(function (atom) {
               sendJSON(req, res, logging.filterObject(engine.freezeAtom(atom)));
             }).catch(function (e) {
-              log(colors.red(
-                'error in ' + colors.bold(data) +
-                (e.lineNumber ? (' at ' + colors.bold(e.lineNumber || '??')) : '') +
-                ':'), colors.bold(e.message));
-              log(e.stack);
+              logError(e);
               sendJSON(req, res,
                 { error:   true
                 , message: e.message

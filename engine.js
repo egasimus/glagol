@@ -2,12 +2,12 @@ module.exports =
   { ATOMS:              ATOMS
   , USES:               USES
   , loadDirectory:      loadDirectory
-  , initAtoms:          initAtoms
-  , readAtoms:          readAtoms
   , listAtoms:          listAtoms
+  , initAtoms:          initAtoms
   , initAtom:           initAtom 
-  , makeAtom:           makeAtom
+  , readAtoms:          readAtoms
   , readAtom:           readAtom
+  , makeAtom:           makeAtom
   , freezeAtoms:        freezeAtoms
   , freezeAtom:         freezeAtom
   , runAtom:            runAtom
@@ -123,7 +123,7 @@ function evaluateAtom (atom) {
       context[translated] = ATOMS[key];
     });
     context.__dirname = path.resolve(path.dirname(atom.name));
-    var value = vm.runInContext(compiled.output.code, context);
+    var value = vm.runInContext(compiled.output.code, context, { filename: atom.name });
     if (context.error) {
       reject(context.error);
     } else {

@@ -46,7 +46,6 @@ var makeContext = exports.makeContext = function makeContext (name, elevated) {
     , process:      { cwd: process.cwd() }
     , isInstanceOf: function (type, obj) { return obj instanceof type }
     , require:      _require
-    , atom:         function (value)  { return makeAtom(value) }
     , deref:        function (atom)   { return atom.value()    } };
 
   if (elevated) {
@@ -63,47 +62,10 @@ var makeContext = exports.makeContext = function makeContext (name, elevated) {
 
 var requireWisp = exports.requireWisp = function requireWisp (name, raw, elevated) {
   raw = raw || false;
-  var fullpath = raw ? name : findModule(name)
+  var fullpath = name
     , source   = fs.readFileSync(fullpath, { encoding: 'utf8' })
     , output   = compileSource(source, fullpath, raw).output
     , context  = makeContext(name, elevated);
   vm.runInContext(output.code, context, { filename: name });
   return context.exports;
-}
-
-function findModule (name) {
-  return path.resolve(path.join('.', 'lib', name + '.wisp'));
-}
-
-var makeAtom = exports.makeAtom = function makeAtom (value) {
-
-  var atom = observ(value);
-
-  return {
-    type:
-      "Atom",
-    metadata:
-      value.metadata,
-    get:
-      function ()    { return atom() },
-    watch:
-      function (cb)  { atom(cb)      },
-    set:
-      function (val) { atom.set(val) },
-    update:
-      function (cb)  {
-        var val = atom();
-        if (val.destroy) {
-          val.destroy().then(function () { atom.set(cb(val)) });
-        } else {
-          atom.set(cb(val));
-        }
-      },
-    destroy:
-      function () {
-        var val = atom();
-        if (typeof val.destroy === "function") return atom().destroy();
-      }
-  }
-
 }

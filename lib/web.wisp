@@ -25,6 +25,7 @@
             { :server srv :endpoints [] :sockets {} })
         handler
           (fn [req res]
+            (log req.method req.url)
             (let [matcher (fn [endpt] (if (endpt.route req) endpt.handler))
                   match   (first (filter matcher state.endpoints))]
               (if match

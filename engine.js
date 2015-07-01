@@ -88,7 +88,7 @@ function makeAtom (name, source) {
   atom.value = function valuePlaceholder (listener) {
     if (!listener) {
       atom.value = value;
-      atom.value.set(evaluateAtom(atom));
+      atom.value.set(evaluateAtomSync(atom));
       return atom.value();
     }
     return value(listener);
@@ -126,24 +126,32 @@ function runAtom (name) {
   })
 }
 
+function evaluateAtomSync (atom) {
+  var compiled = runtime.compileSource(atom.source(), atom.name);
+  var context = runtime.makeContext(atom.name);
+  USES.map(function (use) {
+    context[use] = runtime.requireWisp('./lib/'+use+'.wisp', true);
+  });
+  Object.keys(ATOMS).map(function (key) {
+    var translated = require('wisp/backend/escodegen/writer.js').translateIdentifierWord(key.split('/')[2]);
+    context[translated] = ATOMS[key];
+  });
+  context.__dirname = path.resolve(path.dirname(atom.name));
+  var value = vm.runInContext(compiled.output.code, context, { filename: atom.name });
+  if (context.error) {
+    throw context.error;
+  } else {
+    atom.value.set(value);
+    return atom;
+  }
+}
+
 function evaluateAtom (atom) {
   return Q.Promise(function (resolve, reject) {
-    var compiled = runtime.compileSource(atom.source(), atom.name);
-    var context = runtime.makeContext(atom.name);
-    USES.map(function (use) {
-      context[use] = runtime.requireWisp('./lib/'+use+'.wisp', true);
-    });
-    Object.keys(ATOMS).map(function (key) {
-      var translated = require('wisp/backend/escodegen/writer.js').translateIdentifierWord(key.split('/')[2]);
-      context[translated] = ATOMS[key];
-    });
-    context.__dirname = path.resolve(path.dirname(atom.name));
-    var value = vm.runInContext(compiled.output.code, context, { filename: atom.name });
-    if (context.error) {
-      reject(context.error);
-    } else {
-      atom.value.set(value);
-      resolve(atom);
+    try {
+      resolve(evaluateAtomSync(atom));
+    } catch (e) {
+      reject(e);
     }
   });
 }

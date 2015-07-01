@@ -87,15 +87,15 @@ function makeAtom (name, source) {
   value(function () { log('updated', atom.name) });
   atom.value = function valuePlaceholder (listener) {
     if (!listener) {
+      value.set(evaluateAtomSync(atom).value());
       atom.value = value;
-      atom.value.set(evaluateAtomSync(atom));
       return atom.value();
     }
     return value(listener);
   }
   atom.value.set = function (v) {
+    value.set(v);
     atom.value = value;
-    atom.value.set(v);
   }
 
   return atom;

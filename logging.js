@@ -35,7 +35,7 @@ var filterObject = exports.filterObject = function filterObject (obj) {
   return JSON.parse(JSON.stringify(obj, jsonFilter));
   function jsonFilter (key, value) {
     if (typeof value === 'function') {
-      return "<function>";
+      return "<function" + (value.name ? (" " + value.name) : "") + ">";
     }
     if (typeof value === 'object' && value !== null) {
       if (cache.indexOf(value) !== -1) return "<circular>";

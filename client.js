@@ -51,10 +51,18 @@ var templates = {
   editorAtom:
     function templateEditorAtom (name) {
       var atom = state().atoms[name];
+      console.log(atom);
       return h('.editor-atom',
         [ h('.editor-atom-name',   name)
+        , atom.error ? h('.editor-atom-result.error', atom.error.message) : null
+        , atom.value ? h('.editor-atom-result',       atom.value)         : null
         , h('.editor-atom-source', new (require('./widget.js'))(atom.source.trim()))
-        , h('.editor-atom-btn',    { onclick: emit('atom-execute', name) }, 'run')]); },
+        , h('.editor-atom-btn',    { onclick: emit('atom-execute', name) }, 'run') ]); },
+
+  editorAtomError:
+    function templateEditorAtomError (error) {
+      return h('.editor-atom-result.error', error.message);
+    },
 
   sidebar:
     function templateSidebar () {
@@ -136,8 +144,13 @@ events.on('atom-deselect', function (name) {
 });
 
 events.on('atom-execute', function (name) {
-  util.post('/run', name).then(function (value) {
-    console.log("executed", name, ":", value);
+  util.post('/run', name).then(function (result) {
+    var result = JSON.parse(result);
+    var atoms = state().atoms
+      , atom  = atoms[name];
+    atom.error = result.error ? result : null;
+    atom.value = result.error ? null : result.value;
+    updateState(); // TODO assoc :(
   });
 });
 

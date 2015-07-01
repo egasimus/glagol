@@ -30,7 +30,7 @@ var getLogger = exports.getLogger = function getLogger (from) {
   }
 }
 
-function filterObject (obj) {
+var filterObject = exports.filterObject = function filterObject (obj) {
   var cache = [];
   return JSON.parse(JSON.stringify(obj, jsonFilter));
   function jsonFilter (key, value) {

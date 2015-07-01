@@ -4,7 +4,7 @@ var fs         = require('fs')
   , path       = require('path')
   , vm         = require('vm');
 
-var wisp =
+var wisp = exports.wisp =
   { ast:      require('wisp/ast.js')
   , compiler: require('wisp/compiler.js')
   , runtime:  require('wisp/runtime.js')
@@ -38,7 +38,7 @@ function importIntoContext (context, obj) {
 var makeContext = exports.makeContext = function makeContext (name, elevated) {
   var _require = function (module) { return require(module) };
   _require.main = require.main;
-
+  log(name);
   var context =
     { exports:      {}
     , __dirname:    __dirname
@@ -48,7 +48,7 @@ var makeContext = exports.makeContext = function makeContext (name, elevated) {
     , isInstanceOf: function (type, obj) { return obj instanceof type }
     , require:      _require
     , atom:         function (value)  { return makeAtom(value) }
-    , deref:        function (atom)   { return atom.get()      } };
+    , deref:        function (atom)   { return atom.value()    } };
 
   if (elevated) {
     context.process = process;

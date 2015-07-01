@@ -26,7 +26,8 @@ var log      = logging.getLogger('editor')
 
 // state
 var ATOMS    = {}
-  , SERVER   = null;
+  , SERVER   = null
+  , USES     = [];
 
 // poehali!
 module.exports = {
@@ -34,6 +35,7 @@ module.exports = {
     return Q.all(
       [ startServer()
       , loadProject('../gui') ]
+    ).then(importDependencies
     ).then(connectSocket
     ).then(socketConnected );
   },
@@ -128,11 +130,42 @@ function evaluateAtom (atom) {
   return Q.Promise(function (resolve, reject) {
     var compiled = runtime.compileSource(atom.source(), atom.name);
     var context = runtime.makeContext(atom.name);
+    USES.map(function (use) {
+      context[use] = runtime.requireWisp('./lib/'+use+'.wisp', true);
+    });
+    Object.keys(ATOMS).map(function (key) {
+      var translated = require('wisp/backend/escodegen/writer.js').translateIdentifierWord(key.split('/')[2]);
+      context[translated] = ATOMS[key];
+    });
+    context.__dirname = path.resolve(path.dirname(atom.name));
     var value = vm.runInContext(compiled.output.code, context);
     if (context.error) {
       reject(context.error);
     } else {
-      resolve(value);
+      atom.value.set(value);
+      resolve(atom);
+    }
+  });
+}
+
+function importDependencies (args) {
+  // TODO ecce stopgap
+  return Q.Promise(function (resolve) {
+    var dependencyList = null;
+    for (var i = 0; i < args[1].length; i++) {
+      var promisedAtom = args[1][i];
+      if (promisedAtom.value.name === '../gui/use') {
+        dependencyList = promisedAtom.value;
+        break;
+      }
+    }
+    if (dependencyList) {
+      evaluateAtom(dependencyList).then(function (atom) {
+        USES = atom.value();
+        resolve(args);
+      }).done();
+    } else {
+      resolve(args);
     }
   });
 }
@@ -181,14 +214,19 @@ function startServer () {
           var data = '';
           req.on('data', function (buf) { data += buf });
           req.on('end', function () {
-            runAtom(data).then(function (value) {
-              sendJSON(req, res, value);
+            runAtom(data).then(function (atom) {
+              sendJSON(req, res, logging.filterObject(freezeAtom(atom)));
             }).catch(function (e) {
               log(colors.red(
                 'error in ' + colors.bold(data) +
                 (e.lineNumber ? (' at ' + colors.bold(e.lineNumber || '??')) : '') +
                 ':'), colors.bold(e.message));
-              sendJSON(req, res, {
-                error: e.message, line: e.lineNumber, file: data });
+              log(e.stack);
+              sendJSON(req, res,
+                { error:   true
+                , message: e.message
+                , line:    e.lineNumber
+                , file:    data 
+                , stack:   e.stack});
             })
           }); }}))};

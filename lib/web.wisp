@@ -138,7 +138,8 @@
   (let [data
           ""
         wispy
-          (= (file.index-of ".wisp") (- file.length 5))
+          (or (= (file.index-of ".wisp") (- file.length 5))
+              (= -1 (file.index-of ".")))
         write
           (fn [buf] (set! data (+ data buf)))
         end

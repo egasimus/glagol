@@ -79,27 +79,42 @@ function readAtom (atom) {
 };
 
 function makeAtom (name, source) {
-  return {
-    name:   name,
-    source: observ((source || '').trim()),
-    value:  observ(undefined)
+  var atom  =
+    { name:   name
+    , source: observ((source || '').trim()) };
+
+  var value = observ(undefined);
+  value(function () { log('updated', atom.name) });
+  atom.value = function valuePlaceholder (listener) {
+    if (!listener) {
+      atom.value = value;
+      atom.value.set(evaluateAtom(atom));
+      return atom.value();
+    }
+    return value(listener);
   }
+  atom.value.set = function (v) {
+    atom.value = value;
+    atom.value.set(v);
+  }
+
+  return atom;
 }
 
-function freezeAtoms () {
+function freezeAtoms (noValue) {
   var snapshot = {};
   Object.keys(ATOMS).map(function (key) {
-    snapshot[key] = freezeAtom(ATOMS[key]);
+    snapshot[key] = freezeAtom(ATOMS[key], noValue);
   });
   return snapshot;
 }
 
-function freezeAtom (atom) {
-  return {
-    name:   atom.name,
-    source: atom.source(),
-    value:  atom.value()
-  };
+function freezeAtom (atom, noValue) {
+  var frozen =
+    { name:   atom.name
+    , source: atom.source() };
+  if (!noValue) frozen.value = atom.value();
+  return frozen;
 }
 
 function runAtom (name) {

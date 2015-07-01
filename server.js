@@ -1,3 +1,7 @@
+module.exports =
+  { start: start
+  , stop:  stop  };
+
 var runtime = require('./runtime.js');
 
 //runtime.requireWisp("./boot-server.wisp", true, true)(module);
@@ -12,10 +16,6 @@ var colors   = require('colors/safe')
 var log      = logging.getLogger('editor')
   , events   = new (require('eventemitter2').EventEmitter2)();
 var SERVER   = { destroy: function () { log("server not loaded, can't destroy") } };
-
-module.exports =
-  { start: start
-  , stop:  stop  };
 
 start();
 
@@ -75,7 +75,7 @@ function startServer () {
 
     web.endpoint(
       '/atoms',  function (req, res) {
-        var atoms = engine.freezeAtoms();
+        var atoms = engine.freezeAtoms(true);
         sendJSON(req, res, logging.filterObject(atoms)) }),
 
     web.endpoint(

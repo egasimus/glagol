@@ -58,7 +58,6 @@ var templates = {
   editorAtom:
     function templateEditorAtom (name) {
       var atom = state().atoms[name];
-      console.log(atom);
       return h('.editor-atom',
         [ h('.editor-atom-name',   name)
         , atom.error

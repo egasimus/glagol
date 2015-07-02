@@ -15,7 +15,7 @@
 
 (defn update [view state]
   (let [new-tree (view.template)
-        patches  (diff view.node new-tree)
+        patches  (diff view.tree new-tree)
         focused  false]
     (set! view.node (patch view.node patches))
     (set! view.tree new-tree)

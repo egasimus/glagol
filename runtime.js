@@ -30,8 +30,17 @@ function compileSource (source, fullpath, raw) {
   return { forms: forms, processed: processed, output: output }
 }
 
-function wrap (code) {
-  return 'error=null;try{'+code+'}catch(e){error=e}';
+function wrap (code, map) {
+  // TODO make source maps work
+  var sep = "//# sourceMappingURL=data:application/json;base64,";
+  var mapped = code.split(sep);
+  return (!map ? [] : [
+    'require("source-map-support").install({retrieveSourceMap:function(){',
+    'return{url:null,map:"', mapped[1].trim(), '"}}});'
+  ]).concat([
+    'error=null;try{', mapped[0],
+    '}catch(e){error=e}',
+  ]).join("");
 }
 
 function importIntoContext (context, obj) {

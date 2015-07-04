@@ -7,7 +7,8 @@ var runtime = require('./runtime.js');
 //runtime.requireWisp("./boot-server.wisp", true, true)(module);
 
 var colors   = require('colors/safe')
-  , engine   = require('./engine.js')
+  //, engine   = require('./engine.js')
+  , engine   = runtime.requireWisp('./engine.wisp')
   , sendJSON = require('send-data/json')
   , logging  = require('./logging.js')
   , Q        = require('q')
@@ -25,7 +26,6 @@ function start () {
   ).spread(function (server, atoms) {
     SERVER = server;
     Q.when(atoms)
-     .then(engine.importDependencies)
      .done();
     Q.when(server)
      .then(connectSocket)
@@ -50,7 +50,7 @@ function socketConnected (socket) {
   engine.events.on('atom-updated', function (atom) {
     socket.send(JSON.stringify({ event: 'atom-updated', data: atom }));
   });
-  log("connected to client over websocket")
+  log("connected to client over websocket");
 };
 
 function logError (e) {

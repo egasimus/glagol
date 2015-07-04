@@ -18,17 +18,19 @@ module.exports =
 
 var Q = require('q');
 Q.longStackSupport = true;
-var colors  = require('colors/safe')
-  , fs      = require('fs')
-  , glob    = require('glob')
-  , observ  = require('observ')
-  , path    = require('path')
-  , runtime = require('./runtime.js')
-  , url     = require('url')
-  , vm      = require('vm');
+var colors   = require('colors/safe')
+  , chokidar = require('chokidar')
+  , fs       = require('fs')
+  , glob     = require('glob')
+  , observ   = require('observ')
+  , path     = require('path')
+  , runtime  = require('./runtime.js')
+  , url      = require('url')
+  , vm       = require('vm');
 
-var log    = require('./logging.js').getLogger('engine')
-  , events = module.exports.events;
+var log     = require('./logging.js').getLogger('engine')
+  , events  = module.exports.events
+  , watcher = chokidar.watch('', { persistent: true, alwaysStat: true});
 
 var ATOMS = {}
   , USES  = [];

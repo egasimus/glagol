@@ -11,10 +11,9 @@
 (def ^:private url      (require "url"))
 (def ^:private vm       (require "vm"))
 
-
 (def ^:private = runtime.wisp.runtime.is-equal)
 
-(def ^:private translate
+(def translate
   (.-translate-identifier-word (require "wisp/backend/escodegen/writer.js")))
 
 (def log     (.get-logger (require "./logging.js") "engine"))

@@ -1,7 +1,8 @@
 module.exports =
   { compileSource: compileSource
   , makeContext:   makeContext
-  , requireWisp:   requireWisp };
+  , requireWisp:   requireWisp
+  , wrap:          wrap };
 
 var fs      = require('fs')
   , logging = require('./logging.js')
@@ -26,7 +27,6 @@ function compileSource (source, fullpath, raw) {
 
   var options   = { 'source-uri': fullpath , 'source': source }
     , output    = wisp.compiler.generate.bind(null, options).apply(null, processed.ast);
-  output.code = wrap(output.code);
 
   return { forms: forms, processed: processed, output: output }
 }
@@ -86,6 +86,6 @@ function requireWisp (name, raw, elevated) {
     , source   = fs.readFileSync(fullpath, { encoding: 'utf8' })
     , output   = compileSource(source, fullpath, raw).output
     , context  = makeContext(name, elevated);
-  vm.runInContext(output.code, context, { filename: name });
+  vm.runInContext(wrap(output.code), context, { filename: name });
   return context.exports;
 }

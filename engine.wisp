@@ -54,7 +54,7 @@
       (resolve atom))))))
 
 (defn make-atom [name source]
-  (let [atom  { :name name :source (observ (.trim (or source "")))}
+  (let [atom  { :type "Atom" :name name :source (observ (.trim (or source "")))}
         value (observ undefined)]
     (value (fn [] (events.emit "atom-updated" (freeze-atom atom))))
     (set! atom.value (fn value-placeholder [listener]
@@ -103,7 +103,9 @@
               (.value atom))]
       (set! deref-atom.deps deref-deps)
       (set! context.deref deref-atom))
-    (let [value (vm.run-in-context compiled.output.code context { :filename atom.name })]
+    (let [value (vm.run-in-context
+                  (runtime.wrap compiled.output.code)
+                  context { :filename atom.name })]
       (if context.error
         (throw context.error)
         (do

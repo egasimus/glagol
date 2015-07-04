@@ -11,6 +11,9 @@
 (def ^:private url      (require "url"))
 (def ^:private vm       (require "vm"))
 
+
+(def ^:private = runtime.wisp.runtime.is-equal)
+
 (def ^:private translate
   (.-translate-identifier-word (require "wisp/backend/escodegen/writer.js")))
 
@@ -52,9 +55,9 @@
       (atom.source.set src)
       (resolve atom))))))
 
-(defn make-atom [name source]
+(defn make-atom [name source initial-value]
   (let [atom  { :type "Atom" :name name :source (observ (.trim (or source "")))}
-        value (observ undefined)]
+        value (observ initial-value)]
     (value (fn [] (events.emit "atom-updated" (freeze-atom atom))))
     (set! atom.value (fn value-placeholder [listener]
       (if (not listener) (do

@@ -51,7 +51,7 @@ function importIntoContext (context, obj) {
 function makeContext (name, elevated) {
 
   function _require (module) {
-    if (path.extname(module) === '.wisp') {
+    if (!process.browser && path.extname(module) === '.wisp') {
       return requireWisp(module)
     } else {
       return require(module)

@@ -88,10 +88,20 @@
   (let [compiled (runtime.compile-source (atom.source) atom.name)
         context  (runtime.make-context atom.name)]
     (.map USES (fn [used]
-      (set! (aget context used) (runtime.require-wisp (str "./lib/" use ".wisp") true))))
+      (set! (aget context used)
+        (runtime.require-wisp (str "./lib/" use ".wisp") true))))
     (.map (Object.keys ATOMS) (fn [i]
-      (set! (aget context (translate (aget (i.split "/") 2))))))
+      (set! (aget context (translate (aget (i.split "/") 2))) (aget ATOMS i))))
     (set! context.__dirname (path.resolve (path.dirname atom.name)))
+    (let [deref-deps
+            []
+          deref-atom
+            (fn deref-atom [atom]
+              (if (= -1 (deref-deps.index-of atom.name))
+                (deref-deps.push atom.name))
+              (.value atom))]
+      (set! deref-atom.deps deref-deps)
+      (set! context.deref deref-atom))
     (let [value (vm.run-in-context compiled.output.code context { :filename atom.name })]
       (if context.error
         (throw context.error)

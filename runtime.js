@@ -49,7 +49,8 @@ function importIntoContext (context, obj) {
 }
 
 function makeContext (name, elevated) {
-  var _require = function (module) {
+
+  function _require (module) {
     if (path.extname(module) === '.wisp') {
       return requireWisp(module)
     } else {
@@ -57,6 +58,7 @@ function makeContext (name, elevated) {
     }
   };
   _require.main = require.main;
+
   var context =
     { exports:      {}
     , __dirname:    __dirname
@@ -64,8 +66,7 @@ function makeContext (name, elevated) {
     , use:          requireWisp
     , process:      { cwd: process.cwd() }
     , isInstanceOf: function (type, obj) { return obj instanceof type }
-    , require:      _require
-    , deref:        function (atom)      { return atom.value()        } };
+    , require:      _require };
 
   if (elevated) {
     context.process = process;

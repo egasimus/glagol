@@ -49,7 +49,7 @@ function socketConnected (socket) {
 
 function logError (e) {
   log(colors.red(
-    'error in ' + colors.bold(data) +
+    'error in ' + colors.bold(e.file) +
     (e.lineNumber ? (' at ' + colors.bold(e.lineNumber || '??')) : '') +
     ':'), colors.bold(e.message));
   log(e.stack);
@@ -89,5 +89,5 @@ function startServer () {
                 , line:    e.lineNumber
                 , file:    data 
                 , stack:   e.stack});
-            })
+            }).done();
           }); }}))};

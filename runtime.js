@@ -5,6 +5,7 @@ module.exports =
 
 var fs      = require('fs')
   , logging = require('./logging.js')
+  , path    = require('path')
   , vm      = require('vm');
 
 var wisp = module.exports.wisp =
@@ -48,7 +49,13 @@ function importIntoContext (context, obj) {
 }
 
 function makeContext (name, elevated) {
-  var _require = function (module) { return require(module) };
+  var _require = function (module) {
+    if (path.extname(module) === '.wisp') {
+      return requireWisp(module)
+    } else {
+      return require(module)
+    }
+  };
   _require.main = require.main;
   var context =
     { exports:      {}

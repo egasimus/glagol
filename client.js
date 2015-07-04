@@ -64,7 +64,11 @@ var templates = {
     function templateEditorAtom (name) {
       var atom = state().atoms[name];
       return h('.editor-atom',
-        [ h('.editor-atom-name',   name)
+        [ h('.editor-atom-head',
+          [ h('.editor-atom-name', name)
+          , h('hr.editor-atom-separator')
+          , h('.editor-atom-btn', { onclick: emit('atom-execute', name) }, 'run')
+          ] )
         , atom.error
           ? h('.editor-atom-result.error', atom.error.message)
           : null
@@ -72,7 +76,7 @@ var templates = {
         , atom.value
           ? h('.editor-atom-result', JSON.stringify(atom.value, null, 2))
           : null
-        , h('.editor-atom-btn',    { onclick: emit('atom-execute', name) }, 'run') ]); },
+        ] ); },
 
   sidebar:
     function templateSidebar () {

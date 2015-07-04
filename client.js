@@ -30,12 +30,17 @@ function emit (evt) {
 
 // real-time messaging
 var WebSocket = require('ws')
-  , socket    = new WebSocket('ws://localhost:4194/socket');
-socket.onmessage = function (evt) {
-  var data = JSON.parse(evt.data);
-  if (data.event) {
-    events.emit(data.event, data.data);
+  , socket    = connectSocket();
+function connectSocket () {
+  var socket = new WebSocket('ws://localhost:4194/socket');
+  socket.onmessage = function (evt) {
+    var data = JSON.parse(evt.data);
+    if (data.event) {
+      events.emit(data.event, data.data);
+    }
   }
+  socket.onclose = emit('disconnected');
+  return socket;
 }
 
 // templates
@@ -73,7 +78,12 @@ var templates = {
     function templateSidebar () {
       var s = state();
       return h('.sidebar',
-        [ templates.sidebarListAtoms(Object.keys(s.atoms || {})) ]); },
+        [ s.disconnected ? templates.sidebarDisconnected() : null
+        , templates.sidebarListAtoms(Object.keys(s.atoms || {})) ]); },
+
+  sidebarDisconnected:
+    function templateSidebarDisconnected () {
+      return h('.sidebar-disconnected', "disconnected :/") },
 
   sidebarListAtoms:
     function templateSidebarListLoaded (items) {
@@ -158,6 +168,10 @@ events.on('atom-updated', function (data) {
     atoms[data.name] = data;
     updateState();
   }
+})
+
+events.on('disconnected', function (evt) {
+  updateState({ disconnected: true })
 })
 
 

@@ -73,6 +73,14 @@ function makeContext (name, elevated) {
     context.require = require;
   }
 
+  if (process.browser) {
+    ATOM_NAMES.map(function (atomName) {
+      if (context[atomName]) console.log(
+        "Warning: overriding existing key", atomName, "in context", name);
+      context[atomName] = global[atomName];
+    })
+  }
+
   [ wisp.ast
   , wisp.sequence
   , wisp.runtime ].map(importIntoContext.bind(null, context));

@@ -7,7 +7,6 @@ var runtime = require('./runtime.js');
 //runtime.requireWisp("./boot-server.wisp", true, true)(module);
 
 var colors   = require('colors/safe')
-  //, engine   = require('./engine.js')
   , engine   = runtime.requireWisp('./engine.wisp')
   , sendJSON = require('send-data/json')
   , logging  = require('./logging.js')

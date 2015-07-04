@@ -21,17 +21,11 @@ start();
 
 function start () {
   return Q.all(
-    [ startServer()
-    , engine.loadDirectory('../gui') ]
-  ).spread(function (server, atoms) {
-    SERVER = server;
-    Q.when(atoms)
-     .done();
-    Q.when(server)
-     .then(connectSocket)
-     .then(socketConnected)
-     .done();
-  })
+    [ Q.when(startServer())
+      .then(function (server) { SERVER = server; return server })
+      .then(connectSocket)
+      .then(socketConnected)
+    , engine.loadDirectory('../gui') ]).done()
 }
 
 function stop () {

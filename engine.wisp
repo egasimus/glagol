@@ -26,11 +26,10 @@
 
 (defn list-atoms [dir]
   (Q.Promise (fn [resolve reject]
-    (log "loading atoms from" (colors.green dir))
     (glob (path.join dir "**" "*") {} (fn [err atoms]
       (if err (do (log err) (reject err)))
       (let [names (.join (atoms.map (path.relative.bind nil dir)) " ")]
-        (log "loading atoms" (colors.bold names))
+        (log "loading atoms" (colors.bold names) "from" (colors.green dir))
         (resolve atoms)))))))
 
 (defn init-atoms [atom-names]

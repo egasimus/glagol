@@ -2,7 +2,7 @@
 (set! Q.longStackSupport true)
 
 (def ^:private colors   (require "colors/safe"))
-(def ^:private chokidar (require "chokidar"))
+;(def ^:private chokidar (require "chokidar"))
 (def ^:private fs       (require "fs"))
 (def ^:private glob     (require "glob"))
 (def ^:private observ   (require "observ"))
@@ -16,10 +16,9 @@
 
 (def log     (.get-logger (require "./logging.js") "engine"))
 (def events  (new (.-EventEmitter2 (require "eventemitter2"))))
-(def watcher (chokidar.watch "" { :persistent true :alwaysStat true}))
+;(def watcher (chokidar.watch "" { :persistent true :alwaysStat true}))
 
 (def ATOMS {})
-(def USES  [])
 
 (defn load-directory [dir]
   (.then (.then (list-atoms dir) init-atoms) read-atoms))
@@ -88,9 +87,6 @@
 (defn evaluate-atom-sync [atom]
   (let [compiled (runtime.compile-source (atom.source) atom.name)
         context  (runtime.make-context atom.name)]
-    (.map USES (fn [used]
-      (set! (aget context used)
-        (runtime.require-wisp (str "./lib/" use ".wisp") true))))
     (.map (Object.keys ATOMS) (fn [i]
       (set! (aget context (translate (aget (i.split "/") 2))) (aget ATOMS i))))
     (set! context.__dirname (path.resolve (path.dirname atom.name)))

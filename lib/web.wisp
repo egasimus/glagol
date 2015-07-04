@@ -130,10 +130,7 @@
   (str "(function () { var " output "; return require })()"))
 
 (defn- compiled [data file]
-  (str "var use=require('runtime').requireWisp;"
-       "var atom=require('runtime').makeAtom;"
-       "var deref=function(a) { return a.get() };"
-    (.-code (.-output (runtime.compile-source data file)))))
+  (.-code (.-output (runtime.compile-source data file))))
 
 (defn- wispify [file]
   (let [data

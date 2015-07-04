@@ -76,6 +76,7 @@
 (defn freeze-atom [atom]
   (let [frozen { :name atom.name :source (atom.source)}]
     (if (= atom.value.name "observable") (set! frozen.value (atom.value)))
+    (set! frozen.timestamp (Math.floor (Date.now)))
     frozen))
 
 (defn run-atom [name]

@@ -148,16 +148,16 @@ events.on('atom-execute', function (name) {
   updateState();
   util.post('/run', name).then(function (result) {
     var result = JSON.parse(result);
-    atom.error = result.error ? result : null;
-    atom.value = result.error ? null : result.value;
-    updateState(); // TODO assoc :(
+    events.emit('atom-updated', result);
   });
 });
 
 events.on('atom-updated', function (data) {
   var atoms = state().atoms;
-  atoms[data.name] = data;
-  updateState();
+  if (atoms[data.name].timestamp < data.timestamp) {
+    atoms[data.name] = data;
+    updateState();
+  }
 })
 
 

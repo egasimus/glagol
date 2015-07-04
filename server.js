@@ -42,7 +42,9 @@ function connectSocket (server) {
 function socketConnected (socket) {
   //engine.events.on()
   engine.events.on('atom-updated', function (atom) {
-    socket.send(JSON.stringify({ event: 'atom-updated', data: atom }));
+    socket.send(JSON.stringify(
+      { event: 'atom-updated'
+      , data:  atom }));
   });
   log("connected to client over websocket");
 };

@@ -57,7 +57,12 @@
 (defn make-atom [name source initial-value]
   (let [atom  { :type "Atom" :name name :source (observ (.trim (or source "")))}
         value (observ initial-value)]
+    ; emit event on value update
     (value (fn [] (events.emit "atom-updated" (freeze-atom atom))))
+    ; use mock value until first evaluation
+    ; this is explicitly checked for in order to ensure that
+    ; an atom is not evaluated during serialization; so maybe
+    ; adding a flag in the atom object would be much clearer
     (set! atom.value (fn value-placeholder [listener]
       (if (not listener) (do
         (value.set (.value (evaluate-atom-sync atom)))
@@ -87,11 +92,13 @@
     (resolve (evaluate-atom (aget ATOMS name))))))
 
 (defn evaluate-atom-sync [atom]
+  ; compile atom code first so we don't create a context for nothing
   (let [compiled (runtime.compile-source (atom.source) atom.name)
         context  (runtime.make-context atom.name)]
+    ; make loaded atoms available in context
     (.map (Object.keys ATOMS) (fn [i]
       (set! (aget context (translate (aget (i.split "/") 2))) (aget ATOMS i))))
-    (set! context.__dirname (path.resolve (path.dirname atom.name)))
+    ; add deref function and associated dependency tracking to context
     (let [deref-deps
             []
           deref-atom
@@ -101,17 +108,22 @@
               (.value atom))]
       (set! deref-atom.deps deref-deps)
       (set! context.deref deref-atom))
+    ; add browserify require to context
+    (if process.browser
+      (set! context.require require))
+    ; evaluate atom code
     (let [value (vm.run-in-context
                   (runtime.wrap compiled.output.code)
                   context { :filename atom.name })]
+      ; if a runtime error has arisen, throw it upwards
       (if context.error
         (throw context.error)
+        ; otherwise store the updated value and return the atom
         (do
           (atom.value.set value)
           atom)))))
 
 (defn evaluate-atom [atom]
   (Q.Promise (fn [resolve reject]
-    (try
-      (resolve (evaluate-atom-sync atom))
+    (try (resolve (evaluate-atom-sync atom))
       (catch e (reject e))))))

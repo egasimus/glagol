@@ -1,6 +1,7 @@
-(fn sampler-template [index]
-  (vdom/h ".sampler"
-    [ (vdom/h ".sampler-controls"
-      [ (vdom/h ".sampler-label"  (str "Sample " index))
-        (vdom/h ".sampler-button" "Play") ])
-      (vdom/h ".sampler-waveform")]))
+(let [vdom {}]
+  (fn sampler-template [index]
+    (vdom.h ".sampler"
+      [ (vdom.h ".sampler-controls"
+        [ (vdom.h ".sampler-label"  (str "Sample " index))
+          (vdom.h ".sampler-button" "Play") ])
+        (vdom.h ".sampler-waveform")])))

@@ -6,6 +6,7 @@
       vdom   (require "../etude/lib/vdom.wisp")
 
       _ (set! global.vdom vdom)
+      _ (set! global.log  console.log)
 
       atoms
         (Q.Promise (fn [resolve]
@@ -19,9 +20,17 @@
 
       init
         (fn [atoms]
+          (let [atom-paths
+                  (Object.keys atoms)
+                atom-names
+                  (.map atom-paths (fn [atom-path]
+                    (engine.translate (aget (atom-path.split "/") 2))))]
+            (set! global.ATOM_NAMES atom-names))
+          (set! global.ATOMS atoms)
           (.map (Object.keys atoms) (fn [idx]
             (let [atom (aget atoms idx)]
-              (let [atom-name (aget (idx.split "/") 2)]
+              (let [atom-name (engine.translate (aget (idx.split "/") 2))]
+                (console.log "Installing atom" atom-name)
                 (if (aget global atom-name)
                   (console.log (str "Warning: overriding existing global '" atom-name "'")))
                 (set! (aget global atom-name)
@@ -32,7 +41,8 @@
           (console.log 3 template)
           (console.log 4 @template)
           (console.log 5 vdom)
+          (console.log 6 vdom.init)
+          (console.log 7 (@template))
           (vdom.init script.parent-element @template))]
 
   (.done (atoms.then init)))
-  

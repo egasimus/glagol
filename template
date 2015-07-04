@@ -1,4 +1,5 @@
-(fn template-app []
-  (vdom.h ".samplers" [
-    (sampler-template 1)
-    (sampler-template 2)]))
+(let [vdom {}]
+  (fn template-app []
+    (vdom.h ".samplers" [
+      (@sampler-template 1)
+      (@sampler-template 2)])))

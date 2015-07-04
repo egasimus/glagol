@@ -114,7 +114,7 @@
       (bundler.transform "./node_modules/stylify")
       (bundler.transform wispify)
 
-      (bundler.require "./runtime.js" { :expose "runtime" })
+      (bundler.require "." { :expose "" })
       (bundler.add script)
 
       (rebuild)

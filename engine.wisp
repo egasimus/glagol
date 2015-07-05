@@ -1,15 +1,16 @@
 (def ^:private Q (require "q"))
 (set! Q.longStackSupport true)
 
-(def ^:private colors   (require "colors/safe"))
+(def ^:private colors    (require "colors/safe"))
 ;(def ^:private chokidar (require "chokidar"))
-(def ^:private fs       (require "fs"))
-(def ^:private glob     (require "glob"))
-(def ^:private observ   (require "observ"))
-(def ^:private path     (require "path"))
-(def ^:private runtime  (require "./runtime.js"))
-(def ^:private url      (require "url"))
-(def ^:private vm       (require "vm"))
+(def ^:private detective (require "detective"))
+(def ^:private fs        (require "fs"))
+(def ^:private glob      (require "glob"))
+(def ^:private observ    (require "observ"))
+(def ^:private path      (require "path"))
+(def ^:private runtime   (require "./runtime.js"))
+(def ^:private url       (require "url"))
+(def ^:private vm        (require "vm"))
 
 (def ^:private = runtime.wisp.runtime.is-equal)
 
@@ -17,7 +18,7 @@
   (.-translate-identifier-word (require "wisp/backend/escodegen/writer.js")))
 
 (def log     (.get-logger (require "./logging.js") "engine"))
-(def events  (new (.-EventEmitter2 (require "eventemitter2"))))
+(def events  (new (.-EventEmitter2 (require "eventemitter2")) { :maxListeners 32 }))
 ;(def watcher (chokidar.watch "" { :persistent true :alwaysStat true}))
 
 (def ATOMS {})
@@ -28,6 +29,8 @@
             :name      name
             :source    (observ (.trim (or source "")))
             :compiled  nil
+            :requires  []
+            :derefs    []
             :value     (observ undefined)
             :evaluated false
             :outdated  false } ]
@@ -38,15 +41,22 @@
       (compile-atom-sync atom)
       (if atom.evaluated (do
         (set! atom.outdated true)
-        (.done (evaluate-atom atom))))))
+        (evaluate-atom-sync atom)))))
 
     ; emit event on value update
     (atom.value (fn [] (events.emit "atom-updated" (freeze-atom atom))))
+
+    ; listen for value updates from dependencies
+    (events.on "atom-updated" (fn [frozen-atom]
+      (if (.index-of atom.derefs frozen-atom.name)
+        (log "dependency of" atom.name "updated:" frozen-atom.name))))
 
     atom))
 
 (defn compile-atom-sync [atom]
   (set! atom.compiled (runtime.compile-source (atom.source) atom.name))
+  (set! atom.requires (detective.find atom.compiled))
+  (set! atom.derefs   (detective.find atom.compiled { :word "deref" }))
   atom)
 
 (defn load-directory [dir]

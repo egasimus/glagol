@@ -59,12 +59,15 @@ tab-bar-bg       = #dddddd
         margin-bottom -2px
         border        1px solid #ccc
 
+        & + .editor-atom-btn
+          margin-left 6px
+
       &:hover .editor-atom-btn
         display  block
         cursor   pointer
 
-      &-source
-        padding     0px 12px
+      &-source, &-info
+        padding     0 0 0 12px
         white-space pre
 
       &-result

@@ -67,14 +67,18 @@ var templates = {
         [ h('.editor-atom-head',
           [ h('.editor-atom-name', name)
           , h('hr.editor-atom-separator')
-          , h('.editor-atom-btn', { onclick: emit('atom-execute', name) }, 'run')
+          , h('.editor-atom-btn', { onclick: emit('atom-toggle-info', name) }, 'info')
+          , h('.editor-atom-btn', { onclick: emit('atom-execute',     name) }, 'run')
           ] )
-        , atom.error
+        , (atom.error && !atom.showInfo)
           ? h('.editor-atom-result.error', atom.error.message)
           : null
         , h('.editor-atom-source', new (require('./widget.js'))(atom.source.trim()))
-        , atom.value
+        , (atom.value && !atom.showInfo)
           ? h('.editor-atom-result', JSON.stringify(atom.value, null, 2))
+          : null
+        , atom.showInfo
+          ? h('.editor-atom-info', JSON.stringify(atom, null, 2))
           : null
         ] ); },
 
@@ -154,6 +158,12 @@ events.on('atom-deselect', function (name) {
     return n !== name;
   })})
 });
+
+events.on('atom-toggle-info', function (name) {
+  var atom = state().atoms[name];
+  atom.showInfo = !atom.showInfo;
+  updateState();
+})
 
 events.on('atom-execute', function (name) {
   var atoms = state().atoms

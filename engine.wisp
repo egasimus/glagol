@@ -94,7 +94,6 @@
 
 (defn evaluate-atom-sync [atom]
   ; compile atom code first so we don't create a context for nothing
-  (log "evaluating" atom.name)
   (let [compiled (runtime.compile-source (atom.source) atom.name)
         context  (runtime.make-context atom.name)]
     ; make loaded atoms available in context

@@ -201,3 +201,16 @@
 
 (defn handler-error [error req res]
   (send-json req res error))
+
+;;
+;; atom page
+;;
+
+(defn page2 [route script]
+  (fn [state]
+    (let [handler
+            (fn [req res]
+              (let [parsed (url.parse req.url true)]
+                (send-html req res { :body "FOO" })))]
+    (assoc state :endpoints (conj state.endpoints
+      (HTTPEndpoint. (endpoint-matcher route) handler (fn [] (watcher.close))))))))

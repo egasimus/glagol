@@ -50,7 +50,8 @@ function socketConnected (socket) {
 
 function logError (e) {
   log(colors.red(
-    'error in ' + colors.bold(e.file) +
+    'error' +
+    (e.file ? (' in ' + colors.bold(e.file)) : '') +
     (e.lineNumber ? (' at ' + colors.bold(e.lineNumber || '??')) : '') +
     ':'), colors.bold(e.message));
   log(e.stack);
@@ -76,19 +77,36 @@ function startServer () {
 
     web.endpoint(
       '/run', function (req, res) {
+        log(0);
         if (req.method === 'POST') {
           var data = '';
           req.on('data', function (buf) { data += buf });
           req.on('end', function () {
-            engine.runAtom(data).then(function (atom) {
-              sendJSON(req, res, logging.filterObject(engine.freezeAtom(atom)));
-            }).catch(function (e) {
-              logError(e);
-              sendJSON(req, res,
-                { error:   true
-                , message: e.message
-                , line:    e.lineNumber
-                , file:    data 
-                , stack:   e.stack});
-            }).done();
+            data = JSON.parse(data);
+            var send = sendJSON.bind(null, req, res)
+            if (!data.name) {
+              var msg = "No atom specified."
+              logError({ message: msg });
+              send({ error: true, message: msg });
+            } else if (Object.keys(engine.ATOMS).indexOf(data.name) === -1) {
+              var msg = "No atom " + data.name;
+              logError({ message: msg });
+              send({ error: true, message: msg });
+
+            } else {
+              var atom = engine.ATOMS[data.name];
+              if (data.source) atom.source.set(data.source);
+              engine.evaluateAtom(atom).then(function (atom) {
+                send(logging.filterObject(engine.freezeAtom(atom)));
+              }).catch(function (e) {
+                e.file = data.name;
+                logError(e);
+                send(
+                  { error:   true
+                  , message: e.message
+                  , line:    e.lineNumber
+                  , file:    data.name
+                  , stack:   e.stack });
+              }).done();
+            }
           }); }}))};

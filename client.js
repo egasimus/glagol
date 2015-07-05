@@ -62,18 +62,19 @@ var templates = {
 
   editorAtom:
     function templateEditorAtom (name) {
-      var atom = state().atoms[name];
+      var atom   = state().atoms[name]
+        , editor = new (require('./widget.js'))(atom.source.trim());
       return h('.editor-atom',
         [ h('.editor-atom-head',
           [ h('.editor-atom-name', name)
           , h('hr.editor-atom-separator')
-          , h('.editor-atom-btn', { onclick: emit('atom-toggle-info', name) }, 'info')
-          , h('.editor-atom-btn', { onclick: emit('atom-execute',     name) }, 'run')
+          , h('.editor-atom-btn', { onclick: emit('atom-toggle-info', name)     }, 'info')
+          , h('.editor-atom-btn', { onclick: emit('atom-execute', name, editor) }, 'run')
           ] )
         , (atom.error && !atom.showInfo)
           ? h('.editor-atom-result.error', atom.error.message)
           : null
-        , h('.editor-atom-source', new (require('./widget.js'))(atom.source.trim()))
+        , h('.editor-atom-source', editor)
         , (atom.value && !atom.showInfo)
           ? h('.editor-atom-result', JSON.stringify(atom.value, null, 2))
           : null
@@ -165,15 +166,18 @@ events.on('atom-toggle-info', function (name) {
   updateState();
 })
 
-events.on('atom-execute', function (name) {
+events.on('atom-execute', function (name, editor) {
   var atoms = state().atoms
     , atom  = atoms[name];
+  atom.source = editor.value();
   atom.value = undefined;
+  console.log(atom);
   updateState();
-  util.post('/run', name).then(function (result) {
-    var result = JSON.parse(result);
-    events.emit('atom-updated', result);
-  });
+  util.post('/run', JSON.stringify({name: name, source: atom.source}))
+    .then(function (result) {
+      var result = JSON.parse(result);
+      events.emit('atom-updated', result);
+    }).done();
 });
 
 events.on('atom-updated', function (data) {

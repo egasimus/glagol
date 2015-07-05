@@ -6,8 +6,8 @@ var parser = new (require('./lib/ldt/parser.js'))(
     other: /\S+/ } );
 
 var EditorWidget = module.exports = function EditorWidget (code, focus) {
-  this.code  = code;
-  this.focus = focus;
+  this.initialContent = code;
+  this.focus          = focus;
 };
 
 EditorWidget.prototype.type = "Widget";
@@ -15,11 +15,11 @@ EditorWidget.prototype.type = "Widget";
 EditorWidget.prototype.init = function () {
   var textarea = require('virtual-dom/create-element')(h('textarea.code',
     { wrap: 'off'
-    , value: this.code }));
+    , value: this.initialContent }));
 
   this.decorator = new (require('./lib/ldt/textarea.js'))(textarea, parser);
-  if (this.focus)
-    this.decorator.element.childNodes[1].childNodes[0].classList.add('focus-me');
+  this.textarea  = this.decorator.element.childNodes[1].childNodes[0];
+  if (this.focus) this.textarea.classList.add('focus-me');
 
   return this.decorator.element;
 };
@@ -29,3 +29,7 @@ EditorWidget.prototype.update = function (previous, domNode) {
 };
 
 EditorWidget.prototype.destroy = function (domNode) {};
+
+EditorWidget.prototype.value = function () {
+  return this.textarea.value
+}

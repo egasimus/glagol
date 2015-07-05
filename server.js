@@ -84,29 +84,29 @@ function startServer () {
           req.on('end', function () {
             data = JSON.parse(data);
             var send = sendJSON.bind(null, req, res)
-            if (!data.name) {
+            if (!data.id) {
               var msg = "No atom specified."
               logError({ message: msg });
               send({ error: true, message: msg });
-            } else if (Object.keys(engine.ATOMS).indexOf(data.name) === -1) {
-              var msg = "No atom " + data.name;
+            } else if (Object.keys(engine.ATOMS).indexOf(data.id) === -1) {
+              var msg = "No atom " + data.id;
               logError({ message: msg });
               send({ error: true, message: msg });
 
             } else {
-              var atom = engine.ATOMS[data.name];
+              var atom = engine.ATOMS[data.id];
               if (data.source) atom.source.set(data.source);
               engine.evaluateAtom(atom).then(function (atom) {
                 send(logging.filterObject(engine.freezeAtom(atom)));
               }).catch(function (e) {
-                e.file = data.name;
+                e.file = data.id;
                 logError(e);
                 send(
                   { error:     true
                   , timestamp: Math.floor(Date.now())
                   , message:   e.message
                   , line:      e.lineNumber
-                  , file:      data.name
+                  , file:      data.id
                   , stack:     e.stack });
               }).done();
             }

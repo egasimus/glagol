@@ -21,6 +21,9 @@
 (def events  (new (.-EventEmitter2 (require "eventemitter2")) { :maxListeners 32 }))
 ;(def watcher (chokidar.watch "" { :persistent true :alwaysStat true}))
 
+(def next-id 0)
+(defn get-id [] (set! next-id (+ next-id 1)) next-id)
+
 (def ATOMS {})
 
 (defn make-atom [name source]
@@ -77,8 +80,10 @@
 
 (defn init-atom [name]
   (Q.Promise (fn [resolve]
-    (let [atom (make-atom name)]
-      (set! (aget ATOMS name) atom)
+    (let [id   (get-id)
+          atom (make-atom name)]
+      (set! atom.id id)
+      (set! (aget ATOMS id) atom)
       (resolve atom)))))
 
 (defn read-atoms [atoms]
@@ -95,11 +100,15 @@
 (defn freeze-atoms []
   (let [snapshot {}]
     (.map (Object.keys ATOMS) (fn [i]
-      (set! (aget snapshot i) (freeze-atom (aget ATOMS i)))))
+      (let [frozen (freeze-atom (aget ATOMS i))]
+        (set! (aget snapshot frozen.id) frozen))))
     snapshot))
 
 (defn freeze-atom [atom]
-  (let [frozen { :name atom.name :source (atom.source)}]
+  (let [frozen
+          { :id     atom.id
+            :name   atom.name
+            :source (atom.source)}]
     (if atom.evaluated (set! frozen.value (atom.value)))
     (set! frozen.timestamp (Math.floor (Date.now)))
     frozen))
@@ -125,7 +134,8 @@
             context (runtime.make-context atom.name)]
         ; make loaded atoms available in context
         (.map (Object.keys ATOMS) (fn [i]
-          (set! (aget context (translate (aget (i.split "/") 2))) (aget ATOMS i))))
+          (let [atom (aget ATOMS i)]
+            (set! (aget context (translate (aget (atom.name.split "/") 2))) atom))))
         ; add deref function and associated dependency tracking to context
         (let [deref-deps
                 []

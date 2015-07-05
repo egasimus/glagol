@@ -12,6 +12,8 @@
 (def ^:private watchify   (require "watchify"))
 (def ^:private ws         (require "ws"))
 
+(def ^:private engine     (runtime.require-wisp "./engine.wisp"))
+
 ;;
 ;; web server instance
 ;;
@@ -207,33 +209,27 @@
 ;; atom page
 ;;
 
-(defn get-derefs-tree [atom]
-  (log "getting deps tree for" atom.name atom.derefs)
-  (if (not atom.compiled) (throw (str "Atom" atom.name "not compiled")))
-  (let [derefs []]
-    (loop [head (aget atom.derefs 0)
-           tail (atom.derefs.slice 1)]
-      (log "head" head "tail" tail)
-      (if head
-        (let [new-derefs []]
-          (if (= -1 (derefs.index-of head)) (do
-            (derefs.push head)
-            (new-derefs.push head)))
-          (recur (aget tail 0) (.concat (tail.slice 1) new-derefs))))
-        derefs)))
+(defn walk-tree [node get-children cb]
+  (cb node)
+  (.map (get-children node)
+    (fn [child] (walk-tree child get-children cb))))
+
+(defn get-derefs [atom]
+  (walk-tree
+    atom
+    (fn [atom] (.map atom.derefs (fn [dep] (log "get" dep) (aget engine.ATOMS dep))))
+    (fn [atom] (log "visiting" atom.name))))
 
 (defn page2 [route atom]
   (fn [state]
     (let [ATOMS
             (.-ATOMS (require "engine.wisp"))
-          deps
-            (get-derefs-tree atom)
           requires
             []
           handler
             (fn [req res] (send req res {
               :body    atom.compiled.output.code
               :headers { "Content-Type" "text/javascript; charset=utf-8" } })) ]
-      (log "dependency tree" deps)
+      ;(log "dependency tree" (get-derefs atom))
       (assoc state :endpoints (conj state.endpoints
         (HTTPEndpoint. (endpoint-matcher route) handler (fn [])))))))

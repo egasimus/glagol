@@ -61,15 +61,15 @@ var templates = {
       return h('.editor', (s.selection || []).map(templates.editorAtom)); },
 
   editorAtom:
-    function templateEditorAtom (name) {
-      var atom   = state().atoms[name]
+    function templateEditorAtom (id) {
+      var atom   = state().atoms[id]
         , editor = new (require('./widget.js'))(atom.source.trim());
       return h('.editor-atom',
         [ h('.editor-atom-head',
-          [ h('.editor-atom-name', name)
+          [ h('.editor-atom-name', atom.name)
           , h('hr.editor-atom-separator')
-          , h('.editor-atom-btn', { onclick: emit('atom-toggle-info', name)     }, 'info')
-          , h('.editor-atom-btn', { onclick: emit('atom-execute', name, editor) }, 'run')
+          , h('.editor-atom-btn', { onclick: emit('atom-toggle-info', id)     }, 'info')
+          , h('.editor-atom-btn', { onclick: emit('atom-execute', id, editor) }, 'run')
           ] )
         , (atom.error && !atom.showInfo)
           ? h('.editor-atom-result.error', atom.error.message)
@@ -101,13 +101,13 @@ var templates = {
         , h('ul.sidebar-list-body', items.map(templates.sidebarAtom)) ]); },
 
   sidebarAtom:
-    function templateSidebarAtom (name) {
+    function templateSidebarAtom (id) {
       var s        = state()
-        , atom     = s.atoms[name]
-        , selected = s.selection.indexOf(name) > -1;
+        , atom     = s.atoms[id]
+        , selected = s.selection.indexOf(id) > -1;
       return h('li.sidebar-list-item' + (selected ? '.selected' : ''),
-              { onclick: emit(!selected ? 'atom-select' : 'atom-deselect', name) },
-              [ name
+              { onclick: emit(!selected ? 'atom-select' : 'atom-deselect', id) },
+              [ atom.name
               , atom.error ? h('label.sidebar-atom-label.error') : null
               , atom.value ? h('label.sidebar-atom-label.ok')    : null ]); },
 
@@ -116,26 +116,6 @@ var templates = {
       return h( '.toolbar',
         [ h( '.toolbar-button', { }, state().mode )
         , h( '.toolbar-button', { onclick: emit('execute-file') }, "execute file" ) ] ); },
-
-  form:
-    function templateForm (f, i) {
-      var s         = state()
-        , active    = i == s.files[s.activeFile].activeForm
-        , nameFocus = s.mode === 'rename' && active
-        , bodyFocus = s.mode === 'edit'   && active;
-      return h(
-        'div.form.type-' + f.type + (active ? '.active' : ''),
-        { dataset: { index: i }
-        , onclick: emit('form-selected') },
-        [ h('label.type', f.type)
-        , h('input.name' + (nameFocus ? '.focus-me' : ''),
-            { placeholder: 'enter name...'
-            , onblur:      emit('name-blurred', f)
-            , onfocus:     emit('rename-form')
-            , value:       f.name || ''})
-        , f.type === 'use'
-            ? undefined
-            : new (require('./widget.js'))(f.body, bodyFocus) ]); },
 
 };
 
@@ -146,44 +126,43 @@ state(vdom.update.bind(null, view));
 
 
 // event handlers
-events.on('atom-select', function (name) {
+events.on('atom-select', function (id) {
   var s = state();
-  if (s.selection.indexOf(name) === -1) {
-    updateState({ selection: s.selection.concat([name]) });
+  if (s.selection.indexOf(id) === -1) {
+    updateState({ selection: s.selection.concat([id]) });
   }
 });
 
-events.on('atom-deselect', function (name) {
+events.on('atom-deselect', function (id) {
   var s = state();
   updateState({ selection: s.selection.filter(function (n) {
-    return n !== name;
+    return n !== id;
   })})
 });
 
-events.on('atom-toggle-info', function (name) {
-  var atom = state().atoms[name];
+events.on('atom-toggle-info', function (id) {
+  var atom = state().atoms[id];
   atom.showInfo = !atom.showInfo;
   updateState();
 })
 
-events.on('atom-execute', function (name, editor) {
+events.on('atom-execute', function (id, editor) {
   var atoms = state().atoms
-    , atom  = atoms[name];
+    , atom  = atoms[id];
   atom.source = editor.value();
   atom.value = undefined;
-  console.log(atom);
   updateState();
-  util.post('/run', JSON.stringify({name: name, source: atom.source}))
+  util.post('/run', JSON.stringify({id: id, source: atom.source}))
     .then(function (result) {
-      var result = JSON.parse(result);
+      var result = JSON.parse(result)
       events.emit('atom-updated', result);
     }).done();
 });
 
 events.on('atom-updated', function (data) {
   var atoms = state().atoms;
-  if (atoms[data.name].timestamp < data.timestamp) {
-    atoms[data.name] = data;
+  if (atoms[data.id].timestamp < data.timestamp) {
+    atoms[data.id] = data;
     updateState();
   }
 })
@@ -204,42 +183,3 @@ function getAtoms () {
     }));
   });
 }
-
-
-// event handlers
-
-//keymap =
-  //{ navigate:
-    //{ 13: 'execute-form'  // <Enter>
-    //, 65: 'add-atom'      // a
-    //, 67: 'call-form'     // c
-    //, 68: 'delete-form'   // d
-    //, 69: 'edit-form'     // e
-    //, 70: 'add-fn'        // f
-    //, 72: 'previous-tab'  // h
-    //, 74: 'next-form'     // j
-    //, 75: 'previous-form' // k
-    //, 76: 'next-tab'      // l
-    //, 77: 'move-form'     // m
-    //, 82: 'rename-form'   // r
-    //, 87: 'save-file'     // w
-    //}
-  //, rename:
-    //{ 13: 'end-rename'    // <Enter>
-    //, 27: 'exit-mode'     // <Esc>
-    //}
-  //, edit:
-    //{  9: 'insert-tab'    // <Tab>
-    //, 27: 'exit-mode' }   // <Esc>
-//}
-
-//document.addEventListener('keydown', function (evt) {
-  //var active = document.activeElement
-    //, mode   = state().mode;
-  //if (mode && keymap[mode] && keymap[mode][evt.which]) {
-    //evt.preventDefault();
-    //events.emit(keymap[mode][evt.which], evt);
-  //} else {
-    //console.log('keypress', evt.which);
-  //}
-//});

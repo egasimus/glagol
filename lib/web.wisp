@@ -207,11 +207,33 @@
 ;; atom page
 ;;
 
+(defn get-derefs-tree [atom]
+  (log "getting deps tree for" atom.name atom.derefs)
+  (if (not atom.compiled) (throw (str "Atom" atom.name "not compiled")))
+  (let [derefs []]
+    (loop [head (aget atom.derefs 0)
+           tail (atom.derefs.slice 1)]
+      (log "head" head "tail" tail)
+      (if head
+        (let [new-derefs []]
+          (if (= -1 (derefs.index-of head)) (do
+            (derefs.push head)
+            (new-derefs.push head)))
+          (recur (aget tail 0) (.concat (tail.slice 1) new-derefs))))
+        derefs)))
+
 (defn page2 [route atom]
   (fn [state]
-    (let [engine  (require "engine.wisp")
-          handler (fn [req res] (send req res {
-            :body    atom.compiled.output.code
-            :headers { "Content-Type" "text/javascript; charset=utf-8"  } }))]
+    (let [ATOMS
+            (.-ATOMS (require "engine.wisp"))
+          deps
+            (get-derefs-tree atom)
+          requires
+            []
+          handler
+            (fn [req res] (send req res {
+              :body    atom.compiled.output.code
+              :headers { "Content-Type" "text/javascript; charset=utf-8" } })) ]
+      (log "dependency tree" deps)
       (assoc state :endpoints (conj state.endpoints
         (HTTPEndpoint. (endpoint-matcher route) handler (fn [])))))))

@@ -48,15 +48,16 @@
 
     ; listen for value updates from dependencies
     (events.on "atom-updated" (fn [frozen-atom]
-      (if (.index-of atom.derefs frozen-atom.name)
+      (if (not (= -1 (.index-of atom.derefs frozen-atom.name)))
         (log "dependency of" atom.name "updated:" frozen-atom.name))))
 
     atom))
 
 (defn compile-atom-sync [atom]
   (set! atom.compiled (runtime.compile-source (atom.source) atom.name))
-  (set! atom.requires (detective.find atom.compiled))
-  (set! atom.derefs   (detective.find atom.compiled { :word "deref" }))
+  (let [code atom.compiled.output.code]
+    (set! atom.requires (.-strings     (detective.find code)))
+    (set! atom.derefs   (.-expressions (detective.find code { :word "deref" }))))
   atom)
 
 (defn load-directory [dir]

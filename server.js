@@ -102,11 +102,12 @@ function startServer () {
                 e.file = data.name;
                 logError(e);
                 send(
-                  { error:   true
-                  , message: e.message
-                  , line:    e.lineNumber
-                  , file:    data.name
-                  , stack:   e.stack });
+                  { error:     true
+                  , timestamp: Math.floor(Date.now())
+                  , message:   e.message
+                  , line:      e.lineNumber
+                  , file:      data.name
+                  , stack:     e.stack });
               }).done();
             }
           }); }}))};

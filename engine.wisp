@@ -22,6 +22,21 @@
 
 (def ATOMS {})
 
+(defn make-atom [name source]
+  (let [atom
+          { :type      "Atom"
+            :name      name
+            :source    (observ (.trim (or source "")))
+            :compiled  nil
+            :value     (observ undefined)
+            :evaluated false
+            :outdated  false } ]
+    ; recompile source on source update
+    (atom.source (fn [] (if atom.compiled (log "recompiling"))))
+    ; emit event on value update
+    (atom.value (fn [] (events.emit "atom-updated" (freeze-atom atom))))
+    atom))
+
 (defn load-directory [dir]
   (.then (.then (list-atoms dir) init-atoms) read-atoms))
 
@@ -54,25 +69,6 @@
       (atom.source.set src)
       (resolve atom))))))
 
-(defn make-atom [name source initial-value]
-  (let [atom  { :type "Atom" :name name :source (observ (.trim (or source "")))}
-        value (observ initial-value)]
-    ; emit event on value update
-    (value (fn [] (events.emit "atom-updated" (freeze-atom atom))))
-    ; use mock value until first evaluation
-    ; this is explicitly checked for in order to ensure that
-    ; an atom is not evaluated during serialization; so maybe
-    ; adding a flag in the atom object would be much clearer
-    (set! atom.value (fn value-placeholder [listener]
-      (if (not listener) (do
-        (value.set (.value (evaluate-atom-sync atom)))
-        (set! atom.value value)
-        (atom.value)))))
-    (set! atom.value.set (fn [v]
-      (value.set v)
-      (set! atom.value value)))
-    atom))
-
 (defn freeze-atoms []
   (let [snapshot {}]
     (.map (Object.keys ATOMS) (fn [i]
@@ -81,7 +77,7 @@
 
 (defn freeze-atom [atom]
   (let [frozen { :name atom.name :source (atom.source)}]
-    (if (= atom.value.name "observable") (set! frozen.value (atom.value)))
+    (if atom.evaluated (set! frozen.value (atom.value)))
     (set! frozen.timestamp (Math.floor (Date.now)))
     frozen))
 
@@ -91,8 +87,14 @@
       (reject (str "No atom" name)))
     (resolve (evaluate-atom (aget ATOMS name))))))
 
+(defn evaluate-atom [atom]
+  (Q.Promise (fn [resolve reject]
+    (try (resolve (evaluate-atom-sync atom))
+      (catch e (reject e))))))
+
 (defn evaluate-atom-sync [atom]
   ; compile atom code first so we don't create a context for nothing
+  (log "evaluating" atom.name)
   (let [compiled (runtime.compile-source (atom.source) atom.name)
         context  (runtime.make-context atom.name)]
     ; make loaded atoms available in context
@@ -105,7 +107,9 @@
             (fn deref-atom [atom]
               (if (= -1 (deref-deps.index-of atom.name))
                 (deref-deps.push atom.name))
-              (.value atom))]
+              (if (and atom.evaluated (not atom.outdated))
+                (.value atom))
+                (.value (evaluate-atom-sync atom)))]
       (set! deref-atom.deps deref-deps)
       (set! context.deref deref-atom))
     ; add browserify require to context
@@ -120,10 +124,6 @@
         (throw context.error)
         ; otherwise store the updated value and return the atom
         (do
+          (set! atom.evaluated true)
           (atom.value.set value)
           atom)))))
-
-(defn evaluate-atom [atom]
-  (Q.Promise (fn [resolve reject]
-    (try (resolve (evaluate-atom-sync atom))
-      (catch e (reject e))))))

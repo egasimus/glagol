@@ -31,11 +31,23 @@
             :value     (observ undefined)
             :evaluated false
             :outdated  false } ]
-    ; recompile source on source update
-    (atom.source (fn [] (if atom.compiled (log "recompiling"))))
+
+    ; compile source now and on update
+    (compile-atom-sync atom)
+    (atom.source (fn []
+      (compile-atom-sync atom)
+      (if atom.evaluated (do
+        (set! atom.outdated true)
+        (.done (evaluate-atom atom))))))
+
     ; emit event on value update
     (atom.value (fn [] (events.emit "atom-updated" (freeze-atom atom))))
+
     atom))
+
+(defn compile-atom-sync [atom]
+  (set! atom.compiled (runtime.compile-source (atom.source) atom.name))
+  atom)
 
 (defn load-directory [dir]
   (.then (.then (list-atoms dir) init-atoms) read-atoms))
@@ -93,36 +105,38 @@
       (catch e (reject e))))))
 
 (defn evaluate-atom-sync [atom]
-  ; compile atom code first so we don't create a context for nothing
-  (let [compiled (runtime.compile-source (atom.source) atom.name)
-        context  (runtime.make-context atom.name)]
-    ; make loaded atoms available in context
-    (.map (Object.keys ATOMS) (fn [i]
-      (set! (aget context (translate (aget (i.split "/") 2))) (aget ATOMS i))))
-    ; add deref function and associated dependency tracking to context
-    (let [deref-deps
-            []
-          deref-atom
-            (fn deref-atom [atom]
-              (if (= -1 (deref-deps.index-of atom.name))
-                (deref-deps.push atom.name))
-              (if (and atom.evaluated (not atom.outdated))
-                (.value atom))
-                (.value (evaluate-atom-sync atom)))]
-      (set! deref-atom.deps deref-deps)
-      (set! context.deref deref-atom))
-    ; add browserify require to context
-    (if process.browser
-      (set! context.require require))
-    ; evaluate atom code
-    (let [value (vm.run-in-context
-                  (runtime.wrap compiled.output.code)
-                  context { :filename atom.name })]
-      ; if a runtime error has arisen, throw it upwards
-      (if context.error
-        (throw context.error)
-        ; otherwise store the updated value and return the atom
-        (do
-          (set! atom.evaluated true)
-          (atom.value.set value)
-          atom)))))
+  ; compile atom code if not compiled yet
+  (if (and atom.evaluated (not atom.outdated))
+    atom
+    (do
+      (if (not atom.compiled) (compile-atom-sync atom))
+      (let [code    atom.compiled.output.code
+            context (runtime.make-context atom.name)]
+        ; make loaded atoms available in context
+        (.map (Object.keys ATOMS) (fn [i]
+          (set! (aget context (translate (aget (i.split "/") 2))) (aget ATOMS i))))
+        ; add deref function and associated dependency tracking to context
+        (let [deref-deps
+                []
+              deref-atom
+                (fn deref-atom [atom]
+                  (if (= -1 (deref-deps.index-of atom.name))
+                    (deref-deps.push atom.name))
+                  (if (and atom.evaluated (not atom.outdated))
+                    (.value atom))
+                    (.value (evaluate-atom-sync atom)))]
+          (set! deref-atom.deps deref-deps)
+          (set! context.deref deref-atom))
+        ; add browserify require to context
+        (if process.browser
+          (set! context.require require))
+        ; evaluate atom code
+        (let [value (vm.run-in-context (runtime.wrap code) context { :filename atom.name })]
+          ; if a runtime error has arisen, throw it upwards
+          (if context.error
+            (throw context.error)
+            ; otherwise store the updated value and return the atom
+            (do
+              (set! atom.evaluated true)
+              (atom.value.set value)
+              atom)))))))

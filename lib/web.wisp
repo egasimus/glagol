@@ -4,6 +4,7 @@
 (def ^:private path       (require "path"))
 (def ^:private Q          (require "q"))
 (def ^:private runtime    (require "./runtime.js"))
+(def ^:private send       (require "send-data"))
 (def ^:private send-html  (require "send-data/html"))
 (def ^:private send-json  (require "send-data/json"))
 (def ^:private through    (require "through"))
@@ -206,11 +207,11 @@
 ;; atom page
 ;;
 
-(defn page2 [route script]
+(defn page2 [route atom]
   (fn [state]
-    (let [handler
-            (fn [req res]
-              (let [parsed (url.parse req.url true)]
-                (send-html req res { :body "FOO" })))]
-    (assoc state :endpoints (conj state.endpoints
-      (HTTPEndpoint. (endpoint-matcher route) handler (fn [] (watcher.close))))))))
+    (let [engine  (require "engine.wisp")
+          handler (fn [req res] (send req res {
+            :body    atom.compiled.output.code
+            :headers { "Content-Type" "text/javascript; charset=utf-8"  } }))]
+      (assoc state :endpoints (conj state.endpoints
+        (HTTPEndpoint. (endpoint-matcher route) handler (fn [])))))))

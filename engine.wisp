@@ -130,7 +130,6 @@
         ; make loaded atoms available in context
         (.map (Object.keys ATOMS) (fn [i]
           (let [atom (aget ATOMS i)]
-            (log atom.name)
             (set! (aget context (translate atom.name)) atom))))
         ; add deref function and associated dependency tracking to context
         (let [deref-deps

@@ -88,12 +88,17 @@ function makeContext (name, elevated) {
   return vm.createContext(context);
 }
 
+var cache = module.exports.cache = [];
+
 function requireWisp (name, raw, elevated) {
-  raw = raw || false;
-  var fullpath = name
-    , source   = fs.readFileSync(fullpath, { encoding: 'utf8' })
-    , output   = compileSource(source, fullpath, raw).output
-    , context  = makeContext(name, elevated);
-  vm.runInContext(wrap(output.code), context, { filename: name });
-  return context.exports;
+  if (!cache[name]) {
+    raw = raw || false;
+    var fullpath = name
+      , source   = fs.readFileSync(fullpath, { encoding: 'utf8' })
+      , output   = compileSource(source, fullpath, raw).output
+      , context  = makeContext(name, elevated);
+    vm.runInContext(wrap(output.code), context, { filename: name });
+    cache[name] = context.exports;
+  }
+  return cache[name];
 }

@@ -24,7 +24,7 @@ function start () {
       .then(function (server) { SERVER = server; return server })
       .then(connectSocket)
       .then(socketConnected)
-    , engine.loadDirectory('../gui') ]).done()
+    , engine.loadDirectory('./project') ]).done()
 }
 
 function stop () {

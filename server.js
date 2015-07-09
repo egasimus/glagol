@@ -1,10 +1,5 @@
-module.exports =
-  { start: start
-  , stop:  stop  };
-
 var runtime = require('./runtime.js');
-
-//runtime.requireWisp("./boot-server.wisp", true, true)(module);
+runtime.requireWisp("./boot-server.wisp", true, true)(module);
 
 var colors   = require('colors/safe')
   , engine   = runtime.requireWisp('./engine.wisp')
@@ -16,18 +11,17 @@ var colors   = require('colors/safe')
 var log      = logging.getLogger('editor')
 var SERVER   = { destroy: function () { log("server not loaded, can't destroy") } };
 
-start();
+//start().done();
 
-function start () {
+var start = module.exports.start = function start () {
   return Q.when(startServer())
     .then(function (server) { SERVER = server; return server })
     .then(connectSocket)
     .then(socketConnected)
     .then(engine.start.bind(null, './project'))
-    .done()
 }
 
-function stop () {
+var stop = module.exports.stop = function stop () {
   var cleanup = [SERVER.destroy()];
   return Q.all(cleanup);
 }

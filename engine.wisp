@@ -50,7 +50,7 @@
 (defn load-atom [atom-path]
   (.done (.then (Q.nfcall fs.read-file atom-path "utf-8") (fn [src]
     (let [atom (make-atom atom-path src)]
-      (set! (aget ATOMS atom-path))
+      (set! (aget ATOMS atom-path) atom)
       (events.emit "atom-updated" (freeze-atom atom)))))))
 
 (defn make-atom [atom-path source]

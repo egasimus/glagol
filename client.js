@@ -173,7 +173,7 @@ events.on('disconnected', function (evt) {
 
 
 // load data from server
-//getAtoms().then(function (atoms) { updateState({ atoms: atoms }) });
+getAtoms().then(function (atoms) { updateState({ atoms: atoms }) });
 
 function getAtoms () {
   return Q.Promise(function (resolve, reject, notify) {

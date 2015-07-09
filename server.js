@@ -77,7 +77,6 @@ function startServer () {
 
     web.endpoint(
       '/run', function (req, res) {
-        log(0);
         if (req.method === 'POST') {
           var data = '';
           req.on('data', function (buf) { data += buf });

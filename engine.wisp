@@ -95,12 +95,12 @@
   (let [snapshot {}]
     (.map (Object.keys ATOMS) (fn [i]
       (let [frozen (freeze-atom (aget ATOMS i))]
-        (set! (aget snapshot frozen.id) frozen))))
+        (set! (aget snapshot frozen.path) frozen))))
     snapshot))
 
 (defn freeze-atom [atom]
   (let [frozen
-          { :id     atom.id
+          { :path   atom.path
             :name   atom.name
             :source (atom.source)}]
     (if atom.evaluated (set! frozen.value (atom.value)))

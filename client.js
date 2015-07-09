@@ -1,8 +1,9 @@
-var h    = require('virtual-dom/h')
-  , http = require('http-browserify')
-  , Q    = require('q')
-  , util = require('./util.js')
-  , vdom = require('./lib/vdom.wisp');
+var h       = require('virtual-dom/h')
+  , http    = require('http-browserify')
+  , Q       = require('q')
+  , util    = require('./util.js')
+  , vdom    = require('./lib/vdom.wisp')
+  , widgets = require('./widgets.js');
 
 // state
 var state = require('observ')(
@@ -63,7 +64,7 @@ var templates = {
   editorAtom:
     function templateEditorAtom (id) {
       var atom   = state().atoms[id]
-        , editor = new (require('./widget.js'))(atom.source.trim());
+        , editor = new widgets.Editor(atom.source.trim())
       return h('.editor-atom',
         [ h('.editor-atom-head',
           [ h('.editor-atom-name', atom.name)
@@ -76,7 +77,7 @@ var templates = {
           : null
         , h('.editor-atom-source', editor)
         , (atom.value && !atom.showInfo)
-          ? h('.editor-atom-result', JSON.stringify(atom.value, null, 2))
+          ? h('.editor-atom-result', new widgets.JSONViewer(atom.value))
           : null
         , atom.showInfo
           ? h('.editor-atom-info', JSON.stringify(atom, null, 2))

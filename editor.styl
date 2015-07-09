@@ -21,8 +21,9 @@ tab-bar-bg       = #dddddd
   background  body-bg
   color       body-fg
 
-  input, textarea
+  input, textarea, pre
     font-family Inconsolata, monospace
+    font-weight normal
     font-size   13px
     line-height 18px
 
@@ -80,6 +81,10 @@ tab-bar-bg       = #dddddd
 
         &.error
           background  #ff9966
+
+      & .renderjson
+        & .key
+          font-weight bold
 
   .sidebar
     width          250px

@@ -211,15 +211,12 @@
 
 (defn page2 [route atom]
   (fn [state]
-    (log 1)
     (let [derefs
             (engine.get-derefs atom)
-          _ (log 2)
           handler
             (fn [req res] (send req res {
               :body    atom.compiled.output.code
               :headers { "Content-Type" "text/javascript; charset=utf-8" } })) ]
-      (log 3)
       (log "dependency tree" derefs)
       (assoc state :endpoints (conj state.endpoints
         (HTTPEndpoint. (endpoint-matcher route) handler (fn [])))))))

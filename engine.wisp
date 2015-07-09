@@ -49,15 +49,16 @@
 
 (defn load-atom [atom-path]
   (.done (.then (Q.nfcall fs.read-file atom-path "utf-8") (fn [src]
-    (let [atom (make-atom atom-path src)]
-      (set! (aget ATOMS atom-path) atom)
+    (let [rel-path (path.relative root-dir atom-path)
+          atom     (make-atom rel-path src)]
+      (set! (aget ATOMS rel-path) atom)
       (events.emit "atom-updated" (freeze-atom atom)))))))
 
 (defn make-atom [atom-path source]
   (let [atom
           { :type      "Atom"
             :path      atom-path
-            :name      (path.relative root-dir atom-path)
+            :name      atom-path
             :source    (observ (.trim (or source "")))
             :compiled  nil
             :requires  []
@@ -129,7 +130,8 @@
         ; make loaded atoms available in context
         (.map (Object.keys ATOMS) (fn [i]
           (let [atom (aget ATOMS i)]
-            (set! (aget context (translate (aget (atom.name.split "/") 2))) atom))))
+            (log atom.name)
+            (set! (aget context (translate atom.name)) atom))))
         ; add deref function and associated dependency tracking to context
         (let [deref-deps
                 []

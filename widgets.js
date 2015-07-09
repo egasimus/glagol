@@ -2,6 +2,9 @@ var create     = require('virtual-dom/create-element')
   , h          = require('virtual-dom/h')
   , renderjson = require('./lib/renderjson.js');
 
+renderjson.set_icons('+', '-');
+renderjson.set_sort_objects(true);
+
 module.exports =
   { Editor:     Editor
   , JSONViewer: JSONViewer };
@@ -57,11 +60,10 @@ JSONViewer.prototype.type = "Widget";
 
 JSONViewer.prototype.init = function () {
   this.element = renderjson(this.value);
-  console.log(this.element);
   return this.element;
 }
 
-JSONViewer.prototype.update - function () {
+JSONViewer.prototype.update = function () {
   return this.init();
 }
 

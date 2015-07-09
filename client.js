@@ -80,7 +80,7 @@ var templates = {
           ? h('.editor-atom-result', new widgets.JSONViewer(atom.value))
           : null
         , atom.showInfo
-          ? h('.editor-atom-info', JSON.stringify(atom, null, 2))
+          ? h('.editor-atom-info', new widgets.JSONViewer(atom))
           : null
         ] ); },
 

@@ -209,34 +209,14 @@
 ;; atom page
 ;;
 
-(defn walk-tree [node get-children cb]
-  (log "walk" node.name)
-  (.map (get-children (cb node))
-    (fn [child] (walk-tree child get-children cb))))
-
-(defn get-derefs [atom]
-  (walk-tree
-    atom
-    (fn [atom]
-      (.map atom.derefs (fn [dep]
-        (log "get" dep)
-        (aget engine.ATOMS dep))))
-    (fn [atom]
-      (if (= atom.type "Atom")
-        (do (log "visiting" atom.name) atom)
-        (do (log "visiting" atom) (aget engine.ATOMS atom))))))
-
 (defn page2 [route atom]
   (fn [state]
-    (let [ATOMS
-            (.-ATOMS (require "engine.wisp"))
-          requires
+    (let [requires
             []
           handler
             (fn [req res] (send req res {
               :body    atom.compiled.output.code
               :headers { "Content-Type" "text/javascript; charset=utf-8" } })) ]
-      (log ATOMS)
-      (log "dependency tree" (get-derefs atom))
+      (log "dependency tree" (engine.get-derefs atom))
       (assoc state :endpoints (conj state.endpoints
         (HTTPEndpoint. (endpoint-matcher route) handler (fn [])))))))

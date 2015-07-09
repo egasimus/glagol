@@ -19,12 +19,12 @@ var SERVER   = { destroy: function () { log("server not loaded, can't destroy") 
 start();
 
 function start () {
-  return Q.all(
-    [ Q.when(startServer())
-      .then(function (server) { SERVER = server; return server })
-      .then(connectSocket)
-      .then(socketConnected)
-    , engine.loadDirectory('./project') ]).done()
+  return Q.when(startServer())
+    .then(function (server) { SERVER = server; return server })
+    .then(connectSocket)
+    .then(socketConnected)
+    .then(engine.start.bind(null, './project'))
+    .done()
 }
 
 function stop () {

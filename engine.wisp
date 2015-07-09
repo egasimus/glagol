@@ -2,7 +2,7 @@
 (set! Q.longStackSupport true)
 
 (def ^:private colors    (require "colors/safe"))
-;(def ^:private chokidar (require "chokidar"))
+(def ^:private chokidar (require "chokidar"))
 (def ^:private detective (require "detective"))
 (def ^:private fs        (require "fs"))
 (def ^:private glob      (require "glob"))
@@ -17,19 +17,47 @@
 (def translate
   (.-translate-identifier-word (require "wisp/backend/escodegen/writer.js")))
 
-(def log     (.get-logger (require "./logging.js") "engine"))
-(def events  (new (.-EventEmitter2 (require "eventemitter2")) { :maxListeners 32 }))
-;(def watcher (chokidar.watch "" { :persistent true :alwaysStat true}))
+;;
+;; global singleton state
+;;
 
-(def next-id 0)
-(defn get-id [] (set! next-id (+ next-id 1)) next-id)
+(def log      (.get-logger (require "./logging.js") "engine"))
+(def events   (new (.-EventEmitter2 (require "eventemitter2")) { :maxListeners 32 }))
+(def watcher  (chokidar.watch "" { :persistent true :alwaysStat true}))
+(def root-dir nil)
+(def ATOMS    {})
 
-(def ATOMS {})
+;;
+;; project-level operations
+;;
 
-(defn make-atom [name source]
+(defn start [dir]
+  (set! root-dir dir)
+  (.then (list-atoms dir) (fn [atom-paths] (atom-paths.map load-atom))))
+
+(defn list-atoms [dir]
+  (Q.Promise (fn [resolve reject]
+    (glob (path.join dir "**" "*") {} (fn [err atoms]
+      (if err (do (log err) (reject err)))
+      (let [names (.join (atoms.map (path.relative.bind nil dir)) " ")]
+        (log "loading atoms" (colors.bold names) "from" (colors.green dir))
+        (resolve atoms)))))))
+
+;;
+;; atom-level operations
+;;
+
+(defn load-atom [atom-path]
+  (.done (.then (Q.nfcall fs.read-file atom-path "utf-8") (fn [src]
+    (let [atom (make-atom atom-path src)]
+      (set! (aget ATOMS atom-path))
+      (events.emit "atom-updated" (freeze-atom atom)))))))
+
+(defn make-atom [atom-path source]
   (let [atom
           { :type      "Atom"
-            :name      name
+            :path      atom-path
+            :name      (path.relative root-dir atom-path)
             :source    (observ (.trim (or source "")))
             :compiled  nil
             :requires  []
@@ -62,40 +90,6 @@
     (set! atom.requires (.-strings     (detective.find code)))
     (set! atom.derefs   (.-expressions (detective.find code { :word "deref" }))))
   atom)
-
-(defn load-directory [dir]
-  (.then (.then (list-atoms dir) init-atoms) read-atoms))
-
-(defn list-atoms [dir]
-  (Q.Promise (fn [resolve reject]
-    (glob (path.join dir "**" "*") {} (fn [err atoms]
-      (if err (do (log err) (reject err)))
-      (let [names (.join (atoms.map (path.relative.bind nil dir)) " ")]
-        (log "loading atoms" (colors.bold names) "from" (colors.green dir))
-        (resolve atoms)))))))
-
-(defn init-atoms [atom-names]
-  (Q.all-settled (.map atom-names (fn [name]
-    (init-atom name)))))
-
-(defn init-atom [name]
-  (Q.Promise (fn [resolve]
-    (let [id   (get-id)
-          atom (make-atom name)]
-      (set! atom.id id)
-      (set! (aget ATOMS id) atom)
-      (resolve atom)))))
-
-(defn read-atoms [atoms]
-  (Q.all-settled (.map atoms (fn [promised]
-    (read-atom promised.value)))))
-
-(defn read-atom [atom]
-  (Q.Promise (fn [resolve reject]
-    (fs.read-file atom.name { :encoding "utf-8" } (fn [err src]
-      (if err (do (log err) (reject err)))
-      (atom.source.set src)
-      (resolve atom))))))
 
 (defn freeze-atoms []
   (let [snapshot {}]

@@ -210,15 +210,19 @@
 ;;
 
 (defn walk-tree [node get-children cb]
-  (cb node)
-  (.map (get-children node)
+  (log "walk" node)
+  (.map (get-children (cb node))
     (fn [child] (walk-tree child get-children cb))))
 
 (defn get-derefs [atom]
   (walk-tree
     atom
-    (fn [atom] (.map atom.derefs (fn [dep] (log "get" dep) (aget engine.ATOMS dep))))
-    (fn [atom] (log "visiting" atom.name))))
+    (fn [atom]
+      (.map atom.derefs (fn [dep] (log "get" dep) (aget engine.ATOMS dep))))
+    (fn [atom]
+      (if (= atom.type "Atom")
+        (do (log "visiting" atom.id atom.name) atom)
+        (do (log "visiting" atom) (aget engine.ATOMS atom))))))
 
 (defn page2 [route atom]
   (fn [state]
@@ -230,6 +234,6 @@
             (fn [req res] (send req res {
               :body    atom.compiled.output.code
               :headers { "Content-Type" "text/javascript; charset=utf-8" } })) ]
-      ;(log "dependency tree" (get-derefs atom))
+      (log "dependency tree" (get-derefs atom))
       (assoc state :endpoints (conj state.endpoints
         (HTTPEndpoint. (endpoint-matcher route) handler (fn [])))))))

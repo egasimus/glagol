@@ -161,8 +161,8 @@ events.on('atom-execute', function (id, editor) {
 
 events.on('atom-updated', function (data) {
   var atoms = state().atoms;
-  if (atoms[data.id].timestamp < data.timestamp) {
-    atoms[data.id] = data;
+  if (!atoms[data.path] || (atoms[data.path].timestamp < data.timestamp)) {
+    atoms[data.path] = data;
     updateState();
   }
 })
@@ -173,7 +173,7 @@ events.on('disconnected', function (evt) {
 
 
 // load data from server
-getAtoms().then(function (atoms) { updateState({ atoms: atoms }) });
+//getAtoms().then(function (atoms) { updateState({ atoms: atoms }) });
 
 function getAtoms () {
   return Q.Promise(function (resolve, reject, notify) {

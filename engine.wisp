@@ -168,10 +168,10 @@
       (fn [atom]
         (if atom
           (.map atom.derefs (fn [dep] (aget ATOMS dep)))
-          [])
+          []))
       (fn [atom]
         (if atom
           (let [atom (if (= atom.type "Atom") atom (aget ATOMS atom))]
             (if (= -1 (derefs.index-of atom)) (derefs.push atom))
-            atom))
-    derefs))
+            atom)))
+    derefs)))

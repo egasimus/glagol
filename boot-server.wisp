@@ -47,19 +47,9 @@
         watcher
           (.watch (require "chokidar") filename chok-opts)
 
-        old-require
-          require
-        new-require
-          (.reduce ["resolve" "main" "extensions" "registerExtension" "cache"]
-            (fn [i j] (set! (aget i j) (aget require j)) i)
-            (fn require [] (log "req" arguments)
-                           (watcher.add (aget arguments 0))
-                           (old-require.apply nil arguments)))
-
       ] ; (.install            (require "source-map-support")) 
         ; (.register-handler   (require "segfault-handler"))
         ;(process.on "SIGINT" exit)
-        (set! global.require new-require)
         (watcher.on "add" (fn [path] (log "added" path)))
         (watcher.on "change" on-change)
         (start)))))

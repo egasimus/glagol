@@ -1,4 +1,7 @@
+//require('./boot-server.js')(module);
+
 var runtime = require('./runtime.js');
+
 runtime.requireWisp("./boot-server.wisp", true, true)(module);
 
 var colors   = require('colors/safe')

@@ -172,6 +172,7 @@
       (fn [atom]
         (if atom
           (let [atom (if (= atom.type "Atom") atom (aget ATOMS atom))]
+            (log "cb" atom.name)
             (if (= -1 (derefs.index-of atom)) (derefs.push atom))
             atom)))
     derefs)))

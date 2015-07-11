@@ -49,13 +49,14 @@
 ;;
 
 (defn load-atom [atom-path]
-  (Q.Promise (fn [resolve]
-    (fs.read-file atom-path "utf-8" [err src]
-      (if err (do (log err) (throw err)))
+  (Q.Promise (fn [resolve reject]
+    (fs.read-file atom-path "utf-8" (fn [err src]
+      (if err (do (log err) (reject err)))
       (let [rel-path (path.relative root-dir atom-path)
             atom     (make-atom rel-path src)]
         (set! (aget ATOMS rel-path) atom)
-        (events.emit "atom-updated" (freeze-atom atom)))))))
+        (events.emit "atom-updated" (freeze-atom atom))
+        (resolve atom)))))))
 
 (defn make-atom [atom-path source]
   (let [atom

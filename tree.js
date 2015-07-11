@@ -4,8 +4,7 @@ var log = require('./logging.js').getLogger('trees');
 
 var engine = runtime.requireWisp('./engine.wisp');
 
-engine.start('./project').then(function () {
-  log("foo");
+engine.start('./project').then(function (args) {
   var init = engine.ATOMS['init'];
   log(init);
 })

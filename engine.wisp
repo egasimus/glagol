@@ -54,7 +54,7 @@
       (if err (do (log err) (reject err)))
       (let [rel-path (path.relative root-dir atom-path)
             atom     (make-atom rel-path src)]
-        (set! (aget ATOMS rel-path) atom)
+        (set! (aget ATOMS (translate rel-path)) atom)
         (events.emit "atom-updated" (freeze-atom atom))
         (resolve atom)))))))
 

@@ -161,22 +161,14 @@
               (atom.value.set value)
               atom)))))))
 
-(defn walk-tree [node get-children cb]
-  (.map (get-children (cb node))
-    (fn [child] (walk-tree child get-children cb))))
-
 (defn get-derefs [atom]
-  (let [derefs []]
-    (walk-tree
-      atom
-      (fn [atom]
-        (if atom
-          (.map atom.derefs (fn [dep] (aget ATOMS dep)))
-          []))
-      (fn [atom]
-        (if atom
-          (let [atom (if (= atom.type "Atom") atom (aget ATOMS atom))]
-            (log "cb" atom.name)
-            (if (= -1 (derefs.index-of atom)) (derefs.push atom))
-            atom)))
-    derefs)))
+  (let [deps    []
+        add-dep nil]
+    (set! add-dep (fn add-dep [atom-name]
+      (if (= -1 (deps.index-of atom-name))
+        (let [dep (aget ATOMS atom-name)]
+          (if (not dep) (throw (Error. (str "no atom" atom-name))))
+          (deps.push atom-name)
+          (dep.derefs.map add-dep)))))
+    (atom.derefs.map add-dep)
+    deps))

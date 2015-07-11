@@ -24,7 +24,11 @@ module.exports = function bootstrapper (sessionModule) {
           }
       , restart =
           function bootstrapperRestart () {
-            session.stop().then(start).done();
+            if (session.stop) {
+              session.stop().then(start).done();
+            } else {
+              session.start().done();
+            }
           };
 
       var dedupe   = null

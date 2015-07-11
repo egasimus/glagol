@@ -10,6 +10,7 @@
 (def ^:private path      (require "path"))
 (def ^:private runtime   (require "./runtime.js"))
 (def ^:private url       (require "url"))
+(def ^:private util      (runtime.require-wisp "./util.wisp"))
 (def ^:private vm        (require "vm"))
 
 (def ^:private = runtime.wisp.runtime.is-equal)
@@ -33,7 +34,7 @@
 
 (defn start [dir]
   (set! root-dir dir)
-  (.then (list-atoms dir) (fn [atom-paths] (atom-paths.map load-atom))))
+  (.then (list-atoms dir) (fn [atom-paths] (Q.allSettled (atom-paths.map load-atom)))))
 
 (defn list-atoms [dir]
   (Q.Promise (fn [resolve reject]
@@ -48,11 +49,13 @@
 ;;
 
 (defn load-atom [atom-path]
-  (.done (.then (Q.nfcall fs.read-file atom-path "utf-8") (fn [src]
-    (let [rel-path (path.relative root-dir atom-path)
-          atom     (make-atom rel-path src)]
-      (set! (aget ATOMS rel-path) atom)
-      (events.emit "atom-updated" (freeze-atom atom)))))))
+  (Q.Promise (fn [resolve]
+    (fs.read-file atom-path "utf-8" [err src]
+      (if err (do (log err) (throw err)))
+      (let [rel-path (path.relative root-dir atom-path)
+            atom     (make-atom rel-path src)]
+        (set! (aget ATOMS rel-path) atom)
+        (events.emit "atom-updated" (freeze-atom atom)))))))
 
 (defn make-atom [atom-path source]
   (let [atom
@@ -88,8 +91,8 @@
 (defn compile-atom-sync [atom]
   (set! atom.compiled (runtime.compile-source (atom.source) atom.name))
   (let [code atom.compiled.output.code]
-    (set! atom.requires (.-strings     (detective.find code)))
-    (set! atom.derefs   (.-expressions (detective.find code { :word "deref" }))))
+    (set! atom.requires (util.unique (.-strings     (detective.find code))))
+    (set! atom.derefs   (util.unique (.-expressions (detective.find code { :word "deref" })))))
   atom)
 
 (defn freeze-atoms []

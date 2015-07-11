@@ -98,6 +98,7 @@ function requireWisp (name, raw, elevated) {
       , output   = compileSource(source, fullpath, raw).output
       , context  = makeContext(name, elevated);
     vm.runInContext(wrap(output.code), context, { filename: name });
+    if (context.error) throw context.error;
     cache[name] = context.exports;
   }
   return cache[name];

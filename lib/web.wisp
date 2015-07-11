@@ -116,8 +116,8 @@
 
       (bundler.transform "./node_modules/stylify")
       (bundler.transform wispify)
+      ;(bundler.transform "./node_modules/uglifyify")
 
-      (bundler.require "." { :expose "" })
       (bundler.add script)
 
       (rebuild)
@@ -130,7 +130,7 @@
   (str "<head><meta charset=\"utf-8\"></head><body><script>" output "</script>"))
 
 (defn- embed-template [output]
-  (str "(function () { var " output "; return require })()"))
+  (str "(function () { var require = " output "; return require })()"))
 
 (defn- compiled [data file]
   (.-code (.-output (runtime.compile-source data file))))
@@ -215,7 +215,7 @@
             (engine.get-derefs atom)
           handler
             (fn [req res] (send req res {
-              :body    atom.compiled.output.code
+              :body    "foo" ;atom.compiled.output.code
               :headers { "Content-Type" "text/javascript; charset=utf-8" } })) ]
       (log "dependency tree" derefs)
       (assoc state :endpoints (conj state.endpoints

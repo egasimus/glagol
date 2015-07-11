@@ -27,6 +27,7 @@
     "source-map-support": "^0.3.2",
     "stylify": "^1.2.0",
     "through": "^2.3.7",
+    "uglifyify": "^3.0.1",
     "virtual-dom": "^2.0.1",
     "watchify": "^3.2.2",
     "wisp": "^0.10.0",

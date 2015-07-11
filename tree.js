@@ -8,5 +8,7 @@ var deps = [];
 
 engine.start('./project').then(function (args) {
   var init = engine.ATOMS['init'];
-  log("done", engine.getDerefs(init));
+  log(init.derefs);
+  log("derefs", engine.getDerefs(init));
+  log("requires", engine.getRequires(init));
 }).done();

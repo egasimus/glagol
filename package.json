@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "browser-pack": "^5.0.1",
     "browserify": "^10.2.4",
     "chokidar": "^1.0.3",
     "colors": "^1.1.0",
@@ -25,6 +26,7 @@
     "q": "^1.4.1",
     "resolve": "^1.1.6",
     "send-data": "^7.0.0",
+    "shortid": "^2.2.2",
     "source-map-support": "^0.3.2",
     "stylify": "^1.2.0",
     "through": "^2.3.7",

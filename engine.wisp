@@ -10,7 +10,6 @@
 (def ^:private path      (require "path"))
 (def ^:private resolve   (require "resolve"))
 (def ^:private runtime   (require "./runtime.js"))
-(def ^:private shortid   (require "shortid"))
 (def ^:private url       (require "url"))
 (def ^:private util      (runtime.require-wisp "./util.wisp"))
 (def ^:private vm        (require "vm"))
@@ -167,14 +166,14 @@
   (let [derefs
           []
         requires
-          {}
+          []
         find-requires
           (fn [atom]
             (atom.requires.map (fn [req]
               (let [resolved (resolve.sync req { :basedir    root-dir
                                                  :extensions [".js" ".wisp"] })]
-                (if (= -1 (.index-of (Object.keys requires) resolved))
-                  (set! (aget requires resolved) (shortid.generate)))))))
+                (if (= -1 (requires.index-of resolved)) (do
+                  (requires.push resolved)))))))
         add-dep
           nil
         _

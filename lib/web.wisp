@@ -135,7 +135,7 @@
 (defn- compiled [data file]
   (.-code (.-output (runtime.compile-source data file))))
 
-(defn- wispify [file]
+(defn wispify [file]
   (let [data
           ""
         wispy
@@ -213,10 +213,13 @@
   (fn [state]
     (let [deps
             (engine.get-deps atom)
+          atoms
+            (.concat [atom] (deps.derefs.map (fn [dep] (aget ATOMS dep))))
           handler
             (fn [req res] (send req res {
               :body    "foo" ;atom.compiled.output.code
               :headers { "Content-Type" "text/javascript; charset=utf-8" } })) ]
       (log "dependencies of" atom.name deps)
+      (log atoms)
       (assoc state :endpoints (conj state.endpoints
         (HTTPEndpoint. (endpoint-matcher route) handler (fn [])))))))

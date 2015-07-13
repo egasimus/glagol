@@ -4,6 +4,7 @@ var engine = runtime.requireWisp('./engine.wisp');
 var web = runtime.requireWisp('lib/web.wisp');
 var fs = require('fs');
 var path = require('path');
+var mdeps = require('module-deps');
 
 var resolve = function (path) {
   return require('resolve').sync(path,
@@ -62,11 +63,15 @@ engine.start('./project').then(function (args) {
     if (path.extname(i) === '.wisp') {
       source = runtime.compileSource(source, i).output.code;
     }
+    var md = mdeps({ transform: [web.wispify] });
+    md.end({ file: i });
+    streamString(md).then(function (data) {
+      log("MD", i, JSON.stringify(data));
+    }).error(function (err) { throw err });
     packed.write({ id: resolved[i], source: source})
-    ids[resolved[i]] = i;
+    ids[resolved[i]] = resolved[i];
   });
-  packed.write({ source: source, deps: ids });
-  packed.end();
+  packed.end({ id: '____', source: source, deps: ids });
   streamString(packed).then(function (data) {
     console.log(data);
   }).error(function (err) { throw err });

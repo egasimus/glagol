@@ -8,6 +8,7 @@
 (def ^:private glob      (require "glob"))
 (def ^:private observ    (require "observ"))
 (def ^:private path      (require "path"))
+(def ^:private resolve   (require "resolve"))
 (def ^:private runtime   (require "./runtime.js"))
 (def ^:private url       (require "url"))
 (def ^:private util      (runtime.require-wisp "./util.wisp"))
@@ -161,14 +162,29 @@
               (atom.value.set value)
               atom)))))))
 
-(defn get-derefs [atom]
-  (let [deps    []
-        add-dep nil]
-    (set! add-dep (fn add-dep [atom-name]
-      (if (= -1 (deps.index-of atom-name))
-        (let [dep (aget ATOMS atom-name)]
-          (if (not dep) (throw (Error. (str "no atom" atom-name))))
-          (deps.push atom-name)
-          (dep.derefs.map add-dep)))))
+(defn get-deps [atom]
+  (let [derefs
+          []
+        requires
+          []
+        find-requires
+          (fn [atom]
+            (atom.requires.map (fn [req]
+              (let [resolved (resolve.sync req { :basedir    root-dir
+                                                 :extensions [".js" ".wisp"] })]
+                (if (= -1 (requires.index-of resolved))
+                  (requires.push resolved))))))
+        add-dep
+          nil
+        _
+          (set! add-dep (fn add-dep [atom-name]
+            (if (= -1 (derefs.index-of atom-name))
+              (let [dep (aget ATOMS atom-name)]
+                (if (not dep) (throw (Error. (str "no atom" atom-name))))
+                (derefs.push atom-name)
+                (find-requires dep)
+                (dep.derefs.map add-dep))))) ]
+    (find-requires atom)
     (atom.derefs.map add-dep)
-    deps))
+    { :derefs   derefs
+      :requires requires }))

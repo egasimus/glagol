@@ -7,6 +7,7 @@
 (def ^:private send       (require "send-data"))
 (def ^:private send-html  (require "send-data/html"))
 (def ^:private send-json  (require "send-data/json"))
+(def ^:private shortid    (require "shortid"))
 (def ^:private through    (require "through"))
 (def ^:private url        (require "url"))
 (def ^:private watchify   (require "watchify"))
@@ -211,15 +212,56 @@
 
 (defn page2 [route atom]
   (fn [state]
-    (let [deps
-            (engine.get-deps atom)
-          atoms
-            (.concat [atom] (deps.derefs.map (fn [dep] (aget ATOMS dep))))
+    (let [body
+            "foo"
           handler
             (fn [req res] (send req res {
-              :body    "foo" ;atom.compiled.output.code
+              :body    body
               :headers { "Content-Type" "text/javascript; charset=utf-8" } })) ]
-      (log "dependencies of" atom.name deps)
-      (log atoms)
+      (.done (.then (prepare-getrequire atom) (fn [bundled] (set! body bundled))))
       (assoc state :endpoints (conj state.endpoints
         (HTTPEndpoint. (endpoint-matcher route) handler (fn [])))))))
+
+(defn- resolve-req [path]
+  (.sync (require "resolve") path
+    { :basedir    "./project"
+      :extensions [".js" ".wisp"]}))
+
+(defn- template-getrequire [code mapped]
+  (.join
+    [ "var " code ";var deps=" (JSON.stringify mapped)
+      ";exports=function getRequire(a){"
+      "return function atomRequire(m){"
+      "return require(deps[a][m])}}"] ""))
+
+(defn- get-atom-by-name [name]
+  (aget engine.ATOMS name))
+
+(defn- prepare-getrequire [atom]
+  (Q.Promise (fn [resolve reject notify]
+    (let [deps     (engine.get-deps atom)
+          atoms    (.concat [atom] (deps.derefs.map get-atom-by-name))
+          requires {}
+          resolved {}
+          mapped   {}
+          br       (.transform (browserify) wispify)]
+
+      (.map atoms (fn [atom]
+        (set! (aget requires atom.name) {})
+        (atom.requires.map (fn [req]
+          (let [res (resolve-req req)]
+            (set! (aget (aget requires atom.name) req) res)
+            (if (= -1 (.index-of (Object.keys resolved) res))
+              (set! (aget resolved res) (shortid.generate))))))))
+
+      (.map (Object.keys requires) (fn [i]
+        (set! (aget mapped i) {})
+        (.map (Object.keys (aget requires i)) (fn [j]
+          (set! (aget (aget mapped i) j) (aget resolved (aget (aget requires i) j)))))))
+
+      (.map (Object.keys resolved) (fn [module]
+        (br.require module { :expose (aget resolved module) })))
+
+      (br.bundle (fn [err buf]
+        (if err (reject err))
+        (resolve (template-getrequire (String buf) mapped))))))))

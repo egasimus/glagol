@@ -7,9 +7,7 @@ var getRequire = (function(){
     }
   }
 })();
-(function start (entryAtomName, derefs) {
-
-  var ATOMS = {};
+(function start (entryAtomName, ATOMS) {
 
   function translate (word) {
     // TODO import whole wisp
@@ -18,7 +16,6 @@ var getRequire = (function(){
   }
 
   function deref (atom) {
-    console.log("deref", atom);
     if (!atom.value) {
       atom.value = require('vm').runInNewContext(
         atom.compiled, makeContext(atom.name));
@@ -34,22 +31,10 @@ var getRequire = (function(){
     ATOMS[translate(atomName)].derefs.map(function (i) {
       context[i] = ATOMS[i];
     });
-    console.log(context);
     return context;
   };
 
-  var req = new XMLHttpRequest();
-  req.onload = function () {
-    var atoms = JSON.parse(this.responseText);
-    [entryAtomName].concat(derefs).map(function (atomName) {
-      console.log("install", atomName);
-      ATOMS[atomName] = atoms[atomName];
-    })
-    console.log(ATOMS);
-    ATOMS[entryAtomName].value = require('vm').runInNewContext(
-      ATOMS[entryAtomName].compiled, makeContext(entryAtomName));
-  }
-  req.open("get", "/atoms", true);
-  req.send();
+  ATOMS[entryAtomName].value = require('vm').runInNewContext(
+    ATOMS[entryAtomName].compiled, makeContext(entryAtomName));
 
 })("%ATOM%", %DEREFS%);

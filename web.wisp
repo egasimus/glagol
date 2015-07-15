@@ -239,10 +239,21 @@
     "%BUNDLE%" bundle)
     "%DEPS%"   (JSON.stringify mapped))
     "%ATOM%"   atom.name)
-    "%DEREFS%" (JSON.stringify (.-derefs (engine.get-deps atom)))))
+    "%DEREFS%" (JSON.stringify (get-atom-with-derefs atom))))
 
 (defn- get-atom-by-name [name]
   (aget engine.ATOMS name))
+
+(defn- get-atom-with-derefs [atom]
+  (let [retval
+          {}
+        add
+          (fn [a] (set! (aget retval (engine.translate a.name))
+            (engine.freeze-atom a)))]
+    (add atom)
+    (.map (.-derefs (engine.get-deps atom)) (fn [atom-name]
+      (add (get-atom-by-name atom-name))))
+    retval))
 
 (defn- prepare-getrequire [atom]
   (Q.Promise (fn [resolve reject notify]

@@ -2,7 +2,7 @@
 (set! Q.longStackSupport true)
 
 (def ^:private colors    (require "colors/safe"))
-(def ^:private chokidar (require "chokidar"))
+;(def ^:private chokidar (require "chokidar"))
 (def ^:private detective (require "detective"))
 (def ^:private fs        (require "fs"))
 (def ^:private glob      (require "glob"))
@@ -25,7 +25,7 @@
 
 (def log      (.get-logger (require "./logging.js") "engine"))
 (def events   (new (.-EventEmitter2 (require "eventemitter2")) { :maxListeners 32 }))
-(def watcher  (chokidar.watch "" { :persistent true :alwaysStat true}))
+;(def watcher  (chokidar.watch "" { :persistent true :alwaysStat true}))
 (def root-dir nil)
 (def ATOMS    {})
 
@@ -101,14 +101,15 @@
   (let [snapshot {}]
     (.map (Object.keys ATOMS) (fn [i]
       (let [frozen (freeze-atom (aget ATOMS i))]
-        (set! (aget snapshot frozen.path) frozen))))
+        (set! (aget snapshot i) frozen))))
     snapshot))
 
 (defn freeze-atom [atom]
   (let [frozen
-          { :path   atom.path
-            :name   atom.name
-            :source (atom.source)}]
+          { :path     atom.path
+            :name     atom.name
+            :source   (atom.source)
+            :compiled atom.compiled.output.code }]
     (if atom.evaluated (set! frozen.value (atom.value)))
     (set! frozen.timestamp (Math.floor (Date.now)))
     frozen))

@@ -1,5 +1,6 @@
 (def ^:private browserify (require "browserify"))
 (def ^:private colors     (require "colors/safe"))
+(def ^:private fs         (require "fs"))
 (def ^:private http       (require "http"))
 (def ^:private path       (require "path"))
 (def ^:private Q          (require "q"))
@@ -227,12 +228,14 @@
     { :basedir    "./project"
       :extensions [".js" ".wisp"]}))
 
-(defn- template-getrequire [code mapped]
-  (.join
-    [ "var " code ";var deps=" (JSON.stringify mapped)
-      ";exports=function getRequire(a){"
-      "return function atomRequire(m){"
-      "return require(deps[a][m])}}"] ""))
+(def ^:private harness (fs.readFileSync "harness.js" "utf-8"))
+
+(defn- template-getrequire [bundle mapped atom]
+  (.replace (.replace (.replace (harness.replace
+    "%BUNDLE%" bundle)
+    "%DEPS%"   (JSON.stringify mapped))
+    "%ATOM%"   atom.name)
+    "%DEREFS%" (JSON.stringify (.-derefs (engine.get-deps atom)))))
 
 (defn- get-atom-by-name [name]
   (aget engine.ATOMS name))
@@ -264,4 +267,4 @@
 
       (br.bundle (fn [err buf]
         (if err (reject err))
-        (resolve (template-getrequire (String buf) mapped))))))))
+        (resolve (template-getrequire (String buf) mapped atom))))))))

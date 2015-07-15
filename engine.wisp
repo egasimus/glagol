@@ -109,7 +109,8 @@
           { :path     atom.path
             :name     atom.name
             :source   (atom.source)
-            :compiled atom.compiled.output.code }]
+            :compiled atom.compiled.output.code
+            :derefs   atom.derefs }]
     (if atom.evaluated (set! frozen.value (atom.value)))
     (set! frozen.timestamp (Math.floor (Date.now)))
     frozen))

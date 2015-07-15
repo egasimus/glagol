@@ -11,13 +11,13 @@ var getRequire = (function(){
 
   var ATOMS = {};
 
-  function deref (atomName) {
-    console.log("deref", atomName);
-    if (!ATOMS[atomName].value) {
-      ATOMS[atomName].value =
-        require('vm').runInNewContext(ATOMS[atomName].compiled, makeContext(atomName));
+  function deref (atom) {
+    console.log("deref", atom);
+    if (!atom.value) {
+      atom.value = require('vm').runInNewContext(
+        atom.compiled, makeContext(atomName));
     }
-    return ATOMS[atomName].value;
+    return atom.value;
   }
 
   function makeContext (atomName) {
@@ -25,7 +25,9 @@ var getRequire = (function(){
       { require: getRequire(atomName)
       , script:  document.getElementsByTagName("script")[0] // TODO
       , deref:   deref };
-
+    ATOMS[atomName].derefs.map(function (i) {
+      context[i] = ATOMS[i];
+    });
     return context;
   };
 
@@ -36,8 +38,8 @@ var getRequire = (function(){
       ATOMS[atom] = atoms[atom];
     })
     console.log(ATOMS);
-    ATOMS[atomName].value =
-      require('vm').runInNewContext(ATOMS[atomName].compiled, makeContext(atomName));
+    ATOMS[atomName].value = require('vm').runInNewContext(
+      ATOMS[atomName].compiled, makeContext(atomName));
   }
   req.open("get", "/atoms", true);
   req.send();

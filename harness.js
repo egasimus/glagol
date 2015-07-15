@@ -11,6 +11,12 @@ var getRequire = (function(){
 
   var ATOMS = {};
 
+  function translate (word) {
+    // TODO import whole wisp
+    return word.replace(/(-[a-zA-Z])/g,
+      function (x) { return x[1].toUpperCase() })
+  }
+
   function deref (atom) {
     console.log("deref", atom);
     if (!atom.value) {
@@ -21,12 +27,11 @@ var getRequire = (function(){
   }
 
   function makeContext (atomName) {
-    console.log("ctx", atomName, ATOMS[atomName].derefs);
     var context =
       { require: getRequire(atomName)
       , script:  document.getElementsByTagName("script")[0] // TODO
       , deref:   deref };
-    ATOMS[atomName].derefs.map(function (i) {
+    ATOMS[translate(atomName)].derefs.map(function (i) {
       context[i] = ATOMS[i];
     });
     console.log(context);
@@ -36,8 +41,9 @@ var getRequire = (function(){
   var req = new XMLHttpRequest();
   req.onload = function () {
     var atoms = JSON.parse(this.responseText);
-    [entryAtomName].concat(derefs).map(function (atom) {
-      ATOMS[atom] = atoms[atom];
+    [entryAtomName].concat(derefs).map(function (atomName) {
+      console.log("install", atomName);
+      ATOMS[atomName] = atoms[atomName];
     })
     console.log(ATOMS);
     ATOMS[entryAtomName].value = require('vm').runInNewContext(

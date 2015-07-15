@@ -7,7 +7,7 @@ var getRequire = (function(){
     }
   }
 })();
-(function start (atomName, derefs) {
+(function start (entryAtomName, derefs) {
 
   var ATOMS = {};
 
@@ -15,12 +15,13 @@ var getRequire = (function(){
     console.log("deref", atom);
     if (!atom.value) {
       atom.value = require('vm').runInNewContext(
-        atom.compiled, makeContext(atomName));
+        atom.compiled, makeContext(atom.name));
     }
     return atom.value;
   }
 
   function makeContext (atomName) {
+    console.log("ctx", atomName, ATOMS[atomName].derefs);
     var context =
       { require: getRequire(atomName)
       , script:  document.getElementsByTagName("script")[0] // TODO
@@ -28,18 +29,19 @@ var getRequire = (function(){
     ATOMS[atomName].derefs.map(function (i) {
       context[i] = ATOMS[i];
     });
+    console.log(context);
     return context;
   };
 
   var req = new XMLHttpRequest();
   req.onload = function () {
     var atoms = JSON.parse(this.responseText);
-    [atomName].concat(derefs).map(function (atom) {
+    [entryAtomName].concat(derefs).map(function (atom) {
       ATOMS[atom] = atoms[atom];
     })
     console.log(ATOMS);
-    ATOMS[atomName].value = require('vm').runInNewContext(
-      ATOMS[atomName].compiled, makeContext(atomName));
+    ATOMS[entryAtomName].value = require('vm').runInNewContext(
+      ATOMS[entryAtomName].compiled, makeContext(entryAtomName));
   }
   req.open("get", "/atoms", true);
   req.send();

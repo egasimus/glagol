@@ -214,11 +214,15 @@
 (defn page2 [route atom]
   (fn [state]
     (let [body
-            "foo"
+            "document.write('loading...!')"
           handler
-            (fn [req res] (send req res {
-              :body    body
-              :headers { "Content-Type" "text/javascript; charset=utf-8" } })) ]
+            (fn [req res]
+              (let [embed? (.-query.embed (url.parse req.url true))
+                    body   (if embed? body (document-template body))
+                    ctype  (str "text/" (if embed? "javascript" "html") "; charset=utf-8")]
+                (send req res
+                  { :body    body
+                    :headers { "Content-Type" ctype } }))) ]
       (.done (.then (prepare-getrequire atom) (fn [bundled] (set! body bundled))))
       (assoc state :endpoints (conj state.endpoints
         (HTTPEndpoint. (endpoint-matcher route) handler (fn [])))))))

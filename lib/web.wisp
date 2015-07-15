@@ -262,6 +262,8 @@
         (.map (Object.keys (aget requires i)) (fn [j]
           (set! (aget (aget mapped i) j) (aget resolved (aget (aget requires i) j)))))))
 
+      (br.require "vm" { :expose "vm" })
+
       (.map (Object.keys resolved) (fn [module]
         (br.require module { :expose (aget resolved module) })))
 

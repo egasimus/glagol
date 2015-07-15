@@ -1,0 +1,24 @@
+{
+  "name": "etude-web",
+  "version": "0.0.0",
+  "description": "",
+  "main": "web.wisp",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "browserify": "^10.2.6",
+    "colors": "^1.1.2",
+    "insert-css": "^0.2.0",
+    "q": "^1.4.1",
+    "resolve": "^1.1.6",
+    "send-data": "^7.0.0",
+    "shortid": "^2.2.2",
+    "through": "^2.3.8",
+    "virtual-dom": "^2.0.1",
+    "watchify": "^3.2.3",
+    "ws": "^0.7.2"
+  }
+}

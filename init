@@ -1,0 +1,2 @@
+(let [vdom (require "etude-web/vdom.wisp")]
+  (vdom.init script.parent-element @template))

@@ -1,0 +1,5 @@
+(let [vdom (require "etude-web/vdom.wisp")]
+  (fn template-app []
+    (vdom.h ".samplers" [
+      (@sampler-template 1)
+      (@sampler-template 2)])))

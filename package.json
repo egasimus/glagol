@@ -1,0 +1,15 @@
+{
+  "name": "etude-project",
+  "version": "0.0.0",
+  "description": "",
+  "main": "init",
+  "scripts": {
+    "start": "node_modules/etude-engine/bin/etude server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "etude": {
+    "defaultLanguage": "wisp"
+  }
+}

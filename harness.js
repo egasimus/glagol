@@ -9,6 +9,22 @@ var getRequire = (function(){
 })();
 (function start (entryAtomName, ATOMS) {
 
+  ATOMS[entryAtomName].value = require('vm').runInNewContext(
+    ATOMS[entryAtomName].compiled, makeContext(entryAtomName));
+
+  console.log(connectSocket());
+
+  function makeContext (atomName) {
+    var context =
+      { require: getRequire(atomName)
+      , script:  document.getElementsByTagName("script")[0] // TODO
+      , deref:   deref };
+    ATOMS[translate(atomName)].derefs.map(function (i) {
+      context[i] = ATOMS[i];
+    });
+    return context;
+  };
+
   function translate (word) {
     // TODO import whole wisp
     return word.replace(/(-[a-zA-Z])/g,
@@ -23,18 +39,13 @@ var getRequire = (function(){
     return atom.value;
   }
 
-  function makeContext (atomName) {
-    var context =
-      { require: getRequire(atomName)
-      , script:  document.getElementsByTagName("script")[0] // TODO
-      , deref:   deref };
-    ATOMS[translate(atomName)].derefs.map(function (i) {
-      context[i] = ATOMS[i];
-    });
-    return context;
-  };
-
-  ATOMS[entryAtomName].value = require('vm').runInNewContext(
-    ATOMS[entryAtomName].compiled, makeContext(entryAtomName));
+  function connectSocket () {
+    var socket = new WebSocket('ws://localhost:2097/socket'); // TODO
+    socket.onmessage = function (evt) {
+      var data = JSON.parse(evt.data);
+      console.log(data);
+    }
+    return socket;
+  }
 
 })("%ATOM%", %DEREFS%);

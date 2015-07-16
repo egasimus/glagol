@@ -242,6 +242,8 @@
       (let [state  (add-socket state)
             socket (aget state.sockets socket-path)]
         (socket.on "connection" (fn [conn]
+          (engine.events.on "atom.updated.*" (fn [arg]
+            (conn.send (JSON.stringify { :event this.event :arg arg }))))
           (log "connected socket" socket-path)))
         (assoc state
           :endpoints (conj state.endpoints

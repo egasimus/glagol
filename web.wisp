@@ -195,7 +195,7 @@
         (assoc state
           :sockets   (assoc state.sockets options.path socket)
           :endpoints (conj state.endpoints (HTTPEndpoint.
-            (endpoint-matcher route) (fn []) (fn [] (watcher.close)))))))))
+            (endpoint-matcher route) (fn []) (fn [] (socket.close)))))))))
 
 ;;
 ;; error routes
@@ -213,24 +213,33 @@
 
 (defn page2 [route atom]
   (fn [state]
-    (let [body
+    (let [socket  ; web socket for realtime updates
+            (socket { :path (.join (.concat (route.split "/") ["socket"]) "/") })
+
+          body    ; updated to contain actual body
             "document.write('loading...!')"
-          handler
+
+          handler ; response handler that server the body contents
             (fn [req res]
-              (let [embed? (.-query.embed (url.parse req.url true))
-                    body   (if embed? body (document-template body))
-                    ctype  (str "text/" (if embed? "javascript" "html") "; charset=utf-8")]
+              (let [embed?
+                      (.-query.embed (url.parse req.url true))
+                    body
+                      (if embed? body (document-template body))
+                    ctype
+                      (str "text/" (if embed? "javascript" "html")
+                           "; charset=utf-8")]
                 (send req res
                   { :body    body
-                    :headers { "Content-Type" ctype } }))) ]
-      (.done (.then (prepare-getrequire atom) (fn [bundled] (set! body bundled))))
-      (assoc state :endpoints (conj state.endpoints
-        (HTTPEndpoint. (endpoint-matcher route) handler (fn [])))))))
+                    :headers { "Content-Type" ctype } })))]
 
-(defn- resolve-req [path]
-  (.sync (require "resolve") path
-    { :basedir    engine.root-dir
-      :extensions [".js" ".wisp"]}))
+      ; start cooking up code bundle
+      (.done (.then (prepare-getrequire atom)
+        (fn [bundled] (set! body bundled))))
+
+      ; attach socket and http endpoint to server
+      (assoc (socket state)
+        :endpoints (conj state.endpoints
+          (HTTPEndpoint. (endpoint-matcher route) handler (fn [])))))))
 
 (def ^:private harness (fs.readFileSync (path.join __dirname "harness.js") "utf-8"))
 

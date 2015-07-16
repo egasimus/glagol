@@ -1,5 +1,22 @@
-(let [vdom (require "etude-web/vdom.wisp")]
+(let [vdom (require "etude-web/vdom.wisp")
+      h    vdom.h]
   (fn template-app []
-    (vdom.h ".samplers" [
-      (@sampler-template 1)
-      (@sampler-template 2)])))
+    (h ".app" [
+      (h ".toolbar" [
+        (h ".section" [
+          (h ".btn.bpm"   "140")
+          (h ".btn.meter" "4/4")
+          (h ".btn.quant" "1 bar")])
+        (h ".section" [
+          (h ".btn.play"  "Play")])
+        (h ".section" [
+          (h ".btn.osc"   "OSC")
+          (h ".btn.midi"  "MIDI")
+          (h ".btn.kbd"   "KBD")])
+        (h ".section" [
+          (h ".btn.cpu"   "CPU")
+          (h ".btn.mem"   "RAM")
+          (h ".btn.audio" "Audio")])])
+      (h ".samplers" [
+        (@sampler-template 1)
+        (@sampler-template 2)])])))

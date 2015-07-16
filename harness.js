@@ -1,6 +1,4 @@
-var %BUNDLE%;
-var deps=%DEPS%;
-var getRequire = (function(){
+;var getRequire = (function(){
   return function getRequire(a){
     return function atomRequire(m){
       return require(deps[a][m])
@@ -9,16 +7,26 @@ var getRequire = (function(){
 })();
 (function start (entryAtomName, ATOMS) {
 
-  ATOMS[entryAtomName].value = require('vm').runInNewContext(
-    ATOMS[entryAtomName].compiled, makeContext(entryAtomName));
+  var container = document.getElementsByTagName("script")[0].parentElement // TODO
+
+  var DEREFS = {};
+
+  evaluateAtom(ATOMS[entryAtomName]);
 
   console.log(connectSocket());
 
+  function evaluateAtom (atom) {
+    atom.value = require('vm').runInNewContext(
+      atom.compiled, makeContext(atom.name));
+    (DEREFS[atom.name] || []).map(function (i) { evaluateAtom(ATOMS[i]) })
+    return atom.value;
+  }
+
   function makeContext (atomName) {
     var context =
-      { require: getRequire(atomName)
-      , script:  document.getElementsByTagName("script")[0] // TODO
-      , deref:   deref };
+      { require:   getRequire(atomName)
+      , container: container
+      , deref:     deref.bind(null, ATOMS[atomName]) };
     ATOMS[translate(atomName)].derefs.map(function (i) {
       context[i] = ATOMS[i];
     });
@@ -31,21 +39,53 @@ var getRequire = (function(){
       function (x) { return x[1].toUpperCase() })
   }
 
-  function deref (atom) {
-    if (!atom.value) {
-      atom.value = require('vm').runInNewContext(
-        atom.compiled, makeContext(atom.name));
+  function deref (from, to) {
+
+    // keep track of interdependencies
+    DEREFS[to.name] = DEREFS[to.name] || [];
+    if (DEREFS[to.name].indexOf(from.name) === -1) {
+      DEREFS[to.name].push(from.name);
     }
-    return atom.value;
+
+    // evaluate atom if not evaluated yet
+    if (!to.value) {
+      evaluateAtom(to);
+    }
+    return to.value;
+
   }
 
   function connectSocket () {
+
     var socket = new WebSocket('ws://localhost:2097/socket'); // TODO
+
     socket.onmessage = function (evt) {
-      var data = JSON.parse(evt.data);
-      console.log(data);
+
+      var data =
+            JSON.parse(evt.data)
+        , atom =
+            (data.arg && data.arg.name)
+              ? ATOMS[translate(data.arg.name)]
+              : null;
+
+      if (data.event === "atom.updated.source") {
+        atom.source = data.arg.source;
+      }
+
+      else if (data.event === "atom.updated.compiled") {
+        atom.compiled = data.arg.compiled;
+        if (atom.value) {
+          console.log("reeval", atom);
+          evaluateAtom(atom);
+        }
+      }
+
+      else console.log(data);
+
     }
+
     return socket;
+
   }
 
-})("%ATOM%", %DEREFS%);
+})("%ENTRY%", %ATOMS%);

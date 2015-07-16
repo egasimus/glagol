@@ -252,11 +252,9 @@
 (def ^:private harness (fs.readFileSync (path.join __dirname "harness.js") "utf-8"))
 
 (defn- template-getrequire [bundle mapped atom]
-  (.replace (.replace (.replace (harness.replace
-    "%BUNDLE%" bundle)
-    "%DEPS%"   (JSON.stringify mapped))
-    "%ATOM%"   atom.name)
-    "%DEREFS%" (JSON.stringify (get-atom-with-derefs atom))))
+  (str "var " bundle ";var deps=" (JSON.stringify mapped)
+    (.replace (harness.replace "%ENTRY%" atom.name)
+      "%ATOMS%" (JSON.stringify (get-atom-with-derefs atom)))))
 
 (defn- get-atom-by-name [name]
   (aget engine.ATOMS name))
@@ -284,6 +282,10 @@
       (br.transform wispify)
       (br.transform (require "stylify"))
 
+      (br.require "vm" { :expose "vm" })
+      ;(br.require "etude-engine/engine.wisp" { :expose "etude-engine" })
+      ;(br.exclude "chokidar")
+
       (.map atoms (fn [atom]
         (set! (aget requires atom.name) {})
         (atom.requires.map (fn [req]
@@ -299,8 +301,6 @@
         (set! (aget mapped i) {})
         (.map (Object.keys (aget requires i)) (fn [j]
           (set! (aget (aget mapped i) j) (aget resolved (aget (aget requires i) j)))))))
-
-      (br.require "vm" { :expose "vm" })
 
       (.map (Object.keys resolved) (fn [module]
         (br.require module { :expose (aget resolved module) })))

@@ -229,7 +229,7 @@
 
 (defn- resolve-req [path]
   (.sync (require "resolve") path
-    { :basedir    "./project"
+    { :basedir    engine.root-dir
       :extensions [".js" ".wisp"]}))
 
 (def ^:private harness (fs.readFileSync (path.join __dirname "harness.js") "utf-8"))
@@ -262,12 +262,18 @@
           requires {}
           resolved {}
           mapped   {}
-          br       (.transform (browserify) wispify)]
+          br       (browserify)]
+
+      (br.transform wispify)
+      (br.transform (require "stylify"))
 
       (.map atoms (fn [atom]
         (set! (aget requires atom.name) {})
         (atom.requires.map (fn [req]
-          (let [res (resolve-req req)]
+          (let [res
+                  (.sync (require "resolve") req
+                    { :basedir    (path.dirname atom.path)
+                      :extensions [".js" ".wisp"]}) ]
             (set! (aget (aget requires atom.name) req) res)
             (if (= -1 (.index-of (Object.keys resolved) res))
               (set! (aget resolved res) (shortid.generate))))))))

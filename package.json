@@ -16,6 +16,7 @@
     "resolve": "^1.1.6",
     "send-data": "^7.0.0",
     "shortid": "^2.2.2",
+    "stylify": "^1.2.0",
     "through": "^2.3.8",
     "virtual-dom": "^2.0.1",
     "watchify": "^3.2.3",

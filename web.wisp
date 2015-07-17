@@ -277,12 +277,14 @@
           requires {}
           resolved {}
           mapped   {}
-          br       (browserify)]
+          br       (browserify { :paths ["./node_modules/etude-engine/node_modules"]})]
 
       (br.transform wispify)
       (br.transform (require "stylify"))
 
       (br.require "vm" { :expose "vm" })
+      (br.require "observ" { :expose "observ" })
+      (br.require "wisp/sequence.js" { :expose "wisp/sequence.js" })
       ;(br.require "etude-engine/engine.wisp" { :expose "etude-engine" })
       ;(br.exclude "chokidar")
 

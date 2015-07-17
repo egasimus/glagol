@@ -16,17 +16,27 @@
   console.log(connectSocket());
 
   function evaluateAtom (atom) {
-    atom.value = require('vm').runInNewContext(
-      atom.compiled, makeContext(atom.name));
+    var val = require('vm').runInNewContext(atom.compiled, makeContext(atom.name));
+    if (atom.value) {
+      atom.value.set(val)
+    } else {
+      atom.value = require('observ')(val);
+      updateDeps(atom);
+    }
+    return val;
+  }
+
+  function updateDeps (atom) {
     (DEREFS[atom.name] || []).map(function (i) { evaluateAtom(ATOMS[translate(i)]) })
-    return atom.value;
   }
 
   function makeContext (atomName) {
     var context =
-      { require:   getRequire(atomName)
+      { assoc:     require('wisp/sequence.js').assoc
+      , console:   console
       , container: container
-      , deref:     deref.bind(null, ATOMS[translate(atomName)]) };
+      , deref:     deref.bind(null, ATOMS[translate(atomName)])
+      , require:   getRequire(atomName) };
     ATOMS[translate(atomName)].derefs.map(function (i) {
       context[i] = ATOMS[i];
     });
@@ -51,7 +61,7 @@
     if (!to.value) {
       evaluateAtom(to);
     }
-    return to.value;
+    return to.value();
 
   }
 
@@ -75,7 +85,6 @@
       else if (data.event === "atom.updated.compiled") {
         atom.compiled = data.arg.compiled;
         if (atom.value) {
-          console.log("reeval", atom);
           evaluateAtom(atom);
         }
       }

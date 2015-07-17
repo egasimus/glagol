@@ -1,4 +1,4 @@
-(let [h     (.-h       @vdom)
+(let [h     (.-h @vdom)
       emit  (fn emit [evt & args1] (fn [& args2]
               (.apply (.-emit @events) @events
                 (.concat (.concat [evt] args1) args2))))
@@ -8,6 +8,7 @@
       (h ".sequencer-label" label)
       (h ".sequencer-body" { :foo :bar }
         (times cells (fn [i]
-          (h ".sequencer-cell"
-            { :dataset { :index i }
-              :onclick (emit "sequencer.click") }))))])))
+          (let [value (aget (aget @state label) i)]
+            (h (str ".sequencer-cell" (if value ".active" ""))
+              { :dataset { :index i }
+                :onclick (emit "sequencer.click" label i) })))))])))

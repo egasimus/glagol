@@ -1,4 +1,4 @@
 { :playing false
-  :kicks   []
-  :snares  []
-  :hihats  [] }
+  :kick  [1 0 0 1 0 1 0 0]
+  :snare [0 0 1 0 0 0 1 0]
+  :hihat [1 0 0 1 0 0 1 0 0 1 0 0 1 0 1 1] }

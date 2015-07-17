@@ -1,7 +1,13 @@
 (let [emitter (new (.-EventEmitter2 (require "eventemitter2")))]
-  (set! emitter.cb-emit (fn [evt & args1]
-    (fn [& args2]
-      (emitter.emit.apply nil (.concat (.concat [evt] args1) args2)))))
-  (emitter.on "sequencer.click" (fn [& args]
-    (console.log "seq click" args)))
+  (emitter.on "sequencer.click" (fn [t n]
+    (let [curr-track
+            (aget @state t)
+          curr-val
+            (aget curr-track n)
+          next-val
+            (- 1 curr-val)
+          next-track
+            (.concat (.concat (curr-track.slice 0 n) next-val)
+              (curr-track.slice (+ 1 n)))]
+      (state.value.set (assoc @state t next-track)))))
   emitter)

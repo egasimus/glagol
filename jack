@@ -1,0 +1,3 @@
+(let [j (require "etude-jack")]
+  (log j))
+

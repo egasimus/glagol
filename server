@@ -1,4 +1,8 @@
-(let [web (require "etude-web")]
-  (web.server { :port (+ 2055 @the-answer) 
-                :name "postmelodic-gui" }
-    (web.page2 "/" index)))
+{ :web
+    (let [w (require "etude-web")]
+      (w.server { :port (+ 2055 @the-answer)
+                  :name "postmelodic-gui" }
+        (w.page2 "/" index)))
+  :jack
+    (let [j (require "etude-jack")]
+      (log j))}

@@ -1,3 +1,2 @@
-(let [vdom (require "etude-web/vdom.wisp")]
-  (vdom.insert-css (require "./sampler.styl"))
-  (vdom.init container @template))
+(.insert-css @vdom (require "./sampler.styl"))
+(.init @vdom container @template)

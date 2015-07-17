@@ -11,5 +11,9 @@
   "license": "ISC",
   "etude": {
     "defaultLanguage": "wisp"
+  },
+  "dependencies": {
+    "eventemitter2": "^0.4.14",
+    "observ": "^0.2.0"
   }
 }

@@ -1,0 +1,7 @@
+(let [emitter (new (.-EventEmitter2 (require "eventemitter2")))]
+  (set! emitter.cb-emit (fn [evt & args1]
+    (fn [& args2]
+      (emitter.emit.apply nil (.concat (.concat [evt] args1) args2)))))
+  (emitter.on "sequencer.click" (fn [& args]
+    (console.log "seq click" args)))
+  emitter)

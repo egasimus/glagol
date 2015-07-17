@@ -1,0 +1,4 @@
+{ :playing false
+  :kicks   []
+  :snares  []
+  :hihats  [] }

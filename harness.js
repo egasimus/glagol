@@ -18,7 +18,7 @@
   function evaluateAtom (atom) {
     atom.value = require('vm').runInNewContext(
       atom.compiled, makeContext(atom.name));
-    (DEREFS[atom.name] || []).map(function (i) { evaluateAtom(ATOMS[i]) })
+    (DEREFS[atom.name] || []).map(function (i) { evaluateAtom(ATOMS[translate(i)]) })
     return atom.value;
   }
 
@@ -26,7 +26,7 @@
     var context =
       { require:   getRequire(atomName)
       , container: container
-      , deref:     deref.bind(null, ATOMS[atomName]) };
+      , deref:     deref.bind(null, ATOMS[translate(atomName)]) };
     ATOMS[translate(atomName)].derefs.map(function (i) {
       context[i] = ATOMS[i];
     });

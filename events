@@ -9,5 +9,6 @@
           next-track
             (.concat (.concat (curr-track.slice 0 n) next-val)
               (curr-track.slice (+ 1 n)))]
+      (console.log (assoc @state t next-track))
       (state.value.set (assoc @state t next-track)))))
   emitter)

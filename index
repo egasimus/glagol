@@ -1,2 +1,3 @@
 (.insert-css @vdom (require "./sampler.styl"))
-(.init @vdom container @template)
+@state ;; TODO -- hack
+(state.value (.bind (.-update @vdom) nil (.init @vdom container @template)))

@@ -297,6 +297,7 @@
       (br.require "vm" { :expose "vm" })
       (br.require "observ" { :expose "observ" })
       (br.require "wisp/sequence.js" { :expose "wisp/sequence.js" })
+      (br.require "wisp/runtime.js" { :expose "wisp/runtime.js" })
       ;(br.require "etude-engine/engine.wisp" { :expose "etude-engine" })
       ;(br.exclude "chokidar")
 

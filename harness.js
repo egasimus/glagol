@@ -7,6 +7,8 @@
 })();
 (function start (entryAtomName, ATOMS) {
 
+  window.atom = function(key) { return ATOMS[key] }
+
   var container = document.getElementsByTagName("script")[0].parentElement // TODO
 
   var DEREFS = {};
@@ -35,6 +37,7 @@
       , console:   console
       , container: container
       , deref:     deref.bind(null, ATOMS[translate(atomName)])
+      , isEqual:   require('wisp/runtime.js').isEqual
       , require:   getRequire(atomName) };
     ATOMS[translate(atomName)].derefs.map(function (i) {
       context[i] = ATOMS[i];

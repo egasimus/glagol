@@ -12,8 +12,7 @@
   var DEREFS = {};
 
   evaluateAtom(ATOMS[entryAtomName]);
-
-  console.log(connectSocket());
+  connectSocket();
 
   function evaluateAtom (atom) {
     var val = require('vm').runInNewContext(atom.compiled, makeContext(atom.name));

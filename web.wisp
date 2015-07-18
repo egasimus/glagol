@@ -223,7 +223,7 @@
           body        ; updated to contain actual body
             "document.write('loading...!')"
 
-          handler     ; response handler that server the body contents
+          handler     ; response handler that serves the body contents
             (fn [req res]
               (let [embed?
                       (.-query.embed (url.parse req.url true))
@@ -241,15 +241,23 @@
         (fn [bundled] (set! body bundled))))
 
       ; attach socket and http endpoint to server
-      (let [state  (add-socket state)
-            socket (aget state.sockets socket-path)]
-        (socket.on "connection" (fn [conn]
-          (engine.events.on "atom.updated.*" (fn [arg]
-            (conn.send (JSON.stringify { :event this.event :arg arg }))))
-          (log "connected socket" socket-path)))
-        (assoc state
-          :endpoints (conj state.endpoints
-            (HTTPEndpoint. (endpoint-matcher route) handler (fn []))))))))
+      (let [state   (add-socket state)
+            socket  (aget state.sockets socket-path)
+            connect
+              (fn [connect]
+                (socket.once "connection" (fn [socket]
+                  (let [updated
+                          (fn [arg]
+                            (socket.send (JSON.stringify
+                              { :event this.event :arg arg }))) ]
+                    (engine.events.on "atom.updated.*" updated)
+                    (socket.on "close" (fn [code msg]
+                      (engine.events.off "atom.updated.*" updated)
+                      (connect connect)))
+                    (log "connected socket" socket-path)))))]
+        (connect connect)
+        (assoc state :endpoints (conj state.endpoints
+          (HTTPEndpoint. (endpoint-matcher route) handler (fn []))))))))
 
 (def ^:private harness (fs.readFileSync (path.join __dirname "harness.js") "utf-8"))
 

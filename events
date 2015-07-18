@@ -11,4 +11,8 @@
               (curr-track.slice (+ 1 n)))]
       (console.log (assoc @state t next-track))
       (state.value.set (assoc @state t next-track)))))
+  (emitter.on "pads.add" (fn []
+    (state.value.set (assoc @state :pads (.concat (.-pads @state) [{}])))))
+  (emitter.on "pads.select" (fn [i]
+    (state.value.set (assoc @state :selectedPad i))))
   emitter)

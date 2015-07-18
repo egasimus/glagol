@@ -1,6 +1,11 @@
 @state ;; TODO :(
 (.insert-css @vdom (require "./sampler.styl"))
-(state.value (.bind (.-update @vdom) nil (.init @vdom container @template)))
+(state.value (.bind (.-update @vdom) nil (.init @vdom container
+  (fn template-app []
+    (console.log (Date.now) "redraw" @state)
+    (.h @vdom ".app" [
+      @template-toolbar
+      (@template-pads)])))))
 (let [socket (WebSocket. "ws://localhost:2097/jack")]
   (set! socket.onmessage (fn [msg] (console.log msg)))
   (state.value.set (assoc (state.value) :jack socket)))

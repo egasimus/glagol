@@ -1,5 +1,21 @@
-(let [h     (.-h @vdom)
+(let [emit  (fn emit [evt & args1] (fn [& args2]
+              (.apply (.-emit @events) @events
+                (.concat (.concat [evt] args1) args2))))
       times (fn [n cb] (.map (Array.apply nil (Array n)) (fn [_ i] (cb i))))]
-  (fn [pads]
-    (h ".pads" (times pads (fn [i]
-      (h ".pad"))))))
+  (fn template-pads []
+    (let [h     (.-h @vdom)
+          state @state      ]
+      (h ".pads-and-editor"
+        [
+          (h ".pads" (.concat
+            (state.pads.map (fn [pad i]
+              (h (str ".pad" (if pad.live ".live" ".empty")
+                             (if (= i (.-selected-pad state)) ".selected" ""))
+                { :onclick (emit "pads.select" i) })))
+            [(h ".pad.add" { :onclick (emit "pads.add") } "+")]))
+
+          (let [sel (.-selected-pad state)]
+            (if (>= sel 0) (let [pad (aget (.-pads state) sel)]
+              (h ".pad-editor" (if pad.live
+                [] (@template-files pad sel)))))) ;"Yo Mo")))))
+        ]))))

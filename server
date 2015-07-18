@@ -1,26 +1,37 @@
 ; build a remote promise into the context of each atom!
 ; ((require "etude-jack")) -- module.exports is a promise
+; %
+; destructibles are not allowed to return values -
+; they may communicate with the rest of the world only
+; using callbacks passed during initialization
 (let [
+
+  path (require "path")
+  send (require "send-data/json")
+  glob (require "glob")
+  url  (require "url")
 
   web
     (let [w (require "etude-web")]
       (w.server { :port (+ 2055 @the-answer)
                   :name "postmelodic-gui" }
         (w.page2 "/" index)
-        (w.socket "/jack"))) ;; passing em as arguments is ugly
+        (w.endpoint "/files" (fn [req res]
+          (glob "/home/epimetheus/Sounds/**/*.wav" {} (fn [err files]
+            (if err (throw err))
+            (send req res (files.map
+              (fn [f] (path.relative "/home/epimetheus/Sounds" f))))))))))
+        ;(w.socket "/jack"))) ;; passing em as arguments is ugly
 
-  filter-object
-    (.-filter-object (require "etude-logging"))
+  ;filter-object
+    ;(.-filter-object (require "etude-logging"))
 
-  jack
-    (.then (.init (require "etude-jack")) (fn [j]
-      (let [socket (aget web.state.sockets "/jack")]
-        (socket.on "connection" (fn [conn]
-          (conn.on "message" (fn [msg] (conn.send (JSON.stringify (filter-object j))))))))
-      (fn [err] (throw err)) log))
+  ;jack
+    ;(.then (.init (require "etude-jack")) (fn [j]
+      ;(let [socket (aget web.state.sockets "/jack")]
+        ;(socket.on "connection" (fn [conn]
+          ;(conn.on "message" (fn [msg] (conn.send (JSON.stringify (filter-object j))))))))
+      ;(fn [err] (throw err)) log))
 
-] { :web  web
-    :jack jack })
-; destructibles are not allowed to return values -
-; they may communicate with the rest of the world only
-; using callbacks passed during initialization
+] { :web  web })
+    ;:jack jack })

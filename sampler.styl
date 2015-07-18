@@ -78,14 +78,50 @@ body
       &:hover
         background red
 
+.pads-and-editor
+  display block
+
+.pad-editor
+  background #151617
+  border-top 2px solid rgba(255,255,255,0.33)
+  box-shadow 0 3px 6px rgba(0,0,0,0.6)
+  margin     12px 12px 12px 18px
+
 .pads
   display   flex
   flex-wrap wrap
   margin    6px 0 0 6px
-  width     288px
+
   .pad
-    width         60px
-    height        60px
-    background    rgba(127,127,127,0.5)
+    box-shadow    0 2px 6px rgba(0,0,0,0.5)
+    cursor        pointer
+    width         72px
+    height        48px
     margin        6px 0 0 6px
     border-radius 6px
+
+  .pad
+    transition    0.2s opacity ease-in, 0.2s border-top ease-in;
+    opacity 0.5
+    &:hover
+      opacity 0.9
+    &.selected
+      opacity 1
+
+  .pad.add
+    text-shadow 0 -2px 6px #444
+    line-height 48px
+    font-size   48px
+    color       rgba(127,127,127,0.3)
+    text-align  center
+    &:hover
+      color     rgba(127,127,127,0.5)
+
+  .pad.empty
+    background #151617
+    border-top 2px solid rgba(33,33,33,1)
+    &:hover
+      border-top 2px solid rgba(255,255,255,0.15)
+    &.selected
+      border-top 2px solid rgba(255,255,255,0.33)
+      box-shadow 0 3px 6px rgba(0,0,0,0.6)

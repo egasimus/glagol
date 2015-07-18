@@ -14,6 +14,8 @@
   },
   "dependencies": {
     "eventemitter2": "^0.4.14",
-    "observ": "^0.2.0"
+    "glob": "^5.0.14",
+    "observ": "^0.2.0",
+    "send-data": "^7.0.0"
   }
 }

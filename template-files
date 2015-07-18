@@ -1,0 +1,11 @@
+(fn template-files [pad sel]
+  (let [h        (.-h @vdom)
+        create   (.-create @vdom)
+        state    @state
+        Widget   (fn [] (set! this.state {}))
+        template (fn [] (h ".file-browser" (str "Pad" sel)))
+        el       (create (template))]
+    { :type    "Widget"
+      :init    (fn [] el)
+      :update  (fn [] el)
+      :destroy (fn []) }))

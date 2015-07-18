@@ -1,8 +1,26 @@
-{ :web
+; build a remote promise into the context of each atom!
+; ((require "etude-jack")) -- module.exports is a promise
+(let [
+
+  web
     (let [w (require "etude-web")]
       (w.server { :port (+ 2055 @the-answer)
                   :name "postmelodic-gui" }
-        (w.page2 "/" index)))
-  :jack
-    (let [j (require "etude-jack")]
-      (log j))}
+        (w.page2 "/" index)
+        (w.socket "/jack"))) ;; passing em as arguments is ugly
+
+  filter-object
+    (.-filter-object (require "etude-logging"))
+
+  jack
+    (.then (.init (require "etude-jack")) (fn [j]
+      (let [socket (aget web.state.sockets "/jack")]
+        (socket.on "connection" (fn [conn]
+          (conn.on "message" (fn [msg] (conn.send (JSON.stringify (filter-object j))))))))
+      (fn [err] (throw err)) log))
+
+] { :web  web
+    :jack jack })
+; destructibles are not allowed to return values -
+; they may communicate with the rest of the world only
+; using callbacks passed during initialization

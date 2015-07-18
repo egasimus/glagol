@@ -1,3 +1,6 @@
+@state ;; TODO :(
 (.insert-css @vdom (require "./sampler.styl"))
-@state ;; TODO -- hack
 (state.value (.bind (.-update @vdom) nil (.init @vdom container @template)))
+(let [socket (WebSocket. "ws://localhost:2097/jack")]
+  (set! socket.onmessage (fn [msg] (console.log msg)))
+  (state.value.set (assoc (state.value) :jack socket)))

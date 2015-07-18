@@ -241,11 +241,13 @@
         (fn [bundled] (set! body bundled))))
 
       ; attach socket and http endpoint to server
-      (let [state   (add-socket state)
-            socket  (aget state.sockets socket-path)
+      (let [state
+              (add-socket state)
+            socket-server
+              (aget state.sockets socket-path)
             connect
               (fn [connect]
-                (socket.once "connection" (fn [socket]
+                (socket-server.once "connection" (fn [socket]
                   (let [updated
                           (fn [arg]
                             (socket.send (JSON.stringify

@@ -17,6 +17,7 @@
   connectSocket();
 
   function evaluateAtom (atom) {
+    console.log("evaluate", atom.name);
     var val = require('vm').runInNewContext(atom.compiled, makeContext(atom.name));
     if (atom.value) {
       atom.value.set(val)
@@ -28,7 +29,7 @@
   }
 
   function updateDeps (atom) {
-    (DEREFS[atom.name] || []).map(function (i) { evaluateAtom(ATOMS[translate(i)]) })
+    //(DEREFS[atom.name] || []).map(function (i) { evaluateAtom(ATOMS[translate(i)]) })
   }
 
   function makeContext (atomName) {
@@ -38,7 +39,8 @@
       , container: container
       , deref:     deref.bind(null, ATOMS[translate(atomName)])
       , isEqual:   require('wisp/runtime.js').isEqual
-      , require:   getRequire(atomName) };
+      , require:   getRequire(atomName)
+      , XMLHttpRequest: XMLHttpRequest};
     ATOMS[translate(atomName)].derefs.map(function (i) {
       context[i] = ATOMS[i];
     });

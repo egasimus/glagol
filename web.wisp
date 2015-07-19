@@ -14,7 +14,7 @@
 (def ^:private watchify   (require "watchify"))
 (def ^:private ws         (require "ws"))
 
-(def ^:private engine     (runtime.require-wisp "./engine.wisp"))
+(def ^:private engine     (runtime.require-wisp "etude-engine"))
 
 ;;
 ;; web server instance

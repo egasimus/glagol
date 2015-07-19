@@ -1,0 +1,6 @@
+(fn template-search [v]
+  (let [h (.-h @vdom)]
+    (h "input.search"
+      { :placeholder "search"
+        :onkeyup     (fn [evt] (@search evt.target.value))
+        :value       v.query })))

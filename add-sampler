@@ -1,5 +1,11 @@
-(fn [filename port-number]
-  (swap! samplers conj (postmelodic filename port-number))
-  (jack/connect
-    (jack/port filename "output") -> [ (jack/hw "playback_1")
-                                       (jack/hw "playback_2") ]))
+;(fn [filename port-number]
+  ;(swap! samplers conj (postmelodic filename port-number))
+  ;(jack/connect
+    ;(jack/port filename "output") -> [ (jack/hw "playback_1")
+                                       ;(jack/hw "playback_2") ]))
+(fn add-sampler [filename]
+  (console.log "add-sampler" filename)
+  (let [s @state]
+    (state.value.set (assoc s :samplers
+      (s.samplers.concat [{ :file filename}])))))
+;(fn add-sampler [filename] (console.log "add-sampler" filename))

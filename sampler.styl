@@ -4,7 +4,8 @@
 body
   font-family Open Sans
   font-size 12px
-  background url('http://distortedarts.com/wp-content/uploads/2013/03/the-city-rises-1911.jpg')
+  //background url('http://distortedarts.com/wp-content/uploads/2013/03/the-city-rises-1911.jpg')
+  background #151617
   background-size cover
   color #eee
   margin 0
@@ -16,7 +17,7 @@ body
   -ms-user-select: none;
   user-select: none;
  
-.sampler
+.sampler-old
   margin 12px
   height 240px
   display flex
@@ -152,3 +153,35 @@ body
     border-bottom 1px solid #333
     width         auto
     font-size     24px
+
+.search
+  display block
+  border: none;
+  background: none;
+  color: white;
+  font-size: 24px;
+  margin: 12px;
+  border-bottom: 2px solid rgba(255,255,255,0.5);
+  outline: none;
+
+.results
+  display block
+  margin 0 12px 12px 12px
+  .result
+    display inline-block
+    background rgba(255,255,255,0.1)
+    padding 3px 6px
+    margin 0 6px 6px 0
+    cursor pointer
+    &:hover
+      background rgba(255,255,255,0.15)
+
+.sampler
+  background: rgba(0,128,64,0.1);
+  margin: 12px;
+  padding: 6px 12px;
+  .btn.play
+    display: inline-block;
+    margin-right: 9px;
+    position: relative;
+    top: -1px;

@@ -27,12 +27,12 @@
 
   search
     (fn [req res]
-      (let [q (.-query (url.parse req.url true))]
-        (send req res (strip (if (and q.q (> q.q.length 0))
-          (let [soundz (sounds.filter (fn [filename] (not (= -1 (filename.index-of q.q)))))]
-            (console.log q.q sounds)
-            sounds)
-          sounds)))))
+      (let [get (.-query (url.parse req.url true))
+            q   get.q]
+        (if q (log "search" q))
+        (send req res (strip (if q
+          (.slice (sounds.filter (fn [snd] (not (= -1 (snd.index-of q))))) 0 50)
+          (sounds.slice 0 50))))))
 
   web
     (let [w (require "etude-web")]

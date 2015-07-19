@@ -1,0 +1,7 @@
+(fn []
+  (let [s @state
+        h (.-h @vdom)]
+    (s.samplers.map (fn [sampler]
+      (h ".sampler" [
+        (h ".btn.play" "▶")
+        sampler.file])))))

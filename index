@@ -2,7 +2,6 @@
 (.insert-css @vdom (require "./sampler.styl"))
 (state.value (.bind (.-update @vdom) nil (.init @vdom container
   (fn template-app []
-    (console.log (Date.now) "redraw" @state)
     (.h @vdom ".app" [
       @template-toolbar
       (@template-pads)])))))

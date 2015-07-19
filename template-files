@@ -1,11 +1,63 @@
 (fn template-files [pad sel]
-  (let [h        (.-h @vdom)
+  (let [h        (.-h      @vdom)
         create   (.-create @vdom)
+        diff     (.-diff   @vdom)
+        patch    (.-patch  @vdom)
+        path     (require "path")
         state    @state
-        Widget   (fn [] (set! this.state {}))
-        template (fn [] (h ".file-browser" (str "Pad" sel)))
-        el       (create (template))]
+
+        el     nil
+        render nil
+
+        files []
+        query ""
+
+        xhr-get
+        (fn [url cb]
+          (let [request (XMLHttpRequest.)]
+            (set! request.onreadystatechange (fn []
+              (if (and (= request.ready-state 4) (= request.status 200)) (do
+                (log "xhr got" url request.response-text)
+                (cb (JSON.parse request.response-text))))))
+            (request.open :get url)
+            (request.send)))
+
+        throttle nil
+        search
+          (fn [q]
+            (if throttle (do (clear-timeout throttle) (set! throttle nil)))
+            (set! throttle (set-timeout (fn []
+              (set! query q)
+              (xhr-get (str "http://localhost:2097/files?q=" q) (fn [data]
+                (set! files data)
+                (el.parent-element.replace-child (render) el)))
+              (console.log "searching" q)) 200))
+            (render))
+
+        template
+          (fn []
+            (console.log "tpl" sel files.length)
+            (h ".file-browser" [
+              (h ".total" (str "Searching among " files.length " sounds"))
+              (h "input.search"
+                { :placeholder
+                    "search"
+                  :onkeyup
+                    (fn [evt] (search evt.target.value))
+                  :value
+                    query})]))
+
+        request (XMLHttpRequest.)]
+
+    (set! render (fn [] (set! el (create (template))) el))
+    (render)
+
+    (xhr-get "http://localhost:2097/files"
+      (fn [data]
+        (set! files data)
+        (el.parent-element.replace-child (render) el)))
+    
     { :type    "Widget"
-      :init    (fn [] el)
-      :update  (fn [] el)
-      :destroy (fn []) }))
+      :init    (fn [] (render))
+      :update  (fn [] (render))
+      :destroy (fn [] (request.abort)) }))

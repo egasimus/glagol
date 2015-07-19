@@ -4,6 +4,9 @@
 ; destructibles are not allowed to return values -
 ; they may communicate with the rest of the world only
 ; using callbacks passed during initialization
+; %
+; slash syntax for atom values instead of @/deref!
+; (vdom.state cb) vs. (vdom/foo/bar.baz)
 (let [
 
   path (require "path")
@@ -11,16 +14,32 @@
   glob (require "glob")
   url  (require "url")
 
+  root
+    "/home/epimetheus/Sounds"
+  sounds
+    []
+  strip
+    (fn [paths] (paths.map (fn [x] (path.relative root x))))
+  _
+    (glob (str root "/**/*.wav") {} (fn [err files]
+      (if err (throw err))
+      (set! sounds files)))
+
+  search
+    (fn [req res]
+      (let [q (.-query (url.parse req.url true))]
+        (send req res (strip (if (and q.q (> q.q.length 0))
+          (let [soundz (sounds.filter (fn [filename] (not (= -1 (filename.index-of q.q)))))]
+            (console.log q.q sounds)
+            sounds)
+          sounds)))))
+
   web
     (let [w (require "etude-web")]
       (w.server { :port (+ 2055 @the-answer)
                   :name "postmelodic-gui" }
         (w.page2 "/" index)
-        (w.endpoint "/files" (fn [req res]
-          (glob "/home/epimetheus/Sounds/**/*.wav" {} (fn [err files]
-            (if err (throw err))
-            (send req res (files.map
-              (fn [f] (path.relative "/home/epimetheus/Sounds" f))))))))))
+        (w.endpoint "/files" search)))
         ;(w.socket "/jack"))) ;; passing em as arguments is ugly
 
   ;filter-object

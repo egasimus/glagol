@@ -78,6 +78,7 @@
 
 ; state updater
 (defn update [cb]
+  (log :updating)
   (state.patchbay.GetGraph "0" (fn [err graph client-list connection-list]
     (if err (throw err))
     (set! state.clients     (parse-clients     client-list))
@@ -138,25 +139,25 @@
 
 ; initializer
 (defn init []
-  (let [dbus         (require "dbus-native")
-        dbus-name    "org.jackaudio.service"
-        dbus-path    "/org/jackaudio/Controller"
-        dbus-service (.get-service (dbus.session-bus) dbus-name)]
-		(dbus-service.get-interface dbus-path "org.jackaudio.JackControl"
-      (fn [err control] (if err (throw err))
-        (log "connected to jack control")
-        (set! state.control control)
-        (control.StartServer (fn []
-          (log "jack server started")
-			    (dbus-service.get-interface dbus-path "org.jackaudio.JackPatchbay"
-            (fn [err patchbay] (if err (throw err))
-              (log "connected to jack patchbay")
-              (set! state.patchbay patchbay)
-              (update bind)))))))))
-
-; autostart
-
-(if (not state.started) (init))
+  (Q.Promise (fn [resolve reject notify]
+    (let [dbus         (require "dbus-native")
+          dbus-name    "org.jackaudio.service"
+          dbus-path    "/org/jackaudio/Controller"
+          dbus-service (.get-service (dbus.session-bus) dbus-name)]
+      (dbus-service.get-interface dbus-path "org.jackaudio.JackControl"
+        (fn [err control] (if err (reject err))
+          (notify "connected to jack control")
+          (set! state.control control)
+          (control.StartServer (fn []
+            (notify "jack server started")
+            (dbus-service.get-interface dbus-path "org.jackaudio.JackPatchbay"
+              (fn [err patchbay] (if err (reject err))
+                (notify "connected to jack patchbay")
+                (set! state.patchbay patchbay)
+                (update (fn []
+                  (notify "initialization complete")
+                  (bind)
+                  (resolve state)))))))))))))
 
 ; execute as soon as the session has started
 

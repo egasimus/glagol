@@ -34,12 +34,14 @@
 
   function makeContext (atomName) {
     var context =
-      { assoc:     require('wisp/sequence.js').assoc
-      , console:   console
-      , container: container
-      , deref:     deref.bind(null, ATOMS[translate(atomName)])
-      , isEqual:   require('wisp/runtime.js').isEqual
-      , require:   getRequire(atomName)
+      { assoc:        require('wisp/sequence.js').assoc
+      , console:      console
+      , container:    container
+      , deref:        deref.bind(null, ATOMS[translate(atomName)])
+      , isEqual:      require('wisp/runtime.js').isEqual
+      , require:      getRequire(atomName)
+      , setTimeout:   setTimeout
+      , clearTimeout: clearTimeout
       , XMLHttpRequest: XMLHttpRequest};
     ATOMS[translate(atomName)].derefs.map(function (i) {
       context[i] = ATOMS[i];

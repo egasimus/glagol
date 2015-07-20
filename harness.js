@@ -17,7 +17,6 @@
   connectSocket();
 
   function evaluateAtom (atom) {
-    console.log("evaluate", atom.name);
     var val = require('vm').runInNewContext(atom.compiled, makeContext(atom.name));
     if (atom.value) {
       atom.value.set(val)
@@ -63,9 +62,11 @@
       DEREFS[to.name].push(from.name);
     }
 
-    // evaluate atom if not evaluated yet
+    // evaluate atom, and attach a listener to its value
     if (!to.value) {
+      var attach = !to.value;
       evaluateAtom(to);
+      if (attach) { to.value(evaluateAtom.bind(null, from)); }
     }
     return to.value();
 

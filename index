@@ -1,14 +1,20 @@
-@state ;; TODO :(
-(.insert-css @vdom (require "./sampler.styl"))
-(state.value (fn [v]
-  (console.log "refresh!" v)
-  ((.-update @vdom) (.init @vdom container
+(let [state @state
+      vdom  @vdom]
+
+  (console.debug "\nindex" state)
+
+  (.insert-css @vdom (require "./sampler.styl"))
+
+  (vdom.update (vdom.init container
     (fn template-app []
-      (.h @vdom ".app" [
+      (vdom.h ".app" [
         @template-toolbar
         (@template-samplers)
         (@template-search v)
-        (@template-results)]))))))
-(state.value.set (assoc (state.value)
-  :jack ((require "q-connection") (WebSocket. "ws://localost:2097/jack"))))
-(console.log (.inspect (.-jack (state.value))))
+        (@template-results)]))))
+
+  (let [socket ((require "q-connection") (WebSocket. "ws://localhost:2097/jack"))]
+    (socket.then (fn [arg] (console.log "yay" arg (arg.inspect))))))
+
+;  ;:jack ((require "q-connection") (WebSocket. "ws://localost:2097/jack"))))
+;(console.log (.inspect (.-jack (state.value))));

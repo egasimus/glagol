@@ -26,13 +26,13 @@
 
   Q (require "q")
   QC (require "q-connection")
-
+  api @api
   sockets []
 
   ] (.on (aget server.state.sockets "/jack") "connection"
       (fn [socket]
         (log "connection on /jack, woo!")
-        (sockets.push socket)))
+        (sockets.push (QC socket api))))
 
     (glob (str root "/**/*.wav") {} (fn [err files]
       (if err (throw err))

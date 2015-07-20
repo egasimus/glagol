@@ -9,8 +9,6 @@
         (@template-samplers)
         (@template-search v)
         (@template-results)]))))))
-        ;(@template-results)
-      ; (@template-pads)])))))
-(let [socket (WebSocket. "ws://localhost:2097/jack")]
-  (set! socket.onmessage (fn [msg] (console.log msg)))
-  (state.value.set (assoc (state.value) :jack socket)))
+(state.value.set (assoc (state.value)
+  :jack ((require "q-connection") (WebSocket. "ws://localost:2097/jack"))))
+(console.log (.inspect (.-jack (state.value))))

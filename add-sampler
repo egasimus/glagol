@@ -7,5 +7,5 @@
   (console.log "add-sampler" filename)
   (let [s @state]
     (state.value.set (assoc s :samplers
-      (s.samplers.concat [{ :file filename}])))))
+      (s.samplers.concat [{ :file filename }])))))
 ;(fn add-sampler [filename] (console.log "add-sampler" filename))

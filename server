@@ -1,56 +1,40 @@
-; build a remote promise into the context of each atom!
-; ((require "etude-jack")) -- module.exports is a promise
-; %
-; destructibles are not allowed to return values -
-; they may communicate with the rest of the world only
-; using callbacks passed during initialization
-; %
-; slash syntax for atom values instead of @/deref!
-; (vdom.state cb) vs. (vdom/foo/bar.baz)
 (let [
 
   path (require "path")
   send (require "send-data/json")
   glob (require "glob")
-  url  (require "url")
+  url (require "url")
+  w (require "etude-web")
 
-  root
-    "/home/epimetheus/Sounds"
-  sounds
-    []
-  strip
-    (fn [paths] (paths.map (fn [x] (path.relative root x))))
-  _
+  root "/home/epimetheus/Sounds"
+  sounds []
+  strip (fn [paths] (paths.map (fn [x] (path.relative root x))))
+  search (fn [req res]
+    (let [get (.-query (url.parse req.url true))
+          q   get.q]
+      (if q (log "search" q))
+      (send req res (strip (.slice
+        (if (not q)
+          sounds
+          (sounds.filter
+            (fn [snd] (not (= -1 (snd.index-of q)))))) 0 50)))))
+  server
+    (w.server { :port (+ 2055 @the-answer) }
+      (w.page2    "/" index)
+      (w.endpoint "/files" search)
+      (w.socket   "/jack"))
+
+  Q (require "q")
+  QC (require "q-connection")
+
+  sockets []
+
+  ] (.on (aget server.state.sockets "/jack") "connection"
+      (fn [socket]
+        (log "connection on /jack, woo!")
+        (sockets.push socket)))
+
     (glob (str root "/**/*.wav") {} (fn [err files]
       (if err (throw err))
-      (set! sounds files)))
+      (set! sounds files))))
 
-  search
-    (fn [req res]
-      (let [get (.-query (url.parse req.url true))
-            q   get.q]
-        (if q (log "search" q))
-        (send req res (strip (if q
-          (.slice (sounds.filter (fn [snd] (not (= -1 (snd.index-of q))))) 0 50)
-          (sounds.slice 0 50))))))
-
-  web
-    (let [w (require "etude-web")]
-      (w.server { :port (+ 2055 @the-answer)
-                  :name "postmelodic-gui" }
-        (w.page2 "/" index)
-        (w.endpoint "/files" search)))
-        ;(w.socket "/jack"))) ;; passing em as arguments is ugly
-
-  ;filter-object
-    ;(.-filter-object (require "etude-logging"))
-
-  ;jack
-    ;(.then (.init (require "etude-jack")) (fn [j]
-      ;(let [socket (aget web.state.sockets "/jack")]
-        ;(socket.on "connection" (fn [conn]
-          ;(conn.on "message" (fn [msg] (conn.send (JSON.stringify (filter-object j))))))))
-      ;(fn [err] (throw err)) log))
-
-] { :web  web })
-    ;:jack jack })

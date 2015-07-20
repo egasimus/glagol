@@ -16,6 +16,8 @@
     "eventemitter2": "^0.4.14",
     "glob": "^5.0.14",
     "observ": "^0.2.0",
+    "q": "^1.4.1",
+    "q-connection": "^0.6.1",
     "send-data": "^7.0.0"
   }
 }

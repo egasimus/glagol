@@ -3,18 +3,15 @@
 
   (console.debug "\nindex" state)
 
-  (.insert-css @vdom (require "./sampler.styl"))
+  (vdom.insert-css (require "./sampler.styl"))
 
   (vdom.update (vdom.init container
     (fn template-app []
       (vdom.h ".app" [
         @template-toolbar
         (@template-samplers)
-        (@template-search v)
+        (@template-search state)
         (@template-results)]))))
 
   (let [socket ((require "q-connection") (WebSocket. "ws://localhost:2097/jack"))]
     (socket.then (fn [arg] (console.log "yay" arg (arg.inspect))))))
-
-;  ;:jack ((require "q-connection") (WebSocket. "ws://localost:2097/jack"))))
-;(console.log (.inspect (.-jack (state.value))));

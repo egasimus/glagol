@@ -3,7 +3,7 @@
 
   (console.debug "\nindex" state)
 
-  (vdom.insert-css (require "./sampler.styl"))
+  (vdom.insert-css (require "./style.styl"))
 
   (vdom.update (vdom.init container
     (fn template-app []

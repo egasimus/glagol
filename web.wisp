@@ -28,6 +28,7 @@
         state
           (endpoints.reduce (fn [state endpt] (endpt state))
             { :server srv :endpoints [] :sockets {} })
+        _ (log state)
         handler
           (fn [req res]
             (let [matcher (fn [endpt] (if (endpt.route req) endpt.handler))
@@ -64,7 +65,7 @@
 ;; calls arbitrary function in response to http request
 ;;
 
-(deftype HTTPEndpoint [route handler destroy])
+(deftype HTTPEndpoint [name route handler destroy])
 
 (defn- endpoint-matcher [route]
   (fn [req]
@@ -74,9 +75,10 @@
   ([route handler]
     (endpoint route handler (fn [])))
   ([route handler destroy]
+    (log "endpt" route handler)
     (fn [state]
       (assoc state :endpoints (conj state.endpoints
-        (HTTPEndpoint. (endpoint-matcher route) handler destroy))))))
+        (HTTPEndpoint. route (endpoint-matcher route) handler destroy))))))
 
 ;;
 ;; browserify-based page
@@ -125,8 +127,9 @@
       (rebuild)
       (watcher.on "update" rebuild)
 
-      (assoc state :endpoints (conj state.endpoints
-        (HTTPEndpoint. (endpoint-matcher route) handler (fn [] (watcher.close))))))))
+      (assoc state
+        :endpoints
+          (conj state.endpoints (endpoint route handler (fn [] (watcher.close))))))))
 
 (defn- document-template [output]
   (str "<head><meta charset=\"utf-8\"></head><body><script>" output "</script>"))
@@ -194,10 +197,9 @@
                 (endpoint-matcher options.path)
               destroy
                 (fn [] (log "destroying socket" options.path) (socket.close))]
-          (assoc state
-            :sockets   (assoc state.sockets options.path socket)
-            :endpoints (conj state.endpoints (HTTPEndpoint.
-              (endpoint-matcher route) (fn []) (fn [] (socket.close))))))))))
+          (assoc ((endpoint route (fn []) (fn [] (socket.close))) state)
+            :sockets
+              (assoc state.sockets options.path socket)))))))
 
 ;;
 ;; error routes
@@ -217,6 +219,7 @@
   (fn [state]
     (let [socket-path
             (str route "socket") ; TODO
+
           add-socket  ; web socket for realtime updates
             (socket { :path socket-path })
 
@@ -258,8 +261,7 @@
                       (connect connect)))
                     (log "connected socket" socket-path)))))]
         (connect connect)
-        (assoc state :endpoints (conj state.endpoints
-          (HTTPEndpoint. (endpoint-matcher route) handler (fn []))))))))
+        ((endpoint route handler (fn [])) state)))))
 
 (def ^:private harness (fs.readFileSync (path.join __dirname "harness.js") "utf-8"))
 

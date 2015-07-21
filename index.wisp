@@ -1,4 +1,5 @@
 (def ^:private bitwise  (require "./bitwise.js"))
+(def ^:private child    (require "child_process"))
 (def ^:private dbus     (require "dbus-native"))
 (def ^:private event2   (require "eventemitter2"))
 (def ^:private Q        (require "q"))
@@ -89,7 +90,6 @@
 ; state updater
 
 (defn update [cb]
-  (log :updating)
   (state.patchbay.GetGraph "0" (fn [err graph client-list connection-list]
     (if err (throw err))
     (set! state.clients        (parse-clients     client-list))
@@ -186,7 +186,7 @@
 ; so that a ClientAppeared notification can be received
 
 (defn do-spawn [id & args]
-  (or (aget state.spawn id)
+  (or (aget state.spawn id) (do (log 1)
     (let [p
             (child.spawn.apply nil 
               [ (aget args 0) (args.slice 1) { :stdio "inherit"} ]) ]
@@ -195,12 +195,15 @@
       (state.cleanup.push (fn []
         (log "Killing" (aget args 0))
         (p.kill "SIGKILL")))
-      p)))
+      p))))
 
 (defn spawn [id & args]
-  (log "jack.spawn" id args)
+  (log args)
   (args.unshift id)
-  (after-session-start.then (fn [] (do-spawn.apply nil args))))
+  (Q.Promise (fn [resolve reject]
+    (after-session-start.then (fn []
+      (try (resolve (do-spawn.apply nil args))
+        (catch e (reject e))))))))
 
 
 ;;

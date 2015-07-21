@@ -7,6 +7,10 @@
 })();
 (function start (entryAtomName, ATOMS) {
 
+  Object.keys(ATOMS).map(function (i) {
+    if (ATOMS[i].value) ATOMS[i].value = require('observ')(ATOMS[i].value);
+  })
+
   window.atom = function(key) { return ATOMS[key] }
 
   var container = document.getElementsByTagName("script")[0].parentElement // TODO

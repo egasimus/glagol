@@ -28,7 +28,6 @@
         state
           (endpoints.reduce (fn [state endpt] (endpt state))
             { :server srv :endpoints [] :sockets {} })
-        _ (log state)
         handler
           (fn [req res]
             (let [matcher (fn [endpt] (if (endpt.route req) endpt.handler))

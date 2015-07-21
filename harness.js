@@ -41,6 +41,7 @@
       , require:      getRequire(atomName)
       , setTimeout:   setTimeout
       , clearTimeout: clearTimeout
+      , WebSocket:    WebSocket
       , XMLHttpRequest: XMLHttpRequest};
     ATOMS[translate(atomName)].derefs.map(function (i) {
       context[i] = ATOMS[i];

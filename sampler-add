@@ -1,10 +1,22 @@
 (fn add-sampler [filename]
   (let [j @jack
         s @state]
+    (.done (.then
+      (j.invoke "spawn"
+        "foo" "/home/epimetheus/bin/sample_player"
+        "-n" "Foo" "-p" "10000"
+        filename)
+      (fn [spawned] (console.log "spawned" spawned))
+      (fn [err] (console.log "error" err))))
     (state.value.set (assoc s :samplers
       (s.samplers.concat [{ :file filename }])))))
 
 ;-------------------------------------
+
+        ;(set! state.jack-process (jack.spawn
+          ;spawn-key postmelodic "-n" jack-client-name
+                                ;"-p" osc-port
+                                ;sample))
 
 ;(fn [filename port-number]
   ;(swap! samplers conj (postmelodic filename port-number))

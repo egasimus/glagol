@@ -1,1 +1,2 @@
-{ :jack (.init (require "etude-jack")) }
+{ :jack  (.init (require "etude-jack"))
+  :spawn (.-spawn (require "etude-jack")) }

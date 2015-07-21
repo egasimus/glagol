@@ -3,9 +3,10 @@
         s @state]
     (.done (.then
       (j.invoke "spawn"
-        "foo" "/home/epimetheus/bin/sample_player"
-        "-n" "Foo" "-p" "10000"
-        filename)
+        filename "/home/epimetheus/bin/sample_player"
+        "-n" (filename.substr (- filename.length 63))
+        "-p" (+ 1024 (Math.floor (* (Math.random) (- 11024 1024))))
+        (.join (require "path") @sample-dir filename))
       (fn [spawned] (console.log "spawned" spawned))
       (fn [err] (console.log "error" err))))
     (state.value.set (assoc s :samplers

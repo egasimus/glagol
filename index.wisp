@@ -28,16 +28,26 @@
           (found.apply null [pre-found])
           (expect emitter event finder found)))))))
 
-; initialize state
+; initial state
 
 (def state
-  { :started     false
-    :events      (event2.EventEmitter2. { :maxListeners 64 })
-    :clients     {}
-    :connections {}
-    :spawn       {} })
+  { :started
+      false
+    :events
+      (event2.EventEmitter2. { :maxListeners 64 })
+    :clients
+      {}
+    :clientNames
+      []
+    :connections
+      {}
+    :connectionIds
+      []
+    :spawn
+      {} })
 
 ; parsers
+
 (defn parse-ports [data]
   (let [ports {}]
     (data.map (fn [port]
@@ -71,18 +81,21 @@
             out-port   (aget out-client.ports (aget connection 3))
             in-client  (aget state.clients    (aget connection 5))
             in-port    (aget in-client.ports  (aget connection 7))]
-        (set! (aget connections (aget connection 8)
+        (set! (aget connections (aget connection 8))
           { :output out-port
-            :input  in-port })))))
+            :input  in-port }))))
   connections))
 
 ; state updater
+
 (defn update [cb]
   (log :updating)
   (state.patchbay.GetGraph "0" (fn [err graph client-list connection-list]
     (if err (throw err))
-    (set! state.clients     (parse-clients     client-list))
-    (set! state.connections (parse-connections connection-list))
+    (set! state.clients        (parse-clients     client-list))
+    (set! state.connections    (parse-connections connection-list))
+    (set! state.client-names   (Object.keys state.clients))
+    (set! state.connection-ids (Object.keys state.connections))
     (if cb (cb)))))
 
 ; event handlers
@@ -138,6 +151,7 @@
     (state.events.emit "started")))
 
 ; initializer
+
 (defn init []
   (Q.Promise (fn [resolve reject notify]
     (let [dbus         (require "dbus-native")

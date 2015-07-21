@@ -1,9 +1,12 @@
-@socket
 (fn add-sampler [filename]
-  (console.log "add-sampler" filename)
-  (let [s @state]
-    (state.value.set (assoc s :samplers
-      (s.samplers.concat [{ :file filename }])))))
+  (let [socket @socket]
+    (.then (socket.invoke "jack")
+      (fn [ok]  (console.log "ok"  ok))
+      (fn [err] (console.log "err" err))
+      (fn [log] (console.log "log" log)))
+    (let [s @state]
+      (state.value.set (assoc s :samplers
+        (s.samplers.concat [{ :file filename }]))))))
 
 ;-------------------------------------
 

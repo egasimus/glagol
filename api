@@ -1,2 +1,1 @@
-{ :foo "bar"
-  :hello (fn [] 42) }
+{ :jack (.-init (require "etude-jack")) }

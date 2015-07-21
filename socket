@@ -1,10 +1,1 @@
-(let [s  (WebSocket. "ws://localhost:2097/jack")
-      QC (require "q-connection")]
-  (set! s.onclose (fn [] (console.log "socket close" arguments)))
-  (set! s.onerror (fn [] (console.log "socket error" arguments)))
-  (set! s.onopen  (fn [] (console.log "socket open"  arguments
-    (.then (.get (QC s) "foo")
-      (fn [arg] (console.log "hello" arg))))))
-  (set! s.onmessage (fn [] (console.log "socket msg" arguments)))
-  (console.log "->" s)
-  s)
+((require "q-connection") (WebSocket. "ws://localhost:2097/jack"))

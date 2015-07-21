@@ -1,4 +1,6 @@
-(let [socket
+(let [Q
+        (require "q")
+      socket
         @socket
       then
         (fn [promised cb] (.done (promised.then
@@ -10,8 +12,14 @@
           :clients     {} }]
 
   (then (socket.get "jack") (fn [server-state]
-    (then (server-state.get "clientIds") (fn [ids]
-      (console.log "clients" ids)))
+
+    (then (server-state.get "clientNames") (fn [names]
+      (then (server-state.get "clients") (fn [clients]
+        (names.map (fn [name]
+          (then (clients.get name) (fn [client]
+            (then (client.get "id") (fn [id]
+              (console.log "client" name id)))))))))))
+
     (then (server-state.get "connectionIds") (fn [ids]
       (then (server-state.get "connections") (fn [conns]
         (ids.map (fn [id]
@@ -19,7 +27,6 @@
             (then (conn.get "output") (fn [output]
               (then (output.get "id") (fn [id2] (console.log "conn" id "output" id2)))))
             (then (conn.get "input") (fn [input]
-              (then (input.get "id") (fn [id2] (console.log "conn" id "input" id2)))))
-            (console.log "conn" conn)))))))))))
+              (then (input.get "id") (fn [id2] (console.log "conn" id "input" id2)))))))))))))))
 
   status)

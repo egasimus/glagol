@@ -75,7 +75,6 @@
   ([route handler]
     (endpoint route handler (fn [])))
   ([route handler destroy]
-    (log "endpt" route handler)
     (fn [state]
       (assoc state :endpoints (conj state.endpoints
         (HTTPEndpoint. route (endpoint-matcher route) handler destroy))))))
@@ -197,7 +196,7 @@
                 (endpoint-matcher options.path)
               destroy
                 (fn [] (log "destroying socket" options.path) (socket.close))]
-          (assoc ((endpoint route (fn []) (fn [] (socket.close))) state)
+          (assoc ((endpoint options.path (fn []) (fn [] (socket.close))) state)
             :sockets
               (assoc state.sockets options.path socket)))))))
 

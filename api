@@ -1,1 +1,2 @@
-{ :hello (fn [] 42) }
+{ :foo "bar"
+  :hello (fn [] 42) }

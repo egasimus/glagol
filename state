@@ -1,9 +1,10 @@
-{ :playing false
-  :kick  [1 0 0 1 0 1 0 0]
-  :snare [0 0 1 0 0 0 1 0]
-  :hihat [1 0 0 1 0 0 1 0 0 1 0 0 1 0 1 1]
+{ :playing  false
+
+  :kick     [1 0 0 1 0 1 0 0]
+  :snare    [0 0 1 0 0 0 1 0]
+  :hihat    [1 0 0 1 0 0 1 0 0 1 0 0 1 0 1 1]
   
   :samplers []
 
-  :query ""
-  :results [] }
+  :query    ""
+  :results  [] }

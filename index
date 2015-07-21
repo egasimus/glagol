@@ -9,9 +9,6 @@
     (fn template-app []
       (vdom.h ".app" [
         @template-toolbar
-        (@template-samplers)
+        (vdom.h ".samplers" (@template-samplers))
         (@template-search state)
-        (@template-results)]))))
-
-  (let [socket ((require "q-connection") (WebSocket. "ws://localhost:2097/jack"))]
-    (socket.then (fn [arg] (console.log "yay" arg (arg.inspect))))))
+        (@template-results)])))))

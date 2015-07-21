@@ -1,0 +1,7 @@
+(fn [url cb]
+  (let [request (XMLHttpRequest.)]
+    (set! request.onreadystatechange (fn []
+      (if (and (= request.ready-state 4) (= request.status 200)) (do
+        (cb (JSON.parse request.response-text))))))
+    (request.open :get url)
+    (request.send)))

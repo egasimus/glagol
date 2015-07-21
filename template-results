@@ -6,5 +6,5 @@
     (h "output.results" (v.results.map (fn [i]
       (h ".result"
         { :dataset { :file i }
-          :onclick (fn [evt] (@add-sampler evt.target.dataset.file)) }
+          :onclick (fn [evt] (@sampler-add evt.target.dataset.file)) }
         (.slice (i.split "/") -1)))))))

@@ -12,16 +12,6 @@
         files []
         query ""
 
-        xhr-get
-        (fn [url cb]
-          (let [request (XMLHttpRequest.)]
-            (set! request.onreadystatechange (fn []
-              (if (and (= request.ready-state 4) (= request.status 200)) (do
-                (log "xhr got" url request.response-text)
-                (cb (JSON.parse request.response-text))))))
-            (request.open :get url)
-            (request.send)))
-
         throttle nil
         search
           (fn [q]
@@ -52,7 +42,7 @@
     (set! render (fn [] (set! el (create (template))) el))
     (render)
 
-    (xhr-get "http://localhost:2097/files"
+    (@xhr-get "http://localhost:2097/files"
       (fn [data]
         (set! files data)
         (el.parent-element.replace-child (render) el)))

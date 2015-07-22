@@ -1,16 +1,20 @@
 (fn add-sampler [filename]
   (let [j @jack
-        s @state]
+        s @state
+        name (filename.substr (- filename.length 63))
+        port (+ 1024 (Math.floor (* (Math.random) (- 11024 1024))))]
     (.done (.then
       (j.invoke "spawn"
         filename "/home/epimetheus/bin/sample_player"
-        "-n" (filename.substr (- filename.length 63))
-        "-p" (+ 1024 (Math.floor (* (Math.random) (- 11024 1024))))
+        "-n" name
+        "-p" port
         (.join (require "path") @sample-dir filename))
       (fn [spawned] (console.log "spawned" spawned))
-      (fn [err] (console.log "error" err))))
+      (fn [err]     (console.log "error"   err))))
     (state.value.set (assoc s :samplers
-      (s.samplers.concat [{ :file filename }])))))
+      (s.samplers.concat [{ :file filename
+                            :name name
+                            :port port }])))))
 
 ;-------------------------------------
 

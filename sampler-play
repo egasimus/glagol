@@ -1,0 +1,4 @@
+(fn [sampler]
+  (let [j @jack]
+    (.done (.then (j.invoke "play" sampler.port)
+      (fn [] (console.log "playing" arguments))))))

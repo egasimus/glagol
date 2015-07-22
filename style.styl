@@ -1,5 +1,6 @@
 * 
   box-sizing border-box
+  position   relative
 
 body
   font-family Open Sans
@@ -176,12 +177,31 @@ body
     &:hover
       background rgba(255,255,255,0.15)
 
-.sampler
-  background: rgba(0,0,0,0.5);
-  margin: 12px;
-  padding: 6px 12px;
-  .btn.play
-    display: inline-block;
-    margin-right: 9px;
-    position: relative;
-    top: -1px;
+.samplers
+  display: flex;
+  flex-wrap: wrap;
+  margin: 12px 0 0 12px;
+
+  .sampler
+    transition: background 0.1s;
+    width: 180px;
+    margin: 0 18px 18px 0;
+    padding: 6px 12px;
+    height: 120px;
+    border-radius: 6px;
+    background: rgba(255,69,0,0.7);
+    border-top: 3px solid rgba(255,255,255,0.4);
+    border-bottom: 3px solid rgba(0,0,0,0.4);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.5);
+    text-shadow: 0 1px 0 rgba(0,0,0,0.5);
+    cursor: pointer;
+    text-align: center;
+    display flex
+    flex-direction column
+    justify-content space-between
+
+    &:hover
+      background orangered
+
+    &-path-part:last-child
+      font-weight bold

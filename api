@@ -1,4 +1,6 @@
-(let [osc
+(let [jack
+        (require "etude-jack")
+      osc
         (require "osc")
       osc-config
         { :localAddress "localhost"
@@ -9,6 +11,6 @@
         (fn [host port addr & args]
           (osc-client.send { :address addr :args args } host port))]
   (osc-client.open)
-  { :jack  (.init (require "etude-jack"))
-    :spawn (.-spawn (require "etude-jack"))
+  { :jack  (jack.init)
+    :spawn jack.spawn
     :play  (fn [port] (send-osc "localhost" port "/play" 0 0) 8) })

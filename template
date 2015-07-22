@@ -1,4 +1,8 @@
-    ; (@template-pads (.-length (.-pads @state)))] ))
-    ; (@template-sequencer :kick  (.-length (.-kick  @state)))
-    ; (@template-sequencer :snare (.-length (.-snare @state)))
-    ; (@template-sequencer :hihat (.-length (.-hihat @state)))]))
+(fn [state]
+  (console.log state)
+  (let [h (.-h @vdom)]
+    (h ".app" [
+      @template-toolbar
+      (h ".samplers" (@template-samplers))
+      (@template-search state)
+      (@template-results)])))

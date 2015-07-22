@@ -5,10 +5,4 @@
 
   (vdom.insert-css (require "./style.styl"))
 
-  (vdom.update (vdom.init container
-    (fn template-app []
-      (vdom.h ".app" [
-        @template-toolbar
-        (vdom.h ".samplers" (@template-samplers))
-        (@template-search state)
-        (@template-results)])))))
+  (vdom.update @view state))

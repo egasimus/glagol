@@ -4,6 +4,7 @@
       (h "input.searcher"
         { :placeholder "( ͡° ͜ʖ ͡°)"
           :onkeyup     (fn [evt] (@search evt.target.value))
+          :onkeydown   (fn [evt] (evt.stop-propagation))
           :value       s.query })
       (h "output.results"
         (s.results.map (fn [i]

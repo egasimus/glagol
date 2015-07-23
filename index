@@ -5,4 +5,4 @@
 
   (vdom.insert-css (require "./style.styl"))
 
-  (vdom.update @view state))
+  (vdom.update @view state)) ; i'm not sure why this works

@@ -20,4 +20,4 @@
         (if (not q)
           sounds
           (sounds.filter
-            (fn [snd] (not (= -1 (snd.index-of q)))))) 0 50))))) )
+            (fn [snd] (not (= -1 (.index-of (snd.to-lower-case) (q.to-lower-case))))))) 0 50))))) )

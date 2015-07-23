@@ -1,7 +1,0 @@
-(fn template-results [s]
-  (let [h (.-h @vdom)]
-    (h "output.results" (s.results.map (fn [i]
-      (h ".result"
-        { :dataset { :file i }
-          :onclick (fn [evt] (@sampler-add evt.target.dataset.file)) }
-        (.slice (i.split "/") -1)))))))

@@ -1,8 +1,9 @@
 (fn template-search [s]
+
   (let [h (.-h @vdom)]
     (h ".searcher" [
       (h "input.search"
-        { :placeholder "search"
+        { :placeholder "( ͡° ͜ʖ ͡°)"
           :onkeyup     (fn [evt] (@search evt.target.value))
           :value       s.query })
       (h "output.results"

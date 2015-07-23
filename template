@@ -1,8 +1,8 @@
-(fn [state]
-  (console.log state)
+(fn [s]
   (let [h (.-h @vdom)]
     (h ".app" [
-      @template-toolbar
-      (h ".samplers" (@template-samplers))
-      (@template-search state)
-      (@template-results)])))
+      (@template-toolbar)
+      (h ".samplers"
+        (@template-samplers s))
+      (@template-search  s)
+      (@template-results s)])))

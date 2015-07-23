@@ -1,20 +1,40 @@
 (fn add-sampler [filename]
   (let [j @jack
         s @state
-        name (filename.substr (- filename.length 63))
-        port (+ 1024 (Math.floor (* (Math.random) (- 11024 1024))))]
-    (.done (.then
+
+        Q (require "q")
+
+        instance
+        { :file filename
+          :path (.join (require "path") @sample-dir filename)
+          :name (filename.substr (- filename.length 63)) 
+          :port (+ 1024 (Math.floor (* (Math.random) (- 11024 1024)))) }]
+
+    (set! instance.spawn
       (j.invoke "spawn"
         filename "/home/epimetheus/bin/sample_player"
-        "-n" name
-        "-p" port
-        (.join (require "path") @sample-dir filename))
-      (fn [spawned] (console.log "spawned" spawned))
-      (fn [err]     (console.log "error"   err))))
-    (state.value.set (assoc s :samplers
-      (s.samplers.concat [{ :file filename
-                            :name name
-                            :port port }])))))
+        "-n" instance.port "-p" instance.port instance.path))
+
+    (.done
+      (instance.spawn.then
+        (fn [spawned] (.then (j.invoke "client" (String instance.port))
+          (fn [client] (.then (client.invoke "port" "output")
+            (fn [output-port] (.then (output-port.get "name")
+              (fn [port-name] (console.log "client port" output-port port-name) (.then (j.get "system")
+                (fn [system]  (.then (system.invoke "port" "playback_1")
+                  (fn [system-port] (.then (system-port.get "name")
+                    (fn [system-port-name] (.then
+                        (Q.all [(j.invoke "connect" (String instance.port) port-name "system" system-port-name)
+                                (j.invoke "connect" (String instance.port) port-name "system" "playback_2")])
+                      (fn [] (console.log "connected" port-name system-port-name))))))))))))))))
+            
+        (fn [err]     (console.log err) debugger nil)
+        (fn [i]       (console.log "spawn log"   i))))
+
+    (.done
+      (.then (j.get "system") (fn [sys] (console.log "system" sys)) (fn [err] (console.log "System err" err))))
+
+    (state.value.set (assoc s :samplers (s.samplers.concat [instance])))))
 
 ;-------------------------------------
 

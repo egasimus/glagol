@@ -4,8 +4,8 @@
 (def insert-css (require "insert-css"))
 (def patch      (require "virtual-dom/patch"))
 
-(defn init [context template]
-  (let [tree (template)
+(defn init [context template data]
+  (let [tree (template data)
         node (create tree)]
     (context.replace-child node context.first-child)
     { :context  context
@@ -13,8 +13,8 @@
       :tree     template
       :node     node     }))
 
-(defn update [view state]
-  (let [new-tree (view.template)
+(defn update [view data]
+  (let [new-tree (view.template data)
         patches  (diff view.tree new-tree)
         focused  false]
     (set! view.node (patch view.node patches))

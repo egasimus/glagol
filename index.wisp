@@ -4,6 +4,8 @@
 (def ^:private event2   (require "eventemitter2"))
 (def ^:private Q        (require "q"))
 
+(def DEBUG false)
+
 ; cornerstone
 
 (defn expect
@@ -105,24 +107,24 @@
     (patchbay.on
       "ClientAppeared"
       (fn [& args] (let [client (aget args 2)]
-        (log (str "client appeared:    " client))
+        (if DEBUG (log (str "client appeared:    " client)))
         (update (fn [] (state.events.emit "client-online" client))))))
     (patchbay.on
       "ClientDisappeared"
       (fn [& args] (let [client (aget args 2)]
-        (log (str "client disappeared: " client))
+        (if DEBUG (log (str "client disappeared: " client)))
         (update (fn [] (state.events.emit "client-offline" client))))))
     (patchbay.on
       "PortAppeared"
       (fn [& args] (let [client (aget args 2)
                          port   (aget args 4)]
-        (log (str "port appeared:      " client ":" port))
+        (if DEBUG (log (str "port appeared:      " client ":" port)))
         (update (fn [] (state.events.emit "port-online" client port))))))
     (patchbay.on
       "PortDisappeared"
       (fn [& args] (let [client (aget args 2)
                          port   (aget args 4)]
-        (log (str "port disappeared:   " client ":" port))
+        (if DEBUG (log (str "port disappeared:   " client ":" port)))
         (update (fn [] (state.events.emit "port-offline" client port))))))
     (patchbay.on
       "PortsConnected"
@@ -130,8 +132,8 @@
                          out-port   (aget args 4)
                          in-client  (aget args 6)
                          in-port    (aget args 8)]
-        (log (str "ports connected:    " out-client ":" out-port
-                                  " -> "  in-client ":"  in-port))
+        (if DEBUG (log (str "ports connected:    " out-client ":" out-port
+                                           " -> "  in-client ":"  in-port)))
         (update (fn [] (state.events.emit "connected" out-client out-port
                                                       in-client  in-port))))))
     (patchbay.on
@@ -140,8 +142,8 @@
                          out-port   (aget args 4)
                          in-client  (aget args 6)
                          in-port    (aget args 8)]
-        (log (str "ports disconnected: " out-client ":" out-port
-                                 " >< "  in-client ":"  in-port))
+        (if DEBUG (log (str "ports disconnected: " out-client ":" out-port
+                                            " >< "  in-client ":"  in-port)))
         (update (fn [] (state.events.emit "disconnected" out-client out-port
                                                          in-client  in-port))))))
     (patchbay.on "GraphChanged"
@@ -186,19 +188,15 @@
 ; so that a ClientAppeared notification can be received
 
 (defn do-spawn [id & args]
-  (or (aget state.spawn id) (do (log 1)
+  (or (aget state.spawn id)
     (let [p
             (child.spawn.apply nil 
               [ (aget args 0) (args.slice 1) { :stdio "inherit"} ]) ]
                 ; command     args           opts
       (set! (aget state.spawn id) p)
-      (state.cleanup.push (fn []
-        (log "Killing" (aget args 0))
-        (p.kill "SIGKILL")))
-      p))))
+      p)))
 
 (defn spawn [id & args]
-  (log args)
   (args.unshift id)
   (Q.Promise (fn [resolve reject]
     (after-session-start.then (fn []
@@ -211,15 +209,19 @@
 ;;
 
 (defn connect-by-name [output-c output-p input-c input-p]
-  (log "connecting:        "
-    (str output-c ":" output-p)
-    (str input-c  ":" input-p))
-  (state.patchbay.ConnectPortsByName
-    output-c output-p input-c input-p)
-  (persist.cleanup.push (fn []
-    (log "Disconnecting" output-c output-p input-c input-p)
-    (state.patchbay.DisconnectPortsByName
-      output-c output-p input-c input-p))))
+  (Q.Promise (fn [resolve]
+    (state.patchbay.ConnectPortsByName output-c output-p input-c input-p
+      (fn [] (resolve))))))
+
+  ;(log "connecting:        "
+    ;(str output-c ":" output-p)
+    ;(str input-c  ":" input-p))
+  ;(state.patchbay.ConnectPortsByName
+    ;output-c output-p input-c input-p)
+  ;(persist.cleanup.push (fn []
+    ;(log "Disconnecting" output-c output-p input-c input-p)
+    ;(state.patchbay.DisconnectPortsByName
+      ;output-c output-p input-c input-p))))
 
 (defn connect-by-id [output-c output-p input-c input-p]
   (state.patchbay.ConnectPortsByID output-c output-p input-c input-p))
@@ -227,7 +229,7 @@
 (defn find-client [client-name]
   (.indexOf (Object.keys state.clients) client-name))
 
-(defn client-found [client-name]
+(defn client-found? [client-name]
   (not (= -1 (find-client client-name))))
 
 (defn find-port [client-name port-name]
@@ -236,7 +238,7 @@
         ports   (Object.keys client.ports)]
     (.indexOf ports port-name)))
 
-(defn port-found [client-name port-name]
+(defn port-found? [client-name port-name]
   (not (= -1 (find-port client-name port-name))))
 
 (defn port [client-name port-name]
@@ -246,27 +248,31 @@
                      :started deferred.promise
                      :online  false }]
 
-    (expect
-      after-session-start (fn [] (port-found client-name port-name))
-      state.events "port-online" (fn [c p] (and (= c client-name) (= p port-name)))
-      (fn [] (set! port-state.online true) (deferred.resolve)))
     
     port-state))
 
+(defn port [client-name port-name]
+  (Q.Promise (fn [resolve]
+    (let [port-state
+            { :client client-name
+              :name   port-name }]
+      (expect
+        after-session-start (fn [] (port-found? client-name port-name))
+        state.events "port-online"
+        (fn [c p] (and (= c client-name) (= p port-name)))
+        (fn [] (log "port up" client-name port-name) (set! port-state.online true) (resolve port-state)))))))
+
 (defn client [client-name]
-  (let [deferred     (Q.defer)
-        client-state { :name     client-name
-                       :online   false
-                       :started  deferred.promise
-                       :events   (event2.EventEmitter2.)
-                       :port     (port.bind null client-name) }]
-
-    (expect
-      after-session-start (fn [] (client-found client-name))
-      state.events "client-online" (fn [c] (= c client-name))
-      (fn [] (set! client-state.online true) (deferred.resolve)))
-
-    client-state))
+  (Q.Promise (fn [resolve]
+    (let [client-state
+            { :name   client-name
+              :events (event2.EventEmitter2.)
+              :port   (port.bind nil client-name) }]
+      (expect
+        after-session-start (fn [] (client-found? client-name))
+        state.events "client-online"
+        (fn [c] (= c client-name))
+        (fn [] (log "client up" client-name) (resolve client-state)))))))
 
 (def system (client "system"))
 

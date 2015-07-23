@@ -1,39 +1,18 @@
 (let [
 
-  path (require "path")
-  send (require "send-data/json")
-  glob (require "glob")
-  url (require "url")
   w (require "etude-web")
 
-  sounds []
-  strip (fn [paths] (paths.map (fn [x] (path.relative @sample-dir x))))
-  search (fn [req res]
-    (let [get (.-query (url.parse req.url true))
-          q   get.q]
-      (if q (log "search" q))
-      (send req res (strip (.slice
-        (if (not q)
-          sounds
-          (sounds.filter
-            (fn [snd] (not (= -1 (snd.index-of q)))))) 0 50)))))
   server
     (w.server { :port (+ 2055 @the-answer) }
       (w.page2    "/" index)
-      (w.endpoint "/files" search)
+      (w.endpoint "/files" @library)
       (w.socket   "/jack"))
 
-  Q (require "q")
-  QC (require "q-connection")
-  api @api
   sockets []
 
-  ] (.on (aget server.state.sockets "/jack") "connection"
-      (fn [socket]
-        (log "connection on /jack, woo!")
-        (sockets.push (QC socket api))))
+] (.on (aget server.state.sockets "/jack") "connection"
+    (fn [socket]
+      (log "connection on /jack, woo!")
+      (sockets.push ((require "q-connection") socket @api))))
 
-    (glob (str @sample-dir "/**/*.wav") {} (fn [err files]
-      (if err (throw err))
-      (set! sounds files))))
-
+  server)

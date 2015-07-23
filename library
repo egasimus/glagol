@@ -1,0 +1,23 @@
+(let [
+  url (require "url")
+  path (require "path")
+  send (require "send-data/json")
+  glob (require "glob")
+  sounds []
+  strip (fn [paths] (paths.map (fn [x] (path.relative @sample-dir x))))
+]
+  (glob (path.join @sample-dir "**" "*.wav") {}
+    (fn [err files]
+      (if err (throw err))
+      (log @sample-dir sounds)
+      (set! sounds files)))
+
+  (fn search [req res]
+    (let [get (.-query (url.parse req.url true))
+          q   get.q]
+      (if q (log "search" q))
+      (send req res (strip (.slice
+        (if (not q)
+          sounds
+          (sounds.filter
+            (fn [snd] (not (= -1 (snd.index-of q)))))) 0 50))))) )

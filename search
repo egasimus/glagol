@@ -1,0 +1,12 @@
+@state
+(let [throttle nil]
+  (fn search [q]
+    (if throttle (clear-timeout throttle))
+    (set! throttle (set-timeout (fn []
+      (state.value.set (assoc (state.value)
+        :query   q
+        :results ["Loading..."]))
+      (@xhr-get (str "http://localhost:2097/files?q=" (q.trim)) (fn [data]
+        (state.value.set (assoc (state.value)
+          :query q
+          :results data)))))))))

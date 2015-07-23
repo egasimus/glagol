@@ -17,7 +17,79 @@ body
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
- 
+
+.app
+  display   flex
+  flex-wrap wrap
+
+.toolbar
+  width      100%
+  background #070707
+  padding    6px
+
+  display         flex
+  justify-content space-between
+
+  .section
+    display flex
+
+    .btn
+      cursor  pointer
+      padding 3px 6px
+      margin  0 3px
+      &:hover
+        background rgba(0,0,0,0.3)
+
+.searcher
+  max-width 25%
+  overflow hidden
+  .search
+    display block
+    border: none;
+    background: none;
+    color: white;
+    font-size: 24px;
+    margin: 12px;
+    border-bottom: 2px solid rgba(255,255,255,0.5);
+    outline: none;
+
+.results
+  display block
+  margin 0 12px 12px 12px
+  .result
+    padding 3px 6px
+    margin 0 6px 6px 0
+    cursor pointer
+    &:hover
+      background rgba(255,255,255,0.15)
+
+.samplers
+  display: flex;
+  flex-wrap: wrap;
+  margin: 12px 0 0 12px;
+
+  .sampler
+    transition: background 0.1s;
+    width: 180px;
+    margin: 0 18px 18px 0;
+    padding: 6px 12px;
+    height: 120px;
+    background: white;
+    color: black;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.5);
+    cursor: pointer;
+    text-align: center;
+    display flex
+    flex-direction column
+    justify-content space-between
+
+    &:hover
+      background orangered
+
+    &-path-part:last-child
+      font-weight bold
+
+//////////////////////
 .sampler-old
   margin 12px
   height 240px
@@ -47,20 +119,24 @@ body
     text-align center
     line-height 46px
 
-.toolbar
-  display         flex
-  justify-content space-between
-  padding         12px 6px 0
-
-  .section
-    display flex
-
-    .btn
-      cursor  pointer
-      padding 3px 6px
-      margin  0 3px
-      &:hover
-        background rgba(0,0,0,0.3)
+.file-browser
+  padding 12px
+  .file
+    display          inline-block
+    margin           3px 6px
+    padding          3px 12px
+    background-color rgba(255,255,255,0.1)
+  .total
+    font-style italic
+  .search
+    color         white
+    background    none
+    outline       none !important
+    display       block
+    border        none
+    border-bottom 1px solid #333
+    width         auto
+    font-size     24px
 
 .sequencer
   margin      12px
@@ -135,70 +211,3 @@ body
     &.selected
       border-top 2px solid rgba(255,255,255,0.33)
       box-shadow 0 3px 6px rgba(0,0,0,0.6)
-
-.file-browser
-  padding 12px
-  .file
-    display          inline-block
-    margin           3px 6px
-    padding          3px 12px
-    background-color rgba(255,255,255,0.1)
-  .total
-    font-style italic
-  .search
-    color         white
-    background    none
-    outline       none !important
-    display       block
-    border        none
-    border-bottom 1px solid #333
-    width         auto
-    font-size     24px
-
-.search
-  display block
-  border: none;
-  background: none;
-  color: white;
-  font-size: 24px;
-  margin: 12px;
-  border-bottom: 2px solid rgba(255,255,255,0.5);
-  outline: none;
-
-.results
-  display block
-  margin 0 12px 12px 12px
-  .result
-    display inline-block
-    background rgba(255,255,255,0.1)
-    padding 3px 6px
-    margin 0 6px 6px 0
-    cursor pointer
-    &:hover
-      background rgba(255,255,255,0.15)
-
-.samplers
-  display: flex;
-  flex-wrap: wrap;
-  margin: 12px 0 0 12px;
-
-  .sampler
-    transition: background 0.1s;
-    width: 180px;
-    margin: 0 18px 18px 0;
-    padding: 6px 12px;
-    height: 120px;
-    background: white;
-    color: black;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.5);
-    cursor: pointer;
-    text-align: center;
-    display flex
-    flex-direction column
-    justify-content space-between
-
-    &:hover
-      background orangered
-
-    &-path-part:last-child
-      font-weight bold

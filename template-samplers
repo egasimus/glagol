@@ -1,6 +1,7 @@
 (fn [s]
   (let [h (.-h @vdom)]
-    (s.samplers.map (fn [sampler]
-      (h ".sampler" { :onclick (fn [] (@sampler-play sampler)) }
-        (.map (sampler.file.split "/") (fn [part]
-          (h ".sampler-path-part" part))))))))
+    (h ".samplers"
+      (s.samplers.map (fn [sampler]
+        (h ".sampler" { :onclick (fn [] (@sampler-play sampler)) }
+          (.map (sampler.file.split "/") (fn [part]
+            (h ".sampler-path-part" part)))))))))

@@ -213,6 +213,10 @@
 ;; atom page
 ;;
 
+(def ^:private harness-path (path.join __dirname "harness.js"))
+
+(def ^:private harness (fs.readFileSync harness-path "utf-8"))
+
 (defn page2 [route atom]
   (fn [state]
     (let [socket-path
@@ -233,13 +237,30 @@
                     ctype
                       (str "text/" (if embed? "javascript" "html")
                            "; charset=utf-8")]
+                (log body)
                 (send req res
                   { :body    body
-                    :headers { "Content-Type" ctype } })))]
+                    :headers { "Content-Type" ctype } })))
 
-      ; start cooking up code bundle
-      (.done (.then (prepare-getrequire atom)
-        (fn [bundled] (set! body bundled))))
+          compile
+            (fn []
+              ; reload harness
+              (set! harness (fs.readFileSync harness-path "utf-8"))
+              ; start cooking up code bundle --
+              ; serve when ready
+              (.done (.then (prepare-getrequire atom)
+                (fn [bundled]
+                  (log "compiled client from atom" (colors.green atom.name))
+                  (set! body bundled)
+                  (log body)))))
+
+          watcher     ; the inevitable hindu
+            (.watch (require "chokidar") harness-path { :persistent true })
+          ]
+
+      ; set em balls rollin
+      (compile)
+      (watcher.on "change" compile)
 
       ; attach socket and http endpoint to server
       (let [state
@@ -260,8 +281,6 @@
                     (log "connected socket" socket-path)))))]
         (connect connect)
         ((endpoint route handler (fn [])) state)))))
-
-(def ^:private harness (fs.readFileSync (path.join __dirname "harness.js") "utf-8"))
 
 (defn- template-getrequire [bundle mapped atom]
   (str "var " bundle ";var deps=" (JSON.stringify mapped)

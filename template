@@ -2,6 +2,12 @@
   (let [h (.-h @vdom)]
     (h ".app" [
       (@template-toolbar  s)
-      (@template-search   s)
-      (@template-samplers s)
+      (h ".main" [
+        (@template-search   s)
+        (h ".flex.col" [
+          (@template-sequencer :kick  s.kick.length)
+          (@template-sequencer :snare s.kick.length)
+          (@template-samplers s)
+        ])
+      ])
     ])))

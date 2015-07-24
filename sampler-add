@@ -1,6 +1,6 @@
 (fn add-sampler [filename]
   (let [api @api-client
-        s @state
+        s   @state
 
         Q (require "q")
 

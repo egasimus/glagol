@@ -1,13 +1,12 @@
 (let [h     (.-h @vdom)
       emit  (fn emit [evt & args1] (fn [& args2]
               (.apply (.-emit @events) @events
-                (.concat (.concat [evt] args1) args2))))
-      times (fn [n cb] (.map (Array.apply nil (Array n)) (fn [_ i] (cb i))))]
+                (.concat (.concat [evt] args1) args2))))]
   (fn [label cells]
     (h ".sequencer" [
       (h ".sequencer-label" label)
       (h ".sequencer-body" { :foo :bar }
-        (times cells (fn [i]
+        (@times cells (fn [i]
           (let [value (aget (aget @state label) i)]
             (h (str ".sequencer-cell" (if value ".active" ""))
               { :dataset { :index i }

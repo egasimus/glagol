@@ -6,7 +6,7 @@
         :onkeydown
           (fn [evt] (console.log "keydown" evt)
             (Array.prototype.map.call (container.get-elements-by-class-name "sampler")
-              (fn [el] (if (= el.dataset.key (String evt.keyCode)) (el.click)))))
+              (fn [el] (if (= el.dataset.key (String.from-char-code evt.key-code)) (el.click)))))
         :hook
           (.focus-me @vdom) }
       [ (@template-toolbar  s)

@@ -6,5 +6,4 @@
   
   :samplers []
 
-  :query    ""
-  :results  [] }
+  :search   { :results [] } }

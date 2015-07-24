@@ -5,10 +5,14 @@
         { :placeholder "( ͡° ͜ʖ ͡°)"
           :onkeyup     (fn [evt] (@search evt.target.value))
           :onkeydown   (fn [evt] (evt.stop-propagation))
-          :value       s.query })
+          :value       s.search.query })
       (h "output.results"
-        (s.results.map (fn [i]
-          (h ".result"
-            { :dataset { :file i }
-              :onclick (fn [evt] (@sampler-add evt.target.dataset.file)) }
-            (.slice (i.split "/") -1))))) ])))
+        (.concat
+          (@times s.search.pages (fn [i]
+            (h (str ".result-page" (if (= i s.search.page) ".current" ""))
+               (String (+ i 1)))))
+          (s.search.results.map (fn [i]
+            (h ".result"
+              { :dataset { :file i }
+                :onclick (fn [evt] (@sampler-add evt.target.dataset.file)) }
+              (.slice (i.split "/") -1)))))) ])))

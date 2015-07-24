@@ -22,10 +22,10 @@ body
   display        flex
   flex-direction column
   min-height     100%
-
- .main
-  flex-grow 1
   outline none
+
+.main
+  flex-grow 1
 
 .flex
   display flex
@@ -90,35 +90,32 @@ body
         background #333
 
 .samplers
-  display: flex;
-  flex-wrap: wrap;
-  margin: 12px 0 0;
+  display   flex
+  flex-wrap wrap
+  margin    12px 0 0
 
   .sampler
-    transition: background 0.1s;
-    //width: 180px;
-    margin: 0 18px 18px 0;
-    padding: 6px 12px;
-    //height: 120px;
-    //background: white;
-    color: rgba(0,0,0,0.8);
-    box-shadow: 0 3px 6px rgba(0,0,0,0.5);
-    cursor: pointer;
-    text-align: center;
-    display flex
-    flex-direction column
+    transition      background 0.1s
+    margin          0 18px 18px 0
+    padding         6px 12px
+    color           rgba(0,0,0,0.8)
+    box-shadow      0 3px 6px rgba(0,0,0,0.5);
+    cursor          pointer
+    text-align      center
+    display         flex
+    flex-direction  column
     justify-content space-between
-    background    linear-gradient(to bottom, orangered, red)
-    border-radius 2px
-    border-top    1px solid rgba(255,255,255,0.5)
+    background      linear-gradient(to bottom, orangered, red)
+    border-radius   2px
+    border-top      1px solid rgba(255,255,255,0.5)
 
     &:before
-      content: attr(data-key);
-      position: absolute;
-      top: 0;
-      left: 3px;
-      font-size: 10px;
-      font-weight: bold;
+      content     attr(data-key)
+      position    absolute
+      top         0
+      left        3px
+      font-size   10px
+      font-weight bold
 
     &:hover
       background red

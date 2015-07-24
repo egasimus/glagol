@@ -8,9 +8,10 @@
           :value       s.search.query })
       (h "output.results"
         (.concat
-          (@times s.search.pages (fn [i]
-            (h (str ".result-page" (if (= i s.search.page) ".current" ""))
-               (String (+ i 1)))))
+          (if (> s.search.pages 1)
+            (@times s.search.pages (fn [i]
+              (h (str ".result-page" (if (= i s.search.page) ".current" ""))
+                (str (+ i 1))))) [])
           (s.search.results.map (fn [i]
             (h ".result"
               { :dataset { :file i }

@@ -1,0 +1,29 @@
+(fn [socket]
+  (let [;client
+        ;  ((require "q-connection") socket)
+        jack
+          (require "etude-jack")
+        osc
+          (require "osc")
+        osc-config
+          { :localAddress "localhost"
+            :localPort    11025 }
+        osc-client
+          (new osc.UDPPort osc-config)
+        Q
+          (require "q")
+        send-osc
+          (fn [host port addr & args]
+            (osc-client.send { :address addr :args args } host port))]
+
+    ;(client.invoke "emit")
+    (osc-client.on "message" (fn [port & args] (log "-> osc on" (str port ":") args)))
+    (osc-client.open)
+
+    { :jack    (jack.init)
+      :spawn   jack.spawn
+      :client  jack.client
+      :connect jack.connect-by-name
+      :system  jack.system
+      :play    (fn [port] (send-osc "localhost" port "/play" 0 0) 8)
+      :listen  (fn [port] (send-osc "localhost" port "/listen")) }))

@@ -1,7 +1,5 @@
 (let [Q
         (require "q")
-      socket
-        ((require "q-connection") (WebSocket. "ws://localhost:2097/jack"))
       then
         (fn [promised cb] (.done (promised.then
           cb
@@ -11,7 +9,7 @@
         { :connections {}
           :clients     {} }]
 
-  (then (socket.get "jack") (fn [server-state]
+  (then (.get @api-client "jack") (fn [server-state]
 
     (then (server-state.get "clientNames") (fn [names]
       (then (server-state.get "clients") (fn [clients]
@@ -29,4 +27,4 @@
             (then (conn.get "input") (fn [input]
               (then (input.get "id") (fn [id2] (console.log "conn" id "input" id2)))))))))))))))
 
-  socket)
+  status)

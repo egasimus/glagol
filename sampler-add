@@ -38,13 +38,13 @@
       (console.log "playing..." instance.port)
       (set! instance.playing true)
       (set! instance.position arg.pos)
-      (set! instance.duration arg.dur)))
-      ;(state.value.set (state.value))))
+      (set! instance.duration arg.dur)
+      (state.value.set @state)))
 
     (.on @events (str "samplers." instance.port ".stopped") (fn []
       (console.log "stopped..." instance.port)
-      (set! instance.playing false)))
-      ;(state.value.set (state.value))))
+      (set! instance.playing false)
+      (state.value.set @state)))
 
     (state.value.set (assoc s :samplers (conj s.samplers instance)))))
 

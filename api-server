@@ -31,7 +31,6 @@
         client
           ((require "q-connection") socket api)]
 
-    (log client.__proto__)
     (set! emit (fn [evt arg] (client.invoke "emit" evt arg)))
 
     (osc-client.on "message" (fn [msg]

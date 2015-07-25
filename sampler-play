@@ -1,4 +1,2 @@
 (fn [sampler]
-  (let [j @api-client]
-    (.done (.then (j.invoke "play" sampler.port)
-      (fn [] (console.log "playing" arguments))))))
+  (.done (.invoke @api-client "play" sampler.port)))

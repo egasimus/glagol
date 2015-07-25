@@ -1,4 +1,7 @@
-(let [emitter (new (.-EventEmitter2 (require "eventemitter2")))]
+(let [emitter
+        (new (.-EventEmitter2 (require "eventemitter2"))
+          { :maxListeners 64 :wildcard true } )]
+
   (emitter.on "sequencer.click" (fn [t n]
     (let [curr-track
             (aget @state t)
@@ -11,8 +14,24 @@
               (curr-track.slice (+ 1 n)))]
       (console.log (assoc @state t next-track))
       (state.value.set (assoc @state t next-track)))))
+
   (emitter.on "pads.add" (fn []
     (state.value.set (assoc @state :pads (.concat (.-pads @state) [{}])))))
   (emitter.on "pads.select" (fn [i]
     (state.value.set (assoc @state :selectedPad i))))
+
+  (emitter.on "/playing" (fn [arg]
+    (let [port (aget arg 0)
+          id   (str "samplers." port ".playing")
+          clip (aget arg 1)
+          pos  (aget arg 2)
+          dur  (aget arg 3)]
+      (emitter.emit id { :clip clip :pos pos :dur dur}))))
+
+  (emitter.on "/stopped" (fn [arg]
+    (let [port (aget arg 0)
+          id   (str "samplers." port ".stopped")
+          clip (aget arg 1)]
+      (emitter.emit id { :clip clip }))))
+
   emitter)

@@ -1,4 +1,4 @@
-(fn add-sampler [filename]
+(fn sampler-add [filename]
   (let [api @api-client
         s   @state
 
@@ -8,7 +8,11 @@
         { :file filename
           :path (.join (require "path") @sample-dir filename)
           :name (filename.substr (- filename.length 63)) 
-          :port (+ 1024 (Math.floor (* (Math.random) (- 11024 1024)))) }]
+          :port (+ 1024 (Math.floor (* (Math.random) (- 11024 1024))))
+
+          :playing  false
+          :position 0
+          :duration 0 }]
 
     (set! instance.spawn
       (api.invoke "spawn"
@@ -26,14 +30,23 @@
                                (api.invoke "listen"  (str instance.port))])
                   (fn [] (console.log "connected" port-name "of" filename "to system")))))))))))
       (fn [err]
-        (console.log err) debugger nil)
+        (console.error err))
       (fn [i]
-        (console.log "spawn log"   i)))
+        (console.log "spawn log ->" i)))
 
-    (.done
-      (.then (api.get "system") (fn [sys] (console.log "system" sys)) (fn [err] (console.log "System err" err))))
+    (.on @events (str "samplers." instance.port ".playing") (fn [arg]
+      (console.log "playing..." instance.port)
+      (set! instance.playing true)
+      (set! instance.position arg.pos)
+      (set! instance.duration arg.dur)))
+      ;(state.value.set (state.value))))
 
-    (state.value.set (assoc s :samplers (s.samplers.concat [instance])))))
+    (.on @events (str "samplers." instance.port ".stopped") (fn []
+      (console.log "stopped..." instance.port)
+      (set! instance.playing false)))
+      ;(state.value.set (state.value))))
+
+    (state.value.set (assoc s :samplers (conj s.samplers instance)))))
 
 ;-------------------------------------
 

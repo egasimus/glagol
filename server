@@ -13,6 +13,6 @@
 ] (.on (aget server.state.sockets "/jack") "connection"
     (fn [socket]
       (log "connection on /jack, woo!")
-      (sockets.push ((require "q-connection") socket (@api-server socket)))))
+      (sockets.push (@api-server socket))))
 
   server)

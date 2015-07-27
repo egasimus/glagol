@@ -40,6 +40,7 @@
       { assoc:        require('wisp/sequence.js').assoc
       , console:      console
       , container:    container
+      , conj:         require('wisp/sequence.js').conj
       , deref:        deref.bind(null, ATOMS[translate(atomName)])
       , isEqual:      require('wisp/runtime.js').isEqual
       , require:      getRequire(atomName)

@@ -225,8 +225,9 @@
           add-socket  ; web socket for realtime updates
             (socket { :path socket-path })
 
-          body        ; updated to contain actual body
-            "document.write('loading...!')"
+          body (str   ; updated to contain actual body
+            "document.write('loading...!');"
+            "setTimeout(function(){window.location.reload()}, 2000)")
 
           handler     ; response handler that serves the body contents
             (fn [req res]
@@ -237,7 +238,6 @@
                     ctype
                       (str "text/" (if embed? "javascript" "html")
                            "; charset=utf-8")]
-                (log body)
                 (send req res
                   { :body    body
                     :headers { "Content-Type" ctype } })))
@@ -251,8 +251,7 @@
               (.done (.then (prepare-getrequire atom)
                 (fn [bundled]
                   (log "compiled client from atom" (colors.green atom.name))
-                  (set! body bundled)
-                  (log body)))))
+                  (set! body bundled)))))
 
           watcher     ; the inevitable hindu
             (.watch (require "chokidar") harness-path { :persistent true })

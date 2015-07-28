@@ -1,4 +1,6 @@
 (fn [s]
   (let [h (.-h @lib-vdom)]
-    (h ".app")))
-
+    (h ".app"
+      [ (@client-template-sequencer :hihat 16)
+        (@client-template-sequencer :kick  16)
+        (@client-template-sequencer :snare 16) ])))

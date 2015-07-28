@@ -40,11 +40,12 @@
   function makeContext (atomName) {
     var context =
       { assoc:        require('wisp/sequence.js').assoc
-      , console:      console
+      , console:      console // TODO remove
       , container:    container
       , conj:         require('wisp/sequence.js').conj
       , deref:        deref.bind(null, ATOMS[translate(atomName)])
       , isEqual:      require('wisp/runtime.js').isEqual
+      , log:          function () { console.log.apply(console, arguments) }
       , require:      getRequire(atomName)
       , setTimeout:   setTimeout
       , clearTimeout: clearTimeout

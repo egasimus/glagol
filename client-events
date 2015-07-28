@@ -22,4 +22,7 @@
     (log "play!")
     (.then (api.invoke "start") (fn [] (log "playing.")))))
 
+  (emitter.on "transport.pulse" (fn [t]
+    (client-state.value.set (assoc @client-state :position t))))
+
   emitter)

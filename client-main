@@ -1,8 +1,9 @@
 (let [state @client-state
+      tpl   @client-template
       vdom  @lib-vdom]
 
   (console.debug "\nindex" state)
 
   (vdom.insert-css (require "./style.styl"))
 
-  (vdom.update (vdom.init container @client-template state) state))
+  (vdom.update (vdom.init container tpl state) state))

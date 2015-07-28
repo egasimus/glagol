@@ -1,7 +1,9 @@
 (fn [s]
   (let [h (.-h @lib-vdom)]
     (h ".app"
-      [ (h "a.play" { :onclick (@lib-emit "transport.play") } "▶")
-        (@client-template-sequencer :hihat)
-        (@client-template-sequencer :kick)
-        (@client-template-sequencer :snare) ])))
+      [ (h ".toolbar"
+          [ (h "a.play" { :onclick (@lib-emit "transport.play") } "▶")
+            (h ".position" (str s.position)) ])
+        (@client-template-sequencer s :hihat)
+        (@client-template-sequencer s :kick)
+        (@client-template-sequencer s :snare) ])))

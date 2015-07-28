@@ -20,7 +20,7 @@
         tempo
           120
         transport
-          (time.transport tempo "4/4")
+          (time.make-transport tempo "4/4")
 
         emit
           (fn [])
@@ -40,11 +40,14 @@
         client
           ((require "q-connection") socket api)]
 
+    (log "transport" transport)
+
     (set! emit (fn [evt arg] (client.invoke "emit" evt arg)))
 
-    (osc-client.on "message" (fn [msg]
-      (emit msg.address msg.args)))
-
+    (osc-client.on "message" (fn [msg] (emit msg.address msg.args)))
     (osc-client.open)
+
+    (transport.events.on "pulse" (fn []
+      (emit "transport.pulse" transport.state.beats)))
 
     client))

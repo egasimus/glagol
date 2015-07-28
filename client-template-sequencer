@@ -1,6 +1,6 @@
 (let [h (.-h @lib-vdom)]
-  (fn [label]
-    (let [sequence (aget @client-state label)
+  (fn [s label]
+    (let [sequence (aget s label)
           selected sequence.selected
           slots    sequence.slots
           slot     (aget slots selected)]

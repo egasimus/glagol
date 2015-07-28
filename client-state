@@ -1,3 +1,5 @@
 { :hihat (@lib-sequence 8 16)
   :kick  (@lib-sequence 8 16)
-  :snare (@lib-sequence 8 16) }
+  :snare (@lib-sequence 8 16)
+
+  :position 0 }

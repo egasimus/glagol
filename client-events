@@ -20,6 +20,6 @@
 
   (emitter.on "transport.play" (fn []
     (log "play!")
-    (.then (api.invoke "play") (fn [] (log "playing.")))))
+    (.then (api.invoke "start") (fn [] (log "playing.")))))
 
   emitter)

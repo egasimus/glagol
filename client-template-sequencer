@@ -6,12 +6,13 @@
           slot     (aget slots selected)]
       (h ".sequencer" [
         (h ".sequencer-label" label)
-        (h ".sequencer-body" { :foo :bar }
-          (@lib-times slot.length (fn [i]
-            (let [value (aget slot i)]
-              (h (str ".sequencer-cell" (if value ".active" ""))
-                { :sequenceset { :index i }
-                  :onclick (@lib-emit "sequencer.click" label i) })))))
-        (h ".sequencer-slots"
-          (@lib-times slots.length (fn [i]
-            (h ".sequencer-slot" { :sequenceset { :index i } }))))]))))
+        (h ".sequencer-mid" [
+          (h ".sequencer-body" { :foo :bar }
+            (@lib-times slot.length (fn [i]
+              (let [value (aget slot i)]
+                (h (str ".sequencer-cell" (if value ".active" ""))
+                  { :sequenceset { :index i }
+                    :onclick (@lib-emit "sequencer.click" label i) })))))
+          (h ".sequencer-slots"
+            (@lib-times slots.length (fn [i]
+              (h ".sequencer-slot" { :sequenceset { :index i } })))) ]) ]))))

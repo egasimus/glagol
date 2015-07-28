@@ -7,6 +7,8 @@
 })();
 (function start (entryAtomName, ATOMS) {
 
+  console.log("Starting with", entryAtomName, ATOMS);
+
   Object.keys(ATOMS).map(function (i) {
     if (ATOMS[i].value) ATOMS[i].value = require('observ')(ATOMS[i].value);
   })
@@ -80,7 +82,7 @@
 
   function connectSocket () {
 
-    var socket = new WebSocket('ws://localhost:2097/socket'); // TODO
+    var socket = new WebSocket('ws://' + window.location.host + '/socket');
 
     socket.onmessage = function (evt) {
 

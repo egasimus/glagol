@@ -283,7 +283,7 @@
 
 (defn- template-getrequire [bundle mapped atom]
   (str "var " bundle ";var deps=" (JSON.stringify mapped)
-    (.replace (harness.replace "%ENTRY%" atom.name)
+    (.replace (harness.replace "%ENTRY%" (engine.translate atom.name))
       "%ATOMS%" (JSON.stringify (get-atom-with-derefs atom)))))
 
 (defn- get-atom-by-name [name]

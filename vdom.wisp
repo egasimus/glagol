@@ -4,6 +4,9 @@
 (def insert-css (require "insert-css"))
 (def patch      (require "virtual-dom/patch"))
 
+(defn focus-me []
+  (require "virtual-dom/virtual-hyperscript/hooks/focus-hook.js"))
+
 (defn init [context template data]
   (let [tree (template data)
         node (create tree)]

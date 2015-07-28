@@ -22,6 +22,10 @@
         transport
           (time.make-transport tempo "4/4")
 
+        ;; control
+        nano
+          (.connect @server-nanoktrl2)
+
         emit
           (fn [])
 

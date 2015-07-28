@@ -8,19 +8,29 @@ body
   margin      12px 0 0
   display     flex
   align-items center
-  background  rgba(255,255,255,0.1)
 
   &-label
-    position    absolute
-    z-index     1
-    color       white
-    text-shadow 0 1px 0 black
-    margin-left 3px
-    font-weight bold
+    z-index      1
+    color        white
+    text-shadow  0 1px 0 black
+    margin-right 6px
+    font-weight  bold
+    width        40px
+
+  &-slots
+    display        flex
+    flex-direction row
+    margin-right   6px
+
+  &-slot
+    background   rgba(255,255,255,0.1)
+    width        6px
+    height       30px
+    margin-right 3px
 
   &-body
     flex-grow  1
-    background rgba(0,0,0,0.3)
+    background rgba(255,255,255,0.1)
     height     30px
     display    flex
 
@@ -34,3 +44,17 @@ body
       border-top    1px solid rgba(255,255,255,0.5)
       &:hover
         background    linear-gradient(to bottom, jylto, red)
+
+.play
+  cursor pointer
+  display inline-block
+  text-align center
+  border: none;
+  border-radius: 3px;
+  font-size 24px
+  line-height: 36px;
+  width: 40px;
+  color: #ccaa26;
+
+  &:hover
+    color white

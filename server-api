@@ -2,19 +2,25 @@
   (let [jack
           (require "etude-jack")
 
+        ;; osc
         osc
           (require "osc")
-
         osc-config
           { :localAddress "localhost"
             :localPort    11025 }
-
         osc-client
           (new osc.UDPPort osc-config)
-
         send-osc
           (fn [host port addr & args]
             (osc-client.send { :address addr :args args } host port))
+
+        ;; transport
+        time
+          (require "etude-time")
+        tempo
+          120
+        transport
+          (time.transport tempo "4/4")
 
         emit
           (fn [])
@@ -26,7 +32,10 @@
             :connect jack.connect-by-name
             :system  jack.system
             :play    (fn [port] (send-osc "localhost" port "/play" 0 0) 8)
-            :listen  (fn [port] (send-osc "localhost" port "/listen")) }
+            :listen  (fn [port] (send-osc "localhost" port "/listen")) 
+
+            :start   (transport.play)
+            :stop    (transport.stop) }
 
         client
           ((require "q-connection") socket api)]

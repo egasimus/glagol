@@ -1,13 +1,17 @@
-(let [h     (.-h @lib-vdom)
-      emit  (fn emit [evt & args1] (fn [& args2]
-              (.apply (.-emit @client-events) @client-events
-                (.concat (.concat [evt] args1) args2))))]
-  (fn [label cells]
-    (h ".sequencer" [
-      (h ".sequencer-label" label)
-      (h ".sequencer-body" { :foo :bar }
-        (@lib-times cells (fn [i]
-          (let [value (aget (aget @client-state label) i)]
-            (h (str ".sequencer-cell" (if value ".active" ""))
-              { :dataset { :index i }
-                :onclick (emit "sequencer.click" label i) })))))])))
+(let [h (.-h @lib-vdom)]
+  (fn [label]
+    (let [sequence (aget @client-state label)
+          selected sequence.selected
+          slots    sequence.slots
+          slot     (aget slots selected)]
+      (h ".sequencer" [
+        (h ".sequencer-label" label)
+        (h ".sequencer-slots"
+          (@lib-times slots.length (fn [i]
+            (h ".sequencer-slot" { :sequenceset { :index i } }))))
+        (h ".sequencer-body" { :foo :bar }
+          (@lib-times slot.length (fn [i]
+            (let [value (aget slot i)]
+              (h (str ".sequencer-cell" (if value ".active" ""))
+                { :sequenceset { :index i }
+                  :onclick (@lib-emit "sequencer.click" label i) })))))]))))

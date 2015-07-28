@@ -15,4 +15,7 @@
       (console.log (assoc @client-state t next-track))
       (client-state.value.set (assoc @client-state t next-track)))))
 
+  (emitter.on "transport.play" (fn []
+    (log "play!")))
+
   emitter)

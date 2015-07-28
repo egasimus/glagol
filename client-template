@@ -1,0 +1,4 @@
+(fn [s]
+  (let [h (.-h @lib-vdom)]
+    (h ".app")))
+

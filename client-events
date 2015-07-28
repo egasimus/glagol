@@ -1,6 +1,9 @@
 (let [emitter
         (new (.-EventEmitter2 (require "eventemitter2"))
-          { :maxListeners 64 :wildcard true } )]
+          { :maxListeners 64 :wildcard true } )
+
+      api
+        @client-api]
 
   (emitter.on "sequencer.click" (fn [t n]
     (let [curr-track
@@ -16,6 +19,7 @@
       (client-state.value.set (assoc @client-state t next-track)))))
 
   (emitter.on "transport.play" (fn []
-    (log "play!")))
+    (log "play!")
+    (.then (api.invoke "play") (fn [] (log "playing.")))))
 
   emitter)

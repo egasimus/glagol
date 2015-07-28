@@ -34,8 +34,8 @@
             :play    (fn [port] (send-osc "localhost" port "/play" 0 0) 8)
             :listen  (fn [port] (send-osc "localhost" port "/listen")) 
 
-            :start   (transport.play)
-            :stop    (transport.stop) }
+            :start   (fn [] (transport.play))
+            :stop    (fn [] (transport.stop)) }
 
         client
           ((require "q-connection") socket api)]

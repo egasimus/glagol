@@ -325,7 +325,7 @@
                   code       atom.compiled.output.code
                   is-require
                     (fn [node]
-                      (set! node.arguments [])
+                      (set! node.arguments (or node.arguments []))
                       (if
                         (and (= node.type "MemberExpression")
                              (= node.object.type "Identifier")
@@ -338,7 +338,6 @@
                         false))
                   results
                     (detective.find code { :word ".*" :isRequire is-require })]
-              (log atom.name results)
               (engine.unique results.strings)))
         add-dep
           nil

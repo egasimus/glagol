@@ -3,7 +3,8 @@
     (log "creating main loop...")
     (./lib-vdom/insert-css ./client-style)
     (set! container._vdom_main_loop_ main-loop)
-    (watch ./client-state (fn [value]
+    ;(watch ./client-state (fn [value] ; TODO
+    (watch :clientState (fn [value]
       (log :update value) (main-loop.update value)))
     (container.replace-child main-loop.target container.first-child)
     main-loop))

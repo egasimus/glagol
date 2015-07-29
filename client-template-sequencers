@@ -14,4 +14,5 @@
                     :onclick (@lib-emit "sequencer.click" track-no i) })))))
           (h ".sequencer-slots"
             (@lib-times slots.length (fn [i]
-              (h ".sequencer-slot" { :dataset { :index i } })))) ]) ]))))))
+              (h (str ".sequencer-slot" (if (= i selected) ".selected" ""))
+                { :dataset { :index i } })))) ]) ]))))))

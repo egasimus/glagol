@@ -27,17 +27,24 @@
 
   (emitter.on "transport.pulse" (fn [t] (update :position t)))
 
-  (emitter.on "control.nano" (fn [args]
-    (let [t  (aget args 0)
-          m1 (aget args 1)
-          m2 (aget args 2)
-          m3 (aget args 3)]
-      (if (= m1 189) (cond
-        (< m2 8)
-          (let [state    @client-state
-                track    (aget state.tracks m2)]
-            (log (Math.floor (/ m3 16)) "knob" track))
-        (and (> m2 15) (< m2 24))
-          (log "knob"))))))
+  (let [on-fader
+          (fn [t m1 m2 m3]
+            (let [state    @client-state
+                  track    (aget state.tracks m2)]
+              (log (Math.floor (/ m3 16)) "fader" track)))
+        on-knob
+          (fn [t m1 m2 m3]
+            (log "knob" (- m2 16)))]
+    (emitter.on "control.nano" (fn [msg]
+      (let [t  (aget msg 0)
+            m1 (aget msg 1)
+            m2 (aget msg 2)
+            m3 (aget msg 3)]
+        (log msg)
+        (if (= m1 189)
+          ((cond
+            (< m2 8)                  on-fader
+            (and (> m2 15) (< m2 24)) on-knob
+            ) t m1 m2 m3))))))
 
   emitter)

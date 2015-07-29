@@ -1,9 +1,15 @@
 (let [state @client-state
       tpl   @client-template
-      vdom  @lib-vdom]
+      vdom  @lib-vdom
+      _ (log container._vdom_widget_)
+      widget
+        (or container._vdom_widget_
+          (let [widget (vdom.init container tpl state)]
+            (set! container._vdom_widget_ widget)
+            widget))]
 
   (console.debug "\nindex" state)
 
   (vdom.insert-css (require "./style.styl"))
 
-  (vdom.update (vdom.init container tpl state) state))
+  (vdom.update widget state))

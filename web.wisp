@@ -104,7 +104,8 @@
           rebuild
             (fn [ids]
               (if ids
-                (let [relative-ids (ids.map (fn [id] (path.relative process.cwd id)))]
+                (let [relative-ids
+                        (ids.map (fn [id] (path.relative process.cwd id)))]
                   (log "rebuilding" (colors.green script)
                      "bundle because of" (colors.blue relative-ids)))
                 (log "building" (colors.green script) "bundle"))
@@ -125,12 +126,12 @@
       (rebuild)
       (watcher.on "update" rebuild)
 
-      (assoc state
-        :endpoints
-          (conj state.endpoints (endpoint route handler (fn [] (watcher.close))))))))
+      (assoc state :endpoints (conj state.endpoints
+        (endpoint route handler (fn [] (watcher.close))))))))
 
 (defn- document-template [output]
-  (str "<head><meta charset=\"utf-8\"></head><body><script>" output "</script>"))
+  (str "<head><meta charset=\"utf-8\"></head><body><script>"
+    output "</script>"))
 
 (defn- embed-template [output]
   (str "(function () { var require = " output "; return require })()"))
@@ -307,7 +308,8 @@
           requires {}
           resolved {}
           mapped   {}
-          br       (browserify { :paths ["./node_modules/etude-engine/node_modules"]})]
+          modules  "./node_modules/etude-engine/node_modules"
+          br       (browserify { :paths [modules] })]
 
       (br.transform wispify)
       (br.transform (require "stylify"))

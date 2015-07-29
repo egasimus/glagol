@@ -6,8 +6,14 @@
         @client-api
 
       update
-        (fn [k v] (client-state.value.set (assoc @client-state k v)))]
+        (fn [k v] (client-state.value.set (assoc @client-state k v)))
 
+      replace
+        (fn [array target new-value]
+          (array.map (fn [old-value index]
+            (if (= index target) new-value old-value))))]
+
+  ;; sequencer gui
   (emitter.on "sequencer.click" (fn [t n]
     (let [curr-track
             (aget @client-state t)
@@ -21,17 +27,23 @@
       (console.log (assoc @client-state t next-track))
       (client-state.value.set (assoc @client-state t next-track)))))
 
+  ;; react to transport events
   (emitter.on "transport.play" (fn []
     (log "play!")
     (.then (api.invoke "start") (fn [] (log "playing.")))))
-
   (emitter.on "transport.pulse" (fn [t] (update :position t)))
 
+  ;; respond to midi control
   (let [on-fader
-          (fn [t m1 m2 m3]
-            (let [state    @client-state
-                  track    (aget state.tracks m2)]
-              (log (Math.floor (/ m3 16)) "fader" track)))
+          (fn [_ _ track-num selector]
+            (let [state   @client-state
+                  track   (aget state.tracks track-num)
+                  data    (assoc track.data
+                            :selector selector
+                            :selected (Math.floor (/ selector 16)))
+                  tracks  (replace state.tracks track-num
+                            (assoc track :data data))]
+              (update :tracks tracks)))
         on-knob
           (fn [t m1 m2 m3]
             (log "knob" (- m2 16)))]

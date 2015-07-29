@@ -1,3 +1,4 @@
 (fn [slots length]
   { :selected 0
+    :selector 0
     :slots    (@lib-times slots (fn [] (@lib-times length (fn [] 0))))})

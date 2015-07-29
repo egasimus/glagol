@@ -1,7 +1,7 @@
 (if (not container._vdom_main_loop_)
   (let [main-loop (./lib-vdom/start ./client-template ./client-state)]
     (log "creating main loop...")
-    (./lib-vdom/insert-css ./style.styl)
+    (./lib-vdom/insert-css ./client-style)
     (set! container._vdom_main_loop_ main-loop)
     (watch ./client-state (fn [value]
       (log :update value) (main-loop.update value)))

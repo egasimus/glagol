@@ -12,6 +12,7 @@
     "browserify": "^10.2.6",
     "chokidar": "^1.0.5",
     "colors": "^1.1.2",
+    "detective": "^4.1.1",
     "insert-css": "^0.2.0",
     "main-loop": "^3.1.0",
     "q": "^1.4.1",

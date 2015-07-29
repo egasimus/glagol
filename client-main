@@ -1,10 +1,9 @@
-(let [vdom  @lib-vdom]
-  (if (not container._vdom_main_loop_)
-    (let [main-loop (vdom.start @client-template @client-state)]
-      (log "creating main loop...")
-      (vdom.insert-css (require "./style.styl"))
-      (set! container._vdom_main_loop_ main-loop)
-      (client-state.value (fn [value]
-        (log :update value) (main-loop.update value)))
-      (container.replace-child main-loop.target container.first-child)
-      main-loop)))
+(if (not container._vdom_main_loop_)
+  (let [main-loop (./lib-vdom/start ./client-template ./client-state)]
+    (log "creating main loop...")
+    (./lib-vdom/insert-css ./style.styl)
+    (set! container._vdom_main_loop_ main-loop)
+    (watch ./client-state (fn [value]
+      (log :update value) (main-loop.update value)))
+    (container.replace-child main-loop.target container.first-child)
+    main-loop))

@@ -1,3 +1,3 @@
 (fn emit [evt & args1] (fn [& args2]
-  (.apply (.-emit @client-events) @client-events
+  (.apply (.-emit ./client-events) ./client-events
     (.concat (.concat [evt] args1) args2))))

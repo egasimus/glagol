@@ -1,4 +1,4 @@
-(let [h (.-h @lib-vdom)]
+(let [h ./lib-vdom/h]
   (fn [s] (s.tracks.map (fn [track track-no]
     (let [t    track.data
           slot (aget t.slots t.selected)
@@ -7,14 +7,14 @@
         (h ".sequencer-label" track.name)
         (h ".sequencer-mid" [
           (h ".sequencer-body" { :foo :bar }
-            (@lib-times slot.length (fn [i]
+            (./lib-times slot.length (fn [i]
               (let [value (aget slot i)]
                 (h (str ".sequencer-cell" (if value ".active" ""))
                   { :dataset { :index i }
-                    :onclick (@lib-emit "sequencer.click" track-no i) })))))
+                    :onclick (./lib-emit "sequencer.click" track-no i) })))))
           (h ".sequencer-slots"
             (.concat
               [ (h ".sequencer-selector" { :style { :left left }}) ]
-              (@lib-times t.slots.length (fn [i]
+              (./lib-times t.slots.length (fn [i]
                 (h (str ".sequencer-slot" (if (= i t.selected) ".selected" ""))
                   { :dataset { :index i } }))))) ]) ]))))))

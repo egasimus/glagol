@@ -2,11 +2,8 @@
         (new (.-EventEmitter2 (require "eventemitter2"))
           { :maxListeners 64 :wildcard true } )
 
-      api
-        @client-api
-
       update
-        (fn [k v] (client-state.value.set (assoc @client-state k v)))
+        (fn [k v] (set! ./client-state (assoc ./client-state k v)))
 
       replace
         (fn [array target new-value]
@@ -16,7 +13,7 @@
   ;; sequencer gui
   (emitter.on "sequencer.click" (fn [t n]
     (let [curr-track
-            (aget @client-state t)
+            (aget ./client-state t)
           curr-val
             (aget curr-track n)
           next-val
@@ -24,24 +21,23 @@
           next-track
             (.concat (.concat (curr-track.slice 0 n) next-val)
               (curr-track.slice (+ 1 n)))]
-      (console.log (assoc @client-state t next-track))
-      (client-state.value.set (assoc @client-state t next-track)))))
+      (console.log (assoc ./client-state t next-track))
+      (client-state.value.set (assoc ./client-state t next-track)))))
 
   ;; react to transport events
   (emitter.on "transport.play" (fn []
     (log "play!")
-    (.then (api.invoke "start") (fn [] (log "playing.")))))
+    (.then (./client-api/invoke "start") (fn [] (log "playing.")))))
   (emitter.on "transport.pulse" (fn [t] (update :position t)))
 
   ;; respond to midi control
   (let [on-fader
           (fn [_ _ track-num selector]
-            (let [state   @client-state
-                  track   (aget state.tracks track-num)
+            (let [track   (aget ./client-state/tracks track-num)
                   data    (assoc track.data
                             :selector (/ selector 127)
                             :selected (Math.floor (/ selector 16)))
-                  tracks  (replace state.tracks track-num
+                  tracks  (replace ./client-state/tracks track-num
                             (assoc track :data data))]
               (update :tracks tracks)))
         on-knob

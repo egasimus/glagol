@@ -30,5 +30,8 @@
         (el.class-list.remove "focus-me")))
     view))
 
-(defn start [container template state]
-  (main-loop state template { :target container }))
+(defn start [template state]
+  (main-loop state template {
+    :create create
+    :diff   diff
+    :patch  patch }))

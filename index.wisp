@@ -1,60 +1,48 @@
-(ns midi (:require [wisp.runtime :refer [= and not str]]))
+;;
+;; message parsing
+;;
 
-(def ^:private bitwise (require "./bitwise.js"))
-(def ^:private expect  (.-expect (require "./util.wisp")))
-(def ^:private jack    (require "./jack.wisp"))
+(def ^:private bitwise (require "etude-jack/bitwise.js"))
+
+(def event-types
+  { 128 :note-off
+    144 :note-on
+    160 :key-pressure
+    176 :control
+    192 :program
+    208 :pressure
+    224 :pitch-bend })
+
+(defn parse
+  ([msg] (parse (aget msg 0) (aget msg 1) (aget msg 2)))
+  ([d1 d2 d3]
+    (let [channel (bitwise.and d1 15)
+          event   (aget event-types (bitwise.and d1 240))]
+      {:channel channel :event event :data1 d2 :data2 d3})))
+
+(defn match
+  [mask msg]
+  (.reduce
+    (Object.keys mask)
+    (fn [prev curr]
+      (and prev (= (aget mask curr) (aget msg curr))))
+    true))
+
+;;
+;; port communication
+;;
+
+(def ^:private jack    (require "etude-jack"))
+(def ^:private expect  jack.expect)
 (def ^:private midi    (require "midi"))
 (def ^:private Q       (require "q"))
 
-(def ^:private a2j (jack.client "a2j"))
+(def a2j (jack.client "a2j"))
 (jack.spawn "a2j" "a2jmidid" "-e")
 
-(set! persist.midi (or persist.midi
+(def state
   { :inputs  {}
-    :outputs {} }))
-
-(defn do-get-port-by-name [midi-io port-match callback]
-  (let [port-count (midi-io.get-port-count)]
-    (loop [port-number 0]
-      (if (< port-number port-count)
-        (let [port-name (midi-io.get-port-name port-number)]
-          (if (= 0 (port-name.index-of port-match))
-            (callback port-number)
-            (recur (+ port-number 1))))))))
-
-(defn get-port-by-name [midi-io port-match callback]
-  (a2j.started.then (fn [] (do-get-port-by-name midi-io port-match callback))))
-
-(defn connect-output [port-name]
-  (let [m (or (aget persist.midi.outputs port-name)
-              (new midi.output))]
-    (get-port-by-name m port-name
-      (fn [port-number] (m.open-port port-number)))
-    m))
-
-(defn connect-input [port-name callback]
-  (let [m (or (aget persist.midi.inputs port-name)
-              (new midi.input))]
-    (get-port-by-name m port-name (fn [port-number]
-      (m.open-port port-number)
-      (m.on "message" (fn [dt message]
-        (let [msg (aget message 0)
-              d1  (aget message 1)
-              d2  (aget message 2)]
-          (callback dt msg d1 d2))))))
-    m))
-
-(defn connect-controller [controller-name callback]
-  (let [i (connect-input  controller-name callback)
-        o (connect-output controller-name)]
-    { :in   i
-      :out  o
-      :send (.bind o.send-message o) }))
-
-;;
-;; version 2
-;; a.k.a. needlessly hairy code
-;;
+    :outputs {} })
 
 ; TODO make these port-finders promises
 ; also make them useful
@@ -104,7 +92,7 @@
 
 
 (defn connect-to-input [port-name]
-  (let [m (aget persist.midi.inputs port-name)]
+  (let [m (aget state.inputs port-name)]
     (or m (let [m       (new midi.input)
                 vpcname "^RtMidi Input Client"
                 vppname (str "^" port-name)
@@ -114,7 +102,7 @@
                            (expect-virtual-port vpcname vppname) ])
                 connected (Q.defer)]
       (set! m.connected connected.promise)
-      (set! (aget persist.midi.inputs port-name) m)
+      (set! (aget state.inputs port-name) m)
       (jack.after-session-start.then (fn []
         (m.open-virtual-port port-name)
         (.then ports-online 
@@ -128,7 +116,7 @@
 
 
 (defn connect-to-output [port-name]
-  (let [m (aget persist.midi.outputs port-name)]
+  (let [m (aget state.outputs port-name)]
     (or m (let [m       (new midi.output)
                 vpcname "^RtMidi Output Client"
                 vppname (str "^" port-name)
@@ -138,7 +126,7 @@
                            (expect-hardware-port hppname) ])
                 connected (Q.defer)]
       (set! m.connected connected.promise)
-      (set! (aget persist.midi.outputs port-name) m)
+      (set! (aget state.outputs port-name) m)
       (jack.after-session-start.then (fn []
         (m.open-virtual-port port-name)
         (.then ports-online
@@ -149,30 +137,3 @@
               (aget in-port  0) (aget in-port  1))
             (connected.resolve))))))
       m))))
-
-
-(def event-types
-  { 128 :note-off
-    144 :note-on
-    160 :key-pressure
-    176 :control
-    192 :program
-    208 :pressure
-    224 :pitch-bend })
-
-
-(defn parse
-  ([msg] (parse (aget msg 0) (aget msg 1) (aget msg 2)))
-  ([d1 d2 d3]
-    (let [channel (bitwise.and d1 15)
-          event   (aget event-types (bitwise.and d1 240))]
-      {:channel channel :event event :data1 d2 :data2 d3})))
-
-
-(defn match
-  [mask msg]
-  (.reduce
-    (Object.keys mask)
-    (fn [prev curr]
-      (and prev (= (aget mask curr) (aget msg curr))))
-    true))

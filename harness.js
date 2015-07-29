@@ -46,6 +46,7 @@
 
     var context =
       { _:            getTreeHere(atom)
+      , watch:        watchAtomValue
       , assoc:        require('wisp/sequence.js').assoc
       , console:      console // TODO remove
       , container:    container
@@ -63,6 +64,10 @@
     return context;
   };
 
+  function watchAtomValue (key, cb) { // TODO with macro
+    ATOMS[key].value(cb);
+  }
+
   function getTreeHere (atom) {
     var tree = {};
     Object.keys(ATOMS).map(function (key) {
@@ -71,13 +76,14 @@
         { configurable: true
         , enumerable:   true
         , get: function () {
-            if (!atom.hasOwnProperty('value')) atom.value = evaluateAtom(atom);
-            return atom.value;
+            if (!atom.hasOwnProperty('value')) evaluateAtom(atom);
+            return atom.value();
           }
         , set: function (val) {
-            console.log("trying to set", atom.name, "to", val);
+            atom.value.set(val); //console.log("trying to set", atom.name, "to", val);
           } });
     });
+    window.TREE = tree;
     return tree;
   }
 

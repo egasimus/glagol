@@ -218,7 +218,8 @@
 
 (def ^:private harness (fs.readFileSync harness-path "utf-8"))
 
-(defn page2 [route atom]
+(defn page2
+  [route atom]
   (fn [state]
     (let [socket-path
             (str route "socket") ; TODO
@@ -254,7 +255,7 @@
                   (log "compiled client from atom" (colors.green atom.name))
                   (set! body bundled)))))
 
-          watcher     ; the inevitable hindu
+          watcher
             (.watch (require "chokidar") harness-path { :persistent true })
           ]
 
@@ -282,24 +283,53 @@
         (connect connect)
         ((endpoint route handler (fn [])) state)))))
 
-(defn- template-getrequire [bundle mapped atom]
+(defn- template-getrequire
+  " Populates a template for a JS bundle containing all atoms and
+    browserified libraries. "
+  [bundle mapped atom]
   (str "var " bundle ";var deps=" (JSON.stringify mapped)
     (.replace (harness.replace "%ENTRY%" (engine.translate atom.name))
       "%ATOMS%" (JSON.stringify (get-atom-with-derefs atom)))))
 
-(defn- get-atom-by-name [name]
+(defn- get-atom-by-name
+  " A lil bit of convenience. "
+  [name]
   (aget engine.ATOMS name))
 
-(defn- get-atom-with-derefs [atom]
+(defn- get-atom-with-derefs
+  " Collects atom dependencies, starting from the root atom. "
+  [atom]
   (let [retval
           {}
         add
-          (fn [a] (set! (aget retval (engine.translate a.name))
-            (engine.freeze-atom a)))]
+          (fn [a] (let [frozen (engine.freeze-atom a)]
+            (set! (aget retval (engine.translate a.name)) frozen)))]
     (add atom)
     (.map (.-derefs (get-deps atom)) (fn [atom-name]
       (add (get-atom-by-name atom-name))))
     retval))
+
+(defn- find-derefs
+  " Hack detective module to find single-level `_.<atom-name>`
+    expressions (as compiled from `./<atom-name>` in wisp). "
+  [atom]
+  (let [detective  (require "detective")
+        code       atom.compiled.output.code
+        is-require
+          (fn [node]
+            (set! node.arguments (or node.arguments []))
+            (if (and (= node.type "MemberExpression")
+                     (= node.object.type "Identifier")
+                     (= node.object.name "_"))
+              (do
+                (set! node.arguments
+                  [ { :type  "Literal"
+                      :value node.property.name } ])
+                true)
+              false))
+        results
+          (detective.find code { :word ".*" :isRequire is-require })]
+    (engine.unique results.strings)))
 
 (defn- get-deps
   " Returns a processed list of the dependencies of an atom. "
@@ -319,26 +349,6 @@
         ;; atom dependencies a.k.a. derefs
         derefs
           []
-        find-derefs
-          (fn [atom]
-            (let [detective  (require "detective")
-                  code       atom.compiled.output.code
-                  is-require
-                    (fn [node]
-                      (set! node.arguments (or node.arguments []))
-                      (if
-                        (and (= node.type "MemberExpression")
-                             (= node.object.type "Identifier")
-                             (= node.object.name "_"))
-                        (do
-                          (set! node.arguments
-                            [ { :type  "Literal"
-                                :value node.property.name } ])
-                          true)
-                        false))
-                  results
-                    (detective.find code { :word ".*" :isRequire is-require })]
-              (engine.unique results.strings)))
         add-dep
           nil
         _ ; no recursion in (let)s as usual :(
@@ -354,7 +364,10 @@
     { :derefs   derefs
       :requires requires }))
 
-(defn- prepare-getrequire [atom]
+(defn- prepare-getrequire
+  " Promises a browserified bundle containing any Node.js libs required
+    by the root atom (passed as single argument) and its dependencies. "
+  [atom]
   (Q.Promise (fn [resolve reject notify]
     (let [deps     (get-deps atom)
           atoms    (.concat [atom] (deps.derefs.map get-atom-by-name))

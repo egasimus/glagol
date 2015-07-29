@@ -297,7 +297,7 @@
           (fn [a] (set! (aget retval (engine.translate a.name))
             (engine.freeze-atom a)))]
     (add atom)
-    (.map (.-derefs (engine.get-deps atom)) (fn [atom-name]
+    (.map (.-derefs (get-deps atom)) (fn [atom-name]
       (add (get-atom-by-name atom-name))))
     retval))
 
@@ -351,7 +351,6 @@
                 (.map (find-derefs dep) add-dep))))) ]
     (find-requires atom)
     (.map (find-derefs atom) add-dep)
-    (log atom.name "has derefs" derefs "and requires" requires)
     { :derefs   derefs
       :requires requires }))
 

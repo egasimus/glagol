@@ -64,12 +64,19 @@
   };
 
   function getTreeHere (atom) {
-    console.log("gettreehere", atom);
     var tree = {};
     Object.keys(ATOMS).map(function (key) {
-      console.log(ATOMS);
       var atom = ATOMS[key];
-      console.log(atom.path);
+      Object.defineProperty(tree, translate(atom.path),
+        { configurable: true
+        , enumerable:   true
+        , get: function () {
+            if (!atom.hasOwnProperty('value')) atom.value = evaluateAtom(atom);
+            return atom.value;
+          }
+        , set: function (val) {
+            console.log("trying to set", atom.name, "to", val);
+          } });
     });
     return tree;
   }

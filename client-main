@@ -1,15 +1,17 @@
 (let [state @client-state
-      tpl   @client-template
       vdom  @lib-vdom
-      _ (log container._vdom_widget_)
-      widget
-        (or container._vdom_widget_
-          (let [widget (vdom.init container tpl state)]
-            (set! container._vdom_widget_ widget)
-            widget))]
+
+      main-loop
+        (or container._vdom_main_loop_
+          (let [main-loop (vdom.start @client-template state)]
+            (set! container._vdom_main_loop_ main-loop)
+            (container.replace-child main-loop.target container.first-child)
+            main-loop))]
 
   (console.debug "\nindex" state)
 
   (vdom.insert-css (require "./style.styl"))
 
-  (vdom.update widget state))
+  (log main-loop)
+
+  (main-loop.update state))

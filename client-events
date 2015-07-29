@@ -52,7 +52,6 @@
             m1 (aget msg 1)
             m2 (aget msg 2)
             m3 (aget msg 3)]
-        (log msg)
         (if (= m1 189)
           ((cond
             (< m2 8)                  on-fader

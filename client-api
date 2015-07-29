@@ -2,5 +2,4 @@
         { :emit (fn [evt arg] (./client-events/emit evt arg)) }
       socket-path
         (str "ws://localhost:2000/jack")]
-  (log socket-path)
   ((require "q-connection") (WebSocket. socket-path) api))

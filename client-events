@@ -32,13 +32,13 @@
 
   ;; respond to midi control
   (let [on-fader
-          (fn [_ _ track-num selector]
+          (fn [t m1 track-num selector]
             (let [track   (aget ./client-state/tracks track-num)
                   data    (assoc track.data
                             :selector (/ selector 127)
                             :selected (Math.floor (/ selector 16)))
                   tracks  (replace ./client-state/tracks track-num
-                            (assoc track :data data))]
+                            (assoc track :data data)) ]
               (update :tracks tracks)))
         on-knob
           (fn [t m1 m2 m3]

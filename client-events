@@ -3,7 +3,10 @@
           { :maxListeners 64 :wildcard true } )
 
       api
-        @client-api]
+        @client-api
+
+      update
+        (fn [k v] (client-state.value.set (assoc @client-state k v)))]
 
   (emitter.on "sequencer.click" (fn [t n]
     (let [curr-track
@@ -22,7 +25,19 @@
     (log "play!")
     (.then (api.invoke "start") (fn [] (log "playing.")))))
 
-  (emitter.on "transport.pulse" (fn [t]
-    (client-state.value.set (assoc @client-state :position t))))
+  (emitter.on "transport.pulse" (fn [t] (update :position t)))
+
+  (emitter.on "control.nano" (fn [args]
+    (let [t  (aget args 0)
+          m1 (aget args 1)
+          m2 (aget args 2)
+          m3 (aget args 3)]
+      (if (= m1 189) (cond
+        (< m2 8)
+          (let [state    @client-state
+                track    (aget state.tracks m2)]
+            (log (Math.floor (/ m3 16)) "knob" track))
+        (and (> m2 15) (< m2 24))
+          (log "knob"))))))
 
   emitter)

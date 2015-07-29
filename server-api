@@ -24,7 +24,7 @@
 
         ;; control
         nano
-          (.connect @server-nanoktrl2)
+          @server-nanoktrl2
 
         emit
           (fn [])
@@ -53,5 +53,8 @@
 
     (transport.events.on "pulse" (fn []
       (emit "transport.pulse" transport.state.beats)))
+
+    (nano.events.on "input" (fn [dt m1 m2 m3]
+      (emit "control.nano" [(Math.round (Date.)) m1 m2 m3])))
 
     client))

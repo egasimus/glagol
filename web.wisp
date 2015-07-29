@@ -304,51 +304,52 @@
 (defn- get-deps
   " Returns a processed list of the dependencies of an atom. "
   [atom]
-  (let [;; atom dependencies a.k.a. derefs
-        derefs
-          []
-        find-derefs
-          (fn [atom]
-            (let [detective (require "detective")
-                  code      atom.compiled.output.code]
-              (log :in code)
-              (log (detective.find code {
-                :word ".*"
-                :isRequire (fn [node]
-                  ; patch node to hide abuse from detective
-                  (set! node.arguments [])
-                  (if
-                    (and (= node.type "MemberExpression")
-                         (= node.object.type "Identifier")
-                         (= node.object.name "_"))
-                    (do
-                      (set! node.arguments
-                        [ { :type  "Literal"
-                            :value node.property.name } ])
-                      true)
-                    false)) })))
-            atom.derefs)
-        add-dep
-          nil
-        _ ; no recursion in (let)s as usual :(
-          (set! add-dep (fn add-dep [atom-name]
-            (if (= -1 (derefs.index-of atom-name))
-              (let [dep (aget ATOMS atom-name)]
-                (if (not dep) (throw (Error. (str "No atom " atom-name))))
-                (derefs.push atom-name)
-                (find-requires dep)
-                (.map (find-derefs dep) add-dep)))))
-
-        ;; native library requires
+  (let [;; native library requires
         requires
           []
         find-requires
           (fn [atom]
             (atom.requires.map (fn [req]
-              (let [resolved (resolve.sync req { :basedir    root-dir
-                                                 :extensions [".js" ".wisp"] })]
+              (let [rslv     (require "resolve")
+                    resolved (rslv.sync req { :basedir    engine.root-dir
+                                              :extensions [".js" ".wisp"] })]
                 (if (= -1 (requires.index-of resolved))
-                  (requires.push resolved)))))) ]
+                  (requires.push resolved))))))
+
+        ;; atom dependencies a.k.a. derefs
+        derefs
+          []
+        find-derefs
+          (fn [atom]
+            (let [detective  (require "detective")
+                  code       atom.compiled.output.code
+                  is-require
+                    (fn [node]
+                      (set! node.arguments [])
+                      (if
+                        (and (= node.type "MemberExpression")
+                             (= node.object.type "Identifier")
+                             (= node.object.name "_"))
+                        (do
+                          (set! node.arguments
+                            [ { :type  "Literal"
+                                :value node.property.name } ])
+                          true)
+                        false))
+                  results
+                    (detective.find code { :word ".*" :isRequire is-require })]
+              (log atom.name results)
+              (engine.unique results.strings)))
+        add-dep
+          nil
+        _ ; no recursion in (let)s as usual :(
+          (set! add-dep (fn add-dep [atom-name]
+            (if (= -1 (derefs.index-of atom-name))
+              (let [dep (aget engine.ATOMS atom-name)]
+                (if (not dep) (throw (Error. (str "No atom " atom-name))))
+                (derefs.push atom-name)
+                (find-requires dep)
+                (.map (find-derefs dep) add-dep))))) ]
     (find-requires atom)
     (.map (find-derefs atom) add-dep)
     (log atom.name "has derefs" derefs "and requires" requires)

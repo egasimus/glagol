@@ -15,7 +15,8 @@
 
   window.atom = function(key) { return ATOMS[key] }
 
-  var container = document.getElementsByTagName("script")[0].parentElement // TODO
+  // TODO ?
+  var container = document.getElementsByTagName("script")[0].parentElement;
 
   var DEREFS = {};
 
@@ -23,7 +24,8 @@
   connectSocket();
 
   function evaluateAtom (atom) {
-    var val = require('vm').runInNewContext(atom.compiled, makeContext(atom.name));
+    var val = require('vm').runInNewContext(
+      atom.compiled, makeContext(atom.name));
     if (atom.value) {
       atom.value.set(val)
     } else {
@@ -34,28 +36,43 @@
   }
 
   function updateDeps (atom) {
-    //(DEREFS[atom.name] || []).map(function (i) { evaluateAtom(ATOMS[translate(i)]) })
+    //(DEREFS[atom.name] || []).map(function (i) {
+    //  evaluateAtom(ATOMS[translate(i)]) })
   }
 
   function makeContext (atomName) {
+    var name = translate(atomName)
+      , atom = ATOMS[name];
+
     var context =
-      { assoc:        require('wisp/sequence.js').assoc
+      { _:            getTreeHere(atom)
+      , assoc:        require('wisp/sequence.js').assoc
       , console:      console // TODO remove
       , container:    container
       , conj:         require('wisp/sequence.js').conj
-      , deref:        deref.bind(null, ATOMS[translate(atomName)])
+      , deref:        deref.bind(null, atom)
       , isEqual:      require('wisp/runtime.js').isEqual
       , log:          function () { console.log.apply(console, arguments) }
       , require:      getRequire(atomName)
       , setTimeout:   setTimeout
       , clearTimeout: clearTimeout
       , WebSocket:    WebSocket
-      , XMLHttpRequest: XMLHttpRequest};
-    ATOMS[translate(atomName)].derefs.map(function (i) {
-      context[i] = ATOMS[i];
-    });
+      , XMLHttpRequest: XMLHttpRequest };
+
+    atom.derefs.map(function (i) { context[i] = ATOMS[i]; });
     return context;
   };
+
+  function getTreeHere (atom) {
+    console.log("gettreehere", atom);
+    var tree = {};
+    Object.keys(ATOMS).map(function (key) {
+      console.log(ATOMS);
+      var atom = ATOMS[key];
+      console.log(atom.path);
+    });
+    return tree;
+  }
 
   function translate (word) {
     // TODO import whole wisp

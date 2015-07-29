@@ -3,6 +3,7 @@
 (def h          (require "virtual-dom/h"))
 (def insert-css (require "insert-css"))
 (def patch      (require "virtual-dom/patch"))
+(def main-loop  (require "main-loop"))
 
 (defn focus-me []
   (require "virtual-dom/virtual-hyperscript/hooks/focus-hook.js"))
@@ -28,3 +29,6 @@
         (if (not focused) (do (el.focus) (set! focused true)))
         (el.class-list.remove "focus-me")))
     view))
+
+(defn start [container template state]
+  (main-loop state template { :target container }))

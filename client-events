@@ -39,7 +39,7 @@
             (let [state   @client-state
                   track   (aget state.tracks track-num)
                   data    (assoc track.data
-                            :selector selector
+                            :selector (/ selector 127)
                             :selected (Math.floor (/ selector 16)))
                   tracks  (replace state.tracks track-num
                             (assoc track :data data))]

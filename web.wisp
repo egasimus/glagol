@@ -341,7 +341,7 @@
           (fn [atom]
             (atom.requires.map (fn [req]
               (let [rslv     (require "resolve")
-                    resolved (rslv.sync req { :basedir    engine.root-dir
+                    resolved (rslv.sync req { :basedir    (engine.get-root-dir)
                                               :extensions [".js" ".wisp"] })]
                 (if (= -1 (requires.index-of resolved))
                   (requires.push resolved))))))
@@ -395,15 +395,15 @@
                     { :basedir    (path.dirname atom.path)
                       :extensions [".js" ".wisp"]}) ]
             (set! (aget (aget requires atom.name) req) res)
-            (if (= -1 (.index-of (Object.keys resolved) res))
+            (if (= -1 (.index-of (keys resolved) res))
               (set! (aget resolved res) (shortid.generate))))))))
 
-      (.map (Object.keys requires) (fn [i]
+      (.map (keys requires) (fn [i]
         (set! (aget mapped i) {})
-        (.map (Object.keys (aget requires i)) (fn [j]
+        (.map (keys (aget requires i)) (fn [j]
           (set! (aget (aget mapped i) j) (aget resolved (aget (aget requires i) j)))))))
 
-      (.map (Object.keys resolved) (fn [module]
+      (.map (keys resolved) (fn [module]
         (br.require module { :expose (aget resolved module) })))
 
       (br.bundle (fn [err buf]

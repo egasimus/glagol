@@ -12,17 +12,7 @@
 
   ;; sequencer gui
   (emitter.on "sequencer.click" (fn [t n]
-    (let [curr-track
-            (aget ./client-state t)
-          curr-val
-            (aget curr-track n)
-          next-val
-            (- 1 curr-val)
-          next-track
-            (.concat (.concat (curr-track.slice 0 n) next-val)
-              (curr-track.slice (+ 1 n)))]
-      (console.log (assoc ./client-state t next-track))
-      (client-state.value.set (assoc ./client-state t next-track)))))
+    (log "clicked track" t "at" n)))
 
   ;; react to transport events
   (emitter.on "transport.play" (fn []

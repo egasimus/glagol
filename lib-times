@@ -1,1 +1,1 @@
-(fn [n cb] (.map (Array.apply nil (Array n)) (fn [_ i] (cb i))))
+(fn [n cb] (.map (Array.apply nil (Array n)) (fn [x i] (cb i))))

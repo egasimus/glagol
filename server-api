@@ -26,9 +26,6 @@
         nano
           @server-nanoktrl2
 
-        emit
-          (fn [])
-
         api
           { :init    jack.init
             :spawn   jack.spawn

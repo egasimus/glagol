@@ -9,7 +9,4 @@
 
     { :name   "snare"
       :volume 0
-      :data   (@lib-sequence 8 16) } ]
-
-  :position 0 }
-
+      :data   (@lib-sequence 8 16) } ] }

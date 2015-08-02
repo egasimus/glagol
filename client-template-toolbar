@@ -10,4 +10,7 @@
       [ (btn s.socket  "Etude"     "etude.reconnect" "etude.reconnect")
         (btn s.jack    "JACK"      "jack.init"       "jack.stop")
         (btn s.playing "Transport" "transport.play"  "transport.stop")
-        (h ".toolbar-transport" (str s.position)) ])))
+        (h ".toolbar-transport"
+          (str (+ 1 (Math.floor (/ s.position 4)))
+               " . " (+ 1 (mod s.position 4))))
+      ] )))

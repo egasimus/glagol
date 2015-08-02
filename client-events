@@ -43,7 +43,44 @@
       (update :position t)))
 
 
-  ;; sequencer gui
+  ;; sequencer tracks
+  (emitter.on "sequencer.track"
+    (fn [args]
+      (let [i (aget args 0) t (aget args 1)]
+        (.then (t.get "name") (fn [n]
+          (update :tracks (replace ./client-state/tracks i
+            (assoc (aget ./client-state/tracks i)
+              :name    n
+              :loading false)))))
+        (.then (t.get "data") (fn [d]
+          (.then (d.get "selector") (fn [s]
+            (log "-->" i s)
+            (update :tracks (replace ./client-state/tracks i
+              (assoc (aget ./client-state/tracks i) :data
+                (assoc (aget (./client-state/tracks i) :data)
+                  :selector s))))))
+          (.then (d.get "selected") (fn [s]
+            (log "-->" i s)
+            (update :tracks (replace ./client-state/tracks i
+              (assoc (aget ./client-state/tracks i) :data
+                (assoc (aget (./client-state/tracks i) :data)
+                  :selected s))))))
+          (.then (d.get "slots")    (fn [s]
+            (log "-->" i s)
+            (update :tracks (replace ./client-state/tracks i
+              (assoc (aget ./client-state/tracks i) :data
+                (assoc (aget (./client-state/tracks i) :data)
+                  :slots s)))))))))))
+            ;(log "-->" i s))))))))
+
+        ;(.then (.get "length" (t.get "data")) (fn [d]
+          ;(log "-->" i d))))))
+        ;(.then (t.get "name") (fn [n]
+          ;(let [state ./client-state]
+            ;(set! ./client-state (assoc state :tracks))))))))
+
+
+  ;; sequencer editing
   (emitter.on "sequencer.click"
     (fn [t n]
       (log "clicked track" t "at" n)))

@@ -1,20 +1,24 @@
 (let [h ./lib-vdom/h]
   (fn [s] (s.tracks.map (fn [track track-no]
-    (let [t    track.data
-          slot (aget t.slots t.selected)
-          left (str (* t.selector 100) "%")]
+    (if track.loading
       (h ".sequencer" [
-        (h ".sequencer-label" track.name)
-        (h ".sequencer-mid" [
-          (h ".sequencer-body" { :foo :bar }
-            (./lib-times slot.length (fn [i]
-              (let [value (aget slot i)]
-                (h (str ".sequencer-cell" (if value ".active" ""))
-                  { :dataset { :index i }
-                    :onclick (./lib-emit "sequencer.click" track-no i) })))))
-          (h ".sequencer-slots"
-            (.concat
-              [ (h ".sequencer-selector" { :style { :left left }}) ]
-              (./lib-times t.slots.length (fn [i]
-                (h (str ".sequencer-slot" (if (= i t.selected) ".selected" ""))
-                  { :dataset { :index i } }))))) ]) ]))))))
+        (h ".sequencer-label" "loading...") ])
+        (h ".sequencer" [
+          (h ".sequencer-label" track.name)
+          (if track.data
+            (let [t    track.data
+                  slot (aget t.slots t.selected)
+                  left (str (* t.selector 100) "%")]
+              (h ".sequencer-mid" [
+                (h ".sequencer-body" { :foo :bar }
+                  (./lib-times slot.length (fn [i]
+                    (let [value (aget slot i)]
+                      (h (str ".sequencer-cell" (if value ".active" ""))
+                        { :dataset { :index i }
+                          :onclick (./lib-emit "sequencer.click" track-no i) })))))
+                (h ".sequencer-slots"
+                  (.concat
+                    [ (h ".sequencer-selector" { :style { :left left }}) ]
+                    (./lib-times t.slots.length (fn [i]
+                      (h (str ".sequencer-slot" (if (= i t.selected) ".selected" ""))
+                        { :dataset { :index i } }))))) ]))) ]))))))

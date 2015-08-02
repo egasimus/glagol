@@ -13,12 +13,51 @@
     if (ATOMS[i].value) ATOMS[i].value = require('observ')(ATOMS[i].value);
   })
 
-  window.atom = function(key) { return ATOMS[key] }
-
-  // TODO ?
+  // TODO more intelligently figure out the current script
+  // document.currentScript used to work, why is it returning null now
   var container = document.getElementsByTagName("script")[0].parentElement;
+  container._etude      = {};
+  container._etude.atom = function(key) { return ATOMS[key] }
+  container._etude.tree = null;
+
+  function getTreeHere (atom) {
+    var tree;
+    return container._etude.tree ||
+      ( tree = {}
+      , Object.keys(ATOMS).map(function (key) {
+          var atom = ATOMS[key];
+          Object.defineProperty(tree, translate(atom.path),
+            { configurable: true
+            , enumerable:   true
+            , get: function () {
+                if (!atom.hasOwnProperty('value')) evaluateAtom(atom);
+                return atom.value();
+              }
+            , set: function (val) {
+                atom.value.set(val); //console.log("trying to set", atom.name, "to", val);
+              } });
+        })
+      , container._etude.tree = tree );
+  }
 
   var DEREFS = {};
+  function deref (from, to) {
+
+    // keep track of interdependencies
+    DEREFS[to.name] = DEREFS[to.name] || [];
+    if (DEREFS[to.name].indexOf(from.name) === -1) {
+      DEREFS[to.name].push(from.name);
+    }
+
+    // evaluate atom, and attach a listener to its value
+    if (!to.value) {
+      var attach = !to.value;
+      evaluateAtom(to);
+      if (attach) { to.value(evaluateAtom.bind(null, from)); }
+    }
+    return to.value();
+
+  }
 
   evaluateAtom(ATOMS[entryAtomName]);
   connectSocket();
@@ -68,48 +107,12 @@
     ATOMS[key].value(cb);
   }
 
-  function getTreeHere (atom) {
-    var tree = {};
-    Object.keys(ATOMS).map(function (key) {
-      var atom = ATOMS[key];
-      Object.defineProperty(tree, translate(atom.path),
-        { configurable: true
-        , enumerable:   true
-        , get: function () {
-            if (!atom.hasOwnProperty('value')) evaluateAtom(atom);
-            return atom.value();
-          }
-        , set: function (val) {
-            atom.value.set(val); //console.log("trying to set", atom.name, "to", val);
-          } });
-    });
-    window.TREE = tree;
-    return tree;
-  }
-
   function translate (word) {
     // TODO import whole wisp
     return word.replace(/(-[a-zA-Z])/g,
       function (x) { return x[1].toUpperCase() })
   }
 
-  function deref (from, to) {
-
-    // keep track of interdependencies
-    DEREFS[to.name] = DEREFS[to.name] || [];
-    if (DEREFS[to.name].indexOf(from.name) === -1) {
-      DEREFS[to.name].push(from.name);
-    }
-
-    // evaluate atom, and attach a listener to its value
-    if (!to.value) {
-      var attach = !to.value;
-      evaluateAtom(to);
-      if (attach) { to.value(evaluateAtom.bind(null, from)); }
-    }
-    return to.value();
-
-  }
 
   function connectSocket () {
 

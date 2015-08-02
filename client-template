@@ -1,7 +1,5 @@
-(fn [s]
-  (let [h ./lib-vdom/h]
+(let [h ./lib-vdom/h]
+  (fn [s]
     (h ".app"
-      [ (h ".toolbar"
-          [ (h "a.play" { :onclick (./lib-emit "transport.play") } "▶")
-            (h ".position" (str s.position)) ])
+      [ (./client-template-toolbar    s)
         (./client-template-sequencers s) ])))

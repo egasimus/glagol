@@ -19,8 +19,8 @@
             client   ((require "q-connection") socket exported)]
         (set! exported.api  (@server-api (emit.bind nil client)))
         (set! exported.state @server-state)
-        { :socket socket
-          :client client
+        { :socket   socket
+          :client   client
           :exported exported}))))
 
   server)

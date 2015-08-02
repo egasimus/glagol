@@ -5,13 +5,35 @@ jylto = #ccaa26
   box-sizing border-box
 
 body
-  background #111
-  color      white
+  background  #111
+  color       white
+  font-family sans-serif
 
 .toolbar
   background  black
   display     flex
   align-items center
+
+  &-button, &-transport
+    padding 3px 6px
+    margin  3px 0 3px 3px
+    border  1px solid #333
+    color   #888
+    text-transform uppercase
+    font-size      9px
+    letter-spacing 1px
+
+  &-transport
+    border-color jylto
+    color        jylto
+
+  &-button
+    cursor  pointer
+    &:hover
+      border-color #555
+    &.on
+      border-color #aaa
+      color        #ccc
 
 .sequencer
   margin      12px 0 0

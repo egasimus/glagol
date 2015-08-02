@@ -35,7 +35,8 @@
             :client  jack.client
             :connect jack.connect-by-name
             :system  jack.system
-            :play    (fn [port] (send-osc "localhost" port "/play" 0 0) 8)
+            :play    (fn [port] (send-osc "localhost" port "/play" 0 0))
+            :stop    (fn [port] (send-osc "localhost" port "/stop" 0 0))
             :listen  (fn [port] (send-osc "localhost" port "/listen")) 
 
             :start   (fn [] (transport.play))

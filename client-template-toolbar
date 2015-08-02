@@ -1,0 +1,13 @@
+(let [h
+        ./lib-vdom/h
+      btn
+        (fn [state text evt1 evt2]
+          (h (str "a.toolbar-button" (if state ".on" ""))
+            { :onclick (./lib-emit (if state evt2 evt1)) }
+            text))]
+  (fn [s]
+    (h ".toolbar"
+      [ (btn s.socket  "Etude"     "etude.reconnect" "etude.reconnect")
+        (btn s.jack    "JACK"      "jack.init"       "jack.stop")
+        (btn s.playing "Transport" "transport.play"  "transport.stop")
+        (h ".toolbar-transport" (str s.position)) ])))

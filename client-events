@@ -10,16 +10,44 @@
           (array.map (fn [old-value index]
             (if (= index target) new-value old-value))))]
 
-  ;; sequencer gui
-  (emitter.on "sequencer.click" (fn [t n]
-    (log "clicked track" t "at" n)))
+
+  ;; jack backend switch
+  (emitter.on "jack.init"
+    (fn []
+      (log "starting JACK backend...")
+      (.then (.invoke (./client-api/get "api") "init")
+        (fn [jack-state]
+          (log "JACK started.")
+          (update :jack jack-state)))))
+
 
   ;; react to transport events
-  (emitter.on "transport.play" (fn []
-    (log "play!")
-    (.then (.invoke (./client-api/get "api") "start")
-      (fn [] (log "playing.")))))
-  (emitter.on "transport.pulse" (fn [t] (update :position t)))
+  (emitter.on "transport.play"
+    (fn []
+      (log "pressing play...")
+      (.then (.invoke (./client-api/get "api") "start")
+        (fn []
+          (log "playing, transport rolling.")
+          (update :playing true)))))
+
+  (emitter.on "transport.stop"
+    (fn []
+      (log "pressing stop...")
+      (.then (.invoke (./client-api/get "api") "stop")
+        (fn []
+          (log "stopped, transport halted")
+          (update :playing false)))))
+
+  (emitter.on "transport.pulse"
+    (fn [t]
+      (update :position t)))
+
+
+  ;; sequencer gui
+  (emitter.on "sequencer.click"
+    (fn [t n]
+      (log "clicked track" t "at" n)))
+
 
   ;; respond to midi control
   (let [on-fader

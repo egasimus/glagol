@@ -1,2 +1,9 @@
-{ :position 0 
-  :tracks   [] }
+(let [
+  state
+   { :playing  false
+     :position 0
+
+     :tracks   []
+
+     :socket   ./client-api } ]
+  state)

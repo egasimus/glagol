@@ -10,7 +10,8 @@
 
   sockets []
 
-] (.on (aget server.state.sockets "/jack") "connection"
-    (fn [socket] (sockets.push (@server-api socket))))
+] (.on (aget server.state.sockets "/jack") "connection" (fn [socket]
+    ((require "q-connection") socket { :api   @server-api
+                                       :state @server-state })))
 
   server)

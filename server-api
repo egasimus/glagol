@@ -1,4 +1,4 @@
-(fn [socket]
+(fn [emit]
   (let [jack
           (require "etude-jack")
 
@@ -30,7 +30,7 @@
           (fn [])
 
         api
-          { :jack    (jack.init)
+          { :init    jack.init
             :spawn   jack.spawn
             :client  jack.client
             :connect jack.connect-by-name
@@ -39,14 +39,9 @@
             :listen  (fn [port] (send-osc "localhost" port "/listen")) 
 
             :start   (fn [] (transport.play))
-            :stop    (fn [] (transport.stop)) }
-
-        client
-          ((require "q-connection") socket api)]
+            :stop    (fn [] (transport.stop)) }]
 
     (log "transport" transport)
-
-    (set! emit (fn [evt arg] (client.invoke "emit" evt arg)))
 
     (osc-client.on "message" (fn [msg] (emit msg.address msg.args)))
     (osc-client.open)
@@ -57,4 +52,4 @@
     (nano.events.on "input" (fn [dt m1 m2 m3]
       (emit "control.nano" [(Math.round (Date.)) m1 m2 m3])))
 
-    client))
+    api))

@@ -1,7 +1,7 @@
-(if (not container._vdom_main_loop_)
+(if (not container._etude.vdom-main-loop)
   (let [main-loop (./lib-vdom/start ./client-template ./client-state)]
     (./lib-vdom/insert-css (require "./style.styl"))
-    (set! container._vdom_main_loop_ main-loop)
+    (set! container._etude.vdom-main-loop main-loop)
     ;(watch ./client-state (fn [value] ; TODO
     (watch :clientState (fn [value]
       (log :update value) (main-loop.update value)))

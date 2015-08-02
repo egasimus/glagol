@@ -17,7 +17,8 @@
   ;; react to transport events
   (emitter.on "transport.play" (fn []
     (log "play!")
-    (.then (./client-api/invoke "start") (fn [] (log "playing.")))))
+    (.then (.invoke (./client-api/get "api") "start")
+      (fn [] (log "playing.")))))
   (emitter.on "transport.pulse" (fn [t] (update :position t)))
 
   ;; respond to midi control

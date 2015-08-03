@@ -8,7 +8,13 @@
       replace
         (fn [array target new-value]
           (array.map (fn [old-value index]
-            (if (= index target) new-value old-value))))]
+            (if (= index target) new-value old-value))))
+
+      update-track
+        (fn [i & args] (let [tracks ./client-state/tracks]
+          (update :tracks (replace tracks i
+            (apply assoc (aget tracks i) args)))))
+      ]
 
 
   ;; jack backend switch
@@ -47,37 +53,17 @@
   (emitter.on "sequencer.track"
     (fn [args]
       (let [i (aget args 0) t (aget args 1)]
-        (.then (t.get "name") (fn [n]
-          (update :tracks (replace ./client-state/tracks i
-            (assoc (aget ./client-state/tracks i)
-              :name    n
-              :loading false)))))
+        (.then
+          (t.get "name")
+          (fn [n] (update-track i :name n :loading false)))
         (.then (t.get "data") (fn [d]
-          (.then (d.get "selector") (fn [s]
-            (log "-->" i s)
-            (update :tracks (replace ./client-state/tracks i
-              (assoc (aget ./client-state/tracks i) :data
-                (assoc (aget (./client-state/tracks i) :data)
-                  :selector s))))))
-          (.then (d.get "selected") (fn [s]
-            (log "-->" i s)
-            (update :tracks (replace ./client-state/tracks i
-              (assoc (aget ./client-state/tracks i) :data
-                (assoc (aget (./client-state/tracks i) :data)
-                  :selected s))))))
-          (.then (d.get "slots")    (fn [s]
-            (log "-->" i s)
-            (update :tracks (replace ./client-state/tracks i
-              (assoc (aget ./client-state/tracks i) :data
-                (assoc (aget (./client-state/tracks i) :data)
-                  :slots s)))))))))))
-            ;(log "-->" i s))))))))
-
-        ;(.then (.get "length" (t.get "data")) (fn [d]
-          ;(log "-->" i d))))))
-        ;(.then (t.get "name") (fn [n]
-          ;(let [state ./client-state]
-            ;(set! ./client-state (assoc state :tracks))))))))
+          (let [mount (fn [n]
+                  (.then (d.get n) (fn [s]
+                    (log "-->" i n s)
+                    (update-track i n s))))]
+            (mount :selector)
+            (mount :selected)
+            (mount :slots)))))))
 
 
   ;; sequencer editing

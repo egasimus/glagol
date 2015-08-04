@@ -4,6 +4,9 @@
     :selector
       0
     :slots
-      (@lib-times slots (fn []
-        (@lib-times length (fn []
-          (if (> (Math.random) 0.8) 1 0))))) })
+      [ [1 0]
+        [1 0 1 0]
+        [1 0 0 1 0 0 1 0]
+        [1 0 1 0 1 0 1 0]
+        [1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0]
+        [1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1] ] })

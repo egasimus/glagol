@@ -22,6 +22,7 @@
     (fn []
       (log "starting JACK backend...")
       (let [init (.invoke (./client-api/get :api) :init)]
+        (init.catch (fn [err] (log "jack error" err)))
         (init.progress (fn [& args] (log "jack progress" args)))
         (init.then (fn [jack-state]
           (log "JACK started.")
@@ -64,6 +65,7 @@
                 (log "tap reset"))
               (do
                 (taps.push tempo)
+                (update :tempo tempo)
                 (log "tap" tempo
                   (/ (taps.reduce (fn [x y] (+ x y))) taps.length))))))
         (set! last-tap t.time-stamp))))
@@ -101,11 +103,9 @@
   (let [on-fader
           (fn [t m1 track-num selector]
             (let [track   (aget ./client-state/tracks track-num)
-                  data    (assoc track.data
-                            :selector (/ selector 127)
-                            :selected (Math.floor (/ selector 16)))
-                  tracks  (replace ./client-state/tracks track-num
-                            (assoc track :data data)) ]
+                  track   (assoc track :selector (/ selector 127)
+                                       :selected (Math.floor (/ selector 16)))
+                  tracks  (replace ./client-state/tracks track-num track)]
               (update :tracks tracks)))
         on-knob
           (fn [t m1 m2 m3]

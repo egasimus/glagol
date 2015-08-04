@@ -12,8 +12,10 @@
       [ (btn s.socket  "Etude"     "etude.reconnect" "etude.reconnect")
         (btn s.jack    "JACK"      "jack.init"       "jack.stop")
         (btn s.playing "Transport" "transport.play"  "transport.stop")
-        (h (str "a.toolbar-button") { :onmousedown (emit "transport.tap") }
-          (or s.tempo "Tap tempo"))
+        (h
+          (str "a.toolbar-button" (if s.tempo ".on" ""))
+          { :onmousedown (emit "transport.tap") }
+          (if s.tempo (str (Math.round s.tempo)) "Tap tempo"))
         (h ".toolbar-transport"
           (str (+ 1 (Math.floor (/ s.position 4)))
                " . " (+ 1 (mod s.position 4))))

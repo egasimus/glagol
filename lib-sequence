@@ -1,4 +1,9 @@
 (fn [slots length]
-  { :selected 0
-    :selector 0
-    :slots    (@lib-times slots (fn [] (@lib-times length (fn [] 0)))) })
+  { :selected
+      0
+    :selector
+      0
+    :slots
+      (@lib-times slots (fn []
+        (@lib-times length (fn []
+          (if (> (Math.random) 0.8) 1 0))))) })

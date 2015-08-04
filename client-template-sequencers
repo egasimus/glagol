@@ -5,20 +5,18 @@
         (h ".sequencer-label" "loading...") ])
       (h ".sequencer" [
         (h ".sequencer-label" track.name)
-        (let [slot (or (aget (or track.slots []) (or track.selected 0)) [])
-              left (str (* (or track.selector 0) 100) "%")]
-          (h ".sequencer-mid" [
-            (h ".sequencer-body" { :foo :bar }
-              (./lib-times slot.length (fn [i]
-                (let [value (aget slot i)]
-                  (h (str ".sequencer-cell" (if value ".active" ""))
-                    { :dataset { :index i }
-                      :onclick (./lib-emit "sequencer.click" track-no i) }))))) ])) ])  )))))
-              ;(h ".sequencer-slots"
-                ;(.concat
-                  ;[ (h ".sequencer-selector" { :style { :left left }}) ]
-                  ;(./lib-times track.slots.length (fn [i]
-                    ;(h
-                      ;(str ".sequencer-slot"
-                        ;(if (= i track.selected) ".selected" ""))
-                      ;{ :dataset { :index i } }))))) ])) ]))))))
+        (h ".sequencer-mid"
+          (.map (or track.slots []) (fn [slot slot-no]
+            (h
+              (str
+                ".sequencer-body"
+                (if (= slot-no track.selected) ".active" ""))
+              (slot.map (fn [cell cell-no]
+                (h (str ".sequencer-cell" (if cell ".active" ""))
+                  { :dataset
+                      { :index cell-no }
+                    :onclick
+                      (./lib-emit "sequencer.click" track-no cell-no) 
+                  })))))))
+
+      ]) )))))

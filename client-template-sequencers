@@ -1,6 +1,5 @@
 (let [h ./lib-vdom/h]
   (fn [s] (s.tracks.map (fn [track track-no]
-    (log "rendering" track-no track)
     (if track.loading
       (h ".sequencer" [
         (h ".sequencer-label" "loading...") ])

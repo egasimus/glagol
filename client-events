@@ -48,6 +48,25 @@
     (fn [t]
       (update :position t)))
 
+  (let [last-tap   nil
+        taps       []
+        min-tempo  81]
+    (emitter.on "transport.tap"
+      (fn [t]
+        (if last-tap
+          (let [diff  (- t.time-stamp last-tap)
+                tempo (/ 60000 diff)]
+            (if (> diff (/ 60000 min-tempo))
+              (do
+                (set! taps      [])
+                (set! last-tap  nil)
+                (log "tap reset"))
+              (do
+                (taps.push tempo)
+                (log "tap" tempo
+                  (/ (taps.reduce (fn [x y] (+ x y))) taps.length))))))
+        (set! last-tap t.time-stamp))))
+
 
   ;; sequencer tracks
   (emitter.on "sequencer.track"

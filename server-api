@@ -27,7 +27,12 @@
           @server-nanoktrl2
 
         api
-          { :init    jack.init
+          { :init
+              (fn []
+                (let [init (jack.init)]
+                  (init.catch (fn [err] (log.as "jack error" err.stack)))
+                  (init.progress (fn [msg] (log.as "jack info" msg)))
+                  init))
             :spawn   jack.spawn
             :client  jack.client
             :connect jack.connect-by-name

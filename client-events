@@ -21,10 +21,11 @@
   (emitter.on "jack.init"
     (fn []
       (log "starting JACK backend...")
-      (.then (.invoke (./client-api/get "api") "init")
-        (fn [jack-state]
+      (let [init (.invoke (./client-api/get :api) :init)]
+        (init.progress (fn [& args] (log "jack progress" args)))
+        (init.then (fn [jack-state]
           (log "JACK started.")
-          (update :jack jack-state)))))
+          (update :jack jack-state))))))
 
 
   ;; react to transport events
@@ -76,10 +77,7 @@
           (t.get "name")
           (fn [n] (update-track i :name n :loading false)))
         (.then (t.get "data") (fn [d]
-          (let [mount (fn [n]
-                  (.then (d.get n) (fn [s]
-                    (log "-->" i n s)
-                    (update-track i n s))))]
+          (let [mount (fn [n] (.then (d.get n) (fn [s] (update-track i n s))))]
             (mount :selector)
             (mount :selected)
             (mount :slots)))))))
@@ -88,7 +86,15 @@
   ;; sequencer editing
   (emitter.on "sequencer.click"
     (fn [t n]
-      (log "clicked track" t "at" n)))
+      (let [tracks     ./client-state/tracks
+            track      (aget tracks t)
+            slot       (aget track.slots track.selected)
+            value      (aget slot n)
+            new-slot   (replace slot n (- 1 value))
+            new-slots  (replace track.slots track.selected new-slot)
+            new-track  (assoc track :slots new-slots)
+            new-tracks (replace tracks t new-track)]
+        (update :tracks new-tracks))))
 
 
   ;; respond to midi control

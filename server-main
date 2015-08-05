@@ -4,8 +4,8 @@
 
   server
     (w.server { :port 2000 }
-      (w.page2    "/"      client-main)
-      (w.endpoint "/files" @server-library)
+      (w.page2    "/"      ./client-main)
+      (w.endpoint "/files" ./server-library)
       (w.socket   "/jack"))
 
   emit
@@ -17,8 +17,10 @@
     (sockets.push
       (let [exported {}
             client   ((require "q-connection") socket exported)]
-        (set! exported.api  (@server-api (emit.bind nil client)))
-        (set! exported.state @server-state)
+        (set! exported.api  (./server-api (emit.bind nil client)))
+        (set! exported.state { :meter  ./session-meter
+                               :tempo  ./session-tempo
+                               :tracks ./session-tracks })
         { :socket   socket
           :client   client
           :exported exported}))))

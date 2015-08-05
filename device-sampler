@@ -1,0 +1,3 @@
+(fn [sound]
+  { :type  "Device.Sampler"
+    :sound sound })

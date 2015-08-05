@@ -1,0 +1,3 @@
+(fn [preset]
+  { :type   "Device.Synth"
+    :preset preset })

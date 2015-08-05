@@ -15,16 +15,13 @@
             (osc-client.send { :address addr :args args } host port))
 
         ;; transport
-        time
-          (require "etude-time")
-        tempo
-          120
         transport
-          (time.make-transport tempo "4/4")
+          (.make-transport (require "etude-time")
+            ./session-tempo ./session-meter)
 
         ;; control
         nano
-          @server-nanoktrl2
+          ./server-nanoktrl2
 
         api
           { :init

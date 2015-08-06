@@ -2,7 +2,6 @@
   (let [main-loop (./lib-vdom/start ./client-template ./client-state)]
     (./lib-vdom/insert-css (require "./style.styl"))
     (set! container._etude.vdom-main-loop main-loop)
-    ;(watch ./client-state (fn [value] ; TODO
     (watch :clientState (fn [value] (main-loop.update value)))
     (container.replace-child main-loop.target container.first-child)
     main-loop))

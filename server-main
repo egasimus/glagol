@@ -4,7 +4,7 @@
 
   server
     (w.server { :port 2000 }
-      (w.page2    "/"      ./client-main)
+      (w.page2    "/"      :./client-main)
       (w.endpoint "/files" ./server-library)
       (w.socket   "/jack"))
 

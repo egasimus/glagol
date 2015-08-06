@@ -5,8 +5,10 @@
 (def ^:private fs         (require "fs"))
 (def ^:private path       (require "path"))
 (def ^:private Q          (require "q"))
+(def ^:private send       (require "send-data"))
 (def ^:private shortid    (require "shortid"))
 (def ^:private socket     (require "./socket.wisp"))
+(def ^:private url        (require "url"))
 (def ^:private util       (require "./util.wisp"))
 
 (set! exports page2)
@@ -42,7 +44,7 @@
               (let [embed?
                       (.-query.embed (url.parse req.url true))
                     body
-                      (if embed? body (document-template body))
+                      (if embed? body (util.document-template body))
                     ctype
                       (str "text/" (if embed? "javascript" "html")
                            "; charset=utf-8")]

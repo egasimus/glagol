@@ -55,9 +55,5 @@
       (assoc state :endpoints (conj state.endpoints
         (endpoint route handler (fn [] (watcher.close))))))))
 
-(defn- document-template [output]
-  (str "<head><meta charset=\"utf-8\"></head><body><script>"
-    output "</script>"))
-
 (defn- embed-template [output]
   (str "(function () { var require = " output "; return require })()"))

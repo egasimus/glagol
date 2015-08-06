@@ -40,25 +40,6 @@
       , container._etude.tree = tree );
   }
 
-  var DEREFS = {};
-  function deref (from, to) {
-
-    // keep track of interdependencies
-    DEREFS[to.name] = DEREFS[to.name] || [];
-    if (DEREFS[to.name].indexOf(from.name) === -1) {
-      DEREFS[to.name].push(from.name);
-    }
-
-    // evaluate atom, and attach a listener to its value
-    if (!to.value) {
-      var attach = !to.value;
-      evaluateAtom(to);
-      if (attach) { to.value(evaluateAtom.bind(null, from)); }
-    }
-    return to.value();
-
-  }
-
   evaluateAtom(ATOMS[entryAtomName]);
   connectSocket();
 
@@ -74,10 +55,7 @@
     return val;
   }
 
-  function updateDeps (atom) {
-    //(DEREFS[atom.name] || []).map(function (i) {
-    //  evaluateAtom(ATOMS[translate(i)]) })
-  }
+  function updateDeps (atom) {}
 
   function makeContext (atomName) {
     var name = translate(atomName)
@@ -90,7 +68,6 @@
       , console:      console // TODO remove
       , container:    container
       , conj:         require('wisp/sequence.js').conj
-      , deref:        deref.bind(null, atom)
       , isEqual:      require('wisp/runtime.js').isEqual
       , log:          function () { console.log.apply(console, arguments) }
       , require:      getRequire(atomName)
@@ -99,7 +76,6 @@
       , WebSocket:    WebSocket
       , XMLHttpRequest: XMLHttpRequest };
 
-    atom.derefs.map(function (i) { context[i] = ATOMS[i]; });
     return context;
   };
 

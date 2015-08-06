@@ -2,7 +2,7 @@
   "name": "etude-web",
   "version": "0.0.0",
   "description": "",
-  "main": "web.wisp",
+  "main": "index.wisp",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

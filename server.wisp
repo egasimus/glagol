@@ -1,4 +1,5 @@
 (def ^:private colors (require "colors"))
+(def ^:private errors (require "./errors.wisp"))
 (def ^:private http   (require "http"))
 (def ^:private Q      (require "q"))
 
@@ -24,8 +25,8 @@
               (if match
                 (try
                   (match.handler req res)
-                  (catch error (handler-error error req res)))
-                (handler-404 req res))
+                  (catch error (errors.handler-error error req res)))
+                (errors.handler-404 req res))
               (log res.status-code req.method req.url)))
         started
           (Q.defer)

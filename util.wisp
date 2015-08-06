@@ -2,14 +2,21 @@
 (def ^:private through (require "through"))
 
 (defn wispify [file]
-  (if (or (= (file.index-of ".wisp") (- file.length 5))
-          (= -1 (file.index-of ".")))
-    (through)
-    (let [data ""]
-      (through
-        (fn [buf] (set! data (+ data buf)))
-        (fn [] (this.queue (compiled data file))
-               (this.queue nil))))))
+  (let [data
+          ""
+        wispy
+          (or (= (file.index-of ".wisp") (- file.length 5))
+              (= -1 (file.index-of ".")))
+        write
+          (fn [buf] (set! data (+ data buf)))
+        end
+          (fn []
+            (this.queue
+              (if wispy
+                (compiled data file)
+                data))
+            (this.queue null))]
+    (through write end)))
 
 (defn compiled [data file]
   (.-code (.-output (runtime.compile-source data file))))

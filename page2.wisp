@@ -1,4 +1,5 @@
 (def ^:private browserify (require "browserify"))
+(def ^:private colors     (require "colors"))
 (def ^:private endpoint   (require "./endpoint.wisp"))
 (def ^:private engine     (require "etude-engine"))
 (def ^:private fs         (require "fs"))

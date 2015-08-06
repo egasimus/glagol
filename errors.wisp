@@ -1,3 +1,6 @@
+(def ^:private send-html (require "send-data/html"))
+(def ^:private send-json (require "send-data/json"))
+
 ;;
 ;; error routes
 ;;

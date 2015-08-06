@@ -1,3 +1,5 @@
+(def ^:private url (require "url"))
+
 ;;
 ;; generic http endpoint
 ;; calls arbitrary function in response to http request

@@ -1,3 +1,6 @@
+(def ^:private endpoint (require "./endpoint.wisp"))
+(def ^:private ws       (require "ws"))
+
 ;;
 ;; real-time web socket
 ;;
@@ -20,7 +23,7 @@
               socket
                 (ws.Server. options)
               matcher
-                (endpoint-matcher options.path)
+                (endpoint.matcher options.path)
               destroy
                 (fn [] (log "destroying socket" options.path) (socket.close))]
           (assoc ((endpoint options.path (fn []) (fn [] (socket.close))) state)

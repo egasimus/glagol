@@ -1,5 +1,9 @@
-(def ^:private fs   (require "fs"))
-(def ^:private path (require "path"))
+(def ^:private endpoint (require "./endpoint.wisp"))
+(def ^:private engine   (require "etude-engine"))
+(def ^:private fs       (require "fs"))
+(def ^:private path     (require "path"))
+(def ^:private Q        (require "q"))
+(def ^:private socket   (require "./socket.wisp"))
 
 (set! exports page2)
 

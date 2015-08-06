@@ -3,6 +3,7 @@
 ;;
 
 (def ^:private http (require "http"))
+(def ^:private Q        (require "q"))
 
 (set! exports server)
 

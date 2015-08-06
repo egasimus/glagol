@@ -3,9 +3,11 @@
 ;; calls arbitrary function in response to http request
 ;;
 
+(set! exports endpoint)
+
 (deftype HTTPEndpoint [name route handler destroy])
 
-(defn- endpoint-matcher [route]
+(defn matcher [route]
   (fn [req]
     (= route (.-pathname (url.parse req.url)))))
 
@@ -15,6 +17,4 @@
   ([route handler destroy]
     (fn [state]
       (assoc state :endpoints (conj state.endpoints
-        (HTTPEndpoint. route (endpoint-matcher route) handler destroy))))))
-
-(set! exports endpoint)
+        (HTTPEndpoint. route (matcher route) handler destroy))))))

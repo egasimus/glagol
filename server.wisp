@@ -4,6 +4,8 @@
 
 (def ^:private http (require "http"))
 
+(set! exports server)
+
 (defn- server
   [options & endpoints]
   (let [colored-name
@@ -43,5 +45,3 @@
                 "listening on " (colors.green options.port)))
       (started.resolve descriptor)))
     descriptor))
-
-(set! exports server)

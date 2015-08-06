@@ -1,12 +1,13 @@
 (def ^:private fs   (require "fs"))
 (def ^:private path (require "path"))
 
+(set! exports page2)
+
 ;;
 ;; atom page
 ;;
 
 (def ^:private harness-path (path.join __dirname "harness.js"))
-
 (def ^:private harness (fs.readFileSync harness-path "utf-8"))
 
 (defn- page2
@@ -79,8 +80,6 @@
                     (log "connected socket" socket-path)))))]
         (connect connect)
         ((endpoint route handler (fn [])) state)))))
-
-(set! exports page2)
 
 (defn- template-getrequire
   " Populates a template for a JS bundle containing all atoms and
@@ -208,4 +207,3 @@
       (br.bundle (fn [err buf]
         (if err (reject err))
         (resolve (template-getrequire (String buf) mapped atom))))))))
-

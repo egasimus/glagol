@@ -1,5 +1,7 @@
 (def ^:private watchify   (require "watchify"))
 
+(set! exports page)
+
 ;;
 ;; browserify-based page
 ;; automatically updated when any of the included files changes
@@ -51,8 +53,6 @@
 
       (assoc state :endpoints (conj state.endpoints
         (endpoint route handler (fn [] (watcher.close))))))))
-
-(set! exports page)
 
 (defn- document-template [output]
   (str "<head><meta charset=\"utf-8\"></head><body><script>"

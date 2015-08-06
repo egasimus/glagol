@@ -4,6 +4,8 @@
 
 (def ^:private default-socket-opts { :path "/socket" })
 
+(set! exports socket)
+
 (defn- socket
   ([]
     (socket {}))
@@ -24,5 +26,3 @@
           (assoc ((endpoint options.path (fn []) (fn [] (socket.close))) state)
             :sockets
               (assoc state.sockets options.path socket)))))))
-
-(set! exports socket)

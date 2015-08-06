@@ -1,9 +1,12 @@
-(def ^:private endpoint (require "./endpoint.wisp"))
-(def ^:private engine   (require "etude-engine"))
-(def ^:private fs       (require "fs"))
-(def ^:private path     (require "path"))
-(def ^:private Q        (require "q"))
-(def ^:private socket   (require "./socket.wisp"))
+(def ^:private browserify (require "browserify"))
+(def ^:private endpoint   (require "./endpoint.wisp"))
+(def ^:private engine     (require "etude-engine"))
+(def ^:private fs         (require "fs"))
+(def ^:private path       (require "path"))
+(def ^:private Q          (require "q"))
+(def ^:private shortid    (require "shortid"))
+(def ^:private socket     (require "./socket.wisp"))
+(def ^:private util       (require "util"))
 
 (set! exports page2)
 
@@ -18,7 +21,7 @@
   [route atom]
   (fn [state]
     (let [atom-name
-            (aget (atom.split "/") 1)
+            (engine.translate (aget (atom.split "/") 1))
 
           atom
             (get-atom-by-name atom-name)
@@ -179,7 +182,7 @@
           modules  "./node_modules/etude-engine/node_modules"
           br       (browserify { :paths [modules] })]
 
-      (br.transform wispify)
+      (br.transform util.wispify)
       (br.transform (require "stylify"))
 
       (br.require "vm" { :expose "vm" })

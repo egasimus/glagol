@@ -1,4 +1,5 @@
-(def ^:private watchify   (require "watchify"))
+(def ^:private watchify (require "watchify"))
+(def ^:private util     (require "util"))
 
 (set! exports page)
 
@@ -43,7 +44,7 @@
                     bundle) })))]
 
       (bundler.transform "./node_modules/stylify")
-      (bundler.transform wispify)
+      (bundler.transform util.wispify)
       ;(bundler.transform "./node_modules/uglifyify")
 
       (bundler.add script)
@@ -63,21 +64,3 @@
 
 (defn- compiled [data file]
   (.-code (.-output (runtime.compile-source data file))))
-
-(defn wispify [file]
-  (let [data
-          ""
-        wispy
-          (or (= (file.index-of ".wisp") (- file.length 5))
-              (= -1 (file.index-of ".")))
-        write
-          (fn [buf] (set! data (+ data buf)))
-        end
-          (fn []
-            (this.queue
-              (if wispy
-                (compiled data file)
-                data))
-            (this.queue null))]
-    (through write end)))
-

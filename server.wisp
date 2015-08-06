@@ -1,9 +1,10 @@
+(def ^:private colors (require "colors"))
+(def ^:private http   (require "http"))
+(def ^:private Q      (require "q"))
+
 ;;
 ;; basic web server
 ;;
-
-(def ^:private http (require "http"))
-(def ^:private Q        (require "q"))
 
 (set! exports server)
 

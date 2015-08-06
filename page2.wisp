@@ -6,7 +6,7 @@
 (def ^:private Q          (require "q"))
 (def ^:private shortid    (require "shortid"))
 (def ^:private socket     (require "./socket.wisp"))
-(def ^:private util       (require "util"))
+(def ^:private util       (require "./util.wisp"))
 
 (set! exports page2)
 
@@ -179,8 +179,8 @@
           requires {}
           resolved {}
           mapped   {}
-          modules  "./node_modules/etude-engine/node_modules"
-          br       (browserify { :paths [modules] })]
+          br-paths [ "./node_modules/etude-engine/node_modules" ]
+          br       (browserify { :paths br-paths })]
 
       (br.transform util.wispify)
       (br.transform (require "stylify"))

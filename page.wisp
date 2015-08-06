@@ -1,5 +1,5 @@
 (def ^:private watchify (require "watchify"))
-(def ^:private util     (require "util"))
+(def ^:private util     (require "./util.wisp"))
 
 (set! exports page)
 
@@ -61,6 +61,3 @@
 
 (defn- embed-template [output]
   (str "(function () { var require = " output "; return require })()"))
-
-(defn- compiled [data file]
-  (.-code (.-output (runtime.compile-source data file))))

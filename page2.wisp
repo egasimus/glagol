@@ -24,7 +24,7 @@
   [route atom]
   (fn [state]
     (let [atom-name
-            (engine.translate (aget (atom.split "/") 1))
+            (engine.translate (.join (.slice (atom.split "/") 1) "/"))
 
           atom
             (get-atom-by-name atom-name)
@@ -118,7 +118,7 @@
     retval))
 
 (defn- find-derefs
-  " Hack detective module to find single-level `_.<atom-name>`
+  " Hack detective module to find `_.<atom-name>`
     expressions (as compiled from `./<atom-name>` in wisp). "
   [atom]
   (let [detective  (require "detective")
@@ -129,28 +129,35 @@
             (if (and (= node.type "MemberExpression")
                      (= node.object.type "Identifier")
                      (= node.object.name "_"))
-              (do
-                (set! node.arguments
-                  [ { :type  "Literal"
-                      :value node.property.name } ])
-                true)
+              (loop [node  node
+                     value node.property.name]
+                (log.as :deref value)
+                (if (and node.parent
+                         (= node.parent.type "MemberExpression"))
+                  (recur node.parent (conj value "." node.parent.property.name))
+                  (set! node.arguments
+                    [ { :type  "Literal"
+                        :value value } ])))
               false))
         results
           (detective.find code { :word ".*" :isRequire is-require })]
+    (log.as :detective results.strings)
     (engine.unique results.strings)))
 
 (defn- get-deps
   " Returns a processed list of the dependencies of an atom. "
   [atom]
+  (log :get-deps atom.path)
   (let [;; native library requires
         requires
           []
         find-requires
           (fn [atom]
             (atom.requires.map (fn [req]
-              (let [rslv     (require "resolve")
-                    resolved (rslv.sync req { :basedir    (engine.get-root-dir)
-                                              :extensions [".js" ".wisp"] })]
+              (let [resolved
+                      (.sync (require "resolve") req
+                        { :basedir    (path.dirname atom.path)
+                          :extensions [".js" ".wisp"] })]
                 (if (= -1 (requires.index-of resolved))
                   (requires.push resolved))))))
 

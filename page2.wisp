@@ -145,50 +145,49 @@
         results   (detective.find code
                   { :word      ".*"
                     :isRequire detect-and-parse-deref })]
-    (log.as :detective results.strings)
     (engine.unique results.strings)))
+
+(defn- find-requires
+  [requires atom]
+  (atom.requires.map (fn [req]
+    (let [resolved
+            (.sync (require "resolve") req
+              { :basedir    (path.dirname atom.path)
+                :extensions [".js" ".wisp"] })]
+      (if (= -1 (requires.index-of resolved))
+        (requires.push resolved))))))
+
+(defn- add-dep
+  [deps reqs from to]
+  (log.as :add-dep deps.length from.name to)
+
+  ; TODO support more than 1 level of directories
+  (let [rel (path.relative (engine.get-root-dir)
+                           (path.dirname from.path))]
+    (if rel (set! to (conj rel "." to))))
+
+  (if (= -1 (deps.index-of to))
+    (let [dep (aget engine.ATOMS to)]
+      (if (not dep) (throw (Error. (str "No atom " to))))
+      (deps.push to)
+      (find-requires reqs dep)
+      (.map (find-derefs dep)
+        (fn [to] (add-dep deps reqs dep to))))))
 
 (defn- get-deps
   " Returns a processed list of the dependencies of an atom. "
   [atom]
   (log :get-deps atom.path)
-  (let [;; native library requires
-        requires
-          []
-        find-requires
-          (fn [atom]
-            (atom.requires.map (fn [req]
-              (let [resolved
-                      (.sync (require "resolve") req
-                        { :basedir    (path.dirname atom.path)
-                          :extensions [".js" ".wisp"] })]
-                (if (= -1 (requires.index-of resolved))
-                  (requires.push resolved))))))
+  (let [reqs []  ;; native library requires
+        deps []] ;; atom dependencies a.k.a. derefs
 
-        ;; atom dependencies a.k.a. derefs
-        derefs
-          []
-        add-dep
-          nil
-        _ (set! add-dep ; no recursion in (let)s as usual :(
-          (fn add-dep [atom-name]
+    (find-requires reqs atom)
 
-            ; TODO support more than 1 level of directories
-            (let [rel (path.relative (engine.get-root-dir)
-                                     (path.dirname atom.path))]
-              (if rel (set! atom-name (conj rel "." atom-name))))
+    (.map (find-derefs atom)
+      (fn [atom-name] (add-dep deps reqs atom atom-name)))
 
-            (if (= -1 (derefs.index-of atom-name))
-              (let [dep (aget engine.ATOMS atom-name)]
-                (if (not dep) (throw (Error. (str "No atom " atom-name))))
-                (derefs.push atom-name)
-                (find-requires dep)
-                (.map (find-derefs dep) add-dep))))) ]
-
-    (find-requires atom)
-    (.map (find-derefs atom) add-dep)
-    { :derefs   derefs
-      :requires requires }))
+    { :derefs   deps
+      :requires reqs }))
 
 (defn- prepare-getrequire
   " Promises a browserified bundle containing any Node.js libs required

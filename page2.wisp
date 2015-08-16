@@ -113,88 +113,16 @@
           (fn [a] (let [frozen (engine.freeze-atom a)]
             (set! (aget retval (engine.translate a.name)) frozen)))]
     (add atom)
-    (.map (.-derefs (get-deps atom)) (fn [atom-name]
+    (.map (.-derefs (engine.get-deps atom)) (fn [atom-name]
       (add (get-atom-by-name atom-name))))
     retval))
-
-(defn- detect-and-parse-deref
-  " Hacks detective module to find `_.<atom-name>`
-    expressions (as compiled from `./<atom-name>` in wisp). "
-  [node]
-  (set! node.arguments (or node.arguments []))
-  (if (and (= node.type "MemberExpression")
-           (= node.object.type "Identifier")
-           (= node.object.name "_"))
-    (loop [step  node
-           value node.property.name]
-      (if (and step.parent
-               (= step.parent.type "MemberExpression"))
-        (recur step.parent (conj value "." step.parent.property.name))
-        (do
-          (set! node.arguments
-            [ { :type  "Literal"
-                :value value } ])
-          true)))
-    false))
-
-(defn- find-derefs
-  " Returns a list of atoms referenced from an atom. "
-  [atom]
-  (let [detective (require "detective")
-        code      atom.compiled.output.code
-        results   (detective.find code
-                  { :word      ".*"
-                    :isRequire detect-and-parse-deref })]
-    (engine.unique results.strings)))
-
-(defn- find-requires
-  [requires atom]
-  (atom.requires.map (fn [req]
-    (let [resolved
-            (.sync (require "resolve") req
-              { :basedir    (path.dirname atom.path)
-                :extensions [".js" ".wisp"] })]
-      (if (= -1 (requires.index-of resolved))
-        (requires.push resolved))))))
-
-(defn- add-dep
-  [deps reqs from to]
-  (log.as :add-dep deps.length from.name to)
-
-  ; TODO support more than 1 level of directories
-  (let [rel (path.relative (engine.get-root-dir)
-                           (path.dirname from.path))]
-    (if rel (set! to (conj rel "." to))))
-
-  (if (= -1 (deps.index-of to))
-    (let [dep (aget engine.ATOMS to)]
-      (if (not dep) (throw (Error. (str "No atom " to))))
-      (deps.push to)
-      (find-requires reqs dep)
-      (.map (find-derefs dep)
-        (fn [to] (add-dep deps reqs dep to))))))
-
-(defn- get-deps
-  " Returns a processed list of the dependencies of an atom. "
-  [atom]
-  (log :get-deps atom.path)
-  (let [reqs []  ;; native library requires
-        deps []] ;; atom dependencies a.k.a. derefs
-
-    (find-requires reqs atom)
-
-    (.map (find-derefs atom)
-      (fn [atom-name] (add-dep deps reqs atom atom-name)))
-
-    { :derefs   deps
-      :requires reqs }))
 
 (defn- prepare-getrequire
   " Promises a browserified bundle containing any Node.js libs required
     by the root atom (passed as single argument) and its dependencies. "
   [atom]
   (Q.Promise (fn [resolve reject notify]
-    (let [deps     (get-deps atom)
+    (let [deps     (engine.get-deps atom)
           atoms    (.concat [atom] (deps.derefs.map get-atom-by-name))
           requires {}
           resolved {}

@@ -117,30 +117,34 @@
       (add (get-atom-by-name atom-name))))
     retval))
 
-(defn- find-derefs
-  " Hack detective module to find `_.<atom-name>`
+(defn- detect-and-parse-deref
+  " Hacks detective module to find `_.<atom-name>`
     expressions (as compiled from `./<atom-name>` in wisp). "
+  [node]
+  (set! node.arguments (or node.arguments []))
+  (if (and (= node.type "MemberExpression")
+           (= node.object.type "Identifier")
+           (= node.object.name "_"))
+    (loop [step  node
+           value node.property.name]
+      (if (and step.parent
+               (= step.parent.type "MemberExpression"))
+        (recur step.parent (conj value "." step.parent.property.name))
+        (do
+          (set! node.arguments
+            [ { :type  "Literal"
+                :value value } ])
+          true)))
+    false))
+
+(defn- find-derefs
+  " Returns a list of atoms referenced from an atom. "
   [atom]
-  (let [detective  (require "detective")
-        code       atom.compiled.output.code
-        is-require
-          (fn [node]
-            (set! node.arguments (or node.arguments []))
-            (if (and (= node.type "MemberExpression")
-                     (= node.object.type "Identifier")
-                     (= node.object.name "_"))
-              (loop [node  node
-                     value node.property.name]
-                (log.as :deref value)
-                (if (and node.parent
-                         (= node.parent.type "MemberExpression"))
-                  (recur node.parent (conj value "." node.parent.property.name))
-                  (set! node.arguments
-                    [ { :type  "Literal"
-                        :value value } ])))
-              false))
-        results
-          (detective.find code { :word ".*" :isRequire is-require })]
+  (let [detective (require "detective")
+        code      atom.compiled.output.code
+        results   (detective.find code
+                  { :word      ".*"
+                    :isRequire detect-and-parse-deref })]
     (log.as :detective results.strings)
     (engine.unique results.strings)))
 
@@ -166,14 +170,21 @@
           []
         add-dep
           nil
-        _ ; no recursion in (let)s as usual :(
-          (set! add-dep (fn add-dep [atom-name]
+        _ (set! add-dep ; no recursion in (let)s as usual :(
+          (fn add-dep [atom-name]
+
+            ; TODO support more than 1 level of directories
+            (let [rel (path.relative (engine.get-root-dir)
+                                     (path.dirname atom.path))]
+              (if rel (set! atom-name (conj rel "." atom-name))))
+
             (if (= -1 (derefs.index-of atom-name))
               (let [dep (aget engine.ATOMS atom-name)]
                 (if (not dep) (throw (Error. (str "No atom " atom-name))))
                 (derefs.push atom-name)
                 (find-requires dep)
                 (.map (find-derefs dep) add-dep))))) ]
+
     (find-requires atom)
     (.map (find-derefs atom) add-dep)
     { :derefs   derefs

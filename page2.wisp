@@ -24,7 +24,9 @@
   [route atom]
   (fn [state]
     (let [atom-name
-            (engine.translate (.join (.slice (atom.split "/") 1) "/"))
+            (.replace
+              (engine.translate (.join (.slice (atom.split "/") 1) "/"))
+              "." "/")
 
           atom
             (get-atom-by-name atom-name)
@@ -142,7 +144,7 @@
 
       (.map atoms (fn [atom]
         (set! (aget requires atom.name) {})
-        (atom.requires.map (fn [req]
+        (.map (or atom.requires []) (fn [req]
           (let [res
                   (.sync (require "resolve") req
                     { :basedir    (path.dirname atom.path)

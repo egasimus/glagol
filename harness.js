@@ -21,23 +21,24 @@
   container._etude.tree = null;
 
   function getTreeHere (atom) {
-    var tree;
-    return container._etude.tree ||
-      ( tree = {}
-      , Object.keys(ATOMS).map(function (key) {
-          var atom = ATOMS[key];
-          Object.defineProperty(tree, translate(atom.path),
-            { configurable: true
-            , enumerable:   true
-            , get: function () {
-                if (!atom.hasOwnProperty('value')) evaluateAtom(atom);
-                return atom.value();
-              }
-            , set: function (val) {
-                atom.value.set(val); //console.log("trying to set", atom.name, "to", val);
-              } });
-        })
-      , container._etude.tree = tree );
+    if (container._etude.tree) return container._etude.tree;
+
+    var tree = {};
+    Object.keys(ATOMS).map(function (key) {
+      var atom = ATOMS[key];
+      Object.defineProperty(tree, translate(atom.path),
+        { configurable: true
+        , enumerable:   true
+        , get: function () {
+            if (!atom.hasOwnProperty('value')) evaluateAtom(atom);
+            return atom.value();
+          }
+        , set: function (val) {
+            atom.value.set(val); //console.log("trying to set", atom.name, "to", val);
+          } });
+    })
+    container._etude.tree = tree;
+    return tree;
   }
 
   evaluateAtom(ATOMS[entryAtomName]);

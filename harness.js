@@ -20,27 +20,40 @@
   container._etude.atom = function(key) { return ATOMS[key] }
   container._etude.tree = null;
 
+  function installAtom (tree, fullPath) {
+    var localAtomPath = fullPath.split('/')
+      , currentDir    = tree
+      , key           = fullPath;
+    console.log("installing", localAtomPath);
+    localAtomPath.map(function (name, i) {
+      if (i < localAtomPath.length - 1) {
+        if (!tree[name]) tree[name] = {};
+        currentDir = tree[name];
+        key = key.split("/").slice(1).join("/");
+      } else {
+        var atom = ATOMS[fullPath];
+        Object.defineProperty(currentDir, key,
+          { configurable: true
+          , enumerable:   true
+          , get: function () {
+              if (atom.type === "Atom") {
+                if (!atom.hasOwnProperty('value')) evaluateAtom(atom);
+                return atom.value();
+              } else if (atom.type === "AtomDirectory") {
+                return {}
+              }
+            }
+          , set: function (val) {
+              atom.value.set(val); //console.log("trying to set", atom.name, "to", val);
+            } });
+      }
+    })
+  }
+
   function getTreeHere (atom) {
     if (container._etude.tree) return container._etude.tree;
-
     var tree = {};
-    Object.keys(ATOMS).map(function (key) {
-      var atom = ATOMS[key];
-      Object.defineProperty(tree, key,
-        { configurable: true
-        , enumerable:   true
-        , get: function () {
-            if (atom.type === "Atom") {
-              if (!atom.hasOwnProperty('value')) evaluateAtom(atom);
-              return atom.value();
-            } else if (atom.type === "AtomDirectory") {
-              return {}
-            }
-          }
-        , set: function (val) {
-            atom.value.set(val); //console.log("trying to set", atom.name, "to", val);
-          } });
-    })
+    Object.keys(ATOMS).map(installAtom.bind(null, tree));
     container._etude.tree = tree;
     console.log(tree);
     return tree;

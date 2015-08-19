@@ -60,10 +60,11 @@
               (set! harness (fs.readFileSync harness-path "utf-8"))
               ; start cooking up code bundle --
               ; serve when ready
-              (.done (.then (prepare-getrequire atom)
-                (fn [bundled]
+              (-> (make-bundle atom)
+                (.then (fn [bundled]
                   (log "compiled client from atom" (colors.green atom.name))
-                  (set! body bundled)))))
+                  (set! body bundled)))
+                (.done)))
 
           watcher
             (.watch (require "chokidar") harness-path { :persistent true })
@@ -93,13 +94,14 @@
         (connect connect)
         ((endpoint route handler (fn [])) state)))))
 
-(defn- template-getrequire
+(defn- template
   " Populates a template for a JS bundle containing all atoms and
     browserified libraries. "
   [bundle mapped atom]
   (str "var " bundle ";var deps=" (JSON.stringify mapped)
-    (.replace (harness.replace "%ENTRY%" atom.name)
-      "%ATOMS%" (JSON.stringify (get-snapshot atom)))))
+    (-> harness
+      (.replace "%ENTRY%" (path.basename atom.name))
+      (.replace "%ATOMS%" (JSON.stringify (get-snapshot atom))))))
 
 (defn- get-atom-by-name
   " A lil bit of convenience. "
@@ -116,12 +118,12 @@
         rel
           (fn [a] (path.relative (path.dirname root.path) a.path))
         add
-          (fn [a] (set! (aget snapshot (rel a)) (engine.freeze-atom a)))]
+          (fn [a] (aset snapshot (rel a) (engine.freeze-atom a)))]
     (add root)
     (dependencies.map (fn [dep] (add (get-atom-by-name dep))))
     snapshot))
 
-(defn- prepare-getrequire
+(defn- make-bundle
   " Promises a browserified bundle containing any Node.js libs required
     by the root atom (passed as single argument) and its dependencies. "
   [atom]
@@ -145,7 +147,7 @@
       ;(br.exclude "chokidar")
 
       (.map atoms (fn [atom]
-        (set! (aget requires atom.name) {})
+        (aset requires atom.name {})
         (.map (or atom.requires []) (fn [req]
           (let [res
                   (.sync (require "resolve") req
@@ -156,13 +158,13 @@
               (set! (aget resolved res) (shortid.generate))))))))
 
       (.map (keys requires) (fn [i]
-        (set! (aget mapped i) {})
+        (aset mapped i {})
         (.map (keys (aget requires i)) (fn [j]
-          (set! (aget (aget mapped i) j) (aget resolved (aget (aget requires i) j)))))))
+          (aset (aget mapped i) j (aget resolved (aget (aget requires i) j)))))))
 
       (.map (keys resolved) (fn [module]
         (br.require module { :expose (aget resolved module) })))
 
       (br.bundle (fn [err buf]
         (if err (reject err))
-        (resolve (template-getrequire (String buf) mapped atom))))))))
+        (resolve (template (String buf) mapped atom))))))))

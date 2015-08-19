@@ -26,18 +26,23 @@
     var tree = {};
     Object.keys(ATOMS).map(function (key) {
       var atom = ATOMS[key];
-      Object.defineProperty(tree, translate(atom.path),
+      Object.defineProperty(tree, key,
         { configurable: true
         , enumerable:   true
         , get: function () {
-            if (!atom.hasOwnProperty('value')) evaluateAtom(atom);
-            return atom.value();
+            if (atom.type === "Atom") {
+              if (!atom.hasOwnProperty('value')) evaluateAtom(atom);
+              return atom.value();
+            } else if (atom.type === "AtomDirectory") {
+              return {}
+            }
           }
         , set: function (val) {
             atom.value.set(val); //console.log("trying to set", atom.name, "to", val);
           } });
     })
     container._etude.tree = tree;
+    console.log(tree);
     return tree;
   }
 

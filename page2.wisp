@@ -98,26 +98,25 @@
     browserified libraries. "
   [bundle mapped atom]
   (str "var " bundle ";var deps=" (JSON.stringify mapped)
-    (.replace (harness.replace "%ENTRY%" (engine.translate atom.name))
-      "%ATOMS%" (JSON.stringify (get-atom-with-derefs atom)))))
+    (.replace (harness.replace "%ENTRY%" atom.name)
+      "%ATOMS%" (JSON.stringify (get-snapshot atom)))))
 
 (defn- get-atom-by-name
   " A lil bit of convenience. "
   [name]
   (aget engine.ATOMS name))
 
-(defn- get-atom-with-derefs
+(defn- get-snapshot
   " Collects atom dependencies, starting from the root atom. "
   [atom]
-  (let [retval
+  (let [snapshot
           {}
         add
-          (fn [a] (let [frozen (engine.freeze-atom a)]
-            (set! (aget retval (engine.translate a.name)) frozen)))]
+          (fn [a] (set! (aget snapshot a.name) (engine.freeze-atom a)))]
     (add atom)
     (.map (.-derefs (engine.get-deps atom)) (fn [atom-name]
       (add (get-atom-by-name atom-name))))
-    retval))
+    snapshot))
 
 (defn- prepare-getrequire
   " Promises a browserified bundle containing any Node.js libs required

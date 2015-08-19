@@ -108,14 +108,17 @@
 
 (defn- get-snapshot
   " Collects atom dependencies, starting from the root atom. "
-  [atom]
-  (let [snapshot
+  [root]
+  (let [dependencies
+          (.-derefs (engine.get-deps root))
+        snapshot
           {}
+        rel
+          (fn [a] (path.relative (path.dirname root.path) a.path))
         add
-          (fn [a] (set! (aget snapshot a.name) (engine.freeze-atom a)))]
-    (add atom)
-    (.map (.-derefs (engine.get-deps atom)) (fn [atom-name]
-      (add (get-atom-by-name atom-name))))
+          (fn [a] (set! (aget snapshot (rel a)) (engine.freeze-atom a)))]
+    (add root)
+    (dependencies.map (fn [dep] (add (get-atom-by-name dep))))
     snapshot))
 
 (defn- prepare-getrequire

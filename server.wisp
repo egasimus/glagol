@@ -11,13 +11,18 @@
 
 (defn- server
   [options & endpoints]
+  (log :server options.port endpoints)
   (let [colored-name
           (if options.name (str (colors.green options.name) " ") "")
         srv
           (http.create-server)
         state
-          (endpoints.reduce (fn [state endpt] (endpt state))
-            { :server srv :endpoints [] :sockets {} })
+          (endpoints.reduce
+            (fn [state endpt] (endpt state))
+            { :server    srv
+              :endpoints []
+              :sockets   {} 
+              :options   options })
         handler
           (fn [req res]
             (let [matcher (fn [endpt] (if (endpt.route req) endpt.handler))

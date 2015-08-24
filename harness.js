@@ -113,4 +113,4 @@
 
   }
 
-})("%ENTRY%", %ATOMS%);
+})("%ENTRY%", %NOTIONS%);

@@ -14,22 +14,18 @@
 (set! exports page2)
 
 ;;
-;; atom page
+;; notion page
 ;;
 
 (def ^:private harness-path (path.join __dirname "harness.js"))
 (def ^:private harness (fs.readFileSync harness-path "utf-8"))
 
 (defn- page2
-  [route atom]
+  [route client-path]
+  (log.as :page2 route client-path)
   (fn [state]
-    (let [atom-name
-            (.replace
-              (engine.translate (.join (.slice (atom.split "/") 1) "/"))
-              "." "/")
-
-          atom
-            (get-atom-by-name atom-name)
+    (let [notion
+            (engine.tree.get-notion-by-path state.options.notion client-path)
 
           socket-path
             (str route "socket") ; TODO
@@ -37,7 +33,7 @@
           add-socket  ; web socket for realtime updates
             (socket { :path socket-path })
 
-          body (str   ; updated to contain actual body
+          body (str   ; updated asap to contain actual body
             "document.write('loading...!');"
             "setTimeout(function(){window.location.reload()}, 2000)")
 
@@ -60,9 +56,9 @@
               (set! harness (fs.readFileSync harness-path "utf-8"))
               ; start cooking up code bundle --
               ; serve when ready
-              (-> (make-bundle atom)
+              (-> (make-bundle notion)
                 (.then (fn [bundled]
-                  (log "compiled client from atom" (colors.green atom.name))
+                  (log "compiled client from notion" (colors.green notion.name))
                   (set! body bundled)))
                 (.done)))
 
@@ -86,50 +82,50 @@
                           (fn [arg]
                             (socket.send (JSON.stringify
                               { :event this.event :arg arg }))) ]
-                    (engine.events.on "atom.updated.*" updated)
+                    (engine.events.on "notion.updated.*" updated)
                     (socket.on "close" (fn [code msg]
-                      (engine.events.off "atom.updated.*" updated)
+                      (engine.events.off "notion.updated.*" updated)
                       (connect connect)))
                     (log "connected socket" socket-path)))))]
         (connect connect)
         ((endpoint route handler (fn [])) state)))))
 
 (defn- template
-  " Populates a template for a JS bundle containing all atoms and
+  " Populates a template for a JS bundle containing all notions and
     browserified libraries. "
-  [bundle mapped atom]
+  [bundle mapped notion]
   (str "var " bundle ";var deps=" (JSON.stringify mapped)
     (-> harness
-      (.replace "%ENTRY%" (path.basename atom.name))
-      (.replace "%ATOMS%" (JSON.stringify (get-snapshot atom))))))
+      (.replace "%ENTRY%"   (path.basename notion.name))
+      (.replace "%NOTIONS%" (JSON.stringify (get-snapshot notion))))))
 
-(defn- get-atom-by-name
+(defn- get-notion-by-name
   " A lil bit of convenience. "
   [name]
-  (aget engine.ATOMS name))
+  (aget engine.NOTIONS name))
 
 (defn- get-snapshot
-  " Collects atom dependencies, starting from the root atom. "
+  " Collects notion dependencies, starting from the root notion. "
   [root]
   (let [dependencies
-          (.-derefs (engine.get-deps root))
+          (.-derefs (engine.compile.get-deps root))
         snapshot
           {}
         rel
           (fn [a] (path.relative (path.dirname root.path) a.path))
         add
-          (fn [a] (aset snapshot (rel a) (engine.freeze-atom a)))]
+          (fn [a] (aset snapshot (rel a) (engine.notion.freeze-notion a)))]
     (add root)
-    (dependencies.map (fn [dep] (add (get-atom-by-name dep))))
+    (dependencies.map (fn [dep] (add (get-notion-by-name dep))))
     snapshot))
 
 (defn- make-bundle
   " Promises a browserified bundle containing any Node.js libs required
-    by the root atom (passed as single argument) and its dependencies. "
-  [atom]
+    by the root notion (passed as single argument) and its dependencies. "
+  [notion]
   (Q.Promise (fn [resolve reject notify]
-    (let [deps     (engine.get-deps atom)
-          atoms    (.concat [atom] (deps.derefs.map get-atom-by-name))
+    (let [deps     (engine.compile.get-deps notion)
+          notions  (.concat [notion] (deps.derefs.map get-notion-by-name))
           requires {}
           resolved {}
           mapped   {}
@@ -147,14 +143,14 @@
       ;(br.require "etude-engine/engine.wisp" { :expose "etude-engine" })
       ;(br.exclude "chokidar")
 
-      (.map atoms (fn [atom]
-        (aset requires atom.name {})
-        (.map (or atom.requires []) (fn [req]
+      (.map notions (fn [notion]
+        (aset requires notion.name {})
+        (.map (or notion.requires []) (fn [req]
           (let [res
                   (.sync (require "resolve") req
-                    { :basedir    (path.dirname atom.path)
+                    { :basedir    (path.dirname notion.path)
                       :extensions [".js" ".wisp"]}) ]
-            (set! (aget (aget requires atom.name) req) res)
+            (set! (aget (aget requires notion.name) req) res)
             (if (= -1 (.index-of (keys resolved) res))
               (set! (aget resolved res) (shortid.generate))))))))
 
@@ -168,4 +164,4 @@
 
       (br.bundle (fn [err buf]
         (if err (reject err))
-        (resolve (template (String buf) mapped atom))))))))
+        (resolve (template (String buf) mapped notion))))))))

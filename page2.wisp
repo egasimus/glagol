@@ -27,35 +27,23 @@
     (let [notion
             (engine.tree.get-notion-by-path state.options.notion client-path)
 
-          socket-path
-            (str route "socket") ; TODO
-
-          add-socket  ; web socket for realtime updates
-            (socket { :path socket-path })
-
           body (str   ; updated asap to contain actual body
             "document.write('loading...!');"
             "setTimeout(function(){window.location.reload()}, 2000)")
 
           handler     ; response handler that serves the body contents
             (fn [req res]
-              (let [embed?
-                      (.-query.embed (url.parse req.url true))
-                    body
-                      (if embed? body (util.document-template body))
-                    ctype
-                      (str "text/" (if embed? "javascript" "html")
-                           "; charset=utf-8")]
+              (let [embed? (.-query.embed (url.parse req.url true))
+                    body   (if embed? body (util.document-template body))]
                 (send req res
                   { :body    body
-                    :headers { "Content-Type" ctype } })))
-
+                    :headers { "Content-Type"
+                                 (str "text/" (if embed? "javascript" "html")
+                                   "; charset=utf-8")} })))
           compile
             (fn []
-              ; reload harness
+              ; reload harness, start cooking up code bundle, serve when ready
               (set! harness (fs.readFileSync harness-path "utf-8"))
-              ; start cooking up code bundle --
-              ; serve when ready
               (-> (make-bundle notion)
                 (.then (fn [bundled]
                   (log "compiled client from notion" (colors.green notion.name))
@@ -71,8 +59,10 @@
       (watcher.on "change" compile)
 
       ; attach socket and http endpoint to server
-      (let [state
-              (add-socket state)
+      (let [socket-path
+              (str route "socket") ; TODO
+            state
+              ((socket { :path socket-path }) state)
             socket-server
               (aget state.sockets socket-path)
             connect
@@ -124,13 +114,14 @@
     by the root notion (passed as single argument) and its dependencies. "
   [notion]
   (Q.Promise (fn [resolve reject notify]
-    (let [deps     (engine.compile.get-deps notion)
-          notions  (.concat [notion] (deps.derefs.map get-notion-by-name))
-          requires {}
-          resolved {}
-          mapped   {}
-          br-paths [ "./node_modules/etude-engine/node_modules" ]
-          br       (browserify { :paths br-paths })]
+    (let [deps      (engine.compile.get-deps notion)
+          notions   (.concat [notion] (deps.derefs.map
+                      (engine.tree.get-notion-by-path.bind nil notion)))
+          requires  {}
+          resolved  {}
+          mapped    {}
+          br-paths  [ "./node_modules/etude-engine/node_modules" ]
+          br        (browserify { :paths br-paths })]
 
       (br.transform util.wispify)
       (br.transform (require "stylify"))
@@ -144,6 +135,7 @@
       ;(br.exclude "chokidar")
 
       (.map notions (fn [notion]
+        (log.as :p2-notion notion)
         (aset requires notion.name {})
         (.map (or notion.requires []) (fn [req]
           (let [res

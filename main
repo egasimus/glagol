@@ -1,0 +1,13 @@
+(let [
+
+  index
+    0
+
+  step
+    (fn [index]
+      (.map (keys ./tracks)
+        (fn [t] (let [track (aget ./tracks t)]
+          (if (aget track.seq index) (track.chain.play)))))
+      (if (< index 7) (+ index i) 0))
+
+  ] (./transport/each :step (str (* 500 (/ 60 tempo)) :m) step))

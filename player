@@ -9,8 +9,6 @@
         event2 (require "eventemitter2")
         state  (event2.EventEmitter2.) ]
 
-    (log jack-client)
-
     (set! state.client  jack-client)
     (set! state.process nil)
     (set! state.started jack-client.started)
@@ -25,11 +23,14 @@
           (= "/stopped" msg.address) (state.emit "stopped" msg.args)
           (= "/playing" msg.address) (state.emit "playing" msg.args))))))
 
-    (set! state.process (./jack/spawn sample ./player-path
-      "-n" jack-client-name "-p" osc-port sample))
+    (set! state.process
+      (./jack/spawn sample
+        "/home/epimetheus/code/hardmode/postmelodic/bin/sample_player"
+        "-n" jack-client-name "-p" osc-port sample))
     (set! state.kill (fn [signal] (state.process.kill signal)))
 
     (jack-client.then (fn []
+      (log "jack client ready")
       (osc-send "/listen")))
 
     state))

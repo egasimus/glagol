@@ -17,4 +17,6 @@
         (.map (keys ./tracks) play-track)
         (set! index (if (< index 7) (+ index 1) 0))))
 
-  ] (./transport/each (str (* 500 (/ 60 ./transport/tempo)) :m) step))
+  ] (-> (./jack/init) (.progress (fn [msg] (log.as :jack-init msg))) (.done))
+
+    (./transport/each (str (* 500 (/ 60 ./transport/tempo)) :m) step))

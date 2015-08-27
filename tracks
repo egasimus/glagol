@@ -4,27 +4,27 @@
   { :seq
       [ 1 0 0 0 0 1 0 0 ]
     :chain
-      (let [sampler (sample.player "./samples/kick.wav")]
-        (connect [sampler "output"] [jack.system "playback_1"])
-        (connect [sampler "output"] [jack.system "playback_2"])
+      (let [sampler (./player "./samples/kick.wav")]
+        (./connect [sampler "output"] [./jack/system "playback_1"])
+        (./connect [sampler "output"] [./jack/system "playback_2"])
         sampler) }
 
   "Snare"
   { :seq
       [ 0 0 1 0 0 0 1 0 ]
     :chain
-      (let [sampler (sample.player "./samples/snare.wav")]
-        (connect [sampler "output"] [jack.system "playback_1"])
-        (connect [sampler "output"] [jack.system "playback_2"])
+      (let [sampler (./player "./samples/snare.wav")]
+        (./connect [sampler "output"] [./jack/system "playback_1"])
+        (./connect [sampler "output"] [./jack/system "playback_2"])
         sampler) }
 
   "Hat"
   { :seq
       [ 1 1 1 1 1 1 1 1 ]
     :chain
-      (let [sampler (sample.player "./samples/hh.wav")]
-        (connect [sampler "output"] [jack.system "playback_1"])
-        (connect [sampler "output"] [jack.system "playback_2"])
+      (let [sampler (./player "./samples/hh.wav")]
+        (./connect [sampler "output"] [./jack/system "playback_1"])
+        (./connect [sampler "output"] [./jack/system "playback_2"])
         sampler) }
 
 }

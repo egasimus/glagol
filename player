@@ -1,0 +1,2 @@
+(fn []
+  { :play (fn [] (log.as :player "play"))})

@@ -1,0 +1,37 @@
+(let [
+
+  osc
+    (require "osc")
+
+  next-port
+    10000
+
+  get-next-port
+    (fn [] (set! next-port (+ next-port 1)) (- next-port 1))
+
+  client
+    (fn [host port]
+      (let [c (new osc.UDPPort { :localAddress host :localPort port})]
+        (c.open)
+        c))
+
+  default-client
+    (client "localhost" (get-next-port))
+
+] {
+
+  :getNextPort
+    get-next-port
+
+  :defaultClient
+    default-client
+
+  :bindTo
+    (fn bind-to [port]
+      (fn send-osc-to [addr & args]
+        (default-client.send { :address addr :args args } :localhost port)))
+  :on
+    (fn on-osc [evt cb]
+      (default-client.on evt cb))
+
+})

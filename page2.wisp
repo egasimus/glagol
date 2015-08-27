@@ -102,11 +102,12 @@
         snapshot
           {}
         rel
-          (fn [a] (path.relative (path.dirname root.path) a.path))
+          (fn [a] (if a (path.relative (path.dirname root.path) a.path)) "")
         add
-          (fn [a] (aset snapshot (rel a) (engine.notion.freeze-notion a)))]
+          (fn [a] (aset snapshot (rel a) (if a (engine.notion.freeze-notion a) {})))]
     (add root)
-    (dependencies.map (fn [dep] (add (get-notion-by-name dep))))
+    (dependencies.map (fn [dep]
+      (add (engine.tree.get-notion-by-path root dep))))
     snapshot))
 
 (defn- make-bundle
@@ -134,17 +135,17 @@
       ;(br.require "etude-engine/engine.wisp" { :expose "etude-engine" })
       ;(br.exclude "chokidar")
 
-      (.map notions (fn [notion]
-        (log.as :p2-notion notion)
-        (aset requires notion.name {})
-        (.map (or notion.requires []) (fn [req]
-          (let [res
-                  (.sync (require "resolve") req
-                    { :basedir    (path.dirname notion.path)
-                      :extensions [".js" ".wisp"]}) ]
-            (set! (aget (aget requires notion.name) req) res)
-            (if (= -1 (.index-of (keys resolved) res))
-              (set! (aget resolved res) (shortid.generate))))))))
+      (.map (.filter notions (fn [x] x))
+        (fn [notion]
+          (aset requires notion.name {})
+          (.map (or notion.requires []) (fn [req]
+            (let [res
+                    (.sync (require "resolve") req
+                      { :basedir    (path.dirname notion.path)
+                        :extensions [".js" ".wisp"]}) ]
+              (set! (aget (aget requires notion.name) req) res)
+              (if (= -1 (.index-of (keys resolved) res))
+                (set! (aget resolved res) (shortid.generate))))))))
 
       (.map (keys requires) (fn [i]
         (aset mapped i {})

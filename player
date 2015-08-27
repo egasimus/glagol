@@ -6,24 +6,17 @@
         jack-port-name   (str sample ":output")
         jack-client      (./jack/client jack-client-name)
 
-        spawn-key
-          (str self.name
-            ":" (if process.main process.main.filename nil)
-            ":" jack-client-name)
-
         event2 (require "eventemitter2")
+        state  (event2.EventEmitter2.) ]
 
-        state
-          (assoc (new (.-EventEmitter2 (require "eventemitter2")))
-            :client  jack-client
-            :process nil
-            :started jack-client.started
-            :port    jack-client.port
-            :events  events
-            :play    (fn [cue]    (osc-send "/play" 0 (or cue 0)))
-            :stop    (fn []       (osc-send "/stop" 0))) ]
+    (log jack-client)
 
-    (set! (aget persist.postmelodic jack-client-name) state)
+    (set! state.client  jack-client)
+    (set! state.process nil)
+    (set! state.started jack-client.started)
+    (set! state.port    jack-client.port)
+    (set! state.play    (fn [cue] (osc-send "/play" 0 (or cue 0))))
+    (set! state.stop    (fn []    (osc-send "/stop" 0)))
 
     (./osc/on "message" (fn [msg]
       (if (= (str osc-port) (aget msg.args 0)) (do
@@ -32,13 +25,11 @@
           (= "/stopped" msg.address) (state.emit "stopped" msg.args)
           (= "/playing" msg.address) (state.emit "playing" msg.args))))))
 
-    (set! state.jack-process (./jack/spawn
-      spawn-key postmelodic "-n" jack-client-name
-                            "-p" osc-port
-                            sample))
-    (set! state.kill (fn [signal] (state.jack-process.kill signal)))
+    (set! state.process (./jack/spawn sample ./player-path
+      "-n" jack-client-name "-p" osc-port sample))
+    (set! state.kill (fn [signal] (state.process.kill signal)))
 
-    (jack-client.started.then (fn []
+    (jack-client.then (fn []
       (osc-send "/listen")))
 
     state))

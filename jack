@@ -1,2 +1,1 @@
-{ :client (fn [])
-  :spawn  (fn []) }
+(require "etude-jack")

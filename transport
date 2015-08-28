@@ -1,11 +1,10 @@
 (let [NanoTimer (require "nanotimer")]
-  {
-    :tempo
+  { :tempo
       220
 
     :each
       (fn [t f]
         (let [timer (NanoTimer.)]
           (timer.set-interval f [] t)
-          timer))
-  })
+          { :timer timer
+            :undo  (fn [] (timer.clear-interval)) })) })

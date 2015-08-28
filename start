@@ -13,10 +13,25 @@
   step
     (fn []
       (let [info (str index)]
-        (log.as :step index)
+        (log.as :step index :foo)
         (.map (keys ./tracks) play-track)
         (set! index (if (< index 7) (+ index 1) 0))))
 
-  ] (-> (./jack/init) (.progress (fn [msg] (log.as :jack-init msg))) (.done))
+  tap-tempo
+    (fn []
+      (log.as :tap))
 
-    (./transport/each (str (* 500 (/ 60 ./transport/tempo)) :m) step))
+  transport
+    (./transport/each (str (* 500 (/ 60 ./transport/tempo)) :m) step)
+
+  keyboard
+    (./keyboard (fn [c k]
+      (cond
+        (and k.ctrl (= k.name :c)) (process.exit)
+                    (= k.name :t)  (tap-tempo))))
+
+] (-> (./jack/init) (.progress (fn [msg] (log.as :jack-init msg))) (.done))
+
+  { :undo (fn []
+      (transport.undo)
+      (keyboard.undo)) })

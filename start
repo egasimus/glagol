@@ -17,43 +17,14 @@
         (.map (keys ./tracks) play-track)
         (set! index (if (< index 7) (+ index 1) 0))))
 
-  tempo
-    220
-
-  last-tap
-    nil
-
-  taps
-    []
-
-  min-tempo
-    81
-
-  tap
-    (fn []
-      (let [now (Date.now)]
-        (if last-tap
-          (let [diff  (- now last-tap)
-                t     (/ 60000 diff)
-                avg-t (/ (taps.reduce (fn [x y] (+ x y)) 0) taps.length)]
-            (if (> diff (/ 60000 min-tempo))
-              (do
-                (set! taps [])
-                (set! last-tap nil)
-                (log.as :tap :reset))
-              (do
-                (taps.push t)
-                (set! tempo avg-t)))))
-        (set! last-tap now)))
-
   transport
-    (./transport/each (str (* 500 (/ 60 tempo)) :m) step)
+    (./transport/each step)
 
   keyboard
     (./keyboard (fn [c k]
       (cond
         (and k.ctrl (= k.name :c)) (process.exit)
-                    (= k.name :t)  (tap))))
+                    (= k.name :t)  (./tap-tempo))))
 
 ] (-> (./jack/init) (.progress (fn [msg] (log.as :jack-init msg))) (.done))
 

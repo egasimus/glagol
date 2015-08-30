@@ -1,0 +1,19 @@
+; TODO fix notion names in engine so this can be called ./tap-tempo
+(let [ last-tap   nil
+       taps       []
+       min-tempo  81 ]
+  (fn tap-tempo []
+    (let [now (Date.now)]
+      (if last-tap
+        (let [diff  (- now last-tap)
+              t     (/ 60000 diff)]
+          (if (> diff (/ 60000 min-tempo))
+            (do
+              (set! taps [])
+              (set! last-tap nil)
+              (log.as :tap :reset))
+            (do
+              (taps.push t)
+              (./transport/set-tempo 
+                (/ (taps.reduce (fn [x y] (+ x y)) 0) taps.length))))))
+      (set! last-tap now))))

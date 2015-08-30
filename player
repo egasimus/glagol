@@ -24,8 +24,7 @@
           (= "/playing" msg.address) (state.emit "playing" msg.args))))))
 
     (set! state.process
-      (./jack/spawn sample
-        "/home/epimetheus/code/hardmode/postmelodic/bin/sample_player"
+      (./jack/spawn sample ./playerPath
         "-n" jack-client-name "-p" osc-port sample))
     (set! state.kill (fn [signal] (state.process.kill signal)))
 

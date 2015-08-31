@@ -23,14 +23,29 @@
           parent)
 
       add-clips
-        (fn [parent x n c]
+        (fn [parent x y n c]
           (loop [i 0]
-            (parent.append (B.text { :content " ▶ " :bg c :fg "black" :left x :top (+ (* i 3) 4)}))
-            (parent.append (B.text { :content "clip 001 " :bg c :fg "black" :left (+ x 3) :top (+ (* i 3) 4)}))
-            (parent.append (B.text { :content "▄▄▄▄▄▄▄▄▄▄▄▄" :fg c :left x :top (+ (* i 3) 3)}))
-            (parent.append (B.text { :content "▀▀▀▀▀▀▀▀▀▀▀▀" :fg c :left x :top (+ (* i 3) 5)}))
-            (if (< i n) (recur (+ i 1))))
+            (let [text   { :bg c :fg :black :top (+ (* i 3) y 1) }
+                  border { :fg c :left x }]
+              (.map
+                (.concat
+                  (.map [ [ :content " ▶ "       :left x       ]
+                          [ :content "clip 001 " :left (+ x 3) ] ]
+                    (fn [el] (apply assoc text el)))
+                  (.map [ [ :content (n-times 12 "▄") :top (+ (* i 3) y) ]
+                          [ :content (n-times 12 "▀") :top (+ (+ (* i 3) y) 2)] ]
+                    (fn [el] (apply assoc border el))))
+                (fn [el] (parent.append (B.text el))))
+              (if (< i (- n 1)) (recur (+ i 1)))))
           parent)
+
+      add-scene
+        (fn [parent y text]
+          (let [w (- parent.width text.length 3)]
+            (parent.append (B.text
+              { :content (n-times w "─") :top y :left (+ text.length 2) :fg :black }))
+            (parent.append (B.text { :content text :left 1 :top y }))
+            parent))
 
   ]
 
@@ -55,14 +70,31 @@
     (add-box  :right 22 0 7   :black)
     (add-text :right 23 1     :yellow :black "KBD ↓")
 
-    (add-clips 1  5  :red)
-    (add-clips 15 1 :yellow)
-    (add-clips 29 7  :green)
-    (add-clips 43 3 :blue))
+    (add-scene 4 "INTRO")
+
+    (add-clips 10 3 1 :red)
+    (add-clips 23 3 2 :yellow)
+
+    (add-scene 10 "THEME")
+
+    (add-clips 10 9 1 :red)
+    (add-clips 23 9 1 :yellow)
+    (add-clips 36 9 1 :green)
+    (add-clips 49 9 1 :blue)
+
+    (add-scene 13 "BUILDUP")
+
+    (add-clips 10  12 2 :red)
+    (add-clips 23 12 1 :yellow)
+    (add-clips 36 12 2 :green)
+    (add-clips 49 12 2 :blue)
+
+)
 
   (set! screen.title "etude demo")
   (screen.enable-mouse)
   (screen.key ["escape" "q" "C-c"] (fn [c k] (process.exit)))
+  (screen.key ["escape" "q" "C-c"] (fn [c k] (screen.render)))
   (screen.render)
 
-  { :undo (fn [] (screen.destroy))})
+  { :undo (fn [] (screen.destroy)) })

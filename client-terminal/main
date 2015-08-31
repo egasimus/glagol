@@ -55,11 +55,14 @@
     (add-box  :right 22 0 7   :black)
     (add-text :right 23 1     :yellow :black "KBD ↓")
 
-    (add-clips 1  7  :red)
-    (add-clips 15 11 :yellow)
-    (add-clips 29 5  :green)
-    (add-clips 43 13 :blue))
+    (add-clips 1  5  :red)
+    (add-clips 15 1 :yellow)
+    (add-clips 29 7  :green)
+    (add-clips 43 3 :blue))
 
   (set! screen.title "etude demo")
+  (screen.enable-mouse)
   (screen.key ["escape" "q" "C-c"] (fn [c k] (process.exit)))
-  (screen.render))
+  (screen.render)
+
+  { :undo (fn [] (screen.destroy))})

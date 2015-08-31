@@ -25,15 +25,16 @@
       add-clips
         (fn [parent x y n c]
           (loop [i 0]
-            (let [text   { :bg c :fg :black :top (+ (* i 3) y 1) }
-                  border { :fg c :left x }]
+            (let [top    (+ (* i 2) y)
+                  text   { :bg c :fg :black :top (+ top 1) }
+                  border { :inverse true :bg nil :fg c :left x }]
               (.map
                 (.concat
-                  (.map [ [ :content " ▶ "       :left x       ]
-                          [ :content "clip 001 " :left (+ x 3) ] ]
+                  (.map [ [ :content " ▶ "       :left x       :top (+ top 1) ]
+                          [ :content "Clip 001 " :left (+ x 3) :top (+ top 1) ] ]
                     (fn [el] (apply assoc text el)))
-                  (.map [ [ :content (n-times 12 "▄") :top (+ (* i 3) y) ]
-                          [ :content (n-times 12 "▀") :top (+ (+ (* i 3) y) 2)] ]
+                  (.map [ [ :content (n-times 12 (if (= i 0) "▂" "━")) :top top :inverse (if (= i 0) false true) ]
+                          [ :content (n-times 12 "▅") :top (+ top 2)] ]
                     (fn [el] (apply assoc border el))))
                 (fn [el] (parent.append (B.text el))))
               (if (< i (- n 1)) (recur (+ i 1)))))
@@ -43,7 +44,7 @@
         (fn [parent y text]
           (let [w (- parent.width text.length 3)]
             (parent.append (B.text
-              { :content (n-times w "─") :top y :left (+ text.length 2) :fg :black }))
+              { :content (n-times w "━") :top y :left (+ text.length 2) :fg :black }))
             (parent.append (B.text { :content text :left 1 :top y }))
             parent))
 
@@ -75,19 +76,19 @@
     (add-clips 10 3 1 :red)
     (add-clips 23 3 2 :yellow)
 
-    (add-scene 10 "THEME")
+    (add-scene 9 "THEME")
 
-    (add-clips 10 9 1 :red)
-    (add-clips 23 9 1 :yellow)
-    (add-clips 36 9 1 :green)
-    (add-clips 49 9 1 :blue)
+    (add-clips 10 8 1 :red)
+    (add-clips 23 8 1 :yellow)
+    (add-clips 36 8 1 :green)
+    (add-clips 49 8 1 :blue)
 
-    (add-scene 13 "BUILDUP")
+    (add-scene 12 "BUILDUP")
 
-    (add-clips 10  12 2 :red)
-    (add-clips 23 12 1 :yellow)
-    (add-clips 36 12 2 :green)
-    (add-clips 49 12 2 :blue)
+    (add-clips 10 11 2 :red)
+    (add-clips 23 11 1 :yellow)
+    (add-clips 36 11 2 :green)
+    (add-clips 49 11 2 :blue)
 
 )
 

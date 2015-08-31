@@ -1,0 +1,93 @@
+(let [B
+        (require "blessed")
+      screen
+        (B.screen { :smartCSR true })
+      toolbar
+        (B.box { :height 3 })
+      tempo-value
+        (B.textbox { :width 4 :left 1 :fg "yellow" :bg "black"})
+      tempo-tap
+        (B.button { :content "BPM" :fg "yellow" :bg "black" :left 5 })
+      meter-value
+        (B.textbox { :width 5 :left 9 })
+      quantize-value
+        (B.text { :content 1 })
+      quantize-toggle
+        (B.button { :content "Q" })]
+
+  (tempo-value.set-value "174")
+  (toolbar.append tempo-value)
+
+  (toolbar.append tempo-tap)
+
+  (meter-value.set-value " 4/4")
+  (toolbar.append meter-value)
+
+  ;(toolbar.append quantize-value)
+  ;(toolbar.append quantize-toggle)
+
+  ;(screen.append toolbar)
+
+  (screen.append (B.text { :content "▄▄▄▄▄▄▄▄▄▄▄" :fg "black" :top 0 :left 1 }))
+  (screen.append (B.text { :content "█         █" :fg "black" :top 1 :left 1 }))
+  (screen.append (B.text { :content "▀▀▀▀▀▀▀▀▀▀▀" :fg "black" :top 2 :left 1 }))
+  (screen.append (B.text { :content "174"  :fg "yellow" :top 1 :left 3 }))
+  (screen.append (B.text { :content " BPM" :fg "yellow" :bg "black" :top 1 :left 7 }))
+
+  (screen.append (B.text { :content "▄▄▄▄▄▄▄" :fg "black" :top 0 :left 13 }))
+  (screen.append (B.text { :content "█     █" :fg "black" :top 1 :left 13 }))
+  (screen.append (B.text { :content "▀▀▀▀▀▀▀" :fg "black" :top 2 :left 13 }))
+  (screen.append (B.text { :content "4/4"  :fg "yellow" :top 1 :left 15 }))
+
+  (screen.append (B.text { :content "▄▄▄▄▄▄▄▄▄▄▄" :fg "black" :top 0 :left 21 }))
+  (screen.append (B.text { :content "█         █" :fg "black" :top 1 :left 21 }))
+  (screen.append (B.text { :content "▀▀▀▀▀▀▀▀▀▀▀" :fg "black" :top 2 :left 21 }))
+  (screen.append (B.text { :content "1 Bar"  :fg "yellow" :top 1 :left 23 }))
+  (screen.append (B.text { :content " Q " :fg "yellow" :bg "black" :top 1 :left 29 }))
+
+  (screen.append (B.text { :content "▄▄▄▄▄▄▄▄▄▄" :fg "black" :top 0 :right 1 }))
+  (screen.append (B.text { :content "█        █" :fg "black" :top 1 :right 1 }))
+  (screen.append (B.text { :content "▀▀▀▀▀▀▀▀▀▀" :fg "black" :top 2 :right 1 }))
+  (screen.append (B.text { :content "MIDI ↓ ↑" :fg "yellow" :bg "black" :top 1 :right 2 }))
+
+  (screen.append (B.text { :content "▄▄▄▄▄▄▄▄▄" :fg "black" :top 0 :right 12 }))
+  (screen.append (B.text { :content "█       █" :fg "black" :top 1 :right 12 }))
+  (screen.append (B.text { :content "▀▀▀▀▀▀▀▀▀" :fg "black" :top 2 :right 12 }))
+  (screen.append (B.text { :content "OSC ↓ ↑" :fg "yellow" :bg "black" :top 1 :right 13 }))
+
+  (screen.append (B.text { :content "▄▄▄▄▄▄▄" :fg "black" :top 0 :right 22 }))
+  (screen.append (B.text { :content "█     █" :fg "black" :top 1 :right 22 }))
+  (screen.append (B.text { :content "▀▀▀▀▀▀▀" :fg "black" :top 2 :right 22 }))
+  (screen.append (B.text { :content "KBD ↓" :fg "yellow" :bg "black" :top 1 :right 23 }))
+
+  (loop [i 0]
+    (screen.append (B.text { :content " ▶ " :bg "red" :fg "black" :left 1 :top (+ (* i 3) 4)}))
+    (screen.append (B.text { :content "Clip 001 " :bg "red" :fg "black" :left 4 :top (+ (* i 3) 4)}))
+    (screen.append (B.text { :content "▄▄▄▄▄▄▄▄▄▄▄▄" :fg "red" :left 1 :top (+ (* i 3) 3)}))
+    (screen.append (B.text { :content "▀▀▀▀▀▀▀▀▀▀▀▀" :fg "red" :left 1 :top (+ (* i 3) 5)}))
+    (if (< i 7) (recur (+ i 1))))
+
+  (loop [i 0]
+    (screen.append (B.text { :content " ▶ " :bg "yellow" :fg "black" :left 15 :top (+ (* i 3) 4)}))
+    (screen.append (B.text { :content "Clip 002 " :bg "yellow" :fg "black" :left 18 :top (+ (* i 3) 4)}))
+    (screen.append (B.text { :content "▄▄▄▄▄▄▄▄▄▄▄▄" :fg "yellow" :left 15 :top (+ (* i 3) 3)}))
+    (screen.append (B.text { :content "▀▀▀▀▀▀▀▀▀▀▀▀" :fg "yellow" :left 15 :top (+ (* i 3) 5)}))
+    (if (< i 11) (recur (+ i 1))))
+
+  (loop [i 0]
+    (screen.append (B.text { :content " ▶ " :bg "green" :fg "black" :left 29 :top (+ (* i 3) 4)}))
+    (screen.append (B.text { :content "Clip 003 " :bg "green" :fg "black" :left 32 :top (+ (* i 3) 4)}))
+    (screen.append (B.text { :content "▄▄▄▄▄▄▄▄▄▄▄▄" :fg "green" :left 29 :top (+ (* i 3) 3)}))
+    (screen.append (B.text { :content "▀▀▀▀▀▀▀▀▀▀▀▀" :fg "green" :left 29 :top (+ (* i 3) 5)}))
+    (if (< i 5) (recur (+ i 1))))
+
+  (loop [i 0]
+    (screen.append (B.text { :content " ▶ " :bg "blue" :fg "black" :left 43 :top (+ (* i 3) 4)}))
+    (screen.append (B.text { :content "Clip 004 " :bg "blue" :fg "black" :left 46 :top (+ (* i 3) 4)}))
+    (screen.append (B.text { :content "▄▄▄▄▄▄▄▄▄▄▄▄" :fg "blue" :left 43 :top (+ (* i 3) 3)}))
+    (screen.append (B.text { :content "▀▀▀▀▀▀▀▀▀▀▀▀" :fg "blue" :left 43 :top (+ (* i 3) 5)}))
+    (if (< i 13) (recur (+ i 1))))
+
+  (set! screen.title "etude demo")
+  (screen.key ["escape" "q" "C-c"] (fn [c k] (process.exit)))
+  (screen.render))

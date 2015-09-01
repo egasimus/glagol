@@ -22,6 +22,29 @@
             (B.text (assoc { :content c :fg fg :bg bg :top y } align x)))
           parent)
 
+      add-toolbar
+        (fn [parent]
+          (-> parent
+            (add-box  :left  1  0 9  :black)
+            (add-text :left  2  1    :yellow nil    "174")
+            (add-text :left  5  1    :yellow :black " BPM")
+
+            (add-box  :left  11 0 7  :black)
+            (add-text :left  12 1    :yellow nil    " 4/4 ")
+
+            (add-box  :left  19 0 11 :black)
+            (add-text :left  20 1    :yellow nil    " 1 Bar ")
+            (add-text :left  27 1    :yellow :black " Q ")
+
+            (add-box  :right 1  0 10  :black)
+            (add-text :right 2  1     :yellow :black "MIDI ↓ ↑")
+
+            (add-box  :right 12 0 9   :black)
+            (add-text :right 13 1     :yellow :black "OSC ↓ ↑")
+
+            (add-box  :right 22 0 7   :black)
+            (add-text :right 23 1     :yellow :black "KBD ↓")))
+
       add-clips
         (fn [parent x y n c]
           (loop [i 0]
@@ -48,49 +71,129 @@
             (parent.append (B.text { :content text :left 1 :top y }))
             parent))
 
+      clip
+        (fn [label])
+
+      scene
+        (fn [label & contents]
+          { :type "Scene" :label label :contents contents })
+
+      track
+        (fn [label])
+
+      pattern
+        (fn [label])
+
+      tracks [
+        :kick  (track "Kick")
+        :snare (track "Snare")
+        :bass  (track "Bass")
+        :synth (track "Synth")
+      ]
+
+      clips {
+        :kick-1          (pattern "Kick 1")
+        :snare-1         (pattern "Snare 1")
+        :snare-1-fill    (pattern "Snare 1 + Fill")
+        :buildup         (pattern "Buildup")
+        :bass-long       (pattern "Bass Long")
+        :bass-muted      (pattern "Bass Muted")
+        :theme           (pattern "Theme")
+        :theme-staccator (pattern "Theme Staccato")
+      }
+
+      session [
+        (scene "INTRO"
+          :kick  [ nil      :kick-1       ]
+          :snare [ :snare-1 :snare-1-fill ]
+          :synth [ nil      :buildup      ])
+        (scene "THEME"
+          :kick  [ :kick-1      ]
+          :snare [ :snare-1     ]
+          :bass  [ :bass-long   ]
+          :synth [ :synth-theme ])
+        (scene "BUILDUP"
+          :kick  [ :kick-1                                ]
+          :bass  [ :bass-muted     :bass-muted :bass-long ]
+          :synth [ :theme-staccato :theme      :theme     ])
+        (scene "VERSE")
+        (scene "CHORUS")
+        (scene "SOLO")
+        (scene "VERSE")
+        (scene "BUILDUP")
+        (scene "CHORUS")
+        (scene "THEME")
+        (scene "OUTRO")
+      ]
+
+      calculate-scene-labels
+        (fn [session]
+          (let [coordinates {}
+                next-y      6]
+            (session.map (fn [scene]
+              (let [most-clips 1]
+                (scene.contents.map (fn [track i]
+                  (if (and (= 0 (mod i 2)) (< most-clips track.length))
+                    (set! most-clips track.length))))
+                (aset coordinates next-y session.label)
+                (set! next-y (+ next-y (* most-clips 3))))))))
+
+      draw-clip
+        (fn [current i clip j clips]
+          (let [x (+ 11 (* 13 (/ (tracks.index-of current) 2)))]
+            (add-clips screen x (+ 5 (* 3 i)) clips.length :red)))
+
+      draw-track
+        (fn [current i clips]
+          (if clips (clips.map (draw-clip.bind nil current i))))
+
+      get-y
+        (fn [i] (+ 6 (* 3 i)))
+
+      draw-scene
+        (fn [scene i scenes]
+          (add-scene screen (get-y i) (str i " " (aget scene 0)))
+          (let [current-track nil
+                current-scene (aget scene 1)]
+            (if current-scene (current-scene.map (fn [track j]
+              (if (= 0 (mod j 2))
+                (set! current-track track)
+                (draw-track current-track i track)))))))
+
   ]
 
-  (-> screen
-    (add-box  :left  1  0 9  :black)
-    (add-text :left  2  1    :yellow nil    "174")
-    (add-text :left  5  1    :yellow :black " BPM")
+  (add-toolbar screen)
 
-    (add-box  :left  11 0 7  :black)
-    (add-text :left  12 1    :yellow nil    " 4/4 ")
+  (log (calculate-scene-labels session))
 
-    (add-box  :left  19 0 11 :black)
-    (add-text :left  20 1    :yellow nil    " 1 Bar ")
-    (add-text :left  27 1    :yellow :black " Q ")
+  ;(tracks.map (fn [track i] (if (= 0 (mod i 2))
+    ;(screen.append (B.text {
+      ;:content (str (/ i 2) " " track)
+      ;:top 4
+      ;:left (+ 12 (* (/ i 2) 13))})))))
 
-    (add-box  :right 1  0 10  :black)
-    (add-text :right 2  1     :yellow :black "MIDI ↓ ↑")
+  ;(session.map draw-scene)
 
-    (add-box  :right 12 0 9   :black)
-    (add-text :right 13 1     :yellow :black "OSC ↓ ↑")
+    ;(add-scene 5 "INTRO")
 
-    (add-box  :right 22 0 7   :black)
-    (add-text :right 23 1     :yellow :black "KBD ↓")
+    ;(add-clips 10 4 1 :red)
+    ;(add-clips 23 4 2 :yellow)
 
-    (add-scene 4 "INTRO")
+    ;(add-scene 10 "THEME")
 
-    (add-clips 10 3 1 :red)
-    (add-clips 23 3 2 :yellow)
+    ;(add-clips 10 9 1 :red)
+    ;(add-clips 23 9 1 :yellow)
+    ;(add-clips 36 9 1 :green)
+    ;(add-clips 49 9 1 :blue)
 
-    (add-scene 9 "THEME")
+    ;(add-scene 13 "BUILDUP")
 
-    (add-clips 10 8 1 :red)
-    (add-clips 23 8 1 :yellow)
-    (add-clips 36 8 1 :green)
-    (add-clips 49 8 1 :blue)
+    ;(add-clips 10 12 2 :red)
+    ;(add-clips 23 12 1 :yellow)
+    ;(add-clips 36 12 2 :green)
+    ;(add-clips 49 12 2 :blue)
 
-    (add-scene 12 "BUILDUP")
-
-    (add-clips 10 11 2 :red)
-    (add-clips 23 11 1 :yellow)
-    (add-clips 36 11 2 :green)
-    (add-clips 49 11 2 :blue)
-
-)
+;)
 
   (set! screen.title "etude demo")
   (screen.enable-mouse)

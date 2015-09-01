@@ -135,8 +135,9 @@
                 (scene.contents.map (fn [track i]
                   (if (and (= 0 (mod i 2)) (< most-clips track.length))
                     (set! most-clips track.length))))
-                (aset coordinates next-y session.label)
-                (set! next-y (+ next-y (* most-clips 3))))))))
+                (aset coordinates next-y scene.label)
+                (set! next-y (+ next-y (* most-clips 3))))))
+            coordinates))
 
       draw-clip
         (fn [current i clip j clips]
@@ -164,7 +165,9 @@
 
   (add-toolbar screen)
 
-  (log (calculate-scene-labels session))
+  (let [labels (calculate-scene-labels session)]
+    (.map (keys labels) (fn [i]
+      (add-scene screen (Number i) (aget labels i)))))
 
   ;(tracks.map (fn [track i] (if (= 0 (mod i 2))
     ;(screen.append (B.text {

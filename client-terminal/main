@@ -36,6 +36,11 @@
             (add-text :left  20 1    :yellow nil    " 1 Bar ")
             (add-text :left  27 1    :yellow :black " Q ")
 
+            (add-box  :left "50%-4" 0 5 :black)
+            (add-text :left "50%-2" 1   :yellow :black "▶")
+            (add-box  :left "50%+2" 0 5 :black)
+            (add-text :left "50%+3" 1   :yellow :black "REC")
+
             (add-box  :right 1  0 10  :black)
             (add-text :right 2  1     :yellow :black "MIDI ↓ ↑")
 
@@ -126,7 +131,7 @@
         (scene "OUTRO")
       ]
 
-      calculate-scene-labels
+      calculate-scene-positions
         (fn [session]
           (let [coordinates {}
                 next-y      6]
@@ -135,7 +140,7 @@
                 (scene.contents.map (fn [track i]
                   (if (and (= 0 (mod i 2)) (< most-clips track.length))
                     (set! most-clips track.length))))
-                (aset coordinates next-y scene.label)
+                (aset coordinates next-y scene)
                 (set! next-y (+ next-y (* most-clips 3))))))
             coordinates))
 
@@ -165,9 +170,10 @@
 
   (add-toolbar screen)
 
-  (let [labels (calculate-scene-labels session)]
-    (.map (keys labels) (fn [i]
-      (add-scene screen (Number i) (aget labels i)))))
+  (let [scenes (calculate-scene-positions session)]
+    (.map (keys scenes) (fn [i]
+      (let [scene (aget scenes i)]
+        (add-scene screen (Number i) scene.label)))))
 
   ;(tracks.map (fn [track i] (if (= 0 (mod i 2))
     ;(screen.append (B.text {

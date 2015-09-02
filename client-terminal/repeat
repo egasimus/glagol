@@ -1,0 +1,2 @@
+(fn [n c]
+  (loop [i 0 v ""] (if (< i n) (recur (+ i 1) (str v c)) v)))

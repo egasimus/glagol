@@ -31,61 +31,6 @@
             (parent.append (B.text { :content text :left 1 :top y }))
             parent))
 
-      clip
-        (fn [label])
-
-      scene
-        (fn [label & contents]
-          { :type "Scene" :label label :contents contents })
-
-      track
-        (fn [label])
-
-      pattern
-        (fn [label])
-
-      tracks [
-        :kick  (track "Kick")
-        :snare (track "Snare")
-        :bass  (track "Bass")
-        :synth (track "Synth")
-      ]
-
-      clips {
-        :kick-1          (pattern "Kick 1")
-        :snare-1         (pattern "Snare 1")
-        :snare-1-fill    (pattern "Snare 1 + Fill")
-        :buildup         (pattern "Buildup")
-        :bass-long       (pattern "Bass Long")
-        :bass-muted      (pattern "Bass Muted")
-        :theme           (pattern "Theme")
-        :theme-staccator (pattern "Theme Staccato")
-      }
-
-      session [
-        (scene "INTRO"
-          :kick  [ nil      :kick-1       ]
-          :snare [ :snare-1 :snare-1-fill ]
-          :synth [ nil      :buildup      ])
-        (scene "THEME"
-          :kick  [ :kick-1      ]
-          :snare [ :snare-1     ]
-          :bass  [ :bass-long   ]
-          :synth [ :synth-theme ])
-        (scene "BUILDUP"
-          :kick  [ :kick-1                                ]
-          :bass  [ :bass-muted     :bass-muted :bass-long ]
-          :synth [ :theme-staccato :theme      :theme     ])
-        (scene "VERSE")
-        (scene "CHORUS")
-        (scene "SOLO")
-        (scene "VERSE")
-        (scene "BUILDUP")
-        (scene "CHORUS")
-        (scene "THEME")
-        (scene "OUTRO")
-      ]
-
       calculate-scene-positions
         (fn [session]
           (let [coordinates {}
@@ -101,7 +46,7 @@
 
       draw-clip
         (fn [current i clip j clips]
-          (let [x (+ 11 (* 13 (/ (tracks.index-of current) 2)))]
+          (let [x (+ 11 (* 13 (/ (./tracks/index-of current) 2)))]
             (add-clips screen x (+ 5 (* 3 i)) clips.length :red)))
 
       draw-track
@@ -143,11 +88,11 @@
 
   ; session body
   (screen.append session-box)
-  (let [scenes (calculate-scene-positions session)]
+  (let [scenes (calculate-scene-positions ./session)]
     (.map (keys scenes) (fn [i]
       (let [scene (aget scenes i)]
         (add-scene session-box (Number i) scene.label)))))
-  (tracks.map (fn [track i] (if (= 0 (mod i 2)) (do
+  (./tracks/map (fn [track i] (if (= 0 (mod i 2)) (do
     (let [x (+ 12 (* (/ i 2) 13))]
       (session-box.append (B.text {
         :content (./repeat (+ 4 track.length) "▅")

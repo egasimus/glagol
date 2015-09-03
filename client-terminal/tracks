@@ -1,0 +1,6 @@
+(let [track (fn [label])] [
+  :kick  (track "Kick")
+  :snare (track "Snare")
+  :bass  (track "Bass")
+  :synth (track "Synth")
+])

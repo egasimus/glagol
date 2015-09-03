@@ -1,0 +1,7 @@
+{
+
+  :exit    ["escape" "q" "C-c"]
+
+  :refresh ["C-l"]
+
+}

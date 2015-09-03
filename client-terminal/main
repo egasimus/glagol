@@ -2,7 +2,7 @@
         (require "blessed")
 
       screen
-        (B.screen { :smartCSR true })
+        (B.screen { :smartCSR true :bg nil })
 
 
       add-clips
@@ -129,11 +129,17 @@
   ; setup
   (set! screen.title "etude demo")
   (screen.enable-mouse)
-  (screen.key ["escape" "q" "C-c"] (fn [c k] (process.exit)))
-  (screen.key ["escape" "q" "C-c"] (fn [c k] (screen.render)))
 
-  ; toolbar
+  ; keyboard events
+  (.map (keys ./keymap) (fn [event]
+    (screen.key (aget ./keymap event)
+      (fn [c k] (./events/emit event [c k])))))
+  (./events/on :exit (fn [] (process.exit)))
+  (./events/on :refresh (fn [] (screen.realloc) (screen.render)))
+
+  ; toolbars
   (./toolbar screen)
+  (./statusbar screen)
 
   ; session body
   (screen.append session-box)

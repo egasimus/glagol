@@ -13,12 +13,12 @@
                   border { :inverse true :bg nil :fg c :left x }]
               (.map
                 (.concat
-                  (.map [ [ :content " ▶ "       :left x       :top (+ top 1) ]
-                          [ :content "Clip 001 " :left (+ x 3) :top (+ top 1) ] ]
+                  (.map [ [ :content " ▶ "       :left x       :top top ]
+                          [ :content "Clip 001 " :left (+ x 3) :top top ] ]
                     (fn [el] (apply assoc text el)))
-                  (.map [ [ :content (./repeat 12 "▁") :top top :inverse true ]
-                          [ :content (./repeat 12 "▅") :top (+ top 2)] ]
-                    (fn [el] (apply assoc border el))))
+                  [ { :content (./repeat 12 "▅")
+                      :inverse true :fg "#111111" :bg nil
+                      :left x :top (+ top 1)} ])
                 (fn [el] (parent.append (B.text el))))
               (if (< i (- n 1)) (recur (+ i 1)))))
           parent)
@@ -47,7 +47,7 @@
       draw-clip
         (fn [current i clip j clips]
           (let [x (+ 11 (* 13 (/ (./tracks/index-of current) 2)))]
-            (add-clips screen x (+ 5 (* 3 i)) clips.length :red)))
+            (add-clips screen x (+ 6 (* 3 i)) clips.length :red)))
 
       draw-track
         (fn [current i clips]
@@ -105,7 +105,12 @@
         :padding { :left 1 :right 1 }
         :top 1
         :left x}))
-      (add-clips session-box x 2 10 :black))))))
+      (session-box.append (B.text {
+        :content (./repeat (+ 4 track.length) "▅")
+        :bg nil :fg :black :inverse true
+        :top 2
+        :left x}))
+      (add-clips session-box x 3 10 :black))))))
 
   (screen.render)
 

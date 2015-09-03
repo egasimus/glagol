@@ -16,9 +16,9 @@
                   (.map [ [ :content " ▶ "       :left x       :top top ]
                           [ :content "Clip 001 " :left (+ x 3) :top top ] ]
                     (fn [el] (apply assoc text el)))
-                  [ { :content (./repeat 12 "▅")
-                      :inverse true :fg "#111111" :bg nil
-                      :left x :top (+ top 1)} ])
+                  [ { :ch "━"
+                      :inverse false :fg "#111111" :bg :black
+                      :left 0 :right 0 :top (+ top 1)} ])
                 (fn [el] (parent.append (B.text el))))
               (if (< i (- n 1)) (recur (+ i 1)))))
           parent)
@@ -101,29 +101,31 @@
       (let [scene (aget scenes i)]
         (add-scene session-box (Number i) scene.label)))))
   (./tracks/map (fn [track i] (if (= 0 (mod i 2)) (do
-    (let [x (+ 12 (* (/ i 2) 13))
-          track-box (B.box { :top 0 :bottom 0 :left x :width 12 })]
-      (session-box.append track-box)
-      (session-box.append (B.text {
-        :content (./repeat (+ 4 track.length) "▄")
+    (let [w 18
+          x (+ 12 (* (/ i 2) (+ w 1)))
+          track-box (B.box { :top 0 :bottom 0 :left x :width w })]
+      (track-box.append (B.text {
+        :content (./repeat (+ 2 track.length) "▄")
         :bg nil :fg :black
-        :top 0
-        :left x}))
-      (session-box.append (B.text {
-        :content (str (/ i 2) " " track)
-        :bg :black
+        :top 0 :left 0}))
+      (track-box.append (B.text {
+        :content (str track)
+        :bg :black :fg :yellow
         :padding { :left 1 :right 1 }
-        :top 1
-        :left x}))
-      (session-box.append (B.text {
-        :content (./repeat (+ 4 track.length) "▄")
+        :top 1 :left 0}))
+      (track-box.append (B.text {
+        :ch "━"
         :bg nil :fg :black :inverse true
-        :top 2
-        :left x}))
+        :top 2 :left 0 :right 0}))
+      (add-clips track-box 0 3 (.-length (get-track-clips track)) :black)
+      (.map (get-track-clips track) (fn [clip i]
+        (track-box.append (B.text
+          { :top (+ 3 (* 2 i)) :left 0 :right 0
+            :content (str " ▶ " clip) :bg :black}))))
       ;(.map (get-track-clips track)
         ;(fn [clip] (session-box.append (B.text
           ;{ :content clip :left 1 :top 1 :fg :red }))))
-      (add-clips session-box x 3 10 :black))))))
+      (session-box.append track-box))))))
 
   (screen.render)
 

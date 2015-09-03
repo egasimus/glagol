@@ -69,6 +69,14 @@
       session-box
         (B.box { :top 3 :left 1 :right 1 :bottom 1 :scrollable true })
 
+      get-track-clips
+        (fn [track-id]
+          (.reduce ./session (fn [clips scene] (clips.concat
+            (let [tracks (apply assoc {} scene.contents)
+                  clips  (or (aget tracks track-id) [])]
+              ;(log.as :clips clips)
+              (or (aget tracks track-id) []) ))) []))
+
   ]
 
   ; setup
@@ -93,9 +101,11 @@
       (let [scene (aget scenes i)]
         (add-scene session-box (Number i) scene.label)))))
   (./tracks/map (fn [track i] (if (= 0 (mod i 2)) (do
-    (let [x (+ 12 (* (/ i 2) 13))]
+    (let [x (+ 12 (* (/ i 2) 13))
+          track-box (B.box { :top 0 :bottom 0 :left x :width 12 })]
+      (session-box.append track-box)
       (session-box.append (B.text {
-        :content (./repeat (+ 4 track.length) "▅")
+        :content (./repeat (+ 4 track.length) "▄")
         :bg nil :fg :black
         :top 0
         :left x}))
@@ -106,10 +116,13 @@
         :top 1
         :left x}))
       (session-box.append (B.text {
-        :content (./repeat (+ 4 track.length) "▅")
+        :content (./repeat (+ 4 track.length) "▄")
         :bg nil :fg :black :inverse true
         :top 2
         :left x}))
+      ;(.map (get-track-clips track)
+        ;(fn [clip] (session-box.append (B.text
+          ;{ :content clip :left 1 :top 1 :fg :red }))))
       (add-clips session-box x 3 10 :black))))))
 
   (screen.render)

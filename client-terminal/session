@@ -10,14 +10,14 @@
     (fn [label])
 
   clips {
-    :kick-1          (pattern "Kick 1")
-    :snare-1         (pattern "Snare 1")
-    :snare-1-fill    (pattern "Snare 1 + Fill")
-    :buildup         (pattern "Buildup")
-    :bass-long       (pattern "Bass Long")
-    :bass-muted      (pattern "Bass Muted")
-    :theme           (pattern "Theme")
-    :theme-staccator (pattern "Theme Staccato")
+    :kick-1         (pattern "Kick 1")
+    :snare-1        (pattern "Snare 1")
+    :snare-1-fill   (pattern "Snare 1 + Fill")
+    :buildup        (pattern "Buildup")
+    :bass-long      (pattern "Bass Long")
+    :bass-muted     (pattern "Bass Muted")
+    :theme          (pattern "Theme")
+    :theme-staccato (pattern "Theme Staccato")
   }
 
   session [
@@ -29,7 +29,7 @@
       :kick  [ :kick-1      ]
       :snare [ :snare-1     ]
       :bass  [ :bass-long   ]
-      :synth [ :synth-theme ])
+      :synth [ :theme ])
     (scene "BUILDUP"
       :kick  [ :kick-1                                ]
       :bass  [ :bass-muted     :bass-muted :bass-long ]

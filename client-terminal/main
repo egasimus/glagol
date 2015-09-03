@@ -27,7 +27,7 @@
         (fn [parent y text]
           (let [w (- parent.width text.length 3)]
             (parent.append (B.text
-              { :content (./repeat w "━") :top y :left (+ text.length 2) :fg :black }))
+              { :ch "┄" :top y :left (+ text.length 2) :right 1 :fg :black }))
             (parent.append (B.text { :content text :left 1 :top y }))
             parent))
 

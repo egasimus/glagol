@@ -1,0 +1,10 @@
+{
+  :kick-1         (./pattern "Kick 1")
+  :snare-1        (./pattern "Snare 1")
+  :snare-1-fill   (./pattern "Snare 1 + Fill")
+  :buildup        (./pattern "Buildup")
+  :bass-long      (./pattern "Bass Long")
+  :bass-muted     (./pattern "Bass Muted")
+  :theme          (./pattern "Theme")
+  :theme-staccato (./pattern "Theme Staccato")
+}

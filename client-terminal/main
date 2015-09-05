@@ -4,25 +4,6 @@
       screen
         (B.screen { :smartCSR true :bg nil })
 
-
-      add-clips
-        (fn [parent x y n c]
-          (loop [i 0]
-            (let [top    (+ (* i 2) y)
-                  text   { :bg c :fg :black :top (+ top 1) }
-                  border { :inverse true :bg nil :fg c :left x }]
-              (.map
-                (.concat
-                  (.map [ [ :content " ▶ "       :left x       :top top ]
-                          [ :content "Clip 001 " :left (+ x 3) :top top ] ]
-                    (fn [el] (apply assoc text el)))
-                  [ { :ch "━"
-                      :inverse false :fg "#111111" :bg :black
-                      :left 0 :right 0 :top (+ top 1)} ])
-                (fn [el] (parent.append (B.text el))))
-              (if (< i (- n 1)) (recur (+ i 1)))))
-          parent)
-
       add-scene
         (fn [parent y text]
           (let [w (- parent.width text.length 3)]
@@ -38,7 +19,6 @@
               (let [track (aget scene.contents track)]
                 (if (> track.length most-clips)
                   (set! most-clips track.length)))))
-            (log.as scene.label most-clips)
             most-clips))
 
       calculate-scene-positions
@@ -50,27 +30,8 @@
               (set! next-y (+ next-y (* (most-clips-in scene) 2)))))
             coordinates))
 
-      draw-clip
-        (fn [current i clip j clips]
-          (let [x (+ 11 (* 13 (/ (./tracks/index-of current) 2)))]
-            (add-clips screen x (+ 6 (* 3 i)) clips.length :red)))
-
-      draw-track
-        (fn [current i clips]
-          (if clips (clips.map (draw-clip.bind nil current i))))
-
       get-y
         (fn [i] (+ 6 (* 3 i)))
-
-      draw-scene
-        (fn [scene i scenes]
-          (add-scene screen (get-y i) (str i " " (aget scene 0)))
-          (let [current-track nil
-                current-scene (aget scene 1)]
-            (if current-scene (current-scene.map (fn [track j]
-              (if (= 0 (mod j 2))
-                (set! current-track track)
-                (draw-track current-track i track)))))))
 
       session-box
         (B.box { :top 3 :left 1 :right 1 :bottom 1 :scrollable true })
@@ -78,38 +39,49 @@
       get-track-clips
         (fn [track-id]
           (.reduce ./session (fn [clips scene] (clips.concat
-            (let [tracks (apply assoc {} scene.contents)
-                  clips  (or (aget tracks track-id) [])]
-              ;(log.as :clips clips)
-              (or (aget tracks track-id) []) ))) []))
+            (or (aget scene.contents track-id) []) )) []))
+
+      render-track-heading
+        (fn [parent track]
+          (.map
+            [ { :content (./repeat (+ 2 track.length) "▄")
+                :bg nil :fg :black
+                :top 0 :left 0 }
+              { :content (str track)
+                :bg :black :fg :yellow
+                :padding { :left 1 :right 1 }
+                :top 1 :left 0 }
+              { :ch "▄"
+                :bg nil :fg :black :inverse true
+                :top 2 :left 0 :width (+ 2 track.length) } ]
+            (fn [attrs] (parent.append (B.text attrs))))
+          parent)
+
+      render-track-clips
+        (fn [parent track]
+          (log (get-track-clips track))
+          ;(.map (get-track-clips track) (fn [clip i]
+            ;(if clip
+              ;(track-box.append (B.text
+                ;{ :top (+ 3 (* 2 i)) :left 0 :right 0
+                  ;:content (str " ▶ " clip) :bg :black}))
+              ;(track-box.append (B.text
+                ;{ :ch "┄" :top (+ 3 (* 2 i)) :left 0 :right 0 :fg :black })))))
+          ;(.map (get-track-clips track)
+            ;(fn [clip] (session-box.append (B.text
+              ;{ :content clip :left 1 :top 1 :fg :red }))))
+          parent)
+
+      track-width
+        18
 
       render-track
-        (fn [track i] (if (= 0 (mod i 2)) (do
-          (let [w 18
-                x (+ 12 (* (/ i 2) (+ w 1)))
-                track-box (B.box { :top 0 :bottom 0 :left x :width w })]
-            (track-box.append (B.text {
-              :content (./repeat (+ 2 track.length) "▄")
-              :bg nil :fg :black
-              :top 0 :left 0}))
-            (track-box.append (B.text {
-              :content (str track)
-              :bg :black :fg :yellow
-              :padding { :left 1 :right 1 }
-              :top 1 :left 0}))
-            (track-box.append (B.text {
-              :ch "━"
-              :bg nil :fg :black :inverse true
-              :top 2 :left 0 :right 0}))
-            (add-clips track-box 0 3 (.-length (get-track-clips track)) :black)
-            (.map (get-track-clips track) (fn [clip i]
-              (track-box.append (B.text
-                { :top (+ 3 (* 2 i)) :left 0 :right 0
-                  :content (str " ▶ " clip) :bg :black}))))
-            ;(.map (get-track-clips track)
-              ;(fn [clip] (session-box.append (B.text
-                ;{ :content clip :left 1 :top 1 :fg :red }))))
-            (session-box.append track-box)))))
+        (fn [track i]
+          (let [x (+ 12 (* i (+ track-width 1)))]
+            (session-box.append
+              (-> (B.box { :top 0 :bottom 0 :left x :width track-width })
+                (render-track-heading track)
+                (render-track-clips   track)))))
 
   ]
 
@@ -137,7 +109,7 @@
     (.map (keys scenes) (fn [i]
       (let [scene (aget scenes i)]
         (add-scene session-box (Number i) scene.label)))))
-  (./tracks/map render-track)
+  (.map (keys ./tracks) (fn [t i] (render-track (aget ./tracks t) i)))
 
   (screen.render)
 

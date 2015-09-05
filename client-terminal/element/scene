@@ -1,0 +1,3 @@
+(fn scene [label & contents]
+  { :type "Scene" :label label
+    :contents (apply assoc {} contents) })

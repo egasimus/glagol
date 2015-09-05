@@ -38,7 +38,7 @@
 
       get-track-clips
         (fn [track-id]
-          (.reduce ./session (fn [clips scene]
+          (.reduce ./session/score (fn [clips scene]
             (clips.concat (or (aget scene.contents track-id) []))) []))
 
       render-track-heading
@@ -72,21 +72,19 @@
                 { :ch "┄" :top (+ 3 (* 2 i)) :left 0 :right 0 :fg :black })))))
           parent)
 
-      track-width
-        18
-
       render-track
         (fn [track-id i]
-          (let [x (+ 12 (* i (+ track-width 1)))]
+          (let [x (+ 12 (* i (+ ./options/track-width 1)))]
             (session-box.append
               (-> (B.box { :top 0 :bottom 0 :left x :width track-width })
-                (render-track-heading (aget ./tracks track-id))
+                (render-track-heading (aget ./session/tracks track-id))
                 (render-track-clips   track-id)))))
 
   ]
 
   ; print project contents
   (log ./session)
+  (log ./session/score)
 
   ; setup
   (set! screen.title "etude demo")
@@ -105,11 +103,11 @@
 
   ; session body
   (screen.append session-box)
-  (let [scenes (calculate-scene-positions ./session)]
+  (let [scenes (calculate-scene-positions ./session/score)]
     (.map (keys scenes) (fn [i]
       (let [scene (aget scenes i)]
         (add-scene session-box (Number i) scene.label)))))
-  (.map (keys ./tracks) render-track)
+  (.map (keys ./session/tracks) render-track)
 
   (screen.render)
 

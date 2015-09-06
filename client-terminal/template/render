@@ -1,14 +1,11 @@
-(let [blessed (require "blessed")]
+(let [blessed (require "blessed")
+      vnode?  (fn [x] (and (object? x) (= x.type "VNode")))]
   (fn render [vnode]
-    (if (or (not vnode) (not (= vnode.type "VNode")))
-      (throw (Error. (str vnode "is not a VNode"))))
-    (let [node ((aget blessed vnode.element) vnode.options)]
+    (if (not (vnode? vnode)) (throw (Error. (str vnode "is not a VNode"))))
+    (let [node    ((aget blessed vnode.element) vnode.options)
+          content vnode.content]
       (cond
-        (string? vnode.content)
-          (node.set-content vnode.content)
-        (vector? vnode.content)
-          (vnode.content.map (fn [vchild]
-            (node.append (render vchild))))
-        (and (object? vnode.content) (= vnode.content.type "VNode"))
-          (node.append (render vnode.content)))
+        (string? content) (node.set-content content)
+        (vector? content) (content.map (fn [vchild] (node.append (render vchild))))
+        (vnode?  content) (node.append (render content)))
       node)))

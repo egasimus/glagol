@@ -1,4 +1,4 @@
 (fn template-main [state]
   (./b :Screen
     { :title "etude demo" :smartCSR true :bg nil }
-    (.map [./toolbar ./statusbar ./session] (fn [x] (log x) (x state)))))
+    (.map [./toolbar ./statusbar ./session] (fn [x] (x state)))))

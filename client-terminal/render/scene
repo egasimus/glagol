@@ -1,6 +1,6 @@
 (fn render-scene [parent y text]
   (let [w (- parent.width text.length 3)]
-    (parent.append (B.text
+    (parent.append (../bless/text
       { :ch "┄" :top y :left (+ text.length 2) :right 1 :fg :black }))
-    (parent.append (B.text { :content text :left 1 :top y }))
+    (parent.append (../bless/text { :content text :left 1 :top y }))
     parent))

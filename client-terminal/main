@@ -16,19 +16,14 @@
   (screen.enable-mouse)
 
   ; keyboard events
-  (.map (keys ./keymap) (fn [event]
-    (screen.key (aget ./keymap event)
+  (.map (keys ./options/keymap) (fn [event]
+    (screen.key (aget ./options/keymap event)
       (fn [c k] (./events/emit event [c k])))))
   (./events/on :exit (fn [] (process.exit)))
   (./events/on :refresh (fn [] (screen.realloc) (screen.render)))
 
   ; session body
-  (screen.append session-box)
-  (let [scenes (calculate-scene-positions ./session/score)]
-    (.map (keys scenes) (fn [i]
-      (let [scene (aget scenes i)]
-        (add-scene session-box (Number i) scene.label)))))
-  (.map (keys ./session/tracks) render-track)
+  (./render/session screen)
 
   (screen.render)
 

@@ -1,0 +1,10 @@
+(fn render-session [screen]
+  (let [session-box
+          (../bless/box { :top 3 :left 1 :right 1 :bottom 1 :scrollable true })]
+    (screen.append session-box)
+    (let [scenes (../util/scene-positions ../session/score)]
+      (.map (keys scenes) (fn [i]
+        (let [scene (aget scenes i)]
+          (./scene session-box (Number i) scene.label)))))
+    (.map (keys ../session/tracks) ./track)
+    screen))

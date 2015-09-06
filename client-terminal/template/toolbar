@@ -3,16 +3,16 @@
     (fn [align x y w c]
       (let [default (assoc { :fg c } align x)]
         (.map ["▄" "█" "▀"] (fn [ch i]
-          (./node :text
+          (./b :text
             (assoc default :top (+ y i))
             (../util/repeat w ch))))))
 
   toolbar-text
     (fn [align x y fg bg c]
-      (./node :text (assoc { :fg fg :bg bg :top y } align x) c))
+      (./b :text (assoc { :fg fg :bg bg :top y } align x) c))
 
-] (fn [state]
-    (./node :box { :top 0 :left 0 :right 0 :height 3 }
+] (fn template-toolbar [state]
+    (./b :box { :top 0 :left 0 :right 0 :height 3 }
       [ (toolbar-box  :left  1      0 9  :black)
         (toolbar-text :left  2      1    :yellow nil    "174")
         (toolbar-text :left  5      1    :yellow :black " BPM")
@@ -36,4 +36,4 @@
         (toolbar-text :right 13     1    :yellow :black "OSC ↓ ↑")
 
         (toolbar-box  :right 22     0 7  :black)
-        (toolbar-text :right 23     1    :yellow :black "KBD ↓") ]))
+        (toolbar-text :right 23     1    :yellow :black "KBD ↓") ])))

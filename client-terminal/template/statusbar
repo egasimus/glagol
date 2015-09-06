@@ -1,7 +1,7 @@
-(fn [state]
-  (./node :text
+(fn template-statusbar [state]
+  (./b :text
     { :tags true :bg :black :fg :yellow
       :left 1 :right 1 :bottom 0 :height 1 } 
     (.reduce (keys ../options/keymap) (fn [a b]
-      (str a "{red-bg}" (.join (aget ./keymap b) "{/red-bg} {red-bg}")
+      (str a "{red-bg}" (.join (aget ../options/keymap b) "{/red-bg} {red-bg}")
              "{/red-bg} {black-bg}" b "{/black-bg}  ")) "")))

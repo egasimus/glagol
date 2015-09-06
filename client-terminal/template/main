@@ -1,3 +1,4 @@
-(fn [state]
-  (./node :screen {}
-    (.map [./toolbar ./statusbar ./session] (fn [x] (x state)))))
+(fn template-main [state]
+  (./b :screen
+    { :title "etude demo" :smartCSR true :bg nil }
+    (.map [./toolbar ./statusbar ./session] (fn [x] (log x) (x state)))))

@@ -11,6 +11,11 @@
     (fn [align x y fg bg c]
       (./b :Text (assoc { :fg fg :bg bg :top y } align x) c))
 
+  toolbar-button
+    (fn [align x y w c]
+      (./b :Box (assoc { :fg fg :bg bg :ch "X" :top 0 :bottom 0 } align x)
+        [ (./b :Text {} "c") ]))
+
 ] (fn template-toolbar [state]
     (./b :Box { :top 0 :left 0 :right 0 :height 3 }
       [ (toolbar-box  :left  1      0 9  :black)

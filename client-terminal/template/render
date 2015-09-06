@@ -2,6 +2,7 @@
       vnode?  (fn [x] (and (object? x) (= x.type "VNode")))]
   (fn render [vnode]
     (if (not (vnode? vnode)) (throw (Error. (str vnode "is not a VNode"))))
+    ;(log.as :rendering vnode.type vnode.element (.-length (or vnode.content "")))
     (let [node    ((aget blessed vnode.element) vnode.options)
           content vnode.content]
       (cond

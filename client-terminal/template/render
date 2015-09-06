@@ -1,1 +1,6 @@
-(fn render [container template state])
+(let [blessed (require "blessed")]
+  (fn render [vnode]
+    (if (or (not vnode) (not (= vnode.type "VNode")))
+      (throw (Error. (str node "is not a VNode"))))
+    (let [node ((aget blessed vnode.element) vnode.options)]
+      node)))

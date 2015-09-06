@@ -3,13 +3,13 @@
     (fn [align x y w c]
       (let [default (assoc { :fg c } align x)]
         (.map ["▄" "█" "▀"] (fn [ch i]
-          (./b :text
+          (./b :Text
             (assoc default :top (+ y i))
             (../util/repeat w ch))))))
 
   toolbar-text
     (fn [align x y fg bg c]
-      (./b :text (assoc { :fg fg :bg bg :top y } align x) c))
+      (./b :Text (assoc { :fg fg :bg bg :top y } align x) c))
 
 ] (fn template-toolbar [state]
     (./b :box { :top 0 :left 0 :right 0 :height 3 }

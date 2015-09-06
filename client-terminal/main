@@ -1,32 +1,10 @@
-(let [B           ./bless
+(let [screen (./template/render (./template/main {}))
+      keymap ./options/keymap]
 
-$ (do (log (./template/main)) (process.exit))
-
-      screen      (B.screen { :smartCSR true :bg nil })
-      session-box (B.box { :top 3 :left 1 :right 1 :bottom 1 :scrollable true })
-      render
-        (fn render [screen]
-          (screen.realloc)
-          (./render/toolbar screen)
-          (./render/statusbar screen)
-          (screen.render))]
-
-  ; print project contents
-  (log ./session/score)
-
-  ; setup
-  (set! screen.title "etude demo")
-
-  ; keyboard events
-  (.map (keys ./options/keymap) (fn [event]
-    (screen.key (aget ./options/keymap event)
+  (.map (keys keymap) (fn [event]
+    (screen.key (aget keymap event)
       (fn [c k] (./events/emit event [c k])))))
   (./events/on :exit (fn [] (process.exit)))
   (./events/on :refresh (fn [] (screen.realloc) (screen.render)))
-
-  ; session body
-  (./render/session screen)
-
-  (screen.render)
 
   { :undo (fn [] (screen.destroy)) })

@@ -1,5 +1,5 @@
 (fn template-statusbar [state]
-  (./b :text
+  (./b :Text
     { :tags true :bg :black :fg :yellow
       :left 1 :right 1 :bottom 0 :height 1 } 
     (.reduce (keys ../options/keymap) (fn [a b]

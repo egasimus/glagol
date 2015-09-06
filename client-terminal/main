@@ -13,17 +13,11 @@
     ;(screen.key (aget keymap event)
       ;(fn [c k] (./events/emit event [c k])))))
 
-  ;; watch entire template directory -- for now
-  ;(./watch/add "template/**/*")
-  
-  (./watch/add watch-path)
-  (./watch/on "all" watch-cb)
-
   (./events/on :exit    (fn [] (process.exit)))
   (./events/on :refresh (fn [] (screen.realloc) (screen.render)))
   (./events/on :update  (fn [] (log.as :update arguments)))
 
   { :undo (fn []
-      (./watch/unwatch watch-path)
-      (./watch/remove-event-listener "all" watch-cb)
-      #_(screen.destroy)) })
+    (./watch/unwatch watch-path)
+    (./watch/remove-event-listener "all" watch-cb)
+    #_(screen.destroy)) })

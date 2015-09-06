@@ -4,10 +4,14 @@
   (screen.render)
 
   ;; send events from keyboard
+  ;; todo rewrite upside down - need own key dispatcher
+  ;; for live editable keys without undoing and shit
   (.map (keys keymap) (fn [event]
     (screen.key (aget keymap event)
       (fn [c k] (./events/emit event [c k])))))
-      
+
+  (set! ./template [:watch (fn [] (log "UPDATE"))])
+
   ;; react to events
   (./events/on :exit    (fn [] (process.exit)))
   (./events/on :refresh (fn [] (screen.realloc) (screen.render)))

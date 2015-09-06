@@ -1,0 +1,14 @@
+(fn render-track-clips [parent track]
+  (.map (get-track-clips track) (fn [clip i]
+    (if clip
+      (do
+        (parent.append (B.text
+          { :top (+ 3 (* 2 i)) :left 0 :right 0
+            :content (str " ▶ " clip) :bg :black}))
+        (parent.append (B.text
+          { :top (+ 4 (* 2 i)) :left 0 :right 0
+            :ch "▄" :inverse true :bg nil :fg :black})))
+      (parent.append (B.text
+        { :ch "┄" :top (+ 3 (* 2 i)) :left 0 :right 0 :fg :black })))))
+  parent)
+

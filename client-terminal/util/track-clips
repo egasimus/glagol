@@ -1,0 +1,4 @@
+(fn get-track-clips [track-id]
+  (.reduce ./session/score (fn [clips scene]
+    (clips.concat (or (aget scene.contents track-id) []))) []))
+

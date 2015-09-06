@@ -1,23 +1,24 @@
-[
-  (./scene "INTRO"
-    :kick  [ nil      :kick-1       ]
-    :snare [ :snare-1 :snare-1-fill ]
-    :synth [ nil      :buildup      ])
-  (./scene "THEME"
-    :kick  [ :kick-1      ]
-    :snare [ :snare-1     ]
-    :bass  [ :bass-long   ]
-    :synth [ :theme ])
-  (./scene "BUILDUP"
-    :kick  [ :kick-1                                ]
-    :bass  [ :bass-muted     :bass-muted :bass-long ]
-    :synth [ :theme-staccato :theme      :theme     ])
-  (./scene "VERSE")
-  (./scene "CHORUS")
-  (./scene "SOLO")
-  (./scene "VERSE")
-  (./scene "BUILDUP")
-  (./scene "CHORUS")
-  (./scene "THEME")
-  (./scene "OUTRO")
-]
+(let [scene ../element/scene]
+  [
+    (scene "INTRO"
+      :kick  [ nil      :kick-1       ]
+      :snare [ :snare-1 :snare-1-fill ]
+      :synth [ nil      :buildup      ])
+    (scene "THEME"
+      :kick  [ :kick-1      ]
+      :snare [ :snare-1     ]
+      :bass  [ :bass-long   ]
+      :synth [ :theme ])
+    (scene "BUILDUP"
+      :kick  [ :kick-1                                ]
+      :bass  [ :bass-muted     :bass-muted :bass-long ]
+      :synth [ :theme-staccato :theme      :theme     ])
+    (scene "VERSE")
+    (scene "CHORUS")
+    (scene "SOLO")
+    (scene "VERSE")
+    (scene "BUILDUP")
+    (scene "CHORUS")
+    (scene "THEME")
+    (scene "OUTRO")
+  ])

@@ -1,0 +1,14 @@
+(fn [parent track]
+  (.map
+    [ { :content (../util/repeat (+ 2 track.length) "▄")
+        :bg nil :fg :black
+        :top 0 :left 0 }
+      { :content (str track)
+        :bg :black :fg :yellow
+        :padding { :left 1 :right 1 }
+        :top 1 :left 0 }
+      { :ch "▄"
+        :bg nil :fg :black :inverse true
+        :top 2 :left 0 :width (+ 2 track.length) } ]
+    (fn [attrs] (parent.append (B.text attrs))))
+  parent)

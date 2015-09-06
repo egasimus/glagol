@@ -1,89 +1,14 @@
-(let [B
-        (require "blessed")
-
-      screen
-        (B.screen { :smartCSR true :bg nil })
-
-      add-scene
-        (fn [parent y text]
-          (let [w (- parent.width text.length 3)]
-            (parent.append (B.text
-              { :ch "┄" :top y :left (+ text.length 2) :right 1 :fg :black }))
-            (parent.append (B.text { :content text :left 1 :top y }))
-            parent))
-
-      most-clips-in
-        (fn [scene]
-          (let [most-clips 1]
-            (.map (keys scene.contents) (fn [track]
-              (let [track (aget scene.contents track)]
-                (if (> track.length most-clips)
-                  (set! most-clips track.length)))))
-            most-clips))
-
-      calculate-scene-positions
-        (fn [session]
-          (let [coordinates {}
-                next-y      3]
-            (session.map (fn [scene]
-              (aset coordinates next-y scene)
-              (set! next-y (+ next-y (* (most-clips-in scene) 2)))))
-            coordinates))
-
-      get-y
-        (fn [i] (+ 6 (* 3 i)))
-
-      session-box
-        (B.box { :top 3 :left 1 :right 1 :bottom 1 :scrollable true })
-
-      get-track-clips
-        (fn [track-id]
-          (.reduce ./session/score (fn [clips scene]
-            (clips.concat (or (aget scene.contents track-id) []))) []))
-
-      render-track-heading
-        (fn [parent track]
-          (.map
-            [ { :content (./repeat (+ 2 track.length) "▄")
-                :bg nil :fg :black
-                :top 0 :left 0 }
-              { :content (str track)
-                :bg :black :fg :yellow
-                :padding { :left 1 :right 1 }
-                :top 1 :left 0 }
-              { :ch "▄"
-                :bg nil :fg :black :inverse true
-                :top 2 :left 0 :width (+ 2 track.length) } ]
-            (fn [attrs] (parent.append (B.text attrs))))
-          parent)
-
-      render-track-clips
-        (fn [parent track]
-          (.map (get-track-clips track) (fn [clip i]
-            (if clip
-              (do
-                (parent.append (B.text
-                  { :top (+ 3 (* 2 i)) :left 0 :right 0
-                    :content (str " ▶ " clip) :bg :black}))
-                (parent.append (B.text
-                  { :top (+ 4 (* 2 i)) :left 0 :right 0
-                    :ch "▄" :inverse true :bg nil :fg :black})))
-              (parent.append (B.text
-                { :ch "┄" :top (+ 3 (* 2 i)) :left 0 :right 0 :fg :black })))))
-          parent)
-
-      render-track
-        (fn [track-id i]
-          (let [x (+ 12 (* i (+ ./options/track-width 1)))]
-            (session-box.append
-              (-> (B.box { :top 0 :bottom 0 :left x :width track-width })
-                (render-track-heading (aget ./session/tracks track-id))
-                (render-track-clips   track-id)))))
-
-  ]
+(let [B           ./bless
+      screen      (B.screen { :smartCSR true :bg nil })
+      session-box (B.box { :top 3 :left 1 :right 1 :bottom 1 :scrollable true })
+      render
+        (fn render [screen]
+          (screen.realloc)
+          (./render/toolbar screen)
+          (./render/statusbar screen)
+          (screen.render))]
 
   ; print project contents
-  (log ./session)
   (log ./session/score)
 
   ; setup
@@ -96,10 +21,6 @@
       (fn [c k] (./events/emit event [c k])))))
   (./events/on :exit (fn [] (process.exit)))
   (./events/on :refresh (fn [] (screen.realloc) (screen.render)))
-
-  ; toolbars
-  (./toolbar screen)
-  (./statusbar screen)
 
   ; session body
   (screen.append session-box)

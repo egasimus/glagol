@@ -10,5 +10,5 @@
       { :ch "▄"
         :bg nil :fg :black :inverse true
         :top 2 :left 0 :width (+ 2 track.length) } ]
-    (fn [attrs] (parent.append (B.text attrs))))
+    (fn [attrs] (parent.append (../bless/text attrs))))
   parent)

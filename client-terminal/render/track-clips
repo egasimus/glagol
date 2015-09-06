@@ -1,5 +1,5 @@
 (fn render-track-clips [parent track]
-  (.map (get-track-clips track) (fn [clip i]
+  (.map (../util/track-clips track) (fn [clip i]
     (if clip
       (do
         (parent.append (B.text

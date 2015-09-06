@@ -1,10 +1,5 @@
 (let [;screen (./template/render (./template/main {}))
-      keymap ./options/keymap
-
-      path        (require "path")
-      watch-path  (path.resolve (process.cwd) "template" "**" "*")
-      watch-cb    (fn [event path stat]
-                    (if (= event :change) (log.as :change path stat)))]
+      keymap ./options/keymap]
 
   ;(screen.render)
 
@@ -12,12 +7,11 @@
   ;(.map (keys keymap) (fn [event]
     ;(screen.key (aget keymap event)
       ;(fn [c k] (./events/emit event [c k])))))
+      ;
+  (log (./template/main {}))
 
   (./events/on :exit    (fn [] (process.exit)))
   (./events/on :refresh (fn [] (screen.realloc) (screen.render)))
   (./events/on :update  (fn [] (log.as :update arguments)))
 
-  { :undo (fn []
-    (./watch/unwatch watch-path)
-    (./watch/remove-event-listener "all" watch-cb)
-    #_(screen.destroy)) })
+  { :undo (fn [] #_(screen.destroy)) })

@@ -1,17 +1,16 @@
-(let [;screen (./template/render (./template/main {}))
+(let [screen (./template/render (./template/main {}))
       keymap ./options/keymap]
 
-  ;(screen.render)
+  (screen.render)
 
   ;; send events from keyboard
-  ;(.map (keys keymap) (fn [event]
-    ;(screen.key (aget keymap event)
-      ;(fn [c k] (./events/emit event [c k])))))
-      ;
-  (log (./template/main {}))
-
+  (.map (keys keymap) (fn [event]
+    (screen.key (aget keymap event)
+      (fn [c k] (./events/emit event [c k])))))
+      
+  ;; react to events
   (./events/on :exit    (fn [] (process.exit)))
   (./events/on :refresh (fn [] (screen.realloc) (screen.render)))
   (./events/on :update  (fn [] (log.as :update arguments)))
 
-  { :undo (fn [] #_(screen.destroy)) })
+  { :undo (fn [] (screen.destroy)) })

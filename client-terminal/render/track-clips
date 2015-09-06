@@ -7,7 +7,7 @@
             :content (str " ▶ " clip) :bg :black}))
         (parent.append (../bless/text
           { :top (+ 4 (* 2 i)) :left 0 :right 0
-            :ch "▄" :inverse true :bg nil :fg :black})))
+            :ch "▄" :inverse true :bg nil :fg "#111111"})))
       (parent.append (../bless/text
         { :ch "┄" :top (+ 3 (* 2 i)) :left 0 :right 0 :fg :black })))))
   parent)

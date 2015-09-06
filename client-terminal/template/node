@@ -1,0 +1,5 @@
+(fn [element options body]
+  { :type    "VNode"
+    :element element
+    :options options
+    :body    body })

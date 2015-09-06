@@ -1,4 +1,7 @@
 (let [B           ./bless
+
+$ (do (log (./template/main)) (process.exit))
+
       screen      (B.screen { :smartCSR true :bg nil })
       session-box (B.box { :top 3 :left 1 :right 1 :bottom 1 :scrollable true })
       render
@@ -13,7 +16,6 @@
 
   ; setup
   (set! screen.title "etude demo")
-  (screen.enable-mouse)
 
   ; keyboard events
   (.map (keys ./options/keymap) (fn [event]

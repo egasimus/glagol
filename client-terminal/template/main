@@ -1,0 +1,3 @@
+(fn [state]
+  (./node :screen {}
+    (.map [./toolbar ./statusbar ./session] (fn [x] (x state)))))

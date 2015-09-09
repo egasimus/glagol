@@ -1,12 +1,11 @@
-(let [screen (./template/render (./template/main {}))
-      keymap ./options/keymap]
+(let [screen (./template/render (./template/main {}))]
 
   (screen.render)
 
   ;; dispatch keyboard events by keymap
   (screen.on "keypress" (fn [c k]
-    (.map (keys keymap) (fn [event]
-      (if (> (.index-of (aget keymap event) k.full) -1)
+    (.map (keys ./options/keymap) (fn [event]
+      (if (> (.index-of (aget ./options/keymap event) k.full) -1)
         (./events/emit event k))))))
 
   ;(set! ./template [:watch (fn [] (log "UPDATE"))])

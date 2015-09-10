@@ -1,12 +1,1 @@
-(let [screen (./template/render (./template/main {}))]
-
-  (screen.render)
-
-  ;(set! ./template [:watch (fn [] (log "UPDATE"))])
-
-  ;; react to events
-  (./events/on :exit    (fn [] (process.exit)))
-  (./events/on :refresh (fn [] (screen.realloc) (screen.render)))
-  (./events/on :update  (fn [] (log.as :update arguments)))
-
-  { :undo (fn [] (screen.destroy)) })
+(./template/mainloop (fn [] ./template/main) (fn [] ./state))

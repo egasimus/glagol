@@ -1,1 +1,7 @@
-(new (.-EventEmitter2 (require "eventemitter2")))
+(let [emitter (new (.-EventEmitter2 (require "eventemitter2")))]
+
+  (./events/on :exit    (fn [] (process.exit)))
+  (./events/on :refresh (fn [] (screen.realloc) (screen.render)))
+  (./events/on :update  (fn [] (log.as :update arguments)))
+
+  emitter)

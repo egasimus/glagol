@@ -1,0 +1,4 @@
+(fn mainloop [get-template get-data]
+  (let [render (fn [] (./render ((get-template) (get-data))))
+        screen (render)]
+    (screen.render)))

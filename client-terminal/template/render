@@ -1,12 +1,23 @@
 (let [blessed (require "blessed")
       vnode?  (fn [x] (and (object? x) (= x.type "VNode")))]
   (fn render [vnode]
+
+    ; sanity check
     (if (not (vnode? vnode)) (throw (Error. (str vnode "is not a VNode"))))
-    ;(log.as :rendering vnode.type vnode.element (.-length (or vnode.content "")))
-    (let [node    ((aget blessed vnode.element) vnode.options)
+
+    ; clean up non-Blessed options and instantiate node
+    (let [events  (or vnode.options.events {})
+          options (assoc vnode.options :events nil)
+          node    ((aget blessed vnode.element) vnode.options)
           content vnode.content]
+
+      ; bind events
+      (.map (keys events) (fn [evt] (node.on evt (aget events evt))))
+
+      ; add content, possibly descending
       (cond
         (string? content) (node.set-content content)
         (vector? content) (content.map (fn [vchild] (node.append (render vchild))))
         (vnode?  content) (node.append (render content)))
+
       node)))

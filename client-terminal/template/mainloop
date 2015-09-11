@@ -1,4 +1,22 @@
-(fn mainloop [get-template get-data]
-  (let [render (fn [] (./render ((get-template) (get-data))))
-        screen (render)]
-    (screen.render)))
+(let [diff (require "deep-diff")]
+  (fn mainloop [get-template get-data]
+    (let [render-tree   (fn []     ((get-template) (get-data)))
+          render-elem   (fn [tree] (./render tree))
+
+          tree (render-tree)
+          elem (render-elem tree)
+
+          interval 2000
+          timeout  nil
+          tick     nil]
+
+      (set! tick (fn []
+        (log.as :----1 tree)
+        (log.as :----2 (render-tree))
+        (log.as :----3 (diff tree (render-tree)))
+        (elem.render)
+        (set! timeout (set-timeout tick interval))))
+
+      (tick)
+
+      nil)))

@@ -8,7 +8,7 @@
     ; clean up non-Blessed options and instantiate node
     (let [events  (or vnode.options.events {})
           options (assoc vnode.options :events nil)
-          node    ((aget blessed vnode.element) vnode.options)
+          node    ((aget blessed vnode.element) options)
           content vnode.content]
 
       ; bind events

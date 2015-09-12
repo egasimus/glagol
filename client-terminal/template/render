@@ -4,8 +4,12 @@
     (if (not widget) (throw (Error (str "unknown widget " el.widget))))
     (let [rendered (widget el.options)]
       (if parent (parent.append rendered))
-      (if el.children (el.children.map (render.bind nil rendered)))
+      ;(if el.children (el.children.map (render.bind nil rendered)))
       rendered)))
+      ;(./bless/Text { :content :foo :top 5 :left 5 :fg :red }))))
+      ;rendered)))
+      ;(if el.children (el.children.map (render.bind nil rendered)))
+      ;rendered)))
 
 ;(let [blessed (require "blessed")
       ;vnode?  (fn [x] (and (object? x) (= x.type "VNode")))]

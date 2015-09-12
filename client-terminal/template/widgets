@@ -1,10 +1,11 @@
 {
 
   "div#root-box"
-  (fn [opts] (./bless/Box opts))
+  ;(fn [opts] (./bless/Text { :content :foo :top 5 :left 5 }))
+  (fn [opts] (./bless/Box { :top 10 :bottom 10 :left 10 :right 10 :bg :red}))
 
   "div.toolbar"
-  (fn [] (./bless/Box))
+  (fn [] (./bless/Text ))
 
   "div.toolbar-bpm"
   (fn [] (./bless/Box))

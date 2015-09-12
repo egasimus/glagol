@@ -1,34 +1,10 @@
 (let [Diff (require "deep-diff")]
   (fn mainloop [screen get-template get-data]
-    (let [rendered (./render nil (./parse ((get-template) (get-data))))]
-      (screen.append rendered))))
-    ;(let [render-tree (fn [] ((get-template) (get-data)))
-
-          ;tree (render-tree)
-          ;elem (./render tree)
-
-          ;interval 2000
-          ;timeout  nil
-          ;tick     nil
-
-          ;apply-change Diff.apply-change]
-
-      ;(set! tick (fn tick []
-        ;(log.as :foo (Diff elem (./render (render-tree))))
-        ;;(Diff.apply-change elem (./render (render-tree)))
-        ;(screen.append elem)
-        ;(screen.render)
-        ;(set! timeout (set-timeout tick interval))))
-
-      ;(tick)
-
-      ;;(log elem)
-
-      ;;(set! tick (fn []
-        ;;(let [new-elem (./render (render-tree))]
-          ;;(Diff.apply-diff elem new-elem)
-          ;;(set! timeout (set-timeout tick interval)))))
-
-      ;;(tick)
-
-      ;nil)))
+    (let [render   (fn [] (./render screen (./parse ((get-template) (get-data)))))
+          rendered (render)]
+      (set-interval (fn []
+        (screen.remove rendered)
+        (set! rendered (render))
+        (screen.append rendered)
+        (screen.render)) 1000)
+      (screen.render))))

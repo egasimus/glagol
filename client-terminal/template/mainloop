@@ -4,7 +4,7 @@
           rendered (render)]
       (set-interval (fn []
         (screen.remove rendered)
-        (set! rendered (render))
+        (try (set! rendered (render)) (catch e (log e.message)))
         (screen.append rendered)
         (screen.render)) 1000)
       (screen.render))))

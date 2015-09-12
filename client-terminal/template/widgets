@@ -1,13 +1,13 @@
 {
 
-  "div#root-box"
+  "#root-box"
   (fn [opts] (./bless/Box (merge
     { :top 0 :bottom 1 :left 1 :right 1 :bg "#111111"} opts)))
 
-  "div.toolbar"
+  ".toolbar"
   (fn [] (./bless/Box { :top 0 :left 0 :right 0 :height 3 }))
 
-  "div.toolbar-bpm"
+  ".toolbar-bpm"
   (fn [] (let
     [box (./bless/Box { :left 0 :width 5 :top 0 :height 3 :color :red :bg "#111111"})]
     (.map
@@ -17,7 +17,7 @@
       (box.append.bind box) )
     box))
 
-  "div.toolbar-tap"
+  ".toolbar-tap"
   (fn [] (let
     [box (./bless/Box { :left 6 :width 5 :top 0 :height 3 :color :red :bg "#111111"})]
     (.map
@@ -27,7 +27,7 @@
       (box.append.bind box) )
     box))
 
-  "div.toolbar-metre"
+  ".toolbar-metre"
   (fn [] (let
     [box (./bless/Box { :left 14 :width 5 :top 0 :height 3 :color :red :bg "#111111"})]
     (.map
@@ -37,7 +37,7 @@
       (box.append.bind box) )
     box))
 
-  "div.toolbar-quantize-toggle"
+  ".toolbar-quantize-toggle"
   (fn [] (let
     [box (./bless/Box { :left 22 :width 5 :top 0 :height 3 :color :red :bg "#111111"})]
     (.map
@@ -47,7 +47,7 @@
       (box.append.bind box) )
     box))
 
-  "div.toolbar-quantize-value"
+  ".toolbar-quantize-value"
   (fn [] (let
     [box (./bless/Box { :left 28 :width 7 :top 0 :height 3 :color :red :bg "#111111"})]
     (.map
@@ -57,7 +57,7 @@
       (box.append.bind box) )
     box))
 
-  "div.toolbar-play"
+  ".toolbar-play"
   (fn [] (let
     [box (./bless/Box { :align :center :left "50%-3" :width 5 :top 0 :height 3 :color :red :bg "#111111"})]
     (.map
@@ -67,7 +67,7 @@
       (box.append.bind box) )
     box))
 
-  "div.toolbar-record"
+  ".toolbar-record"
   (fn [] (let
     [box (./bless/Box { :align :center :left "50%+3" :width 5 :top 0 :height 3 :color :red :bg "#111111"})]
     (.map
@@ -77,7 +77,7 @@
       (box.append.bind box) )
     box))
 
-  "div.toolbar-rewind"
+  ".toolbar-rewind"
   (fn [] (let
     [box (./bless/Box { :align :center :left "50%-9" :width 5 :top 0 :height 3 :color :red :bg "#111111"})]
     (.map
@@ -87,7 +87,7 @@
       (box.append.bind box) )
     box))
 
-  "div.toolbar-midi"
+  ".toolbar-midi"
   (fn [] (let
     [box (./bless/Box { :right 8 :width 5 :top 0 :height 3 :color :red :bg "#111111"})]
     (.map
@@ -97,7 +97,7 @@
       (box.append.bind box) )
     box))
 
-  "div.toolbar-midi-in"
+  ".toolbar-midi-in"
   (fn [] (let
     [box (./bless/Box { :right 4 :width 3 :top 0 :height 3 :color :red :bg "#111111"})]
     (.map
@@ -107,7 +107,7 @@
       (box.append.bind box) )
     box))
 
-  "div.toolbar-midi-out"
+  ".toolbar-midi-out"
   (fn [] (let
     [box (./bless/Box { :right 0 :width 3 :top 0 :height 3 :color :red :bg "#111111"})]
     (.map
@@ -117,7 +117,7 @@
       (box.append.bind box) )
     box))
 
-  "div.toolbar-osc"
+  ".toolbar-osc"
   (fn [] (let
     [box (./bless/Box { :right 23 :width 5 :top 0 :height 3 :color :red :bg "#111111"})]
     (.map
@@ -127,7 +127,7 @@
       (box.append.bind box) )
     box))
 
-  "div.toolbar-osc-in"
+  ".toolbar-osc-in"
   (fn [] (let
     [box (./bless/Box { :right 19 :width 3 :top 0 :height 3 :color :red :bg "#111111"})]
     (.map
@@ -137,7 +137,7 @@
       (box.append.bind box) )
     box))
 
-  "div.toolbar-osc-out"
+  ".toolbar-osc-out"
   (fn [] (let
     [box (./bless/Box { :right 15 :width 3 :top 0 :height 3 :color :red :bg "#111111"})]
     (.map
@@ -147,7 +147,7 @@
       (box.append.bind box) )
     box))
 
-  "div.toolbar-kbd"
+  ".toolbar-kbd"
   (fn [] (let
     [box (./bless/Box { :right 34 :width 5 :top 0 :height 3 :color :red :bg "#111111"})]
     (.map
@@ -157,7 +157,7 @@
       (box.append.bind box) )
     box))
 
-  "div.toolbar-kbd-in"
+  ".toolbar-kbd-in"
   (fn [] (let
     [box (./bless/Box { :right 30 :width 3 :top 0 :height 3 :color :red :bg "#111111"})]
     (.map
@@ -167,16 +167,37 @@
       (box.append.bind box) )
     box))
 
-  "div.statusbar"
+  ".statusbar"
   (fn [] (let
-    [box (./bless/Box { :bottom 1 :height 1 :left 1 :right 1 })]
-    (box.append (./bless/Text { :content "foo" :left 0 :right 0 :top 1 :height 1 }))
+    [box (./bless/Box { :bottom -1 :height 1 :left 1 :right 1 })]
     box))
 
-  "div.text"
+  ".text"
   (fn [] (./bless/Box))
 
-  "div.session"
+  ".session"
   (fn [] (./bless/Box))
+
+  ".mixer"
+  (fn [] (./bless/Box { :bottom 0 :height 15 :left 1 :right 1 :bg "#111111" }))
+
+  ".mixer-track"
+  (fn [opts] (let [box (./bless/Box (merge { :left 0 :top 0 :width 9 :height 15 } (assoc opts :color nil :name nil)))]
+    (box.append (./bless/Text { :bottom 0 :height 1 :left 1 :right 0 :content opts.name}))
+    (box.append (./bless/Box { :bottom -1 :height 1 :left 0 :right 0 :ch "▄" :bg nil :fg opts.color}))
+    (box.append (./bless/Box { :bottom 2 :height (Math.round (* 10 (Math.random))) :right 1 :width 2 :bg :green }))
+    (box.append (./bless/Text { :bottom 13 :left 0 :content "   0 dB " :fg :black}))
+    (box.append (./bless/Text { :bottom 11 :left 0 :content "  -6 " :fg :black}))
+    (box.append (./bless/Text { :bottom 9 :left 0 :content " -12 " :fg :black}))
+    (box.append (./bless/Text { :bottom 7  :left 0 :content " -18 " :fg :black}))
+    (box.append (./bless/Text { :bottom 5  :left 0 :content " -24 " :fg :black}))
+    (box.append (./bless/Text { :bottom 3  :left 0 :content " -48 " :fg :black}))
+    (box.append (./bless/Text { :bottom 3  :left 0 :content " -60 " :fg :black}))
+    ;(box.append (./bless/Text { :bottom 10 :left 1 :content " FX " :bg "#111111"}))
+    ;(box.append (./bless/Text { :bottom 8 :left 1 :content " IO " :bg "#111111"}))
+    ;(box.append (./bless/Text { :bottom 6 :left 1 :content " M " :bg "#111111"}))
+    ;(box.append (./bless/Text { :bottom 4 :left 1 :content " S " :bg "#111111"}))
+    ;(box.append (./bless/Text { :bottom 2 :left 1 :content " R " :bg "#111111"}))
+    box))
 
 }

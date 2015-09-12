@@ -1,29 +1,29 @@
 (fn template-toolbar [state]
-  [ "div.toolbar"
+  [ ".toolbar"
     {}
 
-    [ "div.toolbar-bpm" "174" ] 
-    [ "div.toolbar-tap"       ]
+    [ ".toolbar-bpm" "174" ] 
+    [ ".toolbar-tap"       ]
 
-    [ "div.toolbar-metre" "4/4" ]
+    [ ".toolbar-metre" "4/4" ]
 
-    [ "div.toolbar-quantize-toggle"         ]
-    [ "div.toolbar-quantize-value"  "1 bar" ]
+    [ ".toolbar-quantize-toggle"         ]
+    [ ".toolbar-quantize-value"  "1 bar" ]
 
-    [ "div.toolbar-rewind" "<<"  ]
-    [ "div.toolbar-play"   "▶"   ]
-    [ "div.toolbar-record" "REC" ]
+    [ ".toolbar-rewind" "<<"  ]
+    [ ".toolbar-play"   "▶"   ]
+    [ ".toolbar-record" "REC" ]
 
-    [ "div.toolbar-midi"     "MIDI" ]
-    [ "div.toolbar-midi-in"  "↓"    ]
-    [ "div.toolbar-midi-out" "↑"    ]
+    [ ".toolbar-midi"     "MIDI" ]
+    [ ".toolbar-midi-in"  "↓"    ]
+    [ ".toolbar-midi-out" "↑"    ]
 
-    [ "div.toolbar-osc"     "OSC" ]
-    [ "div.toolbar-osc-in"  "↓"   ]
-    [ "div.toolbar-osc-out" "↑"   ]
+    [ ".toolbar-osc"     "OSC" ]
+    [ ".toolbar-osc-in"  "↓"   ]
+    [ ".toolbar-osc-out" "↑"   ]
 
-    [ "div.toolbar-kbd"    "KBD" ]
-    [ "div.toolbar-kbd-in" "↓"   ] ])
+    [ ".toolbar-kbd"    "KBD" ]
+    [ ".toolbar-kbd-in" "↓"   ] ])
 
 ;     =O =  *  = O=
 ; ["▄" "█" "▀" "█" "▄"]

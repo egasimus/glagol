@@ -1,14 +1,14 @@
 (fn template-toolbar [state]
   [ "div.toolbar"
-    { :top 0 :left 0 :right 0 :height 3 }
+    {}
 
-    [ "div.toolbar-bpm" state.bpm ]
-    [ "div.toolbar-tap"           ]
+    [ "div.toolbar-bpm" "174" ] 
+    [ "div.toolbar-tap"       ]
 
-    [ "div.toolbar-meter" state.meter ]
+    [ "div.toolbar-metre" "4/4" ]
 
-    [ "div.toolbar-quantize-value"  state.quantize ]
-    [ "div.toolbar-quantize-toggle"                ]
+    [ "div.toolbar-quantize-toggle"         ]
+    [ "div.toolbar-quantize-value"  "1 bar" ]
 
     [ "div.toolbar-play"   "▶"   ]
     [ "div.toolbar-record" "REC" ]
@@ -17,6 +17,10 @@
     [ "div.toolbar-midi"     "MIDI" ]
     [ "div.toolbar-midi-in"  "↓"    ]
     [ "div.toolbar-midi-out" "↑"    ]
+
+    [ "div.toolbar-osc"     "OSC" ]
+    [ "div.toolbar-osc-in"  "↓"   ]
+    [ "div.toolbar-osc-out" "↑"   ]
 
     [ "div.toolbar-kbd"    "KBD" ]
     [ "div.toolbar-kbd-in" "↓"   ] ])

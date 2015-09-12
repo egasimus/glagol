@@ -1,5 +1,6 @@
 (fn template-main [state]
-  [ "div#root-box" {} []])
-    ;(./toolbar   state) ])
+  [ "div#root-box"
+    {}
+    (./toolbar   state) ])
     ;(./statusbar state) ])
     ;(./session   state) ])

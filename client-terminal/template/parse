@@ -15,16 +15,11 @@
 
       (object? arg1) (do
         (set! parsed.options arg1)
-        (cond
-          (and (= 1 args.length) (string? (aget args 0)))
-            (set! parsed.content args)
-          (vector? (aget args 0))
-            (set! parsed.children (.map (aget args 0) parse-template))
-          :else
-            (throw (Error. (str "children must be string or array of elements")))))
+        (if (and (= 1 args.length) (string? (aget args 0)))
+          (set! parsed.content args) (set! parsed.children (args.map parse-template))))
 
       (vector? arg1)
-        (set! parsed.children (if (string? (aget arg 1))
+        (set! parsed.children (if (string? (aget arg1 0))
           [(parse-template arg1)] (arg1.map parse-template)))
 
       (not arg1) (do)

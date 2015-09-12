@@ -1,5 +1,5 @@
 (fn render [parent el]
-  (let [widget (aget ./widgets el.widget)]
+  (let [widget (aget ../templates/widgets el.widget)]
     (if (not widget) (throw (Error (str "unknown widget " el.widget))))
     (let [rendered (widget el.options)]
       (if parent (parent.append rendered))

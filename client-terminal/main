@@ -1,1 +1,10 @@
-(./template/mainloop ./template/screen (fn [] ./template/main) (fn [] ./state))])
+(./templating/mainloop
+  ./screen
+  (fn [] ./templates/main)
+  (fn [] ./state))
+
+; _/  _/
+;  _/_/
+;   _/
+;  _/_/
+; _/  _/

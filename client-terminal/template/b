@@ -1,5 +1,0 @@
-(fn [element options content]
-  { :type    "VNode"
-    :element element
-    :options options
-    :content content })

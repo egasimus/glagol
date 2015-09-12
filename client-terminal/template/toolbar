@@ -10,9 +10,9 @@
     [ "div.toolbar-quantize-toggle"         ]
     [ "div.toolbar-quantize-value"  "1 bar" ]
 
+    [ "div.toolbar-rewind" "<<"  ]
     [ "div.toolbar-play"   "▶"   ]
     [ "div.toolbar-record" "REC" ]
-    [ "div.toolbar-rewind" "<<"  ]
 
     [ "div.toolbar-midi"     "MIDI" ]
     [ "div.toolbar-midi-in"  "↓"    ]

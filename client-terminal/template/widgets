@@ -59,7 +59,7 @@
 
   "div.toolbar-play"
   (fn [] (let
-    [box (./bless/Box { :left 40 :width 5 :top 0 :height 3 :color :red :bg "#111111"})]
+    [box (./bless/Box { :align :center :left "50%-3" :width 5 :top 0 :height 3 :color :red :bg "#111111"})]
     (.map
       [ (./bless/Box  { :left 0 :right 0 :top 0 :height 1 :ch "▄" :bg nil :fg "#111111"})
         (./bless/Text { :left 1 :right 1 :top 1 :height 1 :bg "#111111" :fg :yellow :content " ▶ "})
@@ -69,7 +69,7 @@
 
   "div.toolbar-record"
   (fn [] (let
-    [box (./bless/Box { :left 46 :width 5 :top 0 :height 3 :color :red :bg "#111111"})]
+    [box (./bless/Box { :align :center :left "50%+3" :width 5 :top 0 :height 3 :color :red :bg "#111111"})]
     (.map
       [ (./bless/Box  { :left 0 :right 0 :top 0 :height 1 :ch "▄" :bg nil :fg "#111111"})
         (./bless/Text { :left 1 :right 1 :top 1 :height 1 :bg "#111111" :fg :yellow :content "REC"})
@@ -79,7 +79,7 @@
 
   "div.toolbar-rewind"
   (fn [] (let
-    [box (./bless/Box { :left 52 :width 5 :top 0 :height 3 :color :red :bg "#111111"})]
+    [box (./bless/Box { :align :center :left "50%-9" :width 5 :top 0 :height 3 :color :red :bg "#111111"})]
     (.map
       [ (./bless/Box  { :left 0 :right 0 :top 0 :height 1 :ch "▄" :bg nil :fg "#111111"})
         (./bless/Text { :left 1 :right 1 :top 1 :height 1 :bg "#111111" :fg :yellow :content "|<<"})
@@ -168,7 +168,10 @@
     box))
 
   "div.statusbar"
-  (fn [] (./bless/Box))
+  (fn [] (let
+    [box (./bless/Box { :bottom 1 :height 1 :left 1 :right 1 })]
+    (box.append (./bless/Text { :content "foo" :left 0 :right 0 :top 1 :height 1 }))
+    box))
 
   "div.text"
   (fn [] (./bless/Box))

@@ -6,5 +6,5 @@
         (screen.remove rendered)
         (try (set! rendered (render)) (catch e (log e.message)))
         (screen.append rendered)
-        (screen.render)) 100))))
+        (screen.render)) 20))))
       ;(screen.render))))

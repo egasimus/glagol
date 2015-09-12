@@ -1,5 +1,5 @@
 (fn template-mixer [state]
-  (log state)
+  ;(log state)
   [ ".mixer" {}
     [ ".mixer-track" { :n 0 :name "Master"  :color :white  :value state.meter } ]
     [ ".mixer-track" { :n 1 :name "Kick"    :color :red    } ]

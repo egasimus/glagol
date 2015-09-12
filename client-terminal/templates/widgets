@@ -183,9 +183,11 @@
 
     ".mixer-track"
     (fn [opts]
-      (let [width 14
-            args  { :left (* width opts.n) :bottom 0 :width (- width 1) :height 15 } 
-            box   (b.Box (merge args opts))]
+      (let [width  15
+            height 15
+            args   { :left (* width opts.n) :bottom 0
+                     :width (- width 1) :height height } 
+            box    (b.Box (merge args opts))]
 
       (box.append (b.Text {
         :bottom 0
@@ -206,7 +208,7 @@
       (box.append (b.Box {
         :bottom 2
         :left 5
-        :height (Math.round (or opts.value (* 10 (Math.random))))
+        :height (Math.round (or opts.value 0))
         :width 2
         :bg :green }))
 
@@ -221,14 +223,14 @@
             { :bottom 3  :content " -60 "    } ]
           (fn [n] (box.append (b.Text (merge vu-num n))))))
 
-      (let [btn { :bg "#111111" :right 1 }]
-        (.map
-          [ { :bottom 10 :content " FX " }
-            { :bottom 8  :content " IO " }
-            { :bottom 6  :content " M "  }
-            { :bottom 4  :content " S "  }
-            { :bottom 2  :content " R "  } ]
-          (fn [n] (box.append (b.Text (merge btn n))))))
+      ;(let [btn { :bg "#111111" :right 1 }]
+        ;(.map
+          ;[ { :bottom 10 :content " FX " }
+            ;{ :bottom 8  :content " IO " }
+            ;{ :bottom 6  :content " M "  }
+            ;{ :bottom 4  :content " S "  }
+            ;{ :bottom 2  :content " R "  } ]
+          ;(fn [n] (box.append (b.Text (merge btn n))))))
 
       box))
 

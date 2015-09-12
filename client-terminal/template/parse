@@ -1,8 +1,5 @@
 (fn parse-template [el]
 
-  (log.as :parse el)
-
-  ; sanity checks
   (if (not (vector? el))
     (throw (Error. (str "element " el " must be an array"))))
   (if (not (string? (aget el 0)))

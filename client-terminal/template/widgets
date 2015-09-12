@@ -3,4 +3,56 @@
   "div#root-box"
   (fn [])
 
+  "div.toolbar"
+  (fn [])
+
+  "div.toolbar-bpm"
+  (fn [])
+
+  "div.toolbar-tap"
+  (fn [])
+
+  "div.toolbar-meter"
+  (fn [])
+
+  "div.toolbar-quantize-toggle"
+  (fn [])
+
+  "div.toolbar-quantize-value"
+  (fn [])
+
+  "div.toolbar-play"
+  (fn [])
+
+  "div.toolbar-record"
+  (fn [])
+
+  "div.toolbar-rewind"
+  (fn [])
+
+  "div.toolbar-midi"
+  (fn [])
+
+  "div.toolbar-midi-in"
+  (fn [])
+
+  "div.toolbar-midi-out"
+  (fn [])
+
+  "div.toolbar-kbd"
+  (fn [])
+
+  "div.toolbar-kbd-in"
+  (fn [])
+
+  "div.statusbar"
+  (fn [])
+
+  "div.text"
+  (fn [])
+
+  "div.session"
+  (fn [])
+
+
 }

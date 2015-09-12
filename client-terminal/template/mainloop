@@ -1,6 +1,7 @@
 (let [Diff (require "deep-diff")]
-  (fn mainloop [program get-template get-data]
-    (./render program (./parse ((get-template) (get-data))))))
+  (fn mainloop [screen get-template get-data]
+    (let [rendered (./render nil (./parse ((get-template) (get-data))))]
+      (screen.append rendered))))
     ;(let [render-tree (fn [] ((get-template) (get-data)))
 
           ;tree (render-tree)

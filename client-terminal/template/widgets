@@ -1,58 +1,57 @@
 {
 
   "div#root-box"
-  (fn [])
+  (fn [opts] (./bless/Box opts))
 
   "div.toolbar"
-  (fn [])
+  (fn [] (./bless/Box))
 
   "div.toolbar-bpm"
-  (fn [])
+  (fn [] (./bless/Box))
 
   "div.toolbar-tap"
-  (fn [])
+  (fn [] (./bless/Box))
 
   "div.toolbar-meter"
-  (fn [])
+  (fn [] (./bless/Box))
 
   "div.toolbar-quantize-toggle"
-  (fn [])
+  (fn [] (./bless/Box))
 
   "div.toolbar-quantize-value"
-  (fn [])
+  (fn [] (./bless/Box))
 
   "div.toolbar-play"
-  (fn [])
+  (fn [] (./bless/Box))
 
   "div.toolbar-record"
-  (fn [])
+  (fn [] (./bless/Box))
 
   "div.toolbar-rewind"
-  (fn [])
+  (fn [] (./bless/Box))
 
   "div.toolbar-midi"
-  (fn [])
+  (fn [] (./bless/Box))
 
   "div.toolbar-midi-in"
-  (fn [])
+  (fn [] (./bless/Box))
 
   "div.toolbar-midi-out"
-  (fn [])
+  (fn [] (./bless/Box))
 
   "div.toolbar-kbd"
-  (fn [])
+  (fn [] (./bless/Box))
 
   "div.toolbar-kbd-in"
-  (fn [])
+  (fn [] (./bless/Box))
 
   "div.statusbar"
-  (fn [])
+  (fn [] (./bless/Box))
 
   "div.text"
-  (fn [])
+  (fn [] (./bless/Box))
 
   "div.session"
-  (fn [])
-
+  (fn [] (./bless/Box))
 
 }

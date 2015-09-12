@@ -1,2 +1,4 @@
-(let [program (./bless/Program process.stdin process.stdout)
-      main    (./template/mainloop program (fn [] ./template/main) (fn [] ./state))])
+(let [screen
+        (./template/bless/Screen)
+      main
+        (./template/mainloop screen (fn [] ./template/main) (fn [] ./state))])

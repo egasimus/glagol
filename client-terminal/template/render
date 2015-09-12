@@ -1,9 +1,11 @@
-(fn render [program el]
+(fn render [parent el]
   (log.as :render el.widget)
   (let [widget (aget ./widgets el.widget)]
     (if (not widget) (throw (Error (str "unknown widget " el.widget))))
-    (apply widget program el)
-    (if el.children (el.children.map (render.bind nil program)))))
+    (let [rendered (widget el.options)]
+      (if parent (parent.append rendered))
+      (if el.children (el.children.map (render.bind nil rendered)))
+      rendered)))
 
 ;(let [blessed (require "blessed")
       ;vnode?  (fn [x] (and (object? x) (= x.type "VNode")))]

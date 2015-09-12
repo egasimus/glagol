@@ -1,1 +1,4 @@
-(./template/mainloop (fn [] ./template/main) (fn [] ./state))
+(let [screen (./bless/Screen { :smartCSR true :bg nil })
+      main   (./template/mainloop screen (fn [] ./template/main) (fn [] ./state))]
+  (screen.on :keypress ./keypress)
+  screen)

@@ -1,7 +1,3 @@
 (fn template-main [state]
-  (./b :Screen
-    { :title    "etude demo"
-      :smartCSR true
-      :bg       nil
-      :events   { :keypress ../keypress } }
+  (./b :Box {}
     (.map [./toolbar ./statusbar ./session] (fn [x] (x state)))))

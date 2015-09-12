@@ -1,4 +1,2 @@
-(let [$       (log process)
-      program (./bless/Program process.stdin process.stdout)
-      main    (./template/mainloop program (fn [] ./template/main) (fn [] ./state))]
-  (log (keys program)))
+(let [program (./bless/Program process.stdin process.stdout)
+      main    (./template/mainloop program (fn [] ./template/main) (fn [] ./state))])

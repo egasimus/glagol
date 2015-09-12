@@ -1,5 +1,6 @@
 (let [Diff (require "deep-diff")]
-  (fn mainloop [program get-template get-data]))
+  (fn mainloop [program get-template get-data]
+    (log (./parse ((get-template) (get-data))))))
     ;(let [render-tree (fn [] ((get-template) (get-data)))
 
           ;tree (render-tree)

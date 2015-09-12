@@ -1,46 +1,26 @@
-(let [
-  toolbar-box
-    (fn [align x y w c]
-      [ "div.toolbar-box" (assoc { :fg c } align x) c ])
-      ;(let [default (assoc { :fg c } align x)]
-        ;(./b :Box {} (.map ["▄" "█" "▀"] (fn [ch i]
-          ;(./b :Text
-            ;(assoc default :top (+ y i))
-            ;(../util/repeat w ch)))))))
+(fn template-toolbar [state]
+  [ "div.toolbar"
+    { :top 0 :left 0 :right 0 :height 3 }
 
-  toolbar-text
-    (fn [align x y fg bg c]
-      [ "div.toolbar-text" (assoc { :fg fg :bg bg :top y } align x) c ])
+    [ "div.toolbar-bpm" state.bpm ]
+    [ "div.toolbar-tap"           ]
 
-  toolbar-button
-    (fn [align x y w c]
-      [ "div.toolbar-button"
-        (assoc { :fg fg :bg bg :ch "X" :top 0 :bottom 0 } align x)
-        [ "div.toolbar-button-text" c ]])
+    [ "div.toolbar-meter" state.meter ]
 
-] (fn template-toolbar [state]
-    [ "div.toolbar" { :top 0 :left 0 :right 0 :height 3 }
-      [ (toolbar-box  :left  1      0 9  :black)
-        (toolbar-text :left  2      1    :yellow nil    "174")
-        (toolbar-text :left  5      1    :yellow :black " BPM")
+    [ "div.toolbar-quantize-value"  state.quantize ]
+    [ "div.toolbar-quantize-toggle"                ]
 
-        (toolbar-box  :left  11     0 7  :black)
-        (toolbar-text :left  12     1    :yellow nil    " 4/4 ")
+    [ "div.toolbar-play"   "▶"   ]
+    [ "div.toolbar-record" "REC" ]
+    [ "div.toolbar-rewind" "<<"  ]
 
-        (toolbar-box  :left  19     0 11 :black)
-        (toolbar-text :left  20     1    :yellow nil    " 1 Bar ")
-        (toolbar-text :left  27     1    :yellow :black " Q ")
+    [ "div.toolbar-midi"     "MIDI" ]
+    [ "div.toolbar-midi-in"  "↓"    ]
+    [ "div.toolbar-midi-out" "↑"    ]
 
-        (toolbar-box  :left "50%-4" 0 5  :black)
-        (toolbar-text :left "50%-2" 1    :yellow :black "▶")
-        (toolbar-box  :left "50%+2" 0 5  :black)
-        (toolbar-text :left "50%+3" 1    :yellow :black "REC")
+    [ "div.toolbar-kbd"    "KBD" ]
+    [ "div.toolbar-kbd-in" "↓"   ] ])
 
-        (toolbar-box  :right 1      0 10 :black)
-        (toolbar-text :right 2      1    :yellow :black "MIDI ↓ ↑")
-
-        (toolbar-box  :right 12     0 9  :black)
-        (toolbar-text :right 13     1    :yellow :black "OSC ↓ ↑")
-
-        (toolbar-box  :right 22     0 7  :black)
-        (toolbar-text :right 23     1    :yellow :black "KBD ↓") ] ]))
+;     =O =  *  = O=
+; ["▄" "█" "▀" "█" "▄"]
+; oh hey its totoro...!

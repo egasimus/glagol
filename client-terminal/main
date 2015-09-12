@@ -1,7 +1,33 @@
-(./templating/mainloop
-  ./screen
-  (fn [] ./templates/main)
-  (fn [] ./state))
+(let
+
+  [ spawn         (.-spawn (require "child_process"))
+
+    mixer-path    "/usr/bin/jackminimix"
+    mixer-client  (./jack/client "minimixer")
+    mixer-process (spawn mixer-path
+      ["-a" "-c" 8])
+
+    meter-path    "/home/epimetheus/code/jackmeter/jack_meter"
+    meter-client  (./jack/client "meter")
+    meter-process (spawn meter-path
+      ["-n" "-r" 30 "minimixer:out_left" "minimixer:out_right"]) 
+
+    meter-value nil]
+
+  ; read data from meter
+  (meter-process.stdout.on :data (fn [data]
+    (set! meter-value (parse-float (str data)))))
+
+  ; init jack
+  (-> (./jack/init)
+    (.progress (fn [msg] (log.as :jack-init msg)))
+    (.done))
+
+  ; init gui
+  (./templating/mainloop
+    ./screen
+    (fn [] ./templates/main)
+    (fn [] { :meter meter-value })))
 
 ; _/  _/
 ;  _/_/

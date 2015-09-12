@@ -182,22 +182,54 @@
     (fn [] (b.Box { :bottom 0 :height 15 :left 1 :right 1 :bg "#111111" }))
 
     ".mixer-track"
-    (fn [opts] (let [box (b.Box (merge { :left 0 :top 0 :width 9 :height 15 } (assoc opts :color nil :name nil)))]
-      (box.append (b.Text { :bottom 0 :height 1 :left 1 :right 0 :content opts.name}))
-      (box.append (b.Box { :bottom -1 :height 1 :left 0 :right 0 :ch "▄" :bg nil :fg opts.color}))
-      (box.append (b.Box { :bottom 2 :height (Math.round (* 10 (Math.random))) :right 1 :width 2 :bg :green }))
-      (box.append (b.Text { :bottom 13 :left 0 :content "   0 dB " :fg :black}))
-      (box.append (b.Text { :bottom 11 :left 0 :content "  -6 " :fg :black}))
-      (box.append (b.Text { :bottom 9 :left 0 :content " -12 " :fg :black}))
-      (box.append (b.Text { :bottom 7  :left 0 :content " -18 " :fg :black}))
-      (box.append (b.Text { :bottom 5  :left 0 :content " -24 " :fg :black}))
-      (box.append (b.Text { :bottom 3  :left 0 :content " -48 " :fg :black}))
-      (box.append (b.Text { :bottom 3  :left 0 :content " -60 " :fg :black}))
-      ;(box.append (b.Text { :bottom 10 :left 1 :content " FX " :bg "#111111"}))
-      ;(box.append (b.Text { :bottom 8 :left 1 :content " IO " :bg "#111111"}))
-      ;(box.append (b.Text { :bottom 6 :left 1 :content " M " :bg "#111111"}))
-      ;(box.append (b.Text { :bottom 4 :left 1 :content " S " :bg "#111111"}))
-      ;(box.append (b.Text { :bottom 2 :left 1 :content " R " :bg "#111111"}))
+    (fn [opts]
+      (let [width 14
+            args  { :left (* width opts.n) :bottom 0 :width (- width 1) :height 15 } 
+            box   (b.Box (merge args opts))]
+
+      (box.append (b.Text {
+        :bottom 0
+        :height 1
+        :left 1
+        :right 0
+        :content opts.name}))
+
+      (box.append (b.Box {
+        :bottom -1
+        :height 1
+        :left 0
+        :right 0
+        :ch "▄"
+        :bg nil
+        :fg opts.color}))
+
+      (box.append (b.Box {
+        :bottom 2
+        :left 5
+        :height (Math.round (or opts.value (* 10 (Math.random))))
+        :width 2
+        :bg :green }))
+
+      (let [vu-num { :left 0 :fg :black }]
+        (.map
+          [ { :bottom 13 :content "   0 dB " }
+            { :bottom 11 :content "  -6 "    }
+            { :bottom 9  :content " -12 "    }
+            { :bottom 7  :content " -18 "    }
+            { :bottom 5  :content " -24 "    }
+            { :bottom 3  :content " -48 "    }
+            { :bottom 3  :content " -60 "    } ]
+          (fn [n] (box.append (b.Text (merge vu-num n))))))
+
+      (let [btn { :bg "#111111" :right 1 }]
+        (.map
+          [ { :bottom 10 :content " FX " }
+            { :bottom 8  :content " IO " }
+            { :bottom 6  :content " M "  }
+            { :bottom 4  :content " S "  }
+            { :bottom 2  :content " R "  } ]
+          (fn [n] (box.append (b.Text (merge btn n))))))
+
       box))
 
     })

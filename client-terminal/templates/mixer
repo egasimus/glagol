@@ -1,12 +1,12 @@
 (fn template-mixer [state]
+  (log state)
   [ ".mixer" {}
-    [ ".mixer-track" { :left 00 :name "Kick"    :color :red    } ]
-    [ ".mixer-track" { :left 10 :name "Snare"   :color :red    } ]
-    [ ".mixer-track" { :left 20 :name "Bass A"  :color :green  } ]
-    [ ".mixer-track" { :left 30 :name "Bass B"  :color :green  } ]
-    [ ".mixer-track" { :left 40 :name "Pad"     :color :yellow } ]
-    [ ".mixer-track" { :left 50 :name "Lead"    :color :yellow } ]
-    [ ".mixer-track" { :left 60 :name "Stabs"   :color :yellow } ] 
-    [ ".mixer-track" { :left 70 :name "Voc 1"   :color :blue   } ] 
-    [ ".mixer-track" { :left 80 :name "Voc 2"   :color :blue   } ] 
+    [ ".mixer-track" { :n 0 :name "Master"  :color :white  :value state.meter } ]
+    [ ".mixer-track" { :n 1 :name "Kick"    :color :red    } ]
+    [ ".mixer-track" { :n 2 :name "Snare"   :color :red    } ]
+    [ ".mixer-track" { :n 3 :name "Bass A"  :color :green  } ]
+    [ ".mixer-track" { :n 4 :name "Bass B"  :color :green  } ]
+    [ ".mixer-track" { :n 5 :name "Pad"     :color :yellow } ]
+    [ ".mixer-track" { :n 6 :name "Lead"    :color :yellow } ]
+    [ ".mixer-track" { :n 7 :name "Stabs"   :color :yellow } ]
 ])

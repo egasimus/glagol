@@ -1,2 +1,2 @@
 (fn [state]
-  (./b :Box { :top 3 :left 1 :right 1 :bottom 1 :scrollable true }))
+  ["div.session" { :top 3 :left 1 :right 1 :bottom 1 :scrollable true }])

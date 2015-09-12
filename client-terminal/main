@@ -1,4 +1,4 @@
-(let [screen (./bless/Screen { :smartCSR true :bg nil })
-      main   (./template/mainloop screen (fn [] ./template/main) (fn [] ./state))]
-  (screen.on :keypress ./keypress)
-  screen)
+(let [$       (log process)
+      program (./bless/Program process.stdin process.stdout)
+      main    (./template/mainloop program (fn [] ./template/main) (fn [] ./state))]
+  (log (keys program)))

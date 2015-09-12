@@ -1,3 +1,2 @@
 (fn template-main [state]
-  (./b :Box {}
-    (.map [./toolbar ./statusbar ./session] (fn [x] (x state)))))
+  [ "div.box" {} (.map [./toolbar ./statusbar ./session] (fn [x] (x state))) ])

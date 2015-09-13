@@ -1,1 +1,3 @@
-(./templating/bless/Screen {})
+(let [screen (./templating/bless/Screen {})]
+  (screen.on :keypress ./keypress)
+  screen)

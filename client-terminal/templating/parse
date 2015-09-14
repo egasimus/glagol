@@ -15,8 +15,10 @@
 
       (object? arg1) (do
         (set! parsed.options arg1)
-        (if (and (= 1 args.length) (string? (aget args 0)))
-          (set! parsed.content (aget args 0))
+        (if (= 1 args.length)
+          (if (and (vector? (aget args 0)) (string? (aget (aget args 0) 0)))
+            (set! parsed.children [(parse-template (aget args 0))])
+            (set! parsed.content (aget args 0)))
           (set! parsed.children (args.map parse-template))))
 
       (vector? arg1)

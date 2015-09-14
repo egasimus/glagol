@@ -18,5 +18,8 @@
     "nanotimer": "^0.3.10",
     "osc": "^1.3.0",
     "q": "^1.4.1"
+  },
+  "devDependencies": {
+    "sleep": "^3.0.0"
   }
 }

@@ -1,0 +1,7 @@
+(fn change [el diff]
+  (if (and el diff)
+    (cond
+      (= (aget diff.path 0) :children) (do
+        (change
+          (aget el.children (aget diff.path 1))
+          (merge diff { :path (diff.path.slice 2) }))))))

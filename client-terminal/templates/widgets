@@ -77,7 +77,7 @@
     (fn [] (b.Layout { :bottom 1 :height 15 :left 0 :right 0 }))
 
     ".mixer-track"
-    (fn [opts]
+    (fn [opts value]
       (let [width  15
             height 15
             args   { :left (* width opts.n) :bottom 0
@@ -103,7 +103,7 @@
       (box.append (b.Box {
         :bottom 2
         :left 5
-        :height (Math.round (or opts.value 0))
+        :height (Math.round (or value 0))
         :width 2
         :bg :green }))
 

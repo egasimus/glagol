@@ -8,12 +8,13 @@
 
       (set! refresh (fn refresh[]
         (let [new-parsed   (parse)
-              new-rendered (render new-parsed)]
-          (log (Diff parsed new-parsed))
+              new-rendered (render new-parsed)
+              changes      (or (Diff parsed new-parsed) [])]
+          (changes.map (./change/bind nil screen))
           (screen.remove rendered)
-          (try (set! rendered new-rendered) (catch e (log e.message)))
+          (set! rendered new-rendered)
           (screen.append rendered)
-          ;(screen.render)
+          (screen.render)
           (set-timeout refresh ../options/refresh-rate))))
 
       (refresh))))

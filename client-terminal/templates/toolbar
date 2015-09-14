@@ -3,15 +3,15 @@
     {}
 
     [ ".toolbar-bpm" "174" ] 
-    [ ".toolbar-tap"       ]
+    [ ".toolbar-tap" "BPM" ]
 
     [ ".toolbar-metre" "4/4" ]
 
-    [ ".toolbar-quantize-toggle"         ]
+    [ ".toolbar-quantize-toggle" " Q "   ]
     [ ".toolbar-quantize-value"  "1 bar" ]
 
-    [ ".toolbar-rewind" "<<"  ]
-    [ ".toolbar-play"   "▶"   ]
+    [ ".toolbar-rewind" "|<<" ]
+    [ ".toolbar-play"   " ▶ " ]
     [ ".toolbar-record" "REC" ]
 
     [ ".toolbar-midi"     "MIDI" ]

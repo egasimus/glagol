@@ -1,35 +1,7 @@
 (fn render [parent el]
   (let [widget (aget ../templates/widgets el.widget)]
     (if (not widget) (throw (Error (str "unknown widget " el.widget))))
-    (let [rendered (widget el.options)]
+    (let [rendered (widget el.options el.content)]
       (if parent (parent.append rendered))
       (if el.children (el.children.map (render.bind nil rendered)))
       rendered)))
-      ;(./bless/Text { :content :foo :top 5 :left 5 :fg :red }))))
-      ;rendered)))
-      ;(if el.children (el.children.map (render.bind nil rendered)))
-      ;rendered)))
-
-;(let [blessed (require "blessed")
-      ;vnode?  (fn [x] (and (object? x) (= x.type "VNode")))]
-  ;(fn render [vnode]
-
-    ;; sanity check
-    ;(if (not (vnode? vnode)) (throw (Error. (str vnode "is not a VNode"))))
-
-    ;; clean up non-Blessed options and instantiate node
-    ;(let [events  (or vnode.options.events {})
-          ;options (assoc vnode.options :events nil)
-          ;node    ((aget blessed vnode.element) options)
-          ;content vnode.content]
-
-      ;; bind events
-      ;(.map (keys events) (fn [evt] (node.on evt (aget events evt))))
-
-      ;; add content, possibly descending
-      ;(cond
-        ;(string? content) (node.set-content content)
-        ;(vector? content) (content.map (fn [vchild] (node.append (render vchild))))
-        ;(vnode?  content) (node.append (render content)))
-
-      ;node)))

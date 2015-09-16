@@ -1,7 +1,8 @@
-(fn render [parent el]
-  (let [widget (aget ../templates/widgets el.widget)]
-    (if (not widget) (throw (Error (str "unknown widget " el.widget))))
-    (let [rendered (widget el.options el.content)]
+(fn render [parent node]
+  (let [widget (aget ../templates/widgets node.widget)]
+    (if (not widget) (throw (Error (str "unknown widget " node.widget))))
+    (let [rendered (widget node.options node.content)]
+      (set! node.rendered rendered)
       (if parent (parent.append rendered))
-      (if el.children (el.children.map (render.bind nil rendered)))
+      (if node.children (node.children.map (render.bind nil rendered)))
       rendered)))

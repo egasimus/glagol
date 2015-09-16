@@ -1,7 +1,12 @@
-(fn change [el diff]
-  (if (and el diff)
-    (cond
-      (= (aget diff.path 0) :children) (do
-        (change
-          (aget el.children (aget diff.path 1))
-          (merge diff { :path (diff.path.slice 2) }))))))
+(fn change [parsed new-parsed]
+  (let [diff (or ((require "deep-diff") parsed new-parsed) [])]
+    (diff.map (fn [c]
+      (loop [path c.path
+             node parsed]
+        (if (= (aget path 0) :children)
+          (recur (path.slice 2) (aget parsed.children (aget path 1)))
+          (let [new-rendered (./render nil node)]
+            (node.rendered.parent.insert-before new-rendered node.rendered)
+            (node.rendered.parent.remove node-rendered)
+            (set! node.rendered new-rendered))))))
+    (log diff.length)))

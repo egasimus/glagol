@@ -1,13 +1,30 @@
 var runtime = require('etude-engine/runtime.js')
-  , etude   = runtime.requireWisp('etude-engine/engine.wisp');
+  , etude   = runtime.requireWisp('etude-engine/engine.wisp')
+  , fs      = require('fs')
+  , temp    = require('temp').track();
 
 describe('an Etude virtual filesystem', function () {
 
-  // TODO figure out why it only works in chdir
-  process.chdir('node_modules/etude-engine');
-  var engine = etude.start('spec/sample');
+  var engine
+    , mountpt
+    , mounted;
 
-  it('can be mounted in a temporary directory', function () {});
+  // TODO figure out why it only works in chdir
+
+  beforeAll(function () {
+    process.chdir('node_modules/etude-engine');
+    engine = etude.start('spec/sample');
+    mountpt = temp.mkdirSync('etude-fuse-test');
+    mounted = require('../index.js')(mountpt);
+  })
+
+  beforeEach(function () {
+  });
+
+  it('can be mounted in a temporary directory', function () {
+    expect(fs.existsSync(mountpt)).toBe(true);
+    expect(mounted).toBe(undefined);
+  });
 
   it('lists files corresponding to loaded notions', function () {});
 

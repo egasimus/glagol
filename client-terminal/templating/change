@@ -3,10 +3,19 @@
     (diff.map (fn [c]
       (loop [path c.path
              node parsed]
-        (if (= (aget path 0) :children)
-          (recur (path.slice 2) (aget parsed.children (aget path 1)))
-          (let [new-rendered (./render nil node)]
-            (node.rendered.parent.insert-before new-rendered node.rendered)
-            (node.rendered.parent.remove node-rendered)
-            (set! node.rendered new-rendered))))))
+        (log.as node.widget path)
+        (cond
+          (= (aget path 0) :children)
+            (recur (path.slice 2) (aget parsed.children (aget path 1)))
+
+          (= (aget path 0) :rendered)
+            (let [new-rendered (./render node)]
+              (log (keys node.rendered) node.rendered.parent)
+              ;(log.as node.widget (keys node) (keys node.rendered.parent))
+              (node.rendered.parent.insert-before new-rendered node.rendered)
+              (node.rendered.parent.remove node-rendered)
+              (set! node.rendered new-rendered))
+
+          :else
+            (throw (Error. (str "unknown diff path fragment " (aget path 0))))))))
     (log diff.length)))

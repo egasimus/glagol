@@ -33,14 +33,6 @@
                 (set! left.rendered new-rendered)
                 (set! (aget left step) (aget right step)))
 
-            ;(= (aget path 0) :rendered)
-              ;(let [new-rendered (./render node)]
-                ;(log (keys node.rendered) new-rendered.parent)
-                ;;(log.as node.widget (keys node) (keys node.rendered.parent))
-                ;(node.rendered.parent.insert-before new-rendered node.rendered)
-                ;;(node.rendered.parent.remove node-rendered)
-                ;(set! node.rendered new-rendered))
-
             :else
               (throw (Error. (str
                 "unknown fragment in diff path \"" (path.join ".") "\":"

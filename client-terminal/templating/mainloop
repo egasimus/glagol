@@ -1,8 +1,7 @@
   (fn mainloop [screen get-template get-data]
     (let [parse     (fn [] (./parse ((get-template) (get-data))))
           parsed    (parse)
-          render    (fn [] (./render parsed))
-          rendered  (render)
+          rendered  (./render parsed)
           refresh   nil]
 
       (screen.append rendered)

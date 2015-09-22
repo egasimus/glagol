@@ -3,32 +3,32 @@
   [ spawn         (.-spawn (require "child_process"))
     Q             (require "q")
 
-    mixer-path    "/usr/bin/jackminimix"
-    mixer-client  (./jack/client "minimixer")
-    mixer-process (spawn mixer-path
-                    ["-a" "-c" 8])
+    ;mixer-path    "/usr/bin/jackminimix"
+    ;mixer-client  (./jack/client "minimixer")
+    ;mixer-process (spawn mixer-path
+                    ;["-a" "-c" 8])
 
-    meter-path    "/home/epimetheus/code/jackmeter/jack_meter"
-    meter-client  (./jack/client "meter")
-    meter-process (spawn meter-path
-                    ["-n" "-r" "-40" "minimixer:out_left" "minimixer:out_right"]) 
+    ;meter-path    "/home/epimetheus/code/jackmeter/jack_meter"
+    ;meter-client  (./jack/client "meter")
+    ;meter-process (spawn meter-path
+                    ;["-n" "-r" "-40" "minimixer:out_left" "minimixer:out_right"]) 
 
     meter-value   nil]
 
   ; read data from meter
-  (meter-process.stdout.on :data (fn [data]
-    (set! meter-value (parse-float (str data)))))
+  ;(meter-process.stdout.on :data (fn [data]
+    ;(set! meter-value (parse-float (str data)))))
 
   ; init jack
-  (-> (./jack/init)
-    (.progress (fn [msg] (log.as :jack-init msg)))
-    (.done))
+  ;(-> (./jack/init)
+    ;(.progress (fn [msg] (log.as :jack-init msg)))
+    ;(.done))
 
-  (-> mixer-client
-    (.then (fn []
-      (./jack/connect-by-name "moc" "output0" "minimixer" "in1_left")
-      (./jack/connect-by-name "moc" "output1" "minimixer" "in2_left")))
-    (.done))
+  ;(-> mixer-client
+    ;(.then (fn []
+      ;(./jack/connect-by-name "moc" "output0" "minimixer" "in1_left")
+      ;(./jack/connect-by-name "moc" "output1" "minimixer" "in2_left")))
+    ;(.done))
 
   ; init gui
   (./templating/mainloop

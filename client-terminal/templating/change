@@ -25,14 +25,13 @@
                 (aget right.children (aget path 1)))
 
             (< -1 (.index-of [:widget :options] (aget path 0)))
-              (do
-                (if (and left.rendered left.rendered.parent)
-                  (let [parent left.rendered.parent
-                        new-rendered (./render right)]
-                    (parent.insertBefore new-rendered left.rendered)
-                    (parent.remove left.rendered)
-                    ))
-                (log.as (aget path 0) "changed"))
+              (let [step         (aget path 0)
+                    parent       left.rendered.parent
+                    new-rendered (./render right)]
+                (parent.insert-before new-rendered left.rendered)
+                (parent.remove left.rendered)
+                (set! left.rendered new-rendered)
+                (set! (aget left step) (aget right step)))
 
             ;(= (aget path 0) :rendered)
               ;(let [new-rendered (./render node)]

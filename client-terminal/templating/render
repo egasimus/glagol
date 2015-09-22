@@ -1,5 +1,4 @@
 (fn render [node]
-  (log.as :render node.widget)
   (let [widget (aget ../templates/widgets node.widget)]
     (if (not widget)
       (throw (Error (str "unknown widget " node.widget)))

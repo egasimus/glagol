@@ -35,5 +35,29 @@
 
             :else
               (throw (Error. (str
-                "unknown fragment in diff path \"" (path.join ".") "\":"
-                " \"" (aget path 0) "\""))))))))))
+                "unknown fragment in diff path '" (path.join ".") "':"
+                " '" (aget path 0) "'")))))
+
+        (= d.kind :A)
+        (loop [path  d.path
+               left  parsed
+               right new-parsed]
+          (if (= (aget path 0) :children)
+            (if (> path.length 1)
+              (recur
+                (path.slice 2)
+                (aget left.children  (aget path 1))
+                (aget right.children (aget path 1)))
+              (do
+                (log.as :array-change d.index d.item.kind (keys d.item))
+                (cond
+                  (= d.item.kind :D)
+                  (if (and d.item.lhs.rendered d.item.lhs.rendered.parent)
+                    (d.item.lhs.rendered.parent.remove d.item.lhs.rendered)))))
+            (throw (Error. (str
+              "unknown fragment in diff path '" (path.join ".") "':"
+              " '" (aget path 0) "'")))))
+
+        :else
+        (throw (Error. (str
+          "unknown kind of change '" d.kind "'"))))))))

@@ -1,20 +1,32 @@
 (fn change [parsed new-parsed]
-  (let [diff (or ((require "deep-diff") parsed new-parsed) [])]
-    (diff.map (fn [c]
-      (loop [path c.path
-             node parsed]
-        (cond
-          (= (aget path 0) :children)
-            (recur (path.slice 2) (aget node.children (aget path 1)))
+  (let [diff
+          (.filter (or ((require "deep-diff") parsed new-parsed) [])
+            (fn [d] (not (= (aget d.path (- d.path.length 1)) :rendered))))]
 
-          (= (aget path 0) :rendered)
-            (let [new-rendered (./render node)]
-              (log (keys node.rendered) node.rendered.parent)
-              ;(log.as node.widget (keys node) (keys node.rendered.parent))
-              ;(node.rendered.parent.insert-before new-rendered node.rendered)
-              ;(node.rendered.parent.remove node-rendered)
-              (set! node.rendered new-rendered))
+    (if (> diff.length 0) (log diff.length :changes))
 
-          :else
-            (throw (Error. (str "unknown diff path fragment " (aget path 0))))))))
-    (log diff.length)))
+    (diff.map (fn [d]
+      (log d.kind (d.path.join "."))
+      (cond
+
+        (= d.kind :D)
+        (if (and d.lhs.rendered d.lhs.rendered.parent)
+          (d.lhs.rendered.parent.remove d.lhs.rendered))
+
+        (= d.kind :E)
+        (loop [path d.path
+               node parsed]
+          (cond
+            (= (aget path 0) :children)
+              (recur (path.slice 2) (aget node.children (aget path 1)))
+
+            (= (aget path 0) :rendered)
+              (let [new-rendered (./render node)]
+                (log (keys node.rendered) new-rendered.parent)
+                ;(log.as node.widget (keys node) (keys node.rendered.parent))
+                (node.rendered.parent.insert-before new-rendered node.rendered)
+                ;(node.rendered.parent.remove node-rendered)
+                (set! node.rendered new-rendered))
+
+            :else
+              (throw (Error. (str "unknown diff path fragment " (aget path 0)))))))))))

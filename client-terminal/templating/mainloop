@@ -5,6 +5,8 @@
           rendered  (render)
           refresh   nil]
 
+      (screen.append rendered)
+
       (set! refresh (fn refresh []
         (./change parsed (parse))
         (screen.render)

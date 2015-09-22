@@ -14,19 +14,31 @@
           (d.lhs.rendered.parent.remove d.lhs.rendered))
 
         (= d.kind :E)
-        (loop [path d.path
-               node parsed]
+        (loop [path  d.path
+               left  parsed
+               right new-parsed]
           (cond
             (= (aget path 0) :children)
-              (recur (path.slice 2) (aget node.children (aget path 1)))
+              (recur
+                (path.slice 2)
+                (aget left.children  (aget path 1))
+                (aget right.children (aget path 1)))
 
-            (= (aget path 0) :rendered)
-              (let [new-rendered (./render node)]
-                (log (keys node.rendered) new-rendered.parent)
-                ;(log.as node.widget (keys node) (keys node.rendered.parent))
-                (node.rendered.parent.insert-before new-rendered node.rendered)
-                ;(node.rendered.parent.remove node-rendered)
-                (set! node.rendered new-rendered))
+            (< -1 (.index-of [:widget :options] (aget path 0)))
+              (do
+                (if (and left.rendered left.rendered.parent)
+                  (left.rendered.parent.remove left.rendered))
+                (log.as (aget path 0) "changed"))
+
+            ;(= (aget path 0) :rendered)
+              ;(let [new-rendered (./render node)]
+                ;(log (keys node.rendered) new-rendered.parent)
+                ;;(log.as node.widget (keys node) (keys node.rendered.parent))
+                ;(node.rendered.parent.insert-before new-rendered node.rendered)
+                ;;(node.rendered.parent.remove node-rendered)
+                ;(set! node.rendered new-rendered))
 
             :else
-              (throw (Error. (str "unknown diff path fragment " (aget path 0)))))))))))
+              (throw (Error. (str
+                "unknown fragment in diff path \"" (path.join ".") "\":"
+                " \"" (aget path 0) "\""))))))))))

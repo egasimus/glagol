@@ -1,19 +1,13 @@
 (fn change [parsed new-parsed]
-  (let [diff
-          (.filter (or ((require "deep-diff") parsed new-parsed) [])
-            (fn [d] (not (= (aget d.path (- d.path.length 1)) :rendered))))]
+  (let [
 
-    (if (> diff.length 0) (log diff.length :changes))
-
-    (diff.map (fn [d]
-      (log d.kind (d.path.join "."))
-      (cond
-
-        (= d.kind :D)
+    changer-D
+      (fn [d]
         (if (and d.lhs.rendered d.lhs.rendered.parent)
-          (d.lhs.rendered.parent.remove d.lhs.rendered))
+          (d.lhs.rendered.parent.remove d.lhs.rendered)))
 
-        (= d.kind :E)
+    changer-E
+      (fn [d]
         (loop [path  d.path
                left  parsed
                right new-parsed]
@@ -36,9 +30,9 @@
             :else
               (throw (Error. (str
                 "unknown fragment in diff path '" (path.join ".") "':"
-                " '" (aget path 0) "'")))))
-
-        (= d.kind :A)
+                " '" (aget path 0) "'"))))))
+    changer-A
+      (fn [d]
         (loop [path  d.path
                left  parsed
                right new-parsed]
@@ -51,13 +45,19 @@
               (do
                 (log.as :array-change d.index d.item.kind (keys d.item))
                 (cond
-                  (= d.item.kind :D)
-                  (if (and d.item.lhs.rendered d.item.lhs.rendered.parent)
-                    (d.item.lhs.rendered.parent.remove d.item.lhs.rendered)))))
+                  (= d.item.kind :D) (changer-D d.item))))
             (throw (Error. (str
               "unknown fragment in diff path '" (path.join ".") "':"
-              " '" (aget path 0) "'")))))
+              " '" (aget path 0) "'"))))))
 
-        :else
-        (throw (Error. (str
-          "unknown kind of change '" d.kind "'"))))))))
+    changers
+      { :D changer-D :E changer-E :A changer-A }
+
+    diff
+      (./compare parsed new-parsed) ]
+
+    (if (> diff.length 0) (log diff.length :changes))
+
+    (diff.map (fn [d]
+      (log d.kind (d.path.join "."))
+      ((aget changers d.kind) d)))))

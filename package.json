@@ -9,9 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "blessed": "^0.1.80",
-    "chokidar": "^1.0.5",
-    "deep-diff": "^0.3.2",
+    "etude-bless": "git://github.com/egasimus/etude-bless",
     "etude-engine": "git://github.com/egasimus/etude-engine",
     "etude-jack": "git://github.com/egasimus/etude-jack",
     "eventemitter2": "^0.4.14",

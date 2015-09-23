@@ -11,7 +11,10 @@
     meter-path    "/home/epimetheus/code/jackmeter/jack_meter"
     meter-client  (./jack/client "meter")
     meter-process (spawn meter-path
-                    ["-n" "-r" "-40" "minimixer:out_left" "minimixer:out_right"])
+                    [ "-n"
+                      "-r" -40
+                      "-f"  20
+                      "minimixer:out_left" "minimixer:out_right"])
 
     meter-value   nil]
 

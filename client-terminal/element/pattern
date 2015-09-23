@@ -1,1 +1,0 @@
-(fn pattern [label] { :type "Pattern" :label label })

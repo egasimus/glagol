@@ -1,6 +1,0 @@
-(fn render-track [session-box track-id i]
-  (let [x (+ 12 (* i (+ ../options/track-width 1)))]
-    (session-box.append
-      (-> (../bless/box { :top 0 :bottom 0 :left x :width ../options/track-width })
-        (./track-heading (aget ../session/tracks track-id))
-        (./track-clips   track-id)))))

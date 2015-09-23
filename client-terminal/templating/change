@@ -44,7 +44,6 @@
               (cond
                 (= d.item.kind :D) (changer-D d.item)
                 (= d.item.kind :N) (do
-                  (log.as :array-insert d.index d.item.rhs (keys left))
                   (left.children.splice d.index 0 d.item.rhs)
                   (left.rendered.insert (./render d.item.rhs) d.index))))
             (throw (Error. (str

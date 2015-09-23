@@ -80,8 +80,7 @@
     (fn [opts value]
       (let [width  15
             height 15
-            args   { :left (* width opts.n) :bottom 0
-                     :width (- width 1) :height height } 
+            args   { :bottom 0 :width (- width 1) :height height }
             box    (b.Box (merge args opts))]
 
       (box.append (b.Text {

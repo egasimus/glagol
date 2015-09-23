@@ -1,0 +1,77 @@
+(fn change [parsed new-parsed]
+  (let [
+
+    descend (fn [node path] (aget node.children (aget path 1)))
+
+    update
+      (fn [path left right]
+        (let [step         (aget path 0)
+              parent       left.rendered.parent
+              new-rendered (./render right)]
+          (parent.insert-before new-rendered left.rendered)
+          (parent.remove left.rendered)
+          (set! left.rendered new-rendered)
+          (set! (aget left step) (aget right step))))
+
+    changer-D
+      (fn [d]
+        (if (and d.lhs.rendered d.lhs.rendered.parent)
+          (d.lhs.rendered.parent.remove d.lhs.rendered)))
+
+    changer-N
+      (fn [d]
+        (loop [path  d.path
+               left  parsed
+               right new-parsed]
+          (cond
+            (= (aget path 0) :children)
+              (recur (path.slice 2) (descend left path) (descend right path))
+            (= (aget path 0) :content)
+              (update path left right)))
+        (log d))
+
+    changer-E
+      (fn [d]
+        (loop [path  d.path
+               left  parsed
+               right new-parsed]
+          (cond
+            (= (aget path 0) :children)
+              (recur (path.slice 2) (descend left path) (descend right path))
+
+            (< -1 (.index-of [:widget :options :content] (aget path 0)))
+              (update path left right)
+
+            :else
+              (throw (Error. (str
+                "unknown fragment in diff path '" (path.join ".") "':"
+                " '" (aget path 0) "'"))))))
+    changer-A
+      (fn [d]
+        (loop [path  d.path
+               left  parsed
+               right new-parsed]
+          (if (= (aget path 0) :children)
+            (if (> path.length 1)
+              (recur (path.slice 2) (descend left path) (descend right path))
+              (cond
+                (= d.item.kind :D) (changer-D d.item)
+                (= d.item.kind :N) (do
+                  (left.children.splice d.index 0 d.item.rhs)
+                  (left.rendered.insert (./render d.item.rhs) d.index))))
+            (throw (Error. (str
+              "unknown fragment in diff path '" (path.join ".") "':"
+              " '" (aget path 0) "'"))))))
+
+    changers
+      { :D changer-D :N changer-N :E changer-E :A changer-A }
+
+    diff
+      (./compare parsed new-parsed) ]
+
+    ;(if (> diff.length 0) (log diff.length :changes))
+
+    (diff.map (fn [d]
+      (if (aget changers d.kind)
+        ((aget changers d.kind) d)
+        (log d.kind (d.path.join ".")))))))

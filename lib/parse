@@ -1,0 +1,33 @@
+(fn parse-template [el]
+
+  (if (not (vector? el))
+    (throw (Error. (str "element " el " must be an array"))))
+  (if (not (string? (aget el 0)))
+    (throw (Error. (str "first item of element array " el " is not a string"))))
+
+  (let [parsed { :widget (aget el 0) :options {} :children [] }
+        arg1   (aget el 1)
+        args   (el.slice 2)]
+
+    (cond
+      (string? arg1)
+        (set! parsed.content arg1)
+
+      (object? arg1) (do
+        (set! parsed.options arg1)
+        (if (= 1 args.length)
+          (if (and (vector? (aget args 0)) (string? (aget (aget args 0) 0)))
+            (set! parsed.children [(parse-template (aget args 0))])
+            (set! parsed.content (aget args 0)))
+          (set! parsed.children (args.map parse-template))))
+
+      (vector? arg1)
+        (set! parsed.children (if (string? (aget arg1 0))
+          [(parse-template arg1)] (arg1.map parse-template)))
+
+      (not arg1) (do)
+
+      :else
+        (throw (Error. "unexpeced type of arg1 in element array")))
+
+    parsed))

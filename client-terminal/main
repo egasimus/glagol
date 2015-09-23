@@ -16,7 +16,7 @@
                       "-f"  20
                       "minimixer:out_left" "minimixer:out_right"])
 
-    meter-value   nil]
+    meter-value   nil ]
 
   ; read data from meter
   (meter-process.stdout.on :data (fn [data]

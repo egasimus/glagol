@@ -1,10 +1,15 @@
 (fn change [parsed new-parsed]
   (let [
 
+    descend (fn [node path] (aget node.children (aget path 1)))
+
     changer-D
       (fn [d]
         (if (and d.lhs.rendered d.lhs.rendered.parent)
           (d.lhs.rendered.parent.remove d.lhs.rendered)))
+
+    changer-N
+      (fn [d] (log d))
 
     changer-E
       (fn [d]
@@ -13,10 +18,7 @@
                right new-parsed]
           (cond
             (= (aget path 0) :children)
-              (recur
-                (path.slice 2)
-                (aget left.children  (aget path 1))
-                (aget right.children (aget path 1)))
+              (recur (path.slice 2) (descend left path) (descend right path))
 
             (< -1 (.index-of [:widget :options] (aget path 0)))
               (let [step         (aget path 0)
@@ -38,25 +40,24 @@
                right new-parsed]
           (if (= (aget path 0) :children)
             (if (> path.length 1)
-              (recur
-                (path.slice 2)
-                (aget left.children  (aget path 1))
-                (aget right.children (aget path 1)))
-              (do
-                (log.as :array-change d.index d.item.kind (keys d.item))
-                (cond
-                  (= d.item.kind :D) (changer-D d.item))))
+              (recur (path.slice 2) (descend left path) (descend right path))
+              (cond
+                (= d.item.kind :D) (changer-D d.item)
+                (= d.item.kind :N) (do
+                  (log.as :array-insert d.index d.item.rhs (keys left))
+                  (left.children.splice d.index 0 d.item.rhs)
+                  (left.rendered.insert (./render d.item.rhs) d.index))))
             (throw (Error. (str
               "unknown fragment in diff path '" (path.join ".") "':"
               " '" (aget path 0) "'"))))))
 
     changers
-      { :D changer-D :E changer-E :A changer-A }
+      { :D changer-D :N changer-N :E changer-E :A changer-A }
 
     diff
       (./compare parsed new-parsed) ]
 
-    (if (> diff.length 0) (log diff.length :changes))
+    ;(if (> diff.length 0) (log diff.length :changes))
 
     (diff.map (fn [d]
       (log d.kind (d.path.join "."))

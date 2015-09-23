@@ -3,13 +3,32 @@
 
     descend (fn [node path] (aget node.children (aget path 1)))
 
+    update
+      (fn [path left right]
+        (let [step         (aget path 0)
+              parent       left.rendered.parent
+              new-rendered (./render right)]
+          (parent.insert-before new-rendered left.rendered)
+          (parent.remove left.rendered)
+          (set! left.rendered new-rendered)
+          (set! (aget left step) (aget right step))))
+
     changer-D
       (fn [d]
         (if (and d.lhs.rendered d.lhs.rendered.parent)
           (d.lhs.rendered.parent.remove d.lhs.rendered)))
 
     changer-N
-      (fn [d] (log d))
+      (fn [d]
+        (loop [path  d.path
+               left  parsed
+               right new-parsed]
+          (cond
+            (= (aget path 0) :children)
+              (recur (path.slice 2) (descend left path) (descend right path))
+            (= (aget path 0) :content)
+              (update path left right)))
+        (log d))
 
     changer-E
       (fn [d]
@@ -20,14 +39,8 @@
             (= (aget path 0) :children)
               (recur (path.slice 2) (descend left path) (descend right path))
 
-            (< -1 (.index-of [:widget :options] (aget path 0)))
-              (let [step         (aget path 0)
-                    parent       left.rendered.parent
-                    new-rendered (./render right)]
-                (parent.insert-before new-rendered left.rendered)
-                (parent.remove left.rendered)
-                (set! left.rendered new-rendered)
-                (set! (aget left step) (aget right step)))
+            (< -1 (.index-of [:widget :options :content] (aget path 0)))
+              (update path left right)
 
             :else
               (throw (Error. (str
@@ -59,5 +72,6 @@
     ;(if (> diff.length 0) (log diff.length :changes))
 
     (diff.map (fn [d]
-      (log d.kind (d.path.join "."))
-      ((aget changers d.kind) d)))))
+      (if (aget changers d.kind)
+        ((aget changers d.kind) d)
+        (log d.kind (d.path.join ".")))))))

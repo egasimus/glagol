@@ -7,5 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "blessed": "^0.1.81",
+    "deep-diff": "^0.3.2",
+    "etude-engine": "git://github.com/egasimus/etude-engine"
+  }
 }

@@ -1,3 +1,4 @@
 (let [screen (./templating/bless/Screen {})]
   (screen.on :keypress ./keypress)
+  ;(screen.enable-keys)
   screen)

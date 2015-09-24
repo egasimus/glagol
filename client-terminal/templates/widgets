@@ -130,9 +130,13 @@
 
     ".browser"
     (fn [opts]
-      (let [box (b.List (merge
-                  { :top 0 :bottom 0 :left 0 :width 40
-                    :bg :black } opts))]
+      (let [defaults
+              { :top 0 :bottom 0 :left 0 :width 40 :focused true
+                :style { :bg :black :focus { :bg :black :fg :yellow } } }
+            box
+              (b.List (merge defaults opts))]
+        (box.key :j (fn [] (box.down 1)))
+        (box.key :k (fn [] (box.up   1)))
         box))
 
     })

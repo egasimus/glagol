@@ -1,0 +1,2 @@
+(fn template-browser [state]
+  [ ".browser" { :items state } ])

@@ -128,4 +128,11 @@
 
       box))
 
+    ".browser"
+    (fn [opts]
+      (let [box (b.List (merge
+                  { :top 0 :bottom 0 :left 0 :width 40
+                    :bg :black } opts))]
+        box))
+
     })

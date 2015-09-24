@@ -1,4 +1,4 @@
-(fn change [parsed new-parsed]
+(fn change [widgets parsed new-parsed]
   (let [
 
     descend (fn [node path] (aget node.children (aget path 1)))
@@ -7,7 +7,7 @@
       (fn [path left right]
         (let [step         (aget path 0)
               parent       left.rendered.parent
-              new-rendered (./render right)]
+              new-rendered (./render widgets right)]
           (parent.insert-before new-rendered left.rendered)
           (parent.remove left.rendered)
           (set! left.rendered new-rendered)
@@ -58,7 +58,7 @@
                 (= d.item.kind :D) (changer-D d.item)
                 (= d.item.kind :N) (do
                   (left.children.splice d.index 0 d.item.rhs)
-                  (left.rendered.insert (./render d.item.rhs) d.index))))
+                  (left.rendered.insert (./render widgets d.item.rhs) d.index))))
             (throw (Error. (str
               "unknown fragment in diff path '" (path.join ".") "':"
               " '" (aget path 0) "'"))))))

@@ -1,15 +1,15 @@
-  (fn mainloop [screen get-template get-data]
+  (fn mainloop [screen widgets get-template get-data get-refresh-rate]
     (let [parse     (fn [] (./parse ((get-template) (get-data))))
           parsed    (parse)
-          rendered  (./render parsed)
+          rendered  (./render widgets parsed)
           refresh   nil]
 
       (screen.append rendered)
 
       (set! refresh (fn refresh []
-        (./change parsed (parse))
+        (./change widgets parsed (parse))
         (screen.render)
-        (set-timeout refresh ../options/refresh-rate)))
+        (set-timeout refresh (get-refresh-rate))))
 
       (refresh)))
 

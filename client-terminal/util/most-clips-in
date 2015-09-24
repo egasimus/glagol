@@ -1,7 +1,0 @@
-(fn most-clips-in [scene]
-  (let [most-clips 1]
-    (.map (keys scene.contents) (fn [track]
-      (let [track (aget scene.contents track)]
-        (if (> track.length most-clips)
-          (set! most-clips track.length)))))
-    most-clips))

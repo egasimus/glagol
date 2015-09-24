@@ -1,7 +1,0 @@
-(fn scene-positions [session]
-  (let [coordinates {}
-        next-y      3]
-    (session.map (fn [scene]
-      (aset coordinates next-y scene)
-      (set! next-y (+ next-y (* (./most-clips-in scene) 2)))))
-    coordinates))

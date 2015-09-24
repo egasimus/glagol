@@ -1,4 +1,5 @@
 var e = require('etude-engine');
-var n = e.tree.makeNotionDirectory('lib');
+var p = require('path');
+var n = e.tree.makeNotionDirectory(p.join(__dirname, 'lib'));
 n.name = require('./package.json').name;
 module.exports = e.notion.getTree(n);

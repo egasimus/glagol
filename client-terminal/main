@@ -36,8 +36,10 @@
   ; init gui
   (./templating/mainloop
     ./screen
+    ./templates/widgets
     (fn [] ./templates/main)
-    (fn [] { :meter meter-value })))
+    (fn [] { :meter meter-value })
+    (fn [] ./options/refresh-rate)))
 
 ; _/  _/
 ;  _/_/

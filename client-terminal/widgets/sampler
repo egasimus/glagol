@@ -1,0 +1,3 @@
+    (fn [opts value]
+      (b.Box { :content value }))
+

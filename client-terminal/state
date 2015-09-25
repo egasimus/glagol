@@ -1,4 +1,11 @@
-(let [state
-        { :meter   nil
-          :browser [:a :b :c :d :e] }]
+(let [glob
+        (require "glob")
+      path
+        (require "path")
+      state
+        { :meter
+            nil
+          :browser
+            (.map (glob.sync ./options/sounds-path)
+              (fn [f] (path.basename f))) }]
   state)

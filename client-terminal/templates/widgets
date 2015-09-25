@@ -131,13 +131,14 @@
     ".browser"
     (fn [opts]
       (let [defaults
-              { :top 0 :bottom 0 :left 0 :width 40 :focused true
+              { :top 0 :bottom 0 :left 0 :width 40 :focused true :mouse true
                 :cwd "/home/epimetheus/Sounds"
                 :style { :bg :black :focus { :bg :black :fg :yellow } } }
-            box
+            l
               (b.List (merge defaults opts))]
-        (box.key :j (fn [] (box.down 1)))
-        (box.key :k (fn [] (box.up   1)))
-        box))
+        (l.key [:down  :j] (fn [] (l.down 1)))
+        (l.key [:up    :k] (fn [] (l.up   1)))
+        (l.key [:enter :a] (fn [] (log l.value)))
+        l))
 
     })

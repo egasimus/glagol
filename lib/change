@@ -1,4 +1,9 @@
 (fn change [widgets parsed new-parsed]
+
+  " Ostensibly incomplete. Not all edge cases are covered.
+    Control flow is getting out of hand, simplify `./parse`
+    already to make the whole thing more manageable. "
+
   (let [
 
     descend (fn [node path] (aget node.children (aget path 1)))

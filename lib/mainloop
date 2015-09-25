@@ -1,16 +1,29 @@
-  (fn mainloop [screen widgets get-template get-data get-refresh-rate]
-    (let [parse     (fn [] (./parse ((get-template) (get-data))))
-          parsed    (parse)
-          rendered  (./render widgets parsed)
-          refresh   nil]
+;" `./parse` templates into 'template AST' once. Render that AST once; attach
+  ;resulting tree of Blessed objects to `screen`. Keep the two trees as
+  ;mutable state. Every `(get-refresh-rate)` msec generate a new AST from
+  ;the updated `(get-template)` and `(get-state)`; then `./compare` it
+  ;with the stored AST. Any differences are passed to the `./change`
+  ;function which applies the changes to both `parsed` and `rendered`.
 
-      (screen.append rendered)
+  ;Slimming down the `./parse` layer would perhaps simplify this,
+  ;and hopefully make it stateless. "
 
-      (set! refresh (fn refresh []
-        (./change widgets parsed (parse))
-        (screen.render)
-        (set-timeout refresh (get-refresh-rate))))
+(fn mainloop
+  [screen widgets get-template get-data get-refresh-rate]
+  (let [parse     (fn [] (./parse widgets ((get-template) (get-data))))
+        parsed    (parse)
+        rendered  (./render parsed)
+        refresh   nil]
 
-      (refresh)))
+    (screen.append rendered)
 
-      ;(screen.render))))
+    (set! refresh (fn refresh []
+      (./change widgets parsed (parse))
+      (screen.render)
+      ;(screen.rewind-focus)
+      (set-timeout refresh (get-refresh-rate))))
+
+    (refresh)))
+
+    ;(screen.render))))
+

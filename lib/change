@@ -1,4 +1,4 @@
-(fn change [widgets parsed new-parsed]
+(fn change [parsed new-parsed]
 
   " Ostensibly incomplete. Not all edge cases are covered.
     Control flow is getting out of hand, simplify `./parse`
@@ -12,7 +12,7 @@
       (fn [path left right]
         (let [step         (aget path 0)
               parent       left.rendered.parent
-              new-rendered (./render widgets right)]
+              new-rendered (./render right)]
           (parent.insert-before new-rendered left.rendered)
           (parent.remove left.rendered)
           (set! left.rendered new-rendered)
@@ -66,7 +66,7 @@
                   (= d.item.kind :D) (changer-D d.item)
                   (= d.item.kind :N) (do
                     (left.children.splice d.index 0 d.item.rhs)
-                    (left.rendered.insert (./render widgets d.item.rhs) d.index))))
+                    (left.rendered.insert (./render d.item.rhs) d.index))))
             :else
               (throw (Error. (str
                 "unknown fragment in diff path '" (path.join ".") "':"

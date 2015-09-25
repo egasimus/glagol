@@ -18,7 +18,7 @@
     (screen.append rendered)
 
     (set! refresh (fn refresh []
-      (./change (get-widgets) parsed (parse))
+      (./change parsed (parse))
       (screen.render)
       ;(screen.rewind-focus)
       (set-timeout refresh (get-refresh-rate))))

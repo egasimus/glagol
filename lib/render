@@ -3,7 +3,7 @@
     (not node)
       nil
     (not node.widget)
-      (throw (Error (str "can't render unparsed widget")))
+      (throw (Error (str "can't render unparsed node" (keys node))))
     (= :MissingWidget node.widget)
       (throw (Error (str "can't render missing widget " node.name)))
     :else

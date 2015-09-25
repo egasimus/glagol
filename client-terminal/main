@@ -1,4 +1,4 @@
-(./templating/mainloop
+(./bless/mainloop
   ./screen
   (fn [] ./widgets)
   (fn [] ./templates/main)

@@ -1,5 +1,5 @@
 (let [b
-        ../templating/bless
+        ../bless
       box-def
         { :left 0 :right 0 :height 1 :bg nil :fg "#111111"}
       box-top

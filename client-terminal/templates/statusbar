@@ -1,8 +1,8 @@
 (fn template-statusbar [state]
-  [".statusbar"
+  [ :statusbar
     { :tags true :bg :black :fg :yellow
       :left 1 :right 1 :bottom 0 :height 1 } 
-    [".text"
+    [ :text
       (.reduce (keys ../options/keymap) (fn [a b]
         (str a "foo {red-bg}" (.join (aget ../options/keymap b) "{/red-bg} {red-bg}")
                "{/red-bg} {black-bg}" b "{/black-bg}  ")) "")]])

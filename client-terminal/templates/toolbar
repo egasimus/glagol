@@ -1,30 +1,30 @@
 (fn template-toolbar [state]
-  [ ".toolbar"
-    {}
+  [ :toolbar
+    {} ])
 
-    [ ".toolbar-bpm" "174" ] 
-    [ ".toolbar-tap" "BPM" ]
+    ;[ ".toolbar-bpm" "174" ] 
+    ;[ ".toolbar-tap" "BPM" ]
 
-    [ ".toolbar-metre" "4/4" ]
+    ;[ ".toolbar-metre" "4/4" ]
 
-    [ ".toolbar-quantize-toggle" " Q "   ]
-    [ ".toolbar-quantize-value"  "1 bar" ]
+    ;[ ".toolbar-quantize-toggle" " Q "   ]
+    ;[ ".toolbar-quantize-value"  "1 bar" ]
 
-    [ ".toolbar-rewind" "|<<" ]
-    [ ".toolbar-play"   " ▶ " ]
-    [ ".toolbar-record" "REC" ]
+    ;[ ".toolbar-rewind" "|<<" ]
+    ;[ ".toolbar-play"   " ▶ " ]
+    ;[ ".toolbar-record" "REC" ]
 
-    [ ".toolbar-midi"     "MIDI" ]
-    [ ".toolbar-midi-in"  "↓"    ]
-    [ ".toolbar-midi-out" "↑"    ]
+    ;[ ".toolbar-midi"     "MIDI" ]
+    ;[ ".toolbar-midi-in"  "↓"    ]
+    ;[ ".toolbar-midi-out" "↑"    ]
 
-    [ ".toolbar-osc"     "OSC" ]
-    [ ".toolbar-osc-in"  "↓"   ]
-    [ ".toolbar-osc-out" "↑"   ]
+    ;[ ".toolbar-osc"     "OSC" ]
+    ;[ ".toolbar-osc-in"  "↓"   ]
+    ;[ ".toolbar-osc-out" "↑"   ]
 
-    [ ".toolbar-kbd"    "KBD" ]
-    [ ".toolbar-kbd-in" "↓"   ] ])
+    ;[ ".toolbar-kbd"    "KBD" ]
+    ;[ ".toolbar-kbd-in" "↓"   ] ])
 
-;     =O =  *  = O=
-; ["▄" "█" "▀" "█" "▄"]
-; oh hey its totoro...!
+    ;     =O =  *  = O=
+    ; ["▄" "█" "▀" "█" "▄"]
+    ; oh hey its totoro...!

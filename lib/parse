@@ -7,8 +7,6 @@
   ;
 
 (fn parse-template
-
-
   [widgets el]
 
   (if (not (vector? el))
@@ -16,9 +14,11 @@
   (if (not (string? (aget el 0)))
     (throw (Error. (str "first item of element array " el " is not a string"))))
 
-  (let [parsed { :type "ParsedTemplateNode"
-                 :name (aget el 0) :widget (aget widgets (aget el 0))
-                 :options {} :children [] }
+  (let [parsed { :type     "ParsedTemplateNode"
+                 :name     (aget el 0)
+                 :widget   (or (aget widgets (aget el 0)) :MissingWidget)
+                 :options  {}
+                 :children [] }
         arg1   (aget el 1)
         args   (el.slice 2)]
 

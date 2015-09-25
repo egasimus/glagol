@@ -138,7 +138,7 @@
               (b.List (merge defaults opts))]
         (l.key [:down  :j] (fn [] (l.down 1)))
         (l.key [:up    :k] (fn [] (l.up   1)))
-        (l.key [:enter :a] (fn [] (log l.value)))
+        (l.key [:enter :a] (fn [] (../events/emit :add-sample l.selected)))
         l))
 
     })

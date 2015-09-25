@@ -1,1 +1,4 @@
-{}
+(let [state
+        { :meter   nil
+          :browser [:a :b :c :d :e] }]
+  state)

@@ -1,0 +1,9 @@
+(fn template-samplers [state]
+  [ ".samplers" {} 
+    [ ".sampler" {} :foo ]
+    [ ".sampler" {} :bar ] ])
+  
+  ;(log (conj [ ".samplers" {} ]
+    ;(state.map (fn [f] [ ".sampler" {} (.basename (require "path") f) ]))))
+  ;[ ".samplers" {} ])
+

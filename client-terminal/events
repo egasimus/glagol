@@ -3,6 +3,6 @@
 
   (on :exit    (fn [] (log "bye") (process.exit)))
   (on :refresh (fn [] (./screen/realloc) (./screen/render)))
-  (on :add-sample (fn [id] (log id) (log (aget ./state/browser id))))
+  ;(on :add-sample (fn [id] (log id) (log (aget ./state/browser id))))
 
   emitter)

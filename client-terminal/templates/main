@@ -1,3 +1,4 @@
 (fn template-main [state]
   [ "#root-box" {} 
-    (./browser state) ])
+    (./browser  state.browser)
+    (./samplers state.samplers) ])

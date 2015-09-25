@@ -1,7 +1,7 @@
 (fn template-samplers [state]
-  [ :samplers {} 
-    [ :sampler {} :foo ]
-    [ :sampler {} :bar ] ])
+  (let [path    (require "path")
+        sampler (fn [f] [ :sampler {} (path.basename f) ])]
+    (.concat [ :samplers {} [ :sampler {} :empty ] [ :sampler {} :empty ] ] (state.map sampler))))
   
   ;(log (conj [ ".samplers" {} ]
     ;(state.map (fn [f] [ ".sampler" {} (.basename (require "path") f) ]))))

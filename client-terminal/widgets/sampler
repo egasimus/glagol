@@ -1,3 +1,2 @@
-    (fn [opts value]
-      (../bless/Box { :content value }))
-
+(fn [opts value]
+  (../bless/Box { :content value :height 5 :padding 1 }))

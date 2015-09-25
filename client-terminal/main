@@ -1,6 +1,6 @@
 (./templating/mainloop
   ./screen
-  ./templates/widgets
+  (fn [] ./widgets)
   (fn [] ./templates/main)
   (fn [] ./state)
   (fn [] ./options/refresh-rate))

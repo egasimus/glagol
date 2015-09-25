@@ -1,20 +1,20 @@
-      box-def
-        { :left 0 :right 0 :height 1 :bg nil :fg "#111111"}
-      box-top
-        (fn [] (b.Box (assoc box-def :top 0 :ch "▄")))
-      box-bottom
-        (fn [] (b.Box (assoc box-def :top 2 :ch "▀")))
-      box-mid
-        (fn [content] (b.Text
-          { :left 0 :right 0 :top 1 :height 1
-            :bg "#111111" :padding { :left 1 :right 1 } :fg :yellow :content content}))
-      box-make
-        (fn [opts content]
-          (let [box (b.Box opts)]
-            (.map [(box-top) (box-mid content) (box-bottom)]
-            (box.append.bind box))
-            box))
-      btn-left
-        (fn [left] (fn [o v] (box-make
-          { :left left :width (+ 2 v.length) :top 0 :height 3 } v)))
+      ;box-def
+        ;{ :left 0 :right 0 :height 1 :bg nil :fg "#111111"}
+      ;box-top
+        ;(fn [] (b.Box (assoc box-def :top 0 :ch "▄")))
+      ;box-bottom
+        ;(fn [] (b.Box (assoc box-def :top 2 :ch "▀")))
+      ;box-mid
+        ;(fn [content] (b.Text
+          ;{ :left 0 :right 0 :top 1 :height 1
+            ;:bg "#111111" :padding { :left 1 :right 1 } :fg :yellow :content content}))
+      ;box-make
+        ;(fn [opts content]
+          ;(let [box (b.Box opts)]
+            ;(.map [(box-top) (box-mid content) (box-bottom)]
+            ;(box.append.bind box))
+            ;box))
+      ;btn-left
+        ;(fn [left] (fn [o v] (box-make
+          ;{ :left left :width (+ 2 v.length) :top 0 :height 3 } v)))
 

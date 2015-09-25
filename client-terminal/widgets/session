@@ -1,2 +1,2 @@
-    (fn [] (b.Box))
+    (fn [] (../bless/Box))
 

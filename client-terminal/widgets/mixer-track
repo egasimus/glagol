@@ -2,16 +2,16 @@
       (let [width  15
             height 15
             args   { :bottom 0 :width (- width 1) :height height }
-            box    (b.Box (merge args opts))]
+            box    (../bless/Box (merge args opts))]
 
-      (box.append (b.Text {
+      (box.append (../bless/Text {
         :bottom 1
         :height 1
         :left 1
         :right 0
         :content opts.name}))
 
-      (box.append (b.Box {
+      (box.append (../bless/Box {
         :bottom 0
         :height 1
         :left 0
@@ -20,7 +20,7 @@
         :bg nil
         :fg opts.color}))
 
-      (box.append (b.Box {
+      (box.append (../bless/Box {
         :bottom 2
         :left 5
         :height (Math.round (or value 0))
@@ -36,7 +36,7 @@
             { :bottom 5  :content " -24 "    }
             { :bottom 3  :content " -48 "    }
             { :bottom 3  :content " -60 "    } ]
-          (fn [n] (box.append (b.Text (merge vu-num n))))))
+          (fn [n] (box.append (../bless/Text (merge vu-num n))))))
 
       ;(let [btn { :bg "#111111" :right 1 }]
         ;(.map
@@ -45,7 +45,7 @@
             ;{ :bottom 6  :content " M "  }
             ;{ :bottom 4  :content " S "  }
             ;{ :bottom 2  :content " R "  } ]
-          ;(fn [n] (box.append (b.Text (merge btn n))))))
+          ;(fn [n] (box.append (../bless/Text (merge btn n))))))
 
       box))
 

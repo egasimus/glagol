@@ -1,2 +1,2 @@
-    (fn [] (b.Layout { :bottom 1 :height 15 :left 0 :right 0 }))
+    (fn [] (../bless/Layout { :bottom 1 :height 15 :left 0 :right 0 }))
 

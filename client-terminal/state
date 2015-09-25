@@ -1,6 +1,7 @@
 (let [state
         { :meter    nil
-          :browser  (.sync (require "glob") ./options/sounds-path)
+          :browser  (.sync (require "glob")
+                      (.join (require "path") ./options/sounds-dir "**" "*.wav"))
           :samplers [] }]
   (./events/on :add-sample (fn [id] (state.samplers.push (aget state.browser id))))
   state)

@@ -1,5 +1,7 @@
 (fn [opts]
-  (./layout-column (merge { :top 0 :bottom 0 :left 0 :right 0 :bg :black :padding { :left 1 }} opts)))
+  (let [defaults { :top 0 :bottom 0 :left 0 :right 0 :padding { :left 1 }
+                   :bg :black}]
+    (./layout-column (merge defaults opts))))
 
   ;(let [l (../bless/List (merge { :bg :black } opts))]
     ;(l.append (../bless/Box { :content "FOO" }))

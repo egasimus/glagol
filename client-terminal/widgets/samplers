@@ -1,12 +1,8 @@
-    (fn [opts]
-      (let [defaults
-              { :top 0 :bottom 0 :left 41 :right 0
-                :bg :black }
-            l
-              (../bless/List (merge defaults opts))]
-        (l.append (../bless/Box { :content "FOO" }))
-        (l.key [:down  :j] (fn [] (l.down 1)))
-        (l.key [:up    :k] (fn [] (l.up   1)))
-        (l.key [:enter :a] (fn [] (../events/emit :add-sample l.selected)))
-        l))
+(fn [opts]
+  (let [l (../bless/List (merge { :bg :black } opts))]
+    (l.append (../bless/Box { :content "FOO" }))
+    (l.key [:down  :j] (fn [] (l.down 1)))
+    (l.key [:up    :k] (fn [] (l.up   1)))
+    (l.key [:enter :a] (fn [] (../events/emit :add-sample l.selected)))
+    l))
 

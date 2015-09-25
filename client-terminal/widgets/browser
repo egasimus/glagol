@@ -1,6 +1,6 @@
 (fn [opts]
   (let [defaults
-          { :top 0 :bottom 0 :left 0 :width 40 :focused true :mouse true
+          { :width 20 :focused true :mouse true
             :style { :bg :black :focus { :bg :black :fg :yellow } } }
         l
           (../bless/List (merge defaults opts))]

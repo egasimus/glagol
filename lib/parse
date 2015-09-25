@@ -7,41 +7,44 @@
   ;
 
 (fn parse-template
-  [widgets el]
+  ([widgets template data]
+    (parse-template widgets (template data)))
 
-  (if (not (vector? el))
-    (throw (Error. (str "element " el " must be an array"))))
-  (if (not (string? (aget el 0)))
-    (throw (Error. (str "first item of element array " el " is not a string"))))
-
-  (let [parsed { :type     "ParsedTemplateNode"
-                 :name     (aget el 0)
-                 :widget   (or (aget widgets (aget el 0)) :MissingWidget)
-                 :options  {}
-                 :children [] }
-        arg1   (aget el 1)
-        args   (el.slice 2)]
-
+  ([widgets el]
     (cond
-      (string? arg1)
-        (set! parsed.content arg1)
-
-      (object? arg1) (do
-        (set! parsed.options arg1)
-        (if (= 1 args.length)
-          (if (and (vector? (aget args 0)) (string? (aget (aget args 0) 0)))
-            (set! parsed.children [(parse-template (aget args 0))])
-            (set! parsed.content  (aget args 0)))
-          (set! parsed.children (args.map (fn [el]
-            (parse-template widgets el))))))
-
-      (vector? arg1)
-        (set! parsed.children (if (string? (aget arg1 0))
-          [(parse-template arg1)] (arg1.map parse-template)))
-
-      (not arg1) (do)
-
+      (not (vector? el))
+        (throw (Error. (str "element " el " must be an array")))
+      (not (string? (aget el 0)))
+        (throw (Error. (str "first item of element array " el " is not a string")))
       :else
-        (throw (Error. "unexpeced type of arg1 in element array")))
+        (let [parsed { :type     "ParsedTemplateNode"
+                       :name     (aget el 0)
+                       :widget   (or (aget widgets (aget el 0)) :MissingWidget)
+                       :options  {}
+                       :children [] }
+              arg1   (aget el 1)
+              args   (el.slice 2)]
 
-    parsed))
+          (cond
+            (string? arg1)
+              (set! parsed.content arg1)
+
+            (object? arg1) (do
+              (set! parsed.options arg1)
+              (if (= 1 args.length)
+                (if (and (vector? (aget args 0)) (string? (aget (aget args 0) 0)))
+                  (set! parsed.children [(parse-template (aget args 0))])
+                  (set! parsed.content  (aget args 0)))
+                (set! parsed.children (args.map (fn [el]
+                  (parse-template widgets el))))))
+
+            (vector? arg1)
+              (set! parsed.children (if (string? (aget arg1 0))
+                [(parse-template arg1)] (arg1.map parse-template)))
+
+            (not arg1) (do)
+
+            :else
+              (throw (Error. "unexpeced type of arg1 in element array")))
+
+          parsed))))

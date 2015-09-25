@@ -9,8 +9,8 @@
   ;and hopefully make it stateless. "
 
 (fn mainloop
-  [screen widgets get-template get-data get-refresh-rate]
-  (let [parse     (fn [] (./parse widgets ((get-template) (get-data))))
+  [screen get-widgets get-template get-data get-refresh-rate]
+  (let [parse     (fn [] (./parse (get-widgets) (get-template) (get-data)))
         parsed    (parse)
         rendered  (./render parsed)
         refresh   nil]

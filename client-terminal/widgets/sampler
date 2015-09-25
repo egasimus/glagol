@@ -1,7 +1,9 @@
 (fn [opts value]
   (let [sampler (../bless/Box { :height 5 })
         border  (../bless/Box { :top 0 :left 0 :right 0 :height 1 :ch "▀" :fg :black :bg :darkgray})
-        label   (../bless/Text { :content value :top 1 :left 1 })]
+        path    (require "path")
+        label   (str "{gray-fg}" (path.dirname value) "/{/gray-fg}" (path.basename value))
+        label   (../bless/Text { :content label :top 1 :left 1 :tags true })]
     (sampler.append border)
     (sampler.append label)
     sampler))

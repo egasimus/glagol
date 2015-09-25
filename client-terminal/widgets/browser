@@ -1,11 +1,26 @@
 (fn [opts]
   (let [defaults
-          { :width 25 :focused true :mouse true
+          { :width 25 ;:focused true :mouse true
             :style { :bg :black :focus { :bg :darkgray :fg :yellow } } }
-        l
-          (../bless/List (merge defaults opts))]
-    (l.key [:down  :j] (fn [] (l.down 1)))
-    (l.key [:up    :k] (fn [] (l.up   1)))
-    (l.key [:enter :a] (fn [] (../events/emit :add-sample l.selected)))
-    l))
+        box
+          (../bless/Box { :width 25 :style { :bg :darkgray }})
 
+        top
+          (../bless/Box { :top 0 :left 0 :right 0 :height 1 :ch "▄" :fg :#111111 :bg :darkgray})
+
+        bottom
+          (../bless/Box { :top 2 :left 0 :right 0 :height 1 :ch "▀" :fg :#111111 :bg :darkgray})
+
+        search
+          (../bless/Textbox { :keys true :focused true :mouse true :inputOnFocus true :top 1 :left 0 :right 0 :height 1 :bg :#111111})
+        ]
+    (box.append top)
+    (box.append bottom)
+    (box.append search)
+        ;l
+          ;(../bless/List (merge defaults opts))]
+    ;(b.append l)
+    ;(l.key [:down  :j] (fn [] (l.down 1)))
+    ;(l.key [:up    :k] (fn [] (l.up   1)))
+    ;(l.key [:enter :a] (fn [] (../events/emit :add-sample l.selected)))
+    box))

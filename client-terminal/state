@@ -3,6 +3,8 @@
           :browser  (.sync (require "glob")
                       (.join (require "path") ./options/sounds-dir "**" "*.wav"))
           :samplers []
-          :repl     []}]
+          :repl     []
+          :results  [] }]
   (./events/on :add-sample (fn [id] (state.samplers.push (aget state.browser id))))
+  (./events/on :search-results (fn [data] (set! state.results data)))
   state)

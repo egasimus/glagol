@@ -1,21 +1,11 @@
-(let [addr      ./options/library-socket
-      WebSocket (require :ws)
-      socket    (new WebSocket ./options/library-socket)
-      do-send   (fn [data] (socket.send (apply str data)))
-      send      (fn [& args]
-                  (if (= WebSocket.OPEN socket.ready-state)
-                    (do-send args)
-                    (queue.push args)))
-      queue     []]
+(let [WebSocket (require :ws)
+      Q-Connect (require :q-connection)
 
-  (socket.on :open
-    (fn []
-      (queue.map do-send)
-      (set! queue [])
-      (log.as addr :opened)))
+      addr      ./options/library-socket
+      socket    (new WebSocket addr)
+      api       (Q-Connect socket)]
 
-  (socket.on :message
-    (fn [data flags]
-      (log.as addr data)))
-
-  { :search (fn [query] (send "(search \"" query "\")"))})
+  { :search
+      (fn [query]
+        (-> (api.invoke :search query)
+          (.then (fn [results] (./events/emit :search-results results))))) })

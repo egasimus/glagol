@@ -1,0 +1,1 @@
+(.trim (String (.exec-file-sync (require :child_process) "which" ["soxi"])))

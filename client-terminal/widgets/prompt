@@ -1,0 +1,5 @@
+(fn prompt []
+  (let [opts { :keys true :focused true :mouse true :inputOnFocus true
+               :top 1 :left 0 :right 0 :height 1 :bg :red }
+        el (../bless/Textbox opts)]
+    el))

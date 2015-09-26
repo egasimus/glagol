@@ -1,0 +1,19 @@
+(fn [opts]
+  (let [defaults
+          { :width 8 ;:focused true :mouse true
+            :style { :bg :black :focus { :bg :darkgray :fg :yellow } } }
+        box
+          (../bless/Box { :width 10 :style { :bg :#111111 }})
+        add
+          (../bless/Box { :top 1 :left 1 :right 1 :height 3 :content "\n sample" :fg :yellow })
+        ]
+    (box.append (./offset-box { :left 1 :right 1 :top 0 :height 3 :content " + "}))
+    ;(box.append add)
+        ;l
+          ;(../bless/List (merge defaults opts))]
+    ;(b.append l)
+    ;(l.key [:down  :j] (fn [] (l.down 1)))
+    ;(l.key [:up    :k] (fn [] (l.up   1)))
+    ;(l.key [:enter :a] (fn [] (../events/emit :add-sample l.selected)))
+    box))
+

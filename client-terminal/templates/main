@@ -1,4 +1,5 @@
 (fn template-main [state]
   [ :main {} 
+    ;(./sidebar)
     (./browser  state.browser)
     (./samplers state.samplers) ])

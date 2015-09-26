@@ -1,12 +1,16 @@
 (let [addr      ./options/library-socket
       WebSocket (require :ws)
       socket    (new WebSocket ./options/library-socket)
-      send      (fn [data] (socket.send (JSON.stringify data)))
+      do-send   (fn [data] (socket.send (apply str data)))
+      send      (fn [& args]
+                  (if (= WebSocket.OPEN socket.ready-state)
+                    (do-send args)
+                    (queue.push args)))
       queue     []]
 
   (socket.on :open
     (fn []
-      (queue.map send)
+      (queue.map do-send)
       (set! queue [])
       (log.as addr :opened)))
 
@@ -14,8 +18,4 @@
     (fn [data flags]
       (log.as addr data)))
 
-  { :send
-      (fn [& args]
-        (if (= WebSocket.OPEN socket.ready-state)
-          (send args)
-          (queue.push args))) })
+  { :search (fn [query] (send "(search \"" query "\")"))})

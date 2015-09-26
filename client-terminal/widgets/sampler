@@ -1,9 +1,13 @@
 (fn [opts value]
-  (let [sampler (../bless/Box { :height 5 })
-        border  (../bless/Box { :top 0 :left 0 :right 0 :height 1 :ch "▀" :fg :black :bg :darkgray})
+  (let [sampler (../bless/Box { :height 6 })
         path    (require "path")
-        label   (str "{gray-fg}" (path.dirname value) "/{/gray-fg}" (path.basename value))
-        label   (../bless/Text { :content label :top 1 :left 1 :tags true })]
-    (sampler.append border)
-    (sampler.append label)
+        label   (str "{gray-fg}" (path.dirname value) "/{/gray-fg}" (path.basename value))]
+    (.map [
+      (../bless/Box { :top 0 :left 0 :right 0 :height 1 :ch "▀" :fg :black :bg :darkgray})
+      (../bless/Text { :content label :top 1 :left 1 :tags true })
+      (../bless/Text { :top 2 :fg :#111111 :bg :darkgray :content "▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄" })
+      (../bless/Text { :top 3 :fg :red     :bg :#111111  :content " ████{black-fg}┄┄┄┄┄┄┄┄{/black-fg}████{black-fg}┄┄┄┄┄┄┄┄{/black-fg}████{black-fg}┄┄┄┄{/black-fg}" :tags true })
+      (../bless/Text { :top 4 :fg :red     :bg :#111111  :content " ████{black-fg}┄┄┄┄┄┄┄┄{/black-fg}████{black-fg}┄┄┄┄┄┄┄┄{/black-fg}████{black-fg}┄┄┄┄{/black-fg}" :tags true })
+      (../bless/Text { :top 5 :fg :#111111 :bg :darkgray :content "▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀" })
+    ] (fn [el] (sampler.append el)))
     sampler))

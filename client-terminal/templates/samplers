@@ -1,7 +1,11 @@
 (fn template-samplers [state]
   (let [path    (require "path")
         sampler (fn [f] [ :sampler {} (path.relative ../options/sounds-dir f) ])]
-    (.concat [ :samplers {} [ :sampler {} :empty ] [ :sampler {} :empty ] ]
+    (.concat
+      [ :samplers {}
+        [ :sampler {} :empty ]
+        [ :sampler {} :empty ]
+        [ :looper  {} :empty ] ]
       (state.map sampler))))
   
   ;(log (conj [ ".samplers" {} ]

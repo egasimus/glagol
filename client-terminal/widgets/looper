@@ -1,0 +1,17 @@
+(fn [opts]
+  (let [looper (../bless/Box { :height 15 })]
+    (.map [
+        (../bless/Box  { :top  0 :left 0 :right 0 :height 1 :ch "▀" :fg :black :bg :darkgray})
+        (../bless/Text { :top  1 :content "sooperlooper" :left 1 :tags true })
+        (../bless/Text { :top  3 :fg :yellow :bg :#111111 :content "      record   " :tags true})
+        (../bless/Text { :top  4 :fg :yellow :bg :#111111 :content " undo          " :tags true})
+        (../bless/Text { :top  5 :fg :yellow :bg :#111111 :content "      overdub  " :tags true})
+        (../bless/Text { :top  6 :fg :yellow :bg :#111111 :content " redo          " :tags true})
+        (../bless/Text { :top  7 :fg :yellow :bg :#111111 :content "      multiply " :tags true})
+        (../bless/Text { :top  9 :fg :yellow :bg :#111111 :content "      record   " :tags true})
+        (../bless/Text { :top 10 :fg :yellow :bg :#111111 :content " undo          " :tags true})
+        (../bless/Text { :top 11 :fg :yellow :bg :#111111 :content "      overdub  " :tags true})
+        (../bless/Text { :top 12 :fg :yellow :bg :#111111 :content " redo          " :tags true})
+        (../bless/Text { :top 13 :fg :yellow :bg :#111111 :content "      multiply " :tags true})
+      ] (fn [el] (looper.append el)))
+    looper))

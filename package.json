@@ -9,12 +9,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bluebird": "^2.10.1",
     "etude-bless": "git://github.com/egasimus/etude-bless",
     "etude-engine": "git://github.com/egasimus/etude-engine",
     "eventemitter2": "^0.4.14",
     "glob": "^5.0.14",
     "nanotimer": "^0.3.10",
-    "q": "^1.4.1"
+    "q": "^1.4.1",
+    "ws": "^0.8.0"
   },
   "devDependencies": {
     "sleep": "^3.0.0"

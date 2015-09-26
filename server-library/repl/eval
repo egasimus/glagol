@@ -5,11 +5,10 @@
           (require :vm)
         context
           (vm.create-context
-            ../api)
-        value
-          (vm.run-in-context
-            compiled.output.code
-            context
-            { :filename "<repl>" })]
-    (if context.error (log context.error))
-    value))
+            ../api)]
+    (try
+      (vm.run-in-context
+        compiled.output.code
+        context
+        { :filename "<repl>" })
+      (catch error (log.as :stack error.stack) error.message))))

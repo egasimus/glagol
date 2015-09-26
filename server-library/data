@@ -7,6 +7,6 @@
                 (log.as :analyzing
                   (str i "/" arr.length)
                   (path.relative ./options/sounds-dir f))
-                (assoc (./soxi-analyze f) :path f)))]
+                (assoc (./soxi/analyze f) :path f)))]
 
   data)

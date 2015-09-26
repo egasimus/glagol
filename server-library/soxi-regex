@@ -1,0 +1,8 @@
+{ :channels    (RegExp.        "Channels *: (.+)\n")
+  :sample-rate (RegExp.     "Sample Rate *: (.+)\n")
+  :sample-rate (RegExp.       "Precision *: (.+)\n")
+  :duration    (RegExp.        "Duration *: (.+?) = .+\n")
+  :samples     (RegExp.        "Duration *: .+? = (.+?) .+\n")
+  :file-size   (RegExp.       "File Size *: (.+)\n")
+  :bitrate     (RegExp.        "Bit Rate *: (.+)\n")
+  :encoding    (RegExp. "Sample Encoding *: (.+)\n") }

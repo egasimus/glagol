@@ -2,5 +2,6 @@
       glob (require "glob")
       fs   (require "fs")]
   (log ./options/soxi-path)
-  (log (.map (glob.sync (path.join ./options/sounds-dir "**" "*.wav"))
-    (fn [f] [ (path.relative ./options/sounds-dir f) 0 ]))))
+  (.map (glob.sync (path.join ./options/sounds-dir "**" "*.wav"))
+    (fn [f] (log [ (path.relative ./options/sounds-dir f)
+                   (./soxi-analyze f) ]))))

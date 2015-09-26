@@ -4,9 +4,8 @@
 
       files   (glob.sync (path.join ./options/sounds-dir "**" "*.wav"))
       data    (files.map (fn [f i arr]
-                (log.as :analyzing
-                  (str i "/" arr.length)
-                  (path.relative ./options/sounds-dir f))
-                (assoc (./soxi/analyze f) :path f)))]
+                (let [shortpath (path.relative ./options/sounds-dir f)]
+                  (log.as :analyzing (str i "/" arr.length) shortpath)
+                  (assoc (./soxi/analyze f) :path shortpath :fullpath f))))]
 
   data)

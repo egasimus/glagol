@@ -1,5 +1,25 @@
 (fn prompt []
-  (let [opts { :keys true :focused true :mouse true :inputOnFocus true
-               :top 1 :left 0 :right 0 :height 1 :bg :red }
-        el (../bless/Textbox opts)]
-    el))
+  (let [box
+          (../bless/Box
+            { :height 3 :bg :#111111 })
+        input
+          (../bless/Textbox
+            { :keys true :mouse true :inputOnFocus true 
+              :top 1 :bottom 1 :left 1 :right 1 :bg :#333333})
+        set-as-border
+          (fn [el]
+            (box.append el)
+            ;(el.on :click (fn []
+              ;(../screen/focus-pop)
+              ;(../screen/focus-push input)))
+            el)]
+    (.map [
+      (../bless/Box { :top 0 :height 1 :left 1 :right 1 :ch "▄" 
+                      :fg :#333333 :bg :#111111 :clickable true })
+      (../bless/Box { :top 2 :height 1 :left 1 :right 1 :ch "▀" 
+                      :fg :#333333 :bg :#111111 :clickable true})
+    ] set-as-border)
+    (box.append input)
+    (input.on :submit (fn [query]
+      (../library/send :search query)))
+    box))

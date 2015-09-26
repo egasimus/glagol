@@ -1,11 +1,12 @@
 (let [addr      ./options/library-socket
       WebSocket (require :ws)
       socket    (new WebSocket ./options/library-socket)
+      send      (fn [data] (socket.send (JSON.stringify data)))
       queue     []]
 
   (socket.on :open
     (fn []
-      (queue.map (fn [args] (log queue) (socket.send.apply nil args)))
+      (queue.map send)
       (set! queue [])
       (log.as addr :opened)))
 
@@ -16,5 +17,5 @@
   { :send
       (fn [& args]
         (if (= WebSocket.OPEN socket.ready-state)
-          (log :send args)
-          (log :queue args))) })
+          (send args)
+          (queue.push args))) })

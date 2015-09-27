@@ -3,9 +3,13 @@
       fs      (require :fs)
 
       files   (glob.sync (path.join ./options/sounds-dir "**" "*.wav"))
-      data    (files.map (fn [f i arr]
-                (let [shortpath (path.relative ./options/sounds-dir f)]
-                  (log.as :analyzing (str i "/" arr.length) shortpath)
-                  (assoc (./soxi/analyze f) :path shortpath :fullpath f))))]
+      data    (JSON.parse (fs.read-file-sync ./options/library-file :utf-8))]
+      ;data    (files.map (fn [f i arr]
+                ;(let [shortpath (path.relative ./options/sounds-dir f)]
+                  ;(log.as :analyzing (str i "/" arr.length) shortpath)
+                  ;(assoc (./soxi/analyze f) :path shortpath :fullpath f))))]
+
+  (log data)
+  ;(fs.write-file-sync ./options/library-file (JSON.stringify data))
 
   data)

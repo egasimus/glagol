@@ -3,8 +3,8 @@
           (let [left 0]
             (fn row-renderer-iterator [el i]
               (set! el.shrink          true)
-              (set! el.position.top    0)
-              (set! el.position.bottom 0)
+              (set! el.position.top    (or el.position.top    0))
+              (set! el.position.bottom (or el.position.bottom 0))
               (set! el.position.left   left)
               (set! left (+ left el.width)))))]
   (fn layout-row [opts]

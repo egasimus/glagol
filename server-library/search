@@ -1,3 +1,3 @@
 (fn search [query]
-  (./data/filter (fn [clip]
-    (< -1 (clip.path.index-of query)))))
+  (JSON.stringify (./data/filter (fn [clip]
+    (< -1 (clip.path.index-of query))))))

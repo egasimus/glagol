@@ -6,5 +6,5 @@
           :repl     []
           :results  [] }]
   (./events/on :add-sample (fn [id] (state.samplers.push (aget state.browser id))))
-  (./events/on :search-results (fn [data] (set! state.results data)))
+  (./events/on :search-results (fn [data] (set! state.results (JSON.parse data))))
   state)

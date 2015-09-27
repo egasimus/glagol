@@ -5,8 +5,9 @@
             { :height 3 :bg :#111111 })
         input
           (../bless/Textbox
-            { :keys true :mouse true :inputOnFocus true 
-              :top 1 :bottom 1 :left 1 :right 1 :bg :#333333})
+            { :keys true :mouse true :inputOnFocus true :focused true
+              :top 1 :bottom 1 :left 1 :right 1 :padding { :left 1 :right 1 }
+              :bg :#333333 })
         set-as-border
           (fn [el]
             (box.append el)

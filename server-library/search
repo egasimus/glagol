@@ -1,3 +1,5 @@
 (fn search [query]
-  (JSON.stringify (./data/filter (fn [clip]
-    (< -1 (clip.path.index-of query))))))
+  (log.as :search query)
+  (let [results (./data/filter (fn [clip] (< -1 (clip.path.index-of query))))]
+    (log.as :found results.length)
+    (JSON.stringify results)))

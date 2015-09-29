@@ -9,7 +9,6 @@
                   ;(log.as :analyzing (str i "/" arr.length) shortpath)
                   ;(assoc (./soxi/analyze f) :path shortpath :fullpath f))))]
 
-  (log data)
   ;(fs.write-file-sync ./options/library-file (JSON.stringify data))
 
   data)

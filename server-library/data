@@ -1,14 +1,17 @@
 (let [path    (require :path)
       glob    (require :glob)
-      fs      (require :fs)
-
-      files   (glob.sync (path.join ./options/sounds-dir "**" "*.wav"))
-      data    (JSON.parse (fs.read-file-sync ./options/library-file :utf-8))]
-      ;data    (files.map (fn [f i arr]
-                ;(let [shortpath (path.relative ./options/sounds-dir f)]
-                  ;(log.as :analyzing (str i "/" arr.length) shortpath)
-                  ;(assoc (./soxi/analyze f) :path shortpath :fullpath f))))]
-
-  ;(fs.write-file-sync ./options/library-file (JSON.stringify data))
-
-  data)
+      fs      (require :fs) 
+      data    (try
+                (JSON.parse
+                  (fs.read-file-sync
+                    (path.resolve ./options/library-file)
+                    :utf-8))
+                (catch e
+                  (do
+                    (log :data-err e.message)
+                    (.map
+                      (glob.sync (path.join ./options/sounds-dir "**" "*.wav"))
+                      (fn [f i arr]
+                        (let [shortpath (path.relative ./options/sounds-dir f)]
+                          (log.as :analyzing (str i "/" arr.length) shortpath)
+                          (assoc (./soxi/analyze f) :path shortpath :fullpath f)))))))] data)

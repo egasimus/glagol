@@ -1,5 +1,2 @@
 (fn on-connection [socket]
   ((require :q-connection) socket ../api))
-  ;(log.as :connected "") ;socket)
-  ;(socket.on   :message (./on-msg/bind nil socket))
-  ;(socket.send :hello))

@@ -1,11 +1,11 @@
 (let [path    (require :path)
       glob    (require :glob)
-      fs      (require :fs) 
+      fs      (require :fs)
+
+      file    (path.resolve ./options/library-file)
       data    (try
-                (JSON.parse
-                  (fs.read-file-sync
-                    (path.resolve ./options/library-file)
-                    :utf-8))
+                (log :loading file)
+                (JSON.parse (fs.read-file-sync file :utf-8))
                 (catch e
                   (do
                     (log :data-err e.message)

@@ -1,0 +1,17 @@
+function shrinkX (layout, amount, offset) {
+  return {
+    width:    layout.width - amount,
+    height:   layout.height,
+    offset:   layout.offset - (offset || 0),
+    wtf:      layout.wtf,
+    split:    layout.split,
+    children: layout.children.map(shrinkChild),
+    window:   layout.window
+  };
+
+  function shrinkChild (c, i) {
+    var amt = Math.floor(amount / layout.children.length);
+    return shrinkX(c, amt, amt * i)
+  }
+}
+

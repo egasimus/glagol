@@ -1,0 +1,9 @@
+function checksum (layout) {
+  var csum = 0;
+  layout.split('').map(function (a) {
+    csum = (csum >> 1) + ((csum & 1) << 15);
+    csum += a.charCodeAt(0);
+  });
+  return csum.toString(16);
+}
+

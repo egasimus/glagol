@@ -1,0 +1,15 @@
+{
+  "name": "etude-tmux",
+  "version": "0.0.0",
+  "description": "For integrating Etude terminal applications with tmux.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node_modules/jasmine/bin/jasmine.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "etude-engine": "git://github.com/egasimus/etude-engine",
+    "jasmine": "^2.3.2"
+  }
+}

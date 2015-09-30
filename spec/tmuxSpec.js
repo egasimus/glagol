@@ -1,5 +1,7 @@
 describe("tmux layout parser", function () {
 
+  console.log(require(".."));
+
   var layouts = {
     "227x62,0,0{113x62,0,0,13,113x62,114,0,14}": {}
   };
@@ -10,7 +12,7 @@ describe("tmux layout parser", function () {
 
   function testCanParse(layout) {
     return function () {
-      expect(compareTrees(require('../parse')(l), layouts[l])).toBe(true);
+      expect(compareTrees(require('..').parse(l), layouts[l])).toBe(true);
     };
   }
 

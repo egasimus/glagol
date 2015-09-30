@@ -1,9 +1,5 @@
 // export notion-based templating system from ./lib
-var e = require('etude-engine');
-var p = require('path');
-var n = e.tree.makeNotionDirectory(p.join(__dirname, 'lib'));
-n.name = require('./package.json').name;
-module.exports = e.notion.getTree(n);
+require('etude-engine').export(module, 'lib');
 
 // also export blessed library
 var blessed = require('blessed');

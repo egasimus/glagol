@@ -10,7 +10,7 @@
 
 (fn mainloop
   [screen get-widgets get-template get-data get-refresh-rate]
-  (let [parse     (fn [] (./parse (get-widgets) (get-template) (get-data)))
+  (let [parse     (fn [] (./parse (get-widgets) ((get-template) (get-data))))
         parsed    (parse)
         rendered  (./render parsed)
         refresh   nil]

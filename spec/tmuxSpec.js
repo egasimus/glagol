@@ -9,16 +9,21 @@ describe("tmux layout parser", function () {
   };
 
   for (var l in layouts) {
+    console.log(l);
     it('can parse ' + l, testCanParse(l));
   }
 
   function testCanParse(layout) {
+    console.log(layout);
     return function () {
-      expect(compareTrees(require('..').parse(l), layouts[l])).toBe(true);
+      console.log("foo");
+      console.log(tmux.parse(l));
+      expect(compareTrees(tmux.parse(l), layouts[l])).toBe(true);
     };
   }
 
   function compareTrees(a, b) {
+    console.log("comparetrees", a, b)
     return false;
   }
 

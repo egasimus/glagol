@@ -3,21 +3,10 @@
   index
     0
 
-  play-track
-    (fn [t]
-      (let [track (aget ./tracks t)]
-        (if (aget track.seq index)
-          (track.chain.play))))
-
-  step
-    (fn []
-      (let [info (str index)]
-        (log.as :step index :foo)
-        (.map (keys ./tracks) play-track)
-        (set! index (if (< index 7) (+ index 1) 0))))
-
   transport
-    (./transport/each step)
+    (./transport/each (fn []
+      (./step index)
+      (set! index (if (< index 15) (+ index 1) 0))))
 
   keyboard
     (./keyboard (fn [c k]

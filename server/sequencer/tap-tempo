@@ -14,6 +14,6 @@
               (log.as :tap :reset))
             (do
               (taps.push t)
-              (./transport/set-tempo 
+              (./transport/set-tempo
                 (/ (taps.reduce (fn [x y] (+ x y)) 0) taps.length))))))
       (set! last-tap now))))

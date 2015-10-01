@@ -1,0 +1,3 @@
+(fn print-track [index]
+  (apply str (.map (keys ./tracks)
+    (fn [t] (str " " (aget (.-seq (aget ./tracks t)) index))))))

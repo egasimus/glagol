@@ -7,5 +7,5 @@
   (log.as :hello "running with modules" (.join (keys modules) " "))
 
   (server.on :connection (fn [socket]
-    (log.as :connection)
+    (log.as :connection :foo)
     ((require :q-connection) socket modules))))

@@ -1,6 +1,6 @@
 (fn step [index]
-  (if (= index 0) (log))
-  (log (str (if (< index 10) "0" "") index (./print-track index)))
+  ;(if (= index 0) (log))
+  ;(log (str (if (< index 10) "0" "") index (./print-track index)))
   (let [info (str index)]
     (.map (keys ./tracks)
       (fn [t] (./play-track t index)))))

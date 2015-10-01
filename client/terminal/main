@@ -1,6 +1,6 @@
 (./bless/mainloop
   ./screen
   (fn [] ./widgets)
-  (fn [] ./templates/main)
+  (fn [] ./templates/toolbar)
   (fn [] ./state)
   (fn [] ./options/refresh-rate))

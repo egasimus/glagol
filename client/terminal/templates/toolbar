@@ -1,18 +1,24 @@
 (fn template-toolbar [state]
   [ :toolbar
-    {} ])
+    {} 
+    [ :toolbarButton {} "174"   ]
+    [ :toolbarButton {} "BPM"   ]
+    [ :toolbarButton {} "4/4"   ]
+    [ :toolbarButton {} "Q"     ]
+    [ :toolbarButton {} "1 bar" ]
 
-    ;[ ".toolbar-bpm" "174" ] 
-    ;[ ".toolbar-tap" "BPM" ]
+    [ :toolbarButton {} "REW"   ]
+    [ :toolbarButton {} "PLAY"  ]
+    [ :toolbarButton {} "PAUSE" ]
+    [ :toolbarButton {} "REC"   ]
 
-    ;[ ".toolbar-metre" "4/4" ]
+    [ :toolbarButton {} "KBD ↓"    ]
+    [ :toolbarButton {} "OSC ↓ ↑"  ]
+    [ :toolbarButton {} "MIDI ↓ ↑" ]
+    [ :toolbarButton {} "JACK"     ]
 
-    ;[ ".toolbar-quantize-toggle" " Q "   ]
-    ;[ ".toolbar-quantize-value"  "1 bar" ]
+    ])
 
-    ;[ ".toolbar-rewind" "|<<" ]
-    ;[ ".toolbar-play"   " ▶ " ]
-    ;[ ".toolbar-record" "REC" ]
 
     ;[ ".toolbar-midi"     "MIDI" ]
     ;[ ".toolbar-midi-in"  "↓"    ]

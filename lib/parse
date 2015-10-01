@@ -19,7 +19,7 @@
                  :wtf      (Number (aget l 3))
                  :window   (or (Number (.slice (aget l 4) 1)) nil)
                  :split    nil
-                 :children [] }
+                 :children nil }
 
           n      (aget (aget l 4) 0)
           nn     (.slice (aget l 4) 1)]

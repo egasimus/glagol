@@ -1,39 +1,35 @@
-function splitChildren (children) {
-  var re1 = /(\d+x\d+),(\d),(\d)(,\d+|{[\dx,\[\]\{\}]+})?/
-    , re2 = /,?(.+?,.+?,.+?,[\d\{}]+)/g
-    , ch  = []
-    , c   = null;
-  while ((c = re2.exec(children)) !== null) {
-    ch.push(c[1]);
-  }
-  return ch;
-}
+(let [split-children (fn [children]
+        (let [re1 "/(\d+x\d+),(\d),(\d)(,\d+|{[\dx,\[\]\{\}]+})?/"
+              re2 "/,?(.+?,.+?,.+?,[\d\{}]+)/g"
+              ch  []
+              c   nil]
+          (loop [c (re2.exec children)]
+            (if (not (= c nil)) (do
+              (ch.push (aget c 1))
+              (recur (re2.exec children)))))
+          ch))]
 
-function parse (layout) {
-  var re   = /(\d+x\d+),(\d+),(\d+)(,\d+|{[\dx,\[\]\{\}]+})/
-    , l    = re.exec(layout)
+  (fn parse [layout]
+    (let [re   "/(\d+x\d+),(\d+),(\d+)(,\d+|{[\dx,\[\]\{\}]+})/"
+          l    (re.exec layout)
+          node { :width    (Number (aget (.split (aget l 1) "x") 0))
+                 :height   (Number (aget (.split (aget l 1) "x") 1))
+                 :offset   (Number (aget l 2))
+                 :wtf      (Number (aget l 3))
+                 :window   (or (Number (.slice (aget l 4) 1)) nil)
+                 :split    nil
+                 :children [] }]
 
-    , node = {
-        width:    Number(l[1].split('x')[0]),
-        height:   Number(l[1].split('x')[1]),
-        offset:   Number(l[2]),
-        wtf:      Number(l[3]),
-        window:   Number(l[4].slice(1)) || null,
-        split:    null,
-        children: []
-      };
+      (if (is-nan (Number (aget l 4)))
+        (do
+          (cond
+            (= (aget (aget l 4) 0) "{") (set! node.split :vertical)
+            (= (aget (aget l 4) 0) "[") (set! node.split :horizontal)
+            :else (throw))
+          (set! node.children
+            (.map
+              (split-children (.slice (aget l 4) 1 -1))
+              parse)))
+        (set! node.window (Number (aget l 4))))
 
-  if (isNaN(Number(l[4]))) {
-    if (l[4][0] === "{") {
-      node.split = "vertical";
-    } else if (l[4][0] === "[") {
-      node.split = "horizontal";
-    }
-    node.children = splitChildren(l[4].slice(1,-1)).map(parse);
-  } else {
-    node.window = l[4];
-  }
-
-  return node;
-}
-
+      node)))

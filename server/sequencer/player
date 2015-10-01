@@ -1,6 +1,6 @@
 (fn player [sample]
-  (let [osc-port (./osc/get-next-port)
-        osc-send (./osc/bind-to osc-port)
+  (let [;osc-port (./osc/get-next-port)
+        ;osc-send (./osc/bind-to osc-port)
 
         jack-client-name sample
         jack-port-name   (str sample ":output")
@@ -13,23 +13,23 @@
     (set! state.process nil)
     (set! state.started jack-client.started)
     (set! state.port    jack-client.port)
-    (set! state.play    (fn [cue] (osc-send "/play" 0 (or cue 0))))
-    (set! state.stop    (fn []    (osc-send "/stop" 0)))
+    (set! state.play    (fn []));(fn [cue] (osc-send "/play" 0 (or cue 0))))
+    (set! state.stop    (fn []));(fn []    (osc-send "/stop" 0)))
 
-    (./osc/on "message" (fn [msg]
-      (if (= (str osc-port) (aget msg.args 0)) (do
-        (cond
-          (= "/loaded"  msg.address) (state.emit "loaded"  msg.args)
-          (= "/stopped" msg.address) (state.emit "stopped" msg.args)
-          (= "/playing" msg.address) (state.emit "playing" msg.args))))))
+    ;(./osc/on "message" (fn [msg]
+      ;(if (= (str osc-port) (aget msg.args 0)) (do
+        ;(cond
+          ;(= "/loaded"  msg.address) (state.emit "loaded"  msg.args)
+          ;(= "/stopped" msg.address) (state.emit "stopped" msg.args)
+          ;(= "/playing" msg.address) (state.emit "playing" msg.args))))))
 
     (set! state.process
       (./jack/spawn sample ./playerPath
-        "-n" jack-client-name "-p" osc-port sample))
+        "-n" jack-client-name sample)); "-p" osc-port sample))
     (set! state.kill (fn [signal] (state.process.kill signal)))
 
     (jack-client.then (fn []
-      (log "jack client ready")
-      (osc-send "/listen")))
+      (log "jack client ready")))
+      ;(osc-send "/listen")))
 
     state))

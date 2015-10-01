@@ -15,8 +15,8 @@
           l    (re.exec layout)
           node { :width    (Number (aget (.split (aget l 1) "x") 0))
                  :height   (Number (aget (.split (aget l 1) "x") 1))
-                 :offset   (Number (aget l 2))
-                 :wtf      (Number (aget l 3))
+                 :left     (Number (aget l 2))
+                 :top      (Number (aget l 3))
                  :window   (or (Number (.slice (aget l 4) 1)) nil)
                  :split    nil
                  :children nil }

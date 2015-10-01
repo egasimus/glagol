@@ -10,6 +10,7 @@
                   (recur (nnn.slice (.-length (aget n 0))))))))))]
 
   (fn parse-layout-string [layout]
+
     (let [re   (RegExp "(\\d+x\\d+),(\\d+),(\\d+)(,\\d+|{[\\dx,\\[\\]\\{\\}]+})")
           l    (re.exec layout)
           node { :width    (Number (aget (.split (aget l 1) "x") 0))
@@ -18,17 +19,18 @@
                  :wtf      (Number (aget l 3))
                  :window   (or (Number (.slice (aget l 4) 1)) nil)
                  :split    nil
-                 :children [] }]
+                 :children [] }
 
-        (if (is-na-n (Number (aget l 4)))
-          (do
-            (cond
-              (= (aget (aget l 4) 0) "{") (set! node.split :vertical)
-              (= (aget (aget l 4) 0) "[") (set! node.split :horizontal)
-              :else (throw))
-            (let [nodes (split-nodes (.slice (aget l 4) 1 -1))]
-              (log nodes)
-              (set! node.children (nodes.map parse-layout-string))))
-          (set! node.window (Number (aget l 4))))
+          n      (aget (aget l 4) 0)
+          nn     (.slice (aget l 4) 1)]
+
+        (cond
+          (= n ",") (set! node.window (Number nn))
+          (= n "{") (set! node.split :vertical)
+          (= n "[") (set! node.split :horizontal))
+
+        (if node.split
+          (let [nodes (split-nodes (.slice (aget l 4) 1 -1))]
+            (set! node.children (nodes.map parse-layout-string))))
 
         node)))

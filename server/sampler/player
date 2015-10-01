@@ -2,9 +2,10 @@
   (let [;osc-port (./osc/get-next-port)
         ;osc-send (./osc/bind-to osc-port)
 
+        jack             (require "etude-jack")
         jack-client-name sample
         jack-port-name   (str sample ":output")
-        jack-client      (./jack/client jack-client-name)
+        jack-client      (jack.client jack-client-name)
 
         event2 (require "eventemitter2")
         state  (event2.EventEmitter2.) ]
@@ -24,7 +25,7 @@
           ;(= "/playing" msg.address) (state.emit "playing" msg.args))))))
 
     (set! state.process
-      (./jack/spawn sample ./playerPath
+      (jack.spawn sample ./playerPath
         "-n" jack-client-name sample)); "-p" osc-port sample))
     (set! state.kill (fn [signal] (state.process.kill signal)))
 

@@ -16,6 +16,7 @@
     "bluebird": "^2.10.1",
     "etude-bless": "git://github.com/egasimus/etude-bless",
     "etude-engine": "git://github.com/egasimus/etude-engine",
+    "etude-web": "git://github.com/egasimus/etude-web",
     "eventemitter2": "^0.4.14",
     "glob": "^5.0.14",
     "nanotimer": "^0.3.10",

@@ -1,6 +1,6 @@
 (fn template-main [state]
   [ :main {}
-        [ :prompt       {} ]
-    (-> [ :soundBrowser {} ]
+        [ :prompt        {} ]
+    (-> [ :searchResults {} ]
           (.concat (state.results.map (fn [data]
-            [ :sound {} data ])))) ])
+            [ :searchResult {} data ])))) ])

@@ -1,0 +1,5 @@
+(do
+  ;(debug "\nindex" ./state)
+  (./vdom/insert-css (require "./style.styl"))
+  (./vdom/update ./view ./state)) ; i'm not sure why this works
+                                  ; or if

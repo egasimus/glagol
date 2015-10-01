@@ -1,0 +1,3 @@
+(let [modules {}
+      server  (new (.-Server (require :ws)) { :port 1620 })]
+  (server.on :connection (fn [socket] ((require :q-connection) socket modules))))

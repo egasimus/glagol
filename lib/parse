@@ -1,36 +1,100 @@
-(let [split-nodes (fn [nodes]
-        (let [re (RegExp ",?(.+?,.+?,.+?,[\\d\\{}]+)")
-              nn  []]
-          (loop [nnn nodes]
-            (let [n (re.exec nnn)]
-              (if (= n null)
-                nn
-                (do
-                  (nn.push (aget n 1))
-                  (recur (nnn.slice (.-length (aget n 0))))))))))]
+(fn parse-layout-string [layout]
 
-  (fn parse-layout-string [layout]
+  (let [numbery? #(not (is-na-n (Number %1)))]
 
-    (let [re   (RegExp "(\\d+x\\d+),(\\d+),(\\d+)(,\\d+|[\\dx,\\[\\]\\{\\}]+)")
-          l    (re.exec layout)
-          node { :width    (Number (aget (.split (aget l 1) "x") 0))
-                 :height   (Number (aget (.split (aget l 1) "x") 1))
-                 :left     (Number (aget l 2))
-                 :top      (Number (aget l 3))
-                 :window   (or (Number (.slice (aget l 4) 1)) nil)
-                 :split    nil
-                 :children nil }
+    (loop [head (aget layout 0)
+           tail (layout.slice 1)
+           mode :width
+           node {}] (cond
 
-          n      (aget (aget l 4) 0)
-          nn     (.slice (aget l 4) 1)]
-
+      (= :width  mode)
         (cond
-          (= n ",") (set! node.window (Number nn))
-          (= n "{") (set! node.split :vertical)
-          (= n "[") (set! node.split :horizontal))
+          (numbery? head)
+            (recur (aget tail 0) (tail.slice 1) :width
+              (assoc node :width (.concat (or node.width "") head)))
+          (= "x" head)
+            (recur (aget tail 0) (tail.slice 1) :height
+              (assoc node :width (Number node.width)))
+          :else
+            (throw (new Error. "unexpected character")))
 
-        (if node.split
-          (let [nodes (split-nodes (.slice (aget l 4) 1 -1))]
-            (set! node.children (nodes.map parse-layout-string))))
+      (= :height mode)
+        (cond
+          (numbery? head)
+            (recur (aget tail 0) (tail.slice 1) :height
+              (assoc node :height (.concat (or node.height "") head)))
+          (= "," head)
+            (recur (aget tail 0) (tail.slice 1) :left
+              (assoc node :height (Number node.height)))
+          :else
+            (throw (new Error. "unexpected character")))
 
-        node)))
+      (= :left   mode)
+        (cond
+          (numbery? head)
+            (recur (aget tail 0) (tail.slice 1) :left
+              (assoc node :left (.concat (or node.left "") head)))
+          (= "," head)
+            (recur (aget tail 0) (tail.slice 1) :top
+              (assoc node :left (Number node.left)))
+          :else
+            (throw (new Error. "unexpected character")))
+
+      (= :top    mode)
+        (cond
+          (numbery? head)
+            (recur (aget tail 0) (tail.slice 1) :top
+              (assoc node :top (.concat (or node.top "") head)))
+          (= "," head)
+            (recur (aget tail 0) (tail.slice 1) :top
+              (assoc node :top (Number node.top)))
+          (= "[" head)
+            (recur (aget tail 0) (tail.slice 1) :split
+              (assoc node :top (Number node.top) :split :horizontal))
+          (= "{" head)
+            (recur (aget tail 0) (tail.slice 1) :split
+              (assoc node :top (Number node.top) :split :vertical))
+          :else
+            (throw (new Error. "unexpected character")))
+
+      (= :window mode)
+        (cond
+          (numbery? head) nil)))))
+
+;(let [split-nodes (fn [nodes]
+        ;(let [re (RegExp ",?(.+?,.+?,.+?,[\\d\\{}]+)")
+              ;nn  []]
+          ;(loop [nnn nodes]
+            ;(let [n (re.exec nnn)]
+              ;(if (= n null)
+                ;nn
+                ;(do
+                  ;(nn.push (aget n 1))
+                  ;(recur (nnn.slice (.-length (aget n 0))))))))))]
+
+  ;(fn parse-layout-string [layout]
+    ;(log.as :pls layout)
+
+    ;(let [re   (RegExp "(\\d+x\\d+),(\\d+),(\\d+)(,\\d+|[\\dx,\\[\\]\\{\\}]+)")
+          ;l    (re.exec layout)
+          ;node { :width    (Number (aget (.split (aget l 1) "x") 0))
+                 ;:height   (Number (aget (.split (aget l 1) "x") 1))
+                 ;:left     (Number (aget l 2))
+                 ;:top      (Number (aget l 3))
+                 ;:window   (or (Number (.slice (aget l 4) 1)) nil)
+                 ;:split    nil
+                 ;:children nil }
+
+          ;n      (aget (aget l 4) 0)
+          ;nn     (.slice (aget l 4) 1)]
+
+        ;(cond
+          ;(= n ",") (set! node.window (Number nn))
+          ;(= n "{") (set! node.split :vertical)
+          ;(= n "[") (set! node.split :horizontal))
+
+        ;(if node.split
+          ;(let [nodes (split-nodes (.slice (aget l 4) 1 -1))]
+            ;(set! node.children (nodes.map parse-layout-string))))
+
+        ;node)))

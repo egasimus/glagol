@@ -1,6 +1,6 @@
 (let [split-children (fn [children]
-        (let [re1 "/(\d+x\d+),(\d),(\d)(,\d+|{[\dx,\[\]\{\}]+})?/"
-              re2 "/,?(.+?,.+?,.+?,[\d\{}]+)/g"
+        (let [re1 (RegExp. "(\\d+x\\d+),(\\d),(\\d)(,\\d+|{[\\dx,\\[\\]\\{\\}]+})?")
+              re2 (RegExp. ",?(.+?,.+?,.+?,[\\d\\{}]+)")
               ch  []
               c   nil]
           (loop [c (re2.exec children)]
@@ -9,8 +9,8 @@
               (recur (re2.exec children)))))
           ch))]
 
-  (fn parse [layout]
-    (let [re   "/(\d+x\d+),(\d+),(\d+)(,\d+|{[\dx,\[\]\{\}]+})/"
+  (fn parse-layout-string [layout]
+    (let [re   (RegExp. "(\\d+x\\d+),(\\d+),(\\d+)(,\\d+|{[\\dx,\\[\\]\\{\\}]+})")
           l    (re.exec layout)
           node { :width    (Number (aget (.split (aget l 1) "x") 0))
                  :height   (Number (aget (.split (aget l 1) "x") 1))
@@ -20,16 +20,16 @@
                  :split    nil
                  :children [] }]
 
-      (if (is-nan (Number (aget l 4)))
-        (do
-          (cond
-            (= (aget (aget l 4) 0) "{") (set! node.split :vertical)
-            (= (aget (aget l 4) 0) "[") (set! node.split :horizontal)
-            :else (throw))
-          (set! node.children
-            (.map
-              (split-children (.slice (aget l 4) 1 -1))
-              parse)))
-        (set! node.window (Number (aget l 4))))
+        (if (is-na-n (Number (aget l 4)))
+          (do
+            (cond
+              (= (aget (aget l 4) 0) "{") (set! node.split :vertical)
+              (= (aget (aget l 4) 0) "[") (set! node.split :horizontal)
+              :else (throw))
+            (set! node.children
+              (.map
+                (split-children (.slice (aget l 4) 1 -1))
+                parse-layout-string)))
+          (set! node.window (Number (aget l 4))))
 
-      node)))
+        node)))

@@ -4,20 +4,20 @@ describe("tmux layout parser", function () {
 
   var layouts =
 
-    { "227x62,0,0,3":
-      { width: 226, height: 62, offset: 0, wtf: 0, window: 3 }
+    { "100x100,0,0,1":
+      { width: 100, height: 100, offset: 0, wtf: 0, window: 1 }
 
-    , "227x62,0,0{113x62,0,0,13,113x62,114,0,14}":
-      { width: 227, height: 62, offset: 0, wtf: 0
+    , "150x50,0,0{100x50,0,0,2,50x50,101,0,3}":
+      { width: 150, height: 50, offset: 0, wtf: 0
       , split: "vertical", children:
-        [ { width: 113, height: 62, offset: 0,   wtf: 0, window: 13 }
-        , { width: 113, height: 62, offset: 114, wtf: 0, window: 14 } ] }
+        [ { width: 100, height: 50, offset: 0,   wtf: 0, window: 2 }
+        , { width: 50,  height: 50, offset: 101, wtf: 0, window: 3 } ] }
 
-    , "227x62,0,0[227x31,0,0,3,227x30,0,32,5]":
-      { width: 227, height: 62, offset: 0, wtf: 0
+    , "72x100,0,0[72x62,0,0,4,72x38,0,63,5]":
+      { width: 72, height: 100, offset: 0, wtf: 0
       , split: "horizontal", children:
-        [ { width: 227, height: 31, offset: 0,  wtf: 0, window: 3 }
-        , { width: 227, height: 30, offset: 32, wtf: 0, window: 5 } ] }
+        [ { width: 72,  height: 62, offset: 0,   wtf: 0, window: 4 }
+        , { width: 72,  height: 38, offset: 61,  wtf: 0, window: 5 } ] }
 
     };
 
@@ -25,28 +25,32 @@ describe("tmux layout parser", function () {
     it('can parse ' + l, testCanParse(l));
   }
 
-  function testCanParse(layout) {
+  function testCanParse(l) {
     return function () {
       expect(compareTrees(tmux.parse(l), layouts[l])).toBe(true);
     };
   }
 
   function compareTrees(a, b) {
-    return !Object.keys(a).some(function (i) {
-      if (typeof a[i] === 'object') {
-        if (typeof b[i] === 'object') {
-          compareTrees(a[i], b[i]);
+    for (var i = 0; i < Object.keys(a).length; i++) {
+      var k = Object.keys(a)[i];
+      if (typeof a[k] === 'object') {
+        if (typeof b[k] === 'object') {
+          if (!compareTrees(a[k], b[k])) return false;
         } else {
-          return true;
+          console.log("different type", k);
+          return false;
         }
       } else {
-        if (a[i] === b[i]) {
-          return false;
+        if (a[k] === b[k]) {
+          continue;
         } else {
-          return true;
+          console.log("different", k);
+          return false;
         }
       }
-    });
+    };
+    return true;
   }
 
 });

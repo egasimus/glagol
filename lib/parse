@@ -11,7 +11,7 @@
 
   (fn parse-layout-string [layout]
 
-    (let [re   (RegExp "(\\d+x\\d+),(\\d+),(\\d+)(,\\d+|{[\\dx,\\[\\]\\{\\}]+})")
+    (let [re   (RegExp "(\\d+x\\d+),(\\d+),(\\d+)(,\\d+|[\\dx,\\[\\]\\{\\}]+)")
           l    (re.exec layout)
           node { :width    (Number (aget (.split (aget l 1) "x") 0))
                  :height   (Number (aget (.split (aget l 1) "x") 1))

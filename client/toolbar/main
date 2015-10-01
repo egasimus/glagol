@@ -1,0 +1,67 @@
+(let [bless   (require "etude-bless")
+      screen  (bless.Screen {})
+      default { :top :center :height 1 :bg nil :fg :white }
+      btn     (fn [opts] (bless.Box (assoc (merge default opts) :width (+ 4 opts.content.length))))
+      buttons [ (btn { :left 2   :content "174"      }) 
+                (btn { :left 6   :content "BPM"      }) 
+                (btn { :left 12  :content "4/4"      }) 
+                (btn { :left 18  :content "1 bar"    }) 
+                (btn { :left 24  :content " Q "      }) 
+                (btn { :left 32  :content "REW"      })
+                (btn { :left 37  :content "PLAY"     })
+                (btn { :left 43  :content "REC"      }) 
+
+                (btn { :right 0  :content "JACK"     })
+                (btn { :right 10 :content "OSC ↓ ↑"  })
+                (btn { :right 22 :content "MIDI ↓ ↑" })
+                (btn { :right 34 :content "KBD ↓ ↑"  }) ] ]
+
+  (screen.on :keypress (fn [c k]
+    (if (= k.name :escape) (process.exit))
+    (if (= k.full :C-l)    (screen.realloc))
+    (log c k)
+    (screen.render)))
+
+  (buttons.map (fn [b] (screen.append b)))
+
+  (screen.render)
+
+  screen)
+
+;(fn template-toolbar [state]
+  ;[ :toolbar
+    ;{} 
+    ;[ :toolbarButton {} "174"   ]
+    ;[ :toolbarButton {} "BPM"   ]
+    ;[ :toolbarButton {} "4/4"   ]
+    ;[ :toolbarButton {} "Q"     ]
+    ;[ :toolbarButton {} "1 bar" ]
+
+    ;[ :toolbarButton {} "REW"   ]
+    ;[ :toolbarButton {} "PLAY"  ]
+    ;[ :toolbarButton {} "PAUSE" ]
+    ;[ :toolbarButton {} "REC"   ]
+
+    ;[ :toolbarButton {} "KBD ↓"    ]
+    ;[ :toolbarButton {} "OSC ↓ ↑"  ]
+    ;[ :toolbarButton {} "MIDI ↓ ↑" ]
+    ;[ :toolbarButton {} "JACK"     ]
+
+    ;])
+
+
+    ;[ ".toolbar-midi"     "MIDI" ]
+    ;[ ".toolbar-midi-in"  "↓"    ]
+    ;[ ".toolbar-midi-out" "↑"    ]
+
+    ;[ ".toolbar-osc"     "OSC" ]
+    ;[ ".toolbar-osc-in"  "↓"   ]
+    ;[ ".toolbar-osc-out" "↑"   ]
+
+    ;[ ".toolbar-kbd"    "KBD" ]
+    ;[ ".toolbar-kbd-in" "↓"   ] ])
+
+    ;     =O =  *  = O=
+    ; ["▄" "█" "▀" "█" "▄"]
+    ; oh hey its totoro...!
+

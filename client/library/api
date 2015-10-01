@@ -1,0 +1,12 @@
+(let [WebSocket (require :ws)
+      Q-Connect (require :q-connection)
+
+      addr      ./options/library-socket
+      socket    (new WebSocket addr)
+      api       (Q-Connect socket)]
+
+  { :search
+      (fn [query]
+        (-> (api.invoke :search query)
+          (.then (fn [results] (./events/emit :search-results results))))) })
+

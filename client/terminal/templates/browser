@@ -1,4 +1,8 @@
-(fn template-browser [state]
-  (let [path  (require "path")
-        items (.map (state.slice 0 100) (fn [f] (path.basename f)))]
-    [ :browser { :items items } ]))
+(let [screen  (./bless/Screen {})
+      query   ""
+      results []]
+  screen)
+;(fn template-browser [state]
+  ;(let [path  (require "path")
+        ;items (.map (state.slice 0 100) (fn [f] (path.basename f)))]
+    ;[ :browser { :items items } ]))

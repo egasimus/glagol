@@ -8,13 +8,13 @@
     []
 
   strip
-    (fn [paths] (paths.map (fn [x] (path.relative @sample-dir x))))
+    (fn [paths] (paths.map (fn [x] (path.relative ./sample-dir x))))
 
   filter-snd
     (fn [q snd]
       )
 ]
-  (glob (path.join @sample-dir "**" "*.wav") {}
+  (glob (path.join ./sample-dir "**" "*.wav") {}
     (fn [err files] (if err (throw err)) (set! sounds files)))
 
   (fn search [req res]

@@ -22,6 +22,7 @@
     "nanotimer": "^0.3.10",
     "q": "^1.4.1",
     "q-connection": "^0.6.1",
+    "send-data": "^7.0.0",
     "ws": "^0.8.0"
   },
   "devDependencies": {

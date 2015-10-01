@@ -1,3 +1,6 @@
-(let [modules {}
+(let [modules { :library   ./library
+                :sampler   ./sampler
+                :sequencer ./sequencer }
       server  (new (.-Server (require :ws)) { :port 1620 })]
+  (log :hello)
   (server.on :connection (fn [socket] ((require :q-connection) socket modules))))

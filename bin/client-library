@@ -1,2 +1,0 @@
-$(dirname $(readlink -f $0))/../node_modules/etude-engine/bin/etude ./client/library main
-

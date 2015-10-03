@@ -6,4 +6,3 @@
   ;(on :add-sample (fn [id] (log id) (log (aget ./state/browser id))))
 
   emitter)
-

@@ -1,0 +1,6 @@
+(fn [c k]
+  (cond
+    (= k.full :C-c) (process.exit)
+    (= k.full :C-l) (./screen/realloc)
+    :else (log c k))
+  (./screen/render))

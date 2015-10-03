@@ -1,5 +1,0 @@
-(fn [c k]
-  (if (= k.name :escape) (process.exit))
-  (if (= k.full :C-l)    (./screen/realloc))
-  ;(log c k)
-  (./screen/render))

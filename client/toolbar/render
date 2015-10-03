@@ -5,62 +5,32 @@
       on      { :bg :green :fg :black }
       btn     (fn [opts is-on] (bless.Box
                 (assoc (merge default (if is-on on off) opts)
-                  :width (+ 4 opts.content.length)))) ]
+                  :width (+ 4 opts.content.length))))
+      txt     (fn [opts is-on] (bless.Textbox
+                (assoc (merge default (if is-on on off) opts)
+                  :width (+ 4 opts.value.length)))) ]
 
   (fn []
     (./screen/children/map (fn [c] (./screen/remove c)))
     (.map
-      [ (btn { :left 2   :content "???"      })
+      [ (txt { :left 2   :value   "???"      })
         (btn { :left 6   :content "BPM"      })
-        (btn { :left 12  :content "4/4"      })
-        (btn { :left 18  :content "1 bar"    })
+
+        (txt { :left 12  :value   "4/4"      })
+
+        (txt { :left 18  :value   "1 bar"    })
         (btn { :left 24  :content " Q "      })
+
         (btn { :left 32  :content "REW"      })
         (btn { :left 37  :content "PLAY"     })
         (btn { :left 43  :content "REC"      })
 
         (btn { :right 0  :content "JACK"     } state.jack-up)
+
         (btn { :right 10 :content "OSC ↓ ↑"  })
+
         (btn { :right 22 :content "MIDI ↓ ↑" })
+
         (btn { :right 34 :content "KBD ↓"    }) ]
       (fn [b] (./screen/append b)))
     (./screen/render)))
-
-;(fn template-toolbar [state]
-  ;[ :toolbar
-    ;{} 
-    ;[ :toolbarButton {} "174"   ]
-    ;[ :toolbarButton {} "BPM"   ]
-    ;[ :toolbarButton {} "4/4"   ]
-    ;[ :toolbarButton {} "Q"     ]
-    ;[ :toolbarButton {} "1 bar" ]
-
-    ;[ :toolbarButton {} "REW"   ]
-    ;[ :toolbarButton {} "PLAY"  ]
-    ;[ :toolbarButton {} "PAUSE" ]
-    ;[ :toolbarButton {} "REC"   ]
-
-    ;[ :toolbarButton {} "KBD ↓"    ]
-    ;[ :toolbarButton {} "OSC ↓ ↑"  ]
-    ;[ :toolbarButton {} "MIDI ↓ ↑" ]
-    ;[ :toolbarButton {} "JACK"     ]
-
-    ;])
-
-
-    ;[ ".toolbar-midi"     "MIDI" ]
-    ;[ ".toolbar-midi-in"  "↓"    ]
-    ;[ ".toolbar-midi-out" "↑"    ]
-
-    ;[ ".toolbar-osc"     "OSC" ]
-    ;[ ".toolbar-osc-in"  "↓"   ]
-    ;[ ".toolbar-osc-out" "↑"   ]
-
-    ;[ ".toolbar-kbd"    "KBD" ]
-    ;[ ".toolbar-kbd-in" "↓"   ] ])
-
-    ;     =O =  *  = O=
-    ; ["▄" "█" "▀" "█" "▄"]
-    ; oh hey its totoro...!
-
-

@@ -1,0 +1,14 @@
+(let [bless  (require "etude-bless")
+      state  ./state]
+
+  (fn []
+    (./screen/children/map (fn [c] (./screen/remove c)))
+    (.map
+      [ (bless.Textbox {
+          :top 0 :height 1 :left 0 :right 0
+          :padding { :left 1 :right 1 } :bg :#111111 })
+        (bless.Text {
+          :bottom 0 :left 0 :right 0
+          :content "type to search, ↓ to browse, Esc to exit" }) ]
+      (fn [b] (./screen/append b)))
+    (./screen/render)))

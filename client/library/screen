@@ -1,0 +1,4 @@
+(let [screen (.Screen (require :etude-bless) {})]
+  (screen.enable-mouse)
+  (screen.on :keypress ./on-key)
+  screen)

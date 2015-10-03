@@ -1,24 +1,29 @@
 (let [bless   (require :etude-bless)
-      screen  ./screen
-      default { :top :center :height 1 :bg nil :fg :white }
-      btn     (fn [opts] (bless.Box (assoc (merge default opts) :width (+ 4 opts.content.length))))
-      buttons [ (btn { :left 2   :content "???"      })
-                (btn { :left 6   :content "BPM"      }) 
-                (btn { :left 12  :content "4/4"      }) 
-                (btn { :left 18  :content "1 bar"    }) 
-                (btn { :left 24  :content " Q "      }) 
-                (btn { :left 32  :content "REW"      })
-                (btn { :left 37  :content "PLAY"     })
-                (btn { :left 43  :content "REC"      }) 
-
-                (btn { :right 0  :content "JACK"     })
-                (btn { :right 10 :content "OSC ↓ ↑"  })
-                (btn { :right 22 :content "MIDI ↓ ↑" })
-                (btn { :right 34 :content "KBD ↓"    }) ]]
+      state   ./state
+      default { :top :center :height 1 }
+      off     { :bg nil    :fg :white }
+      on      { :bg :green :fg :black }
+      btn     (fn [opts is-on] (bless.Box
+                (assoc (merge default (if is-on on off) opts)
+                  :width (+ 4 opts.content.length)))) ]
 
   (fn []
-    (./screen/on :keypress ./on-key)
-    (buttons.map (fn [b] (./screen/append b)))
+    (./screen/children/map (fn [c] (./screen/remove c)))
+    (.map
+      [ (btn { :left 2   :content "???"      })
+        (btn { :left 6   :content "BPM"      })
+        (btn { :left 12  :content "4/4"      })
+        (btn { :left 18  :content "1 bar"    })
+        (btn { :left 24  :content " Q "      })
+        (btn { :left 32  :content "REW"      })
+        (btn { :left 37  :content "PLAY"     })
+        (btn { :left 43  :content "REC"      })
+
+        (btn { :right 0  :content "JACK"     } state.jack-up)
+        (btn { :right 10 :content "OSC ↓ ↑"  })
+        (btn { :right 22 :content "MIDI ↓ ↑" })
+        (btn { :right 34 :content "KBD ↓"    }) ]
+      (fn [b] (./screen/append b)))
     (./screen/render)))
 
 ;(fn template-toolbar [state]

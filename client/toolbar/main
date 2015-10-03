@@ -1,8 +1,9 @@
-(let [bless   (require "etude-bless")
+(let [
+      bless   (require "etude-bless")
       screen  (bless.Screen {})
       default { :top :center :height 1 :bg nil :fg :white }
       btn     (fn [opts] (bless.Box (assoc (merge default opts) :width (+ 4 opts.content.length))))
-      buttons [ (btn { :left 2   :content "174"      }) 
+      buttons [ (btn { :left 2   :content "???"      })
                 (btn { :left 6   :content "BPM"      }) 
                 (btn { :left 12  :content "4/4"      }) 
                 (btn { :left 18  :content "1 bar"    }) 
@@ -14,7 +15,25 @@
                 (btn { :right 0  :content "JACK"     })
                 (btn { :right 10 :content "OSC ↓ ↑"  })
                 (btn { :right 22 :content "MIDI ↓ ↑" })
-                (btn { :right 34 :content "KBD ↓ ↑"  }) ] ]
+                (btn { :right 34 :content "KBD ↓"    }) ]
+
+      WebSocket (require :ws)
+      Q-Connect (require :q-connection)
+
+      addr      "ws://localhost:1620"
+      socket    (new WebSocket addr)
+      api       (Q-Connect socket)]
+
+  (socket.on :open (fn []
+    (log :open)
+    (-> api
+      (.get "sequencer")
+      (.invoke "jack-up")
+      (.then (fn []
+        (set! (.-style.bg (aget buttons 8)) :green)
+        (set! (.-style.fg (aget buttons 8)) :black)
+        (screen.render)
+        )))))
 
   (screen.on :keypress (fn [c k]
     (if (= k.name :escape) (process.exit))
@@ -26,7 +45,7 @@
 
   (screen.render)
 
-  screen)
+  )
 
 ;(fn template-toolbar [state]
   ;[ :toolbar

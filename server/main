@@ -1,11 +1,11 @@
 (let [modules { :library   ./library/api
                 :sampler   ./sampler/api
-                :sequencer ./sequencer/main }
+                :sequencer ./sequencer/api }
 
       server  (new (.-Server (require :ws)) { :port 1620 })]
 
   (log.as :hello "running with modules" (.join (keys modules) " "))
 
   (server.on :connection (fn [socket]
-    (log.as :connection :foo)
+    (log.as :connection "")
     ((require :q-connection) socket modules))))

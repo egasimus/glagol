@@ -1,0 +1,10 @@
+(let [WebSocket (require :ws)
+      Q-Connect (require :q-connection)
+
+      address   "ws://localhost:1620"
+      socket    (new WebSocket address)
+      api       (Q-Connect socket)]
+
+  { :address address
+    :socket  socket
+    :api     api })

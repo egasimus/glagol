@@ -1,0 +1,19 @@
+(let [WebSocket (require :ws)
+      Q-Connect (require :q-connection)
+
+      addr      "ws://localhost:1620"
+      socket    (new WebSocket addr)
+      api       (Q-Connect socket)
+
+      state     { :jack-up false }]
+
+  (socket.on :open (fn []
+    (log :open)
+    (-> api
+      (.get "sequencer")
+      (.invoke "jack-up")
+      (.then (fn []
+        (set! state.jack-up true)
+        (./render))))))
+
+  state)

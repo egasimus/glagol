@@ -1,14 +1,18 @@
 (let [bless  (require "etude-bless")
-      state  ./state]
+      state  ./state
+      screen ./screen
+      input (bless.Textbox {
+        :top 0 :height 1 :left 0 :right 0
+        :padding { :left 1 :right 1 } :bg :#111111 })
+      results (bless.List { :top 1 :left 1 :right 1 :bottom 1 })
+      help (bless.Text {
+        :bottom 0 :left 0 :right 0
+        :content "type to search, ↓ to browse, Esc to exit" })]
 
   (fn []
-    (./screen/children/map (fn [c] (./screen/remove c)))
-    (.map
-      [ (bless.Textbox {
-          :top 0 :height 1 :left 0 :right 0
-          :padding { :left 1 :right 1 } :bg :#111111 })
-        (bless.Text {
-          :bottom 0 :left 0 :right 0
-          :content "type to search, ↓ to browse, Esc to exit" }) ]
-      (fn [b] (./screen/append b)))
-    (./screen/render)))
+    (screen.children.map (fn [c] (c.destroy)))
+    (.map [input results help]
+      (fn [b] (screen.append b)))
+    (input.read-input (fn [$ q] (results.add q)))
+    (input.on :click (fn [] (input.read-input)))
+    (screen.render)))

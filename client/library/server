@@ -7,5 +7,10 @@
 
   { :address address
     :socket  socket
-    :api     api })
+    :api     api
+
+    :search
+      (fn [query]
+        (-> (api.invoke :search query)
+          (.then (fn [results] (./events/emit :search-results results))))) })
 

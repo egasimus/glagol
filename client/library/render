@@ -4,15 +4,19 @@
       input (bless.Textbox {
         :top 0 :height 1 :left 0 :right 0
         :padding { :left 1 :right 1 } :bg :#111111 })
-      results (bless.List { :top 1 :left 1 :right 1 :bottom 1 })
+      results (bless.List {
+        :top 1 :left 1 :right 1 :bottom 1 })
       help (bless.Text {
         :bottom 0 :left 0 :right 0
-        :content "type to search, ↓ to browse, Esc to exit" })]
+        :content "type to search, ↓ to browse, Esc to exit" })
+
+      search (fn [$ q] (input.clear-value) (results.add q))]
 
   (fn []
     (screen.children.map (fn [c] (c.destroy)))
-    (.map [input results help]
-      (fn [b] (screen.append b)))
-    (input.read-input (fn [$ q] (results.add q)))
-    (input.on :click (fn [] (input.read-input)))
+    (.map [input results help] (fn [b] (screen.append b)))
+
+    (input.read-input search)
+    (input.on :click (fn [] (input.focus) (input.read-input search) (screen.render)))
+
     (screen.render)))

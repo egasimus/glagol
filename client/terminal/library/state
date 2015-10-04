@@ -4,20 +4,17 @@
 
   (../events/on :keytyped (fn [c]
     (set! state.input (state.input.concat c))
-    (./render ../screen state)))
+    (../render)))
 
   (../events/on :backspace (fn []
     (set! state.input (state.input.slice 0 -1))
-    (./render ../screen state)))
+    (../render)))
 
   (../events/on :enter (fn []
-    (log state.input)))
-    ;(log (../api :invoke "library/search" (fn [results]
-      ;(log :REsultS)
-      ;(../screen/destroy)
-      ;(log results)
-      ;(process.exit)
-      ;(set! state.results results)
-      ;(./render ../screen state))))))
+    (log state.input)
+    (-> (../api :invoke "library/search" state.input)
+      (.then (fn [results]
+        (set! state.results results)
+        (../render))))))
 
   state)

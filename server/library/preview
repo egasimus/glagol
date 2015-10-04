@@ -1,0 +1,2 @@
+(fn preview [path]
+  (log path))

@@ -5,8 +5,7 @@
 
     (= state.focus :input) (cond
       (= k.name :enter) (../events/emit :search)
-      c (../events/emit :keytyped c)
-      :else (log k))
+      c (../events/emit :keytyped c))
 
     (= state.focus :results) (cond
       (= k.name :up)   (../events/emit :prev-result)

@@ -2,7 +2,8 @@
 (let [modules { :jack      ./jack/api
                 :library   ./library/api
                 :sampler   ./sampler/api
-                :sequencer ./sequencer/api }
+                :sequencer ./sequencer/api
+                :transport ./transport/api }
 
       server  (new (.-Server (require :ws)) { :port 1620 })]
 

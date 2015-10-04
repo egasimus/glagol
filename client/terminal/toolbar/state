@@ -7,8 +7,11 @@
       (../render))))
 
   (../events/on :play (fn []
-    (set! state.playing (not state.playing))
-    (../render)))
+    (.done (if state.playing
+      (-> (../api :invoke "transport/pause")
+        (.then (fn [] (set! state.playing false) (../render))))
+      (-> (../api :invoke "transport/play")
+        (.then (fn [] (set! state.playing true)  (../render))))))))
 
     ;(-> ../server/api
       ;(.get "sequencer")

@@ -1,0 +1,2 @@
+{ :play  (fn [] (log :playing))
+  :pause (fn [] (log :paused)) }

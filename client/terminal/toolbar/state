@@ -1,9 +1,14 @@
-(let [state { :jack-up false }]
+(let [state { :jack-up false
+              :playing false }]
 
   (-> (../api :invoke "jack/start")
     (.then (fn []
       (set! state.jack-up true)
       (../render))))
+
+  (../events/on :play (fn []
+    (set! state.playing (not state.playing))
+    (../render)))
 
     ;(-> ../server/api
       ;(.get "sequencer")

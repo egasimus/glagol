@@ -8,10 +8,12 @@
         on
           { :bg :green   :fg :black }
 
-        btn (fn [opts is-on]
-          (bless.Box
+        btn (fn [opts is-on ev]
+          (let [box (bless.Box
             (assoc (merge default (if is-on on off) opts)
-              :width (+ 4 opts.content.length))))
+              :width (+ 4 opts.content.length)))]
+            (if ev (box.on :click (fn [] (../events/emit ev))))
+            box))
 
         txt (fn [opts is-on]
           (bless.Textbox
@@ -30,7 +32,7 @@
         (btn { :left 24  :content " Q "      })
 
         (btn { :left 32  :content "REW"      })
-        (btn { :left 37  :content "PLAY"     })
+        (btn { :left 37  :content "PLAY"     } state.playing :play)
         (btn { :left 43  :content "REC"      })
 
         (btn { :right 0  :content "JACK"     } state.jack-up)

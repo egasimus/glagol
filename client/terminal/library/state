@@ -1,6 +1,7 @@
-(let [state { :input   ""
-              :focus   :input 
-              :results [] }]
+(let [state { :input    ""
+              :focus    :input
+              :results  []
+              :selected -1 }]
 
   (../events/on :keytyped (fn [c]
     (set! state.input (state.input.concat c))
@@ -8,13 +9,15 @@
 
   (../events/on :backspace (fn []
     (set! state.input (state.input.slice 0 -1))
+    (set! state.focus :input)
     (../render)))
 
-  (../events/on :enter (fn []
+  (../events/on :search (fn []
     (.then (../api :invoke "library/search" state.input)
       (fn [results]
-        (set! state.results (JSON.parse results))
-        (set! state.focus   :results)
+        (set! state.results  (JSON.parse results))
+        (set! state.focus    :results)
+        (set! state.selected 0)
         (../render))
       (fn [err]
         (log.as :err err)))))

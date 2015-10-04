@@ -1,6 +1,5 @@
 #!/usr/bin/env etude
-(let [modules { :jack      ./jack/api
-                :library   ./library/api
+(let [modules { :library   ./library/api
                 :sampler   ./sampler/api
                 :sequencer ./sequencer/api }
 

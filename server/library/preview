@@ -13,7 +13,5 @@
 
   (fn preview [path]
     (sampler.jack.client.then (fn []
-      (log sampler :spawned)
       (sampler.load path)
-      (sampler.play)))
-    (log path)))
+      (sampler.play)))))

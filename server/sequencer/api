@@ -1,2 +1,1 @@
-{ :jack-up
-  (fn [] (-> (./jack/init) (.progress (fn [msg] (log.as :jack-init msg))) (.done))) }
+{}

@@ -1,6 +1,6 @@
 (let [state { :jack-up false }]
 
-  (-> (../api :invoke "sequencer/jack-up")
+  (-> (../api :invoke "jack/start")
     (.then (fn []
       (set! state.jack-up true)
       (./render ../screen state))))

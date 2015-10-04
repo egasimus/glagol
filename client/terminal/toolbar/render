@@ -1,17 +1,25 @@
-(let [bless   (require :etude-bless)
-      state   ./state
-      default { :top :center :height 1 }
-      off     { :bg nil    :fg :white }
-      on      { :bg :green :fg :black }
-      btn     (fn [opts is-on] (bless.Box
-                (assoc (merge default (if is-on on off) opts)
-                  :width (+ 4 opts.content.length))))
-      txt     (fn [opts is-on] (bless.Textbox
-                (assoc (merge default (if is-on on off) opts)
-                  :width (+ 4 opts.value.length)))) ]
+(fn [screen state]
+  (let [bless   (require "etude-bless")
 
-  (fn []
-    (./screen/children/map (fn [c] (./screen/remove c)))
+        default
+          { :top :center :height 1 }
+        off
+          { :bg nil      :fg :white }
+        on
+          { :bg :green   :fg :black }
+
+        btn (fn [opts is-on]
+          (bless.Box
+            (assoc (merge default (if is-on on off) opts)
+              :width (+ 4 opts.content.length))))
+
+        txt (fn [opts is-on]
+          (bless.Textbox
+            (assoc (merge default (if is-on on off) opts)
+              :width (+ 4 opts.value.length)))) ]
+
+    (screen.children.map (fn [c] (c.destroy)))
+
     (.map
       [ (txt { :left 2   :value   "???"      })
         (btn { :left 6   :content "BPM"      })
@@ -32,5 +40,6 @@
         (btn { :right 22 :content "MIDI ↓ ↑" })
 
         (btn { :right 34 :content "KBD ↓"    }) ]
-      (fn [b] (./screen/append b)))
-    (./screen/render)))
+      (fn [b] (screen.append b)))
+
+    (screen.render)))

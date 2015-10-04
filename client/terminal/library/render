@@ -1,15 +1,19 @@
 (fn [screen state]
   (let [bless (require "etude-bless")
+
         input (bless.Textbox {
           :top 0 :height 1 :left 0 :right 0
           :padding { :left 1 :right 1 } :bg :#111111 :value state.input })
+
         results (bless.List {
           :top 1 :left 1 :right 1 :bottom 1 })
+
         help (bless.Text {
           :bottom 0 :left 0 :right 0 :fg :white
           :content (aget ./help state.focus) })]
 
     (screen.children.map (fn [c] (c.destroy)))
+
     (.map [input results help] (fn [b] (screen.append b)))
 
     (screen.render)))

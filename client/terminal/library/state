@@ -22,4 +22,18 @@
       (fn [err]
         (log.as :err err)))))
 
+  (../events/on :next-result (fn []
+    (set! state.selected
+      (if (< state.selected (- state.results.length 1))
+        (+ state.selected 1)
+        0))
+    (../render)))
+
+  (../events/on :prev-result (fn []
+    (set! state.selected
+      (if (> state.selected 0)
+        (- state.selected 1)
+        (- state.results.length 1)))
+    (../render)))
+
   state)

@@ -1,1 +1,7 @@
-(./library/render ./screen ./library/state)
+#!/usr/bin/env etude
+(log process.argv)
+
+;(let [module-name (aget process.argv 4)
+      ;$ (log module-name)
+      ;module (aget . (aget process.argv 4))]
+  ;(module.render ./screen module.state))

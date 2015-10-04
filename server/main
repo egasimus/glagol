@@ -1,3 +1,4 @@
+#!/usr/bin/env etude
 (let [modules { :library   ./library/api
                 :sampler   ./sampler/api
                 :sequencer ./sequencer/api }

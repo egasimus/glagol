@@ -13,6 +13,7 @@
                 (set! top (+ top el.height))))) })]
 
     (state.tracks.map (fn [track i]
+      (log track)
       (let [bg  (if (= i state.selected) :black nil)
             box (bless.Box { :height 3 :bg bg })]
         (box.append (bless.Text {

@@ -14,10 +14,15 @@
 
     (state.tracks.map (fn [track i]
       (let [bg  (if (= i state.selected) :black nil)
-            box (bless.Box { :height 3 :bg bg })]
+            box (bless.Box { :height 2 :bg bg })]
         (box.append (bless.Text {
           :left 1 :top 0 :height 1
           :content track.name :bg bg }))
+        (track.seq.map (fn [step j]
+          (box.append (bless.Box {
+            :top 0 :left (+ 10 (* j 4))
+            :width 2 :height 1
+            :bg (if step :red :black) }))))
         (tracks.append box))))
 
     (screen.children.map #(.destroy %1))

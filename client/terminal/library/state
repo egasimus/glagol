@@ -38,6 +38,6 @@
 
   (../events/on :preview (fn []
     (../api :invoke "library/preview"
-      (.-path (aget state.results state.selected)))))
+      (.-fullpath (aget state.results state.selected)))))
 
   state)

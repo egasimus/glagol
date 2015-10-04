@@ -1,2 +1,15 @@
-(fn preview [path]
-  (log path))
+(let [sampler (../sampler)
+      gain    (../calf :mono-to-stereo)
+      meter   (../jackmeter)]
+
+  (../jack/connect "sampler:output" "gain:in")
+
+  (../jack/connect "gain:out1" "meter:in")
+
+  (../jack/connect "gain:out1" "system:playback_1")
+  (../jack/connect "gain:out2" "system:playback_2")
+
+  (fn preview [path]
+    (sampler.load path)
+    (sampler.play)
+    (log path)))

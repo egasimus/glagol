@@ -2,5 +2,11 @@
   (if (< process.argv.length 1)
     (log "please specify a widget to launch")
     (let [widget-name (aget process.argv 0)
-          widget      (aget _ widget-name)]
-      (widget.render ./screen widget.state))))
+          widget      (aget _ widget-name)
+          render      (fn [] (widget.render ./screen widget.state))]
+      (render)
+      (set-interval (fn []
+        (if (not (same? widget (aget _ widget-name)))
+          (do (set! widget (aget _ widget-name))
+              (widget.render ./screen widget.state)
+              (render)))) 1000))))

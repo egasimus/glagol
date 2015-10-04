@@ -1,0 +1,8 @@
+(let [state { :tracks [] }]
+
+  (-> (../api :invoke "sequencer/tracks")
+    (.then (fn [results]
+      (set! state.tracks (JSON.parse results))
+      (./render ../screen state))))
+
+  state)

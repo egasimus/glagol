@@ -1,0 +1,27 @@
+(fn render [screen state]
+  (let [bless (require "etude-bless")
+
+        tracks (bless.Layout {
+          :top 1 :left 0 :right 0 :bottom 1
+          :renderer (fn column-renderer [coords]
+            (let [top 0]
+              (fn [el i]
+                (set! el.shrink         true)
+                (set! el.position.left  (or el.position.left  0))
+                (set! el.position.right (or el.position.right 0))
+                (set! el.position.top   top)
+                (set! top (+ top el.height))))) })]
+
+    (state.tracks.map (fn [track i]
+      (let [bg  (if (= i state.selected) :black nil)
+            box (bless.Box { :height 3 :bg bg })]
+        (box.append (bless.Text {
+          :left 1 :top 0 :height 1
+          :content track.name :bg bg }))
+        (tracks.append box))))
+
+    (screen.children.map #(.destroy %1))
+
+    (.map [tracks] #(screen.append %1))
+
+    (screen.render)))

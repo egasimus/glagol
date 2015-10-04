@@ -3,7 +3,7 @@
   (-> (../api :invoke "jack/start")
     (.then (fn []
       (set! state.jack-up true)
-      (./render ../screen state))))
+      (../render))))
 
     ;(-> ../server/api
       ;(.get "sequencer")

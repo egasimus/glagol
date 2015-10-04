@@ -1,25 +1,19 @@
 (fn api-call [op path cb]
 
-  (log op path cb)
-
   (let [call
           (fn []
-            (log.as :call op path)
             (loop [p (path.split "/")
                    q ./server/api]
-              (log p q)
               (if (< 1 p.length) (recur (p.slice 1) (q.get (aget p 0)))
-                (if (= 1 p.rength) (.then ((aget q op) (aget p 0)) cb)
-                  (if (> 1 p.length) (log :oof))))))   ;(throw (Error. (str "api: say path"))))))
+                (if (= 1 p.length) (.then ((aget q op) (aget p 0)) cb)
+                  (if (> 1 p.length) (throw (Error. (str "api: say path"))))))))
 
         ready
           ./server/socket/ready-state]
 
-    (log ready)
-
     (if (= 0 ready)
       (new (.-Promise (require :q)) (fn [resolve]
-        (./server/socket/on :open (fn [] (log :open) (resolve (call))))))
+        (./server/socket/on :open (fn [] (resolve (call))))))
       (if (= 1 ready)
         (call)
         (throw (Error. (str "api socket in state " ready)))))))

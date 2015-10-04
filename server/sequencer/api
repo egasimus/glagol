@@ -1,1 +1,1 @@
-{ :tracks (fn [] (log :tracks (JSON.stringify ./tracks)) (JSON.stringify ./tracks)) }
+{ :tracks (fn [] (JSON.stringify ./tracks)) }

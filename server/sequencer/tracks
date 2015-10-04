@@ -1,33 +1,8 @@
-[
+[ { :name "Kick"
+    :seq  [ 1 0 1 0 1 0 1 0 ] }
 
-  { :name
-      "Kick"
-    :seq
-      [ 1 0 1 0 1 0 1 0 ]
-    :chain
-      (let [sampler (../sampler/player "./sounds/kick.wav")]
-        (./connect [sampler "output"] [./jack/system "playback_1"])
-        (./connect [sampler "output"] [./jack/system "playback_2"])
-        sampler) }
+  { :name "Snare"
+    :seq  [ 0 0 1 0 0 0 1 1 ] }
 
-  { :name
-      "Snare"
-    :seq
-      [ 0 0 1 0 0 0 1 1 ]
-    :chain
-      (let [sampler (../sampler/player "./sounds/snare.wav")]
-        (./connect [sampler "output"] [./jack/system "playback_1"])
-        (./connect [sampler "output"] [./jack/system "playback_2"])
-        sampler) }
-
-  { :name
-      "Hat"
-    :seq
-      [ 1 1 1 1 1 1 1 1 ]
-    :chain
-      (let [sampler (../sampler/player "./sounds/hh.wav")]
-        (./connect [sampler "output"] [./jack/system "playback_1"])
-        (./connect [sampler "output"] [./jack/system "playback_2"])
-        sampler) }
-
-]
+  { :name "Hat"
+    :seq  [ 1 1 1 1 1 1 1 1 ] } ]

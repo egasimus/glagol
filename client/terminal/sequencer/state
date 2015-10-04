@@ -2,7 +2,6 @@
 
   (-> (../api :invoke "sequencer/tracks")
     (.then (fn [results]
-      (log results)
       (set! state.tracks (JSON.parse results))
       (../render))))
 

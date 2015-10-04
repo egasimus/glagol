@@ -5,7 +5,7 @@
             (loop [p (path.split "/")
                    q ./server/api]
               (if (< 1 p.length) (recur (p.slice 1) (q.get (aget p 0)))
-                (if (= 1 p.length) ((aget q op) (aget p 0))
+                (if (= 1 p.length) (.apply (aget q op) q (.concat [p] args))
                   (if (> 1 p.length) (throw (Error. (str "api: say path"))))))))
 
         ready

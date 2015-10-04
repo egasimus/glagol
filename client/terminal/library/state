@@ -11,11 +11,11 @@
     (../render)))
 
   (../events/on :enter (fn []
-    (log state.input)
-    (-> (../api :invoke "library/search" state.input)
-      (.then (fn [results]
-        (set! state.results results)
-        (log.as :results results)
-        (../render))))))
+    (.then (../api :invoke "library/search" state.input)
+      (fn [results]
+        (set! state.results (JSON.parse results))
+        (../render))
+      (fn [err]
+        (log.as :err err)))))
 
   state)

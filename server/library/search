@@ -1,6 +1,11 @@
 (fn search [query]
-  (log.as :search query)
-  (let [fltr  (fn [snd] (not (= -1 (.index-of (snd.to-lower-case) (GET.q.to-lower-case)))))
-        results (if query (./data/filter fltr) data)]
-    (log.as :found results.length)
+  (let [fltr
+          (fn [snd] (not (= -1
+            (.index-of (snd.path.to-lower-case)
+              (query.to-lower-case)))))
+        results
+          (if query
+            (./data/filter fltr)
+            ./data)]
+    (log :found results.length :for query)
     (JSON.stringify results)))

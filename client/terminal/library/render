@@ -12,6 +12,8 @@
           :bottom 0 :left 0 :right 0 :fg :white
           :content (aget ./help state.focus) })]
 
+    (results.set-items (.map state.results #(aget %1 :path)))
+
     (screen.children.map (fn [c] (c.destroy)))
 
     (.map [input results help] (fn [b] (screen.append b)))

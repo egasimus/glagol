@@ -12,7 +12,8 @@
   ;(../jack/connect "gain:out2" "system:playback_2")
 
   (fn preview [path]
-    (log sampler)
-    (sampler.load path)
-    (sampler.play)
+    (sampler.jack.client.then (fn []
+      (log sampler :spawned)
+      (sampler.load path)
+      (sampler.play)))
     (log path)))

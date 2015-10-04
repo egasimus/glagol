@@ -1,4 +1,3 @@
-; TODO fix notion names in engine so this can be called ./tap-tempo
 (let [ last-tap   nil
        taps       []
        min-tempo  81 ]

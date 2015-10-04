@@ -34,7 +34,7 @@
           :send osc-send }
 
       :process
-        (apply jack.spawn
+        (apply ../jack/api/spawn
           (.concat
             [ options.name
               ./options/player-path
@@ -45,11 +45,11 @@
       :kill
         (fn [signal] (state.process.kill signal))
       :play
-        (fn [cue]    (osc-send "/play" 0 (or cue 0)))
+        (fn [cue]    (log :play) (osc-send "/play" 0 (or cue 0)))
       :stop
-        (fn []       (osc-send "/stop" 0))
+        (fn []       (log :stop) (osc-send "/stop" 0))
       :load
-        (fn [path]   (osc-send "/load" 0 path))
+        (fn [path]   (log :load) (osc-send "/load" 0 path))
     }))
 
     state))

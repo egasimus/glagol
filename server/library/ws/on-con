@@ -1,2 +1,0 @@
-(fn on-connection [socket]
-  ((require :q-connection) socket ../api))

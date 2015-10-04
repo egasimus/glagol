@@ -15,6 +15,7 @@
     (-> (../api :invoke "library/search" state.input)
       (.then (fn [results]
         (set! state.results results)
+        (log.as :results results)
         (../render))))))
 
   state)

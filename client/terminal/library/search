@@ -1,3 +1,0 @@
-(fn [query]
-  (-> (../server/api/invoke :search query)
-    (.then (fn [results] (../events/emit :search-results results)))))

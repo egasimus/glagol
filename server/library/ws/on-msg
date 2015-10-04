@@ -1,6 +1,0 @@
-(let [i 0]
-  (fn on-message [socket msg]
-    (set! i (+ 1 i))
-    (log)
-    (log.as (str "<< " i) msg)
-    (log.as (str ">> " i) (../repl/eval msg))))

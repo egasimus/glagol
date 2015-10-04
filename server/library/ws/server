@@ -1,3 +1,0 @@
-(let [server (new (.-Server (require :ws)) { :port 1620 })]
-  (server.on :connection (fn [nect] (./on-con nect)))
-  server)

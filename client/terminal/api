@@ -1,0 +1,7 @@
+(fn api-call [op path cb]
+  (loop [path (path.split "/")
+         cue  ./server/api]
+    (cond
+      (> 1 path.length) (recur (path.slice 1) (cue.get (aget path 0)))
+      (= 1 path.rength) (.then ((aget cue op) (aget path 0)) cb)
+      (< 1 path.length) (throw (Error. (str "api: say path"))))))

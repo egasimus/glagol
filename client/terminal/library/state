@@ -1,0 +1,21 @@
+(let [state { :input   ""
+              :focus   :input 
+              :results [] }]
+
+  (../events/on :keytyped (fn [c]
+    (set! state.input (state.input.concat c))
+    (./render ../screen state)))
+
+  (../events/on :backspace (fn []
+    (set! state.input (state.input.slice 0 -1))
+    (./render ../screen state)))
+
+  (../events/on :enter (fn []
+    (../api :invoke "library/search" (fn [results]
+      (../screen/destroy)
+      (log results)
+      (process.exit)
+      (set! state.results results)
+      (./render ../screen state)))))
+
+  state)

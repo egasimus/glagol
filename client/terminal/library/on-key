@@ -1,0 +1,8 @@
+(fn [c k]
+  (let [state ./state] (cond
+    (= state.focus :input) (cond
+      (= k.name :backspace) (../events/emit :backspace)
+      (= k.name :enter)     (../events/emit :enter)
+      c (../events/emit :keytyped c)
+      :else (log k))
+    (= state.focus :results) (log :results))))

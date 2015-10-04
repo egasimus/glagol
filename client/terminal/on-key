@@ -2,5 +2,5 @@
   (cond
     (= k.full :C-c) (process.exit)
     (= k.full :C-l) (./screen/realloc)
-    :else (log c k))
+    :else (./library/on-key c k))
   (./screen/render))

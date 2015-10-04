@@ -1,1 +1,7 @@
-{ :tracks (fn [] (JSON.stringify ./tracks)) }
+(let [tracks ./tracks]
+  { :tracks
+      (fn [] (JSON.stringify tracks))
+    :add
+      (fn [path]
+        (log.as :add-track path)
+        (tracks.push { :name path :seq [0 0 0 0 0 0 0 0]})) })

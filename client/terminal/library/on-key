@@ -8,7 +8,8 @@
       c (../events/emit :keytyped c))
 
     (= state.focus :results) (cond
-      (= k.name :up)   (../events/emit :prev-result)
-      (= k.name :down) (../events/emit :next-result)
-      (= c :p)         (../events/emit :preview)
-      (= c "/")        (../events/emit :search-more)))))
+      (= k.name :up)    (../events/emit :prev-result)
+      (= k.name :down)  (../events/emit :next-result)
+      (= k.name :enter) (../events/emit :select)
+      (= c :p)          (../events/emit :preview)
+      (= c "/")         (../events/emit :search-more))))))

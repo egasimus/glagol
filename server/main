@@ -1,14 +1,8 @@
 #!/usr/bin/env etude
-(let [modules { :jack      ./jack/api
-                :library   ./library/api
-                :sampler   ./sampler/api
-                :sequencer ./sequencer/api
-                :transport ./transport/api }
+(let [server  (new (.-Server (require :ws)) { :port 1620 })]
 
-      server  (new (.-Server (require :ws)) { :port 1620 })]
-
-  (log.as :hello "running with modules" (.join (keys modules) " "))
+  (log.as :hello "starting with modules:" (.join (keys ./api) " "))
 
   (server.on :connection (fn [socket]
     (log.as :connection "")
-    ((require :q-connection) socket modules))))
+    ((require :q-connection) socket ./api))))

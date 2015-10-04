@@ -40,4 +40,8 @@
     (../api :invoke "library/preview"
       (.-fullpath (aget state.results state.selected)))))
 
+  (../events/on :select (fn []
+    (../api :invoke "sequencer/add"
+      (.-fullpath (aget state.results state.selected)))))
+
   state)

@@ -1,7 +1,6 @@
 #!/usr/bin/env etude
-(log process.argv)
-
-;(let [module-name (aget process.argv 4)
-      ;$ (log module-name)
-      ;module (aget . (aget process.argv 4))]
-  ;(module.render ./screen module.state))
+(if (< process.argv.length 1)
+  (log "please specify a widget to launch")
+  (let [widget-name (aget process.argv 0)
+        widget      (aget _ widget-name)]
+    (widget.render ./screen widget.state)))

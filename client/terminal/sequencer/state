@@ -1,8 +1,39 @@
-(let [state { :tracks [] }]
+(let [state { 
+        :tracks        []
+        :selectedTrack 0
+        :selectedStep  0 }]
 
   (-> (../api :invoke "sequencer/tracks")
     (.then (fn [results]
       (set! state.tracks (JSON.parse results))
       (../render))))
+
+  (../events/on :next-track (fn []
+    (set! state.selected-track
+      (if (< state.selected-track (- state.tracks.length 1))
+        (+ state.selected-track 1)
+        0))
+    (../render)))
+
+  (../events/on :prev-track (fn []
+    (set! state.selected-track
+      (if (> state.selected-track 0)
+        (- state.selected-track 1)
+        (- state.tracks.length 1)))
+    (../render)))
+
+  (../events/on :next-step (fn []
+    (set! state.selected-step
+      (if (< state.selected-step (- (.-seq.length (aget state.tracks state.selected-track)) 1))
+        (+ state.selected-step 1)
+        0))
+    (../render)))
+
+  (../events/on :prev-step (fn []
+    (set! state.selected-step
+      (if (> state.selected-step 0)
+        (- state.selected-step 1)
+        (- (.-seq.length (aget state.tracks state.selected-track)) 1)))
+    (../render)))
 
   state)

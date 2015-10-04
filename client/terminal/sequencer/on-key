@@ -1,0 +1,6 @@
+(fn [c k]
+  (cond
+    (= k.name :up)    (../events/emit :prev-track)
+    (= k.name :down)  (../events/emit :next-track)
+    (= k.name :left)  (../events/emit :prev-step)
+    (= k.name :right) (../events/emit :next-step)))

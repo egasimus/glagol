@@ -13,7 +13,7 @@
                 (set! top (+ top el.height))))) })]
 
     (state.tracks.map (fn [track i]
-      (let [bg  (if (= i state.selected) :black nil)
+      (let [bg  (if (= i state.selected-track) :black nil)
             box (bless.Box { :height 2 :bg bg })]
         (box.append (bless.Text {
           :left 1 :top 0 :height 1
@@ -22,7 +22,10 @@
           (box.append (bless.Box {
             :top 0 :left (+ 10 (* j 4))
             :width 2 :height 1
-            :bg (if step :red :black) }))))
+            :bg (if (and (= i state.selected-track)
+                         (= j state.selected-step))
+              (if step :lightyellow :gray)
+              (if step :#ccaa26     :#111111)) }))))
         (tracks.append box))))
 
     (screen.children.map #(.destroy %1))

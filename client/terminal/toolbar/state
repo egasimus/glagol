@@ -1,9 +1,9 @@
 (let [state { :jack-up false }]
 
-  (../server/socket/on :open (fn []
-    (../api :invoke "sequencer/jack-up" (fn []
+  (-> (../api :invoke "sequencer/jack-up")
+    (.then (fn []
       (set! state.jack-up true)
-      (./render ../screen state)))))
+      (./render ../screen state))))
 
     ;(-> ../server/api
       ;(.get "sequencer")

@@ -11,12 +11,13 @@
     (./render ../screen state)))
 
   (../events/on :enter (fn []
-    (log (../api :invoke "library/search" (fn [results]
-      (log :REsultS)
-      (../screen/destroy)
-      (log results)
-      (process.exit)
-      (set! state.results results)
-      (./render ../screen state))))))
+    (log state.input)))
+    ;(log (../api :invoke "library/search" (fn [results]
+      ;(log :REsultS)
+      ;(../screen/destroy)
+      ;(log results)
+      ;(process.exit)
+      ;(set! state.results results)
+      ;(./render ../screen state))))))
 
   state)

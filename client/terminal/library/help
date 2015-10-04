@@ -1,1 +1,2 @@
-{ :input "type to search, ↓ to browse, Esc to exit"}
+{ :input   "type+Enter to search, ↓ to browse, C-c to exit"
+  :results "↓↑ to browse, p to preview, Enter to select, / or Backspace to search" }

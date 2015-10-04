@@ -14,8 +14,8 @@
 
     (results.set-items (.map state.results #(aget %1 :path)))
 
-    (screen.children.map (fn [c] (c.destroy)))
+    (screen.children.map #(.destroy %1))
 
-    (.map [input results help] (fn [b] (screen.append b)))
+    (.map [input results help] #(screen.append %1))
 
     (screen.render)))

@@ -14,6 +14,7 @@
     (.then (../api :invoke "library/search" state.input)
       (fn [results]
         (set! state.results (JSON.parse results))
+        (set! state.focus   :results)
         (../render))
       (fn [err]
         (log.as :err err)))))

@@ -5,4 +5,4 @@
       (= k.name :enter)     (../events/emit :enter)
       c (../events/emit :keytyped c)
       :else (log k))
-    (= state.focus :results) (log :results))))
+    (= state.focus :results) (do))))

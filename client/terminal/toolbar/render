@@ -1,47 +1,53 @@
 (fn [screen state]
   (let [bless   (require "etude-bless")
 
-        default
-          { :top :center :height 1 }
-        off
-          { :bg nil      :fg :white }
-        on
-          { :bg :green   :fg :black }
 
-        btn (fn [opts is-on ev]
-          (let [box (bless.Box
-            (assoc (merge default (if is-on on off) opts)
-              :width (+ 4 opts.content.length)))]
-            (if ev (box.on :click (fn [] (../events/emit ev))))
+        bg
+          (fn [al x w]   (bless.Box (assoc { :width w :bg :#111111 } al x)))
+
+        top
+          (fn []   (bless.Box { :ch "▄" :top 0 :height 1 :left 0 :right 0 :fg :#111111 }))
+
+        text
+          (fn [x] (bless.Text { :top :center :height 1 :content x :bg :#111111 :bg :#111111 :left 1 }))
+
+        bottom
+          (fn []   (bless.Box { :ch "▀" :bottom 0 :height 1 :left 0 :right 0 :fg :#111111 }))
+
+        btn (fn [align x t is-on ev]
+          (let [width (+ 2 t.length)
+                box (bg align x width)
+                top (top)
+                text (text t)
+                bottom (bottom)]
+
+            (box.append top)
+            (box.append bottom)
+            (box.append text)
+
             box))
-
-        txt (fn [opts is-on]
-          (bless.Textbox
-            (assoc (merge default (if is-on on off) opts)
-              :width (+ 4 opts.value.length)))) ]
+]
 
     (screen.children.map (fn [c] (c.destroy)))
 
     (.map
-      [ (txt { :left 2   :value   "???"      })
-        (btn { :left 6   :content "BPM"      })
+      [ (btn :left 1 (or state.bpm "???"))
+        (btn :left 7 :BPM)
 
-        (txt { :left 12  :value   "4/4"      })
+        (btn :left 14 "4")
+        (btn :left 18 "4")
 
-        (txt { :left 18  :value   "1 bar"    })
-        (btn { :left 24  :content " Q "      })
+        (btn :left 23 "1 bar")
+        (btn :left 31 " Q ")
 
-        (btn { :left 32  :content "REW"      })
-        (btn { :left 37  :content "PLAY"     } state.playing :play)
-        (btn { :left 43  :content "REC"      })
+        (btn :left 38 :REW)
+        (btn :left 44 :PLAY)
+        (btn :left 51 :REC)
 
-        (btn { :right 0  :content "JACK"     } state.jack-up)
-
-        (btn { :right 10 :content "OSC ↓ ↑"  })
-
-        (btn { :right 22 :content "MIDI ↓ ↑" })
-
-        (btn { :right 34 :content "KBD ↓"    }) ]
+        (btn :right 1  "JACK"     state.jack-up)
+        (btn :right 8  "OSC ↓ ↑" )
+        (btn :right 18 "MIDI ↓ ↑")
+        (btn :right 29 "KBD ↓"   ) ]
       (fn [b] (screen.append b)))
 
     (screen.render)))

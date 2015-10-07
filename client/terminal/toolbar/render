@@ -1,53 +1,77 @@
 (fn [screen state]
-  (let [bless   (require "etude-bless")
+  (let [width   screen.width
+        height  screen.height
+        program screen.program
+        tput    screen.tput
 
+        times (fn [n c] (apply str (repeat n c)))
 
-        bg
-          (fn [al x w]   (bless.Box (assoc { :width w :bg :#111111 } al x)))
+        top (fn [t] (times (+ t.length 2) "▄"))
 
-        top
-          (fn []   (bless.Box { :ch "▄" :top 0 :height 1 :left 0 :right 0 :fg :#111111 }))
+        bottom (fn [t] (times (+ t.length 2) "▀"))
 
-        text
-          (fn [x] (bless.Text { :top :center :height 1 :content x :bg :#111111 :bg :#111111 :left 1 }))
+        btn (fn [x t] (str
+          (tput.cup 0 x)
+            (top t)
+          (tput.cup (- screen.height 1) x)
+            (bottom t)
+          (tput.cup (Math.floor (/ screen.height 2)) x)
+            (str #_"█" " " t #_"█")))
 
-        bottom
-          (fn []   (bless.Box { :ch "▀" :bottom 0 :height 1 :left 0 :right 0 :fg :#111111 }))
+        btn-r (fn [x t]
+          (btn (- width x t.length 2) t))
 
-        btn (fn [align x t is-on ev]
-          (let [width (+ 2 t.length)
-                box (bg align x width)
-                top (top)
-                text (text t)
-                bottom (bottom)]
+  ]
 
-            (box.append top)
-            (box.append bottom)
-            (box.append text)
+  (program.enable-mouse)
 
-            box))
-]
+  (program.on :mouse (fn [evt] (process.exit)))
 
-    (screen.children.map (fn [c] (c.destroy)))
+  (program._write (str
+    (tput.sc) (tput.civis) (tput.clear)
 
-    (.map
-      [ (btn :left 1 (or state.bpm "???"))
-        (btn :left 7 :BPM)
+    (btn 1 (or state.bpm "???"))
+    (btn 7 :BPM)
 
-        (btn :left 14 "4")
-        (btn :left 18 "4")
+    (btn 14 :4)
+    (btn 18 :4)
 
-        (btn :left 23 "1 bar")
-        (btn :left 31 " Q ")
+    (btn 23 "1 bar")
+    (btn 31 " Q ")
 
-        (btn :left 38 :REW)
-        (btn :left 44 :PLAY)
-        (btn :left 51 :REC)
+    (btn 38 :REW)
+    (btn 44 :PLAY)
+    (btn 51 :REC)
 
-        (btn :right 1  "JACK"     state.jack-up)
-        (btn :right 8  "OSC ↓ ↑" )
-        (btn :right 18 "MIDI ↓ ↑")
-        (btn :right 29 "KBD ↓"   ) ]
-      (fn [b] (screen.append b)))
+    (btn-r 1  "JACK"     state.jack-up)
+    (btn-r 8  "OSC ↓ ↑" )
+    (btn-r 18 "MIDI ↓ ↑")
+    (btn-r 29 "KBD ↓"   )
 
-    (screen.render)))
+    (tput.rc) (tput.cnorm)))
+
+  ))
+
+    ;(screen.children.map (fn [c] (c.destroy)))
+
+    ;(.map
+      ;[ (btn :left 1 (or state.bpm "???"))
+        ;(btn :left 7 :BPM)
+
+        ;(btn :left 14 "4")
+        ;(btn :left 18 "4")
+
+        ;(btn :left 23 "1 bar")
+        ;(btn :left 31 " Q ")
+
+        ;(btn :left 38 :REW)
+        ;(btn :left 44 :PLAY)
+        ;(btn :left 51 :REC)
+
+        ;(btn :right 1  "JACK"     state.jack-up)
+        ;(btn :right 8  "OSC ↓ ↑" )
+        ;(btn :right 18 "MIDI ↓ ↑")
+        ;(btn :right 29 "KBD ↓"   ) ]
+      ;(fn [b] (screen.append b)))
+
+    ;(screen.render)))

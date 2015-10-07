@@ -1,35 +1,72 @@
 (fn render [screen state]
-  (let [bless (require "etude-bless")
+  (let [tput screen.tput
+        width screen.width
+        height screen.height
+        program screen.program
 
-        tracks (bless.Layout {
-          :top 1 :left 0 :right 0 :bottom 1 :content (str state.tracks.length)
-          :renderer (fn column-renderer [coords]
-            (let [top 0]
-              (fn [el i]
-                (set! el.shrink         true)
-                (set! el.position.left  (or el.position.left  0))
-                (set! el.position.right (or el.position.right 0))
-                (set! el.position.top   top)
-                (set! top (+ top el.height))))) })]
+        times (fn [n c] (apply str (repeat n c)))
+        lane (fn [t w] (.reduce (or t []) (fn [a b] (str a (if (> b 0) "X" "_") "   " )) ""))
 
-    (state.tracks.map (fn [track i]
-      (let [bg  (if (= i state.selected-track) :black nil)
-            box (bless.Box { :height 2 :bg bg })]
-        (box.append (bless.Text {
-          :left 1 :top 0 :height 1
-          :content track.name :bg bg }))
-        (track.seq.map (fn [step j]
-          (box.append (bless.Box {
-            :top 0 :left (+ 10 (* j 4))
-            :width 2 :height 1
-            :bg (if (and (= i state.selected-track)
-                         (= j state.selected-step))
-              (if step :lightyellow :gray)
-              (if step :#ccaa26     :#111111)) }))))
-        (tracks.append box))))
+        octave [ "C"  "C#" "D"  "D#" "E"  "F" 
+                 "F#" "G"  "G#" "A"  "A#" "B" ]
 
-    (screen.children.map #(.destroy %1))
+        types {
+          :trigger (fn [t y] (str
+            (tput.cup y 3) t.name
+            (tput.cup y 9) (lane t.seq 16) ;(Math.floor (/ (- width 6) 2)))
+            ))
+          :piano   (fn [t y] (apply str
+            (tput.cup y 3) t.name
+            (octave.map (fn [n i]
+              (this.trigger {:name n}
+                (+ (- octave.length i) (* state.tracks.length 2)))) this)))
+        }
 
-    (.map [tracks] #(screen.append %1))
+        track (fn [t i]
+          ((aget types t.type) t (+ 1 (* i 2))))
+          
+        track-cursor (fn [] (str
+          (tput.cup (+ 1 (* state.selected-track 2)) 1) ">"))
+        ]
 
-    (screen.render)))
+    (program.write (str
+      (tput.sc) (tput.civis)
+      (tput.clear)
+      (apply str (state.tracks.map track))
+      (track-cursor)
+      (tput.rc) (tput.cnorm)))
+
+  ))
+
+        ;tracks (bless.Layout {
+          ;:top 1 :left 0 :right 0 :bottom 1 :content (str state.tracks.length)
+          ;:renderer (fn column-renderer [coords]
+            ;(let [top 0]
+              ;(fn [el i]
+                ;(set! el.shrink         true)
+                ;(set! el.position.left  (or el.position.left  0))
+                ;(set! el.position.right (or el.position.right 0))
+                ;(set! el.position.top   top)
+                ;(set! top (+ top el.height))))) })]
+
+    ;(state.tracks.map (fn [track i]
+      ;(let [bg  (if (= i state.selected-track) :black nil)
+            ;box (bless.Box { :height 2 :bg bg })]
+        ;(box.append (bless.Text {
+          ;:left 1 :top 0 :height 1
+          ;:content track.name :bg bg }))
+        ;(track.seq.map (fn [step j]
+          ;(box.append (bless.Box {
+            ;:top 0 :left (+ 10 (* j 4))
+            ;:width 2 :height 1
+            ;:bg (if (and (= i state.selected-track)
+                         ;(= j state.selected-step))
+              ;(if step :lightyellow :gray)
+              ;(if step :#ccaa26     :#111111)) }))))
+        ;(tracks.append box))))
+
+    ;(screen.children.map #(.destroy %1))
+
+    ;(.map [tracks] #(screen.append %1))
+
+    ;(screen.render)))

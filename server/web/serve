@@ -1,0 +1,60 @@
+(let [send-html (require "send-data/html")]
+  (fn serve [req res]
+    (send-html req res "<strong>Yay</strong>")))
+
+;(defn- page2 [path]
+  ;(let [notion
+          ;(engine.tree.get-notion-by-path state.options.notion client-path)
+
+        ;body (str   ; updated asap to contain actual body
+          ;"document.write('loading...!');"
+          ;"setTimeout(function(){window.location.reload()}, 2000)")
+
+        ;handler     ; response handler that serves the body contents
+          ;(fn [req res]
+            ;(let [embed? (.-query.embed (url.parse req.url true))
+                  ;body   (if embed? body (util.document-template body))]
+              ;(send req res
+                ;{ :body    body
+                  ;:headers { "Content-Type"
+                               ;(str "text/" (if embed? "javascript" "html")
+                                 ;"; charset=utf-8")} })))
+        ;compile
+          ;(fn []
+            ;; reload harness, start cooking up code bundle, serve when ready
+            ;(set! harness (fs.readFileSync harness-path "utf-8"))
+            ;(-> (make-bundle notion)
+              ;(.then (fn [bundled]
+                ;(log "compiled client from notion" (colors.green notion.name))
+                ;(set! body bundled)))
+              ;(.done)))
+
+        ;watcher
+          ;(.watch (require "chokidar") harness-path { :persistent true })
+        ;]
+
+    ;; set em balls rollin
+    ;(compile)
+    ;(watcher.on "change" compile)
+
+    ;; attach socket and http endpoint to server
+    ;(let [socket-path
+            ;(str route "socket") ; TODO
+          ;state
+            ;((socket { :path socket-path }) state)
+          ;socket-server
+            ;(aget state.sockets socket-path)
+          ;connect
+            ;(fn [connect]
+              ;(socket-server.once "connection" (fn [socket]
+                ;(let [updated
+                        ;(fn [arg]
+                          ;(socket.send (JSON.stringify
+                            ;{ :event this.event :arg arg }))) ]
+                  ;(engine.events.on "notion.updated.*" updated)
+                  ;(socket.on "close" (fn [code msg]
+                    ;(engine.events.off "notion.updated.*" updated)
+                    ;(connect connect)))
+                  ;(log "connected socket" socket-path)))))]
+      ;(connect connect)
+      ;((endpoint route handler (fn [])) state)))))

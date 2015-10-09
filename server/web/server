@@ -1,0 +1,5 @@
+(fn [port]
+  (let [server (new (.-Server (require :http)))]
+    (server.on :request ./serve)
+    (server.listen port)
+    server))

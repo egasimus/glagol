@@ -1,0 +1,48 @@
+(defn- make-bundle
+  " Promises a browserified bundle containing any Node.js libs required
+    by the root notion (passed as single argument) and its dependencies. "
+  [notion]
+  (Q.Promise (fn [resolve reject notify]
+    (let [deps      (engine.compile.get-deps notion)
+          notions   (.concat [notion] (deps.derefs.map
+                      (engine.tree.get-notion-by-path.bind nil notion)))
+          requires  {}
+          resolved  {}
+          mapped    {}
+          br-paths  [ "./node_modules/etude-engine/node_modules" ]
+          br        (browserify { :paths br-paths })]
+
+      (br.transform util.wispify)
+      (br.transform (require "stylify"))
+
+      (br.require "vm" { :expose "vm" })
+      (br.require "observ" { :expose "observ" })
+      (br.require "wisp/sequence.js" { :expose "wisp/sequence.js" })
+      (br.require "wisp/runtime.js" { :expose "wisp/runtime.js" })
+      (br.require "etude-engine/tree.wisp" { :expose "tree" })
+      ;(br.require "etude-engine/engine.wisp" { :expose "etude-engine" })
+      ;(br.exclude "chokidar")
+
+      (.map (.filter notions (fn [x] x))
+        (fn [notion]
+          (aset requires notion.name {})
+          (.map (or notion.requires []) (fn [req]
+            (let [res
+                    (.sync (require "resolve") req
+                      { :basedir    (path.dirname notion.path)
+                        :extensions [".js" ".wisp"]}) ]
+              (set! (aget (aget requires notion.name) req) res)
+              (if (= -1 (.index-of (keys resolved) res))
+                (set! (aget resolved res) (shortid.generate))))))))
+
+      (.map (keys requires) (fn [i]
+        (aset mapped i {})
+        (.map (keys (aget requires i)) (fn [j]
+          (aset (aget mapped i) j (aget resolved (aget (aget requires i) j)))))))
+
+      (.map (keys resolved) (fn [module]
+        (br.require module { :expose (aget resolved module) })))
+
+      (br.bundle (fn [err buf]
+        (if err (reject err))
+        (resolve (template (String buf) mapped notion))))))))

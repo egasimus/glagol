@@ -1,24 +1,27 @@
-(let [send-html (require "send-data/html")]
-  (fn serve [req res]
-    (send-html req res "<strong>Yay</strong>")))
+(fn serve [req res]
+  (let [send-data (require "send-data")
+        url (require "url")
+        document (fn [content] (str
+          "<head><meta charset=\"utf-8\"></head><body><script>"
+          content "</script>"))
+        body (str
+          "document.write('loading...!');"
+          "setTimeout(function(){window.location.reload()}, 2000)")
+        respond (fn [req res]
+          (let [embed? (.-query.embed (url.parse req.url true))
+                body   (if embed? body (document body))]
+            (send-data req res
+              { :body    body
+                :headers { "Content-Type"
+                             (str "text/" (if embed? "javascript" "html")
+                               "; charset=utf-8")} })))]
+    (respond req res body)))
 
 ;(defn- page2 [path]
   ;(let [notion
           ;(engine.tree.get-notion-by-path state.options.notion client-path)
 
-        ;body (str   ; updated asap to contain actual body
-          ;"document.write('loading...!');"
-          ;"setTimeout(function(){window.location.reload()}, 2000)")
 
-        ;handler     ; response handler that serves the body contents
-          ;(fn [req res]
-            ;(let [embed? (.-query.embed (url.parse req.url true))
-                  ;body   (if embed? body (util.document-template body))]
-              ;(send req res
-                ;{ :body    body
-                  ;:headers { "Content-Type"
-                               ;(str "text/" (if embed? "javascript" "html")
-                                 ;"; charset=utf-8")} })))
         ;compile
           ;(fn []
             ;; reload harness, start cooking up code bundle, serve when ready

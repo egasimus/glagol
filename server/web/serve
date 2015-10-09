@@ -2,9 +2,11 @@
   (let [send   (require "send-data")
         url    (require "url")
         embed? (.-query.embed (url.parse req.url true))
-        ctype  (str "text/" (if embed? "javascript" "html") "; charset=utf-8")]
-    (send req res { :body    (if embed? body (./document ./loading))
-                    :headers { "Content-Type" ctype } })))
+        ctype  (str "text/" (if embed? "javascript" "html") "; charset=utf-8")
+        just   (fn [x] x)]
+    (send req res
+      { :body    ((if embed? just ./document) ./body/content)
+        :headers { "Content-Type" ctype } })))
 
 ;(defn- page2 [path]
   ;(let [notion
@@ -24,29 +26,3 @@
         ;watcher
           ;(.watch (require "chokidar") harness-path { :persistent true })
         ;]
-
-    ;; set em balls rollin
-    ;(compile)
-    ;(watcher.on "change" compile)
-
-    ;; attach socket and http endpoint to server
-    ;(let [socket-path
-            ;(str route "socket") ; TODO
-          ;state
-            ;((socket { :path socket-path }) state)
-          ;socket-server
-            ;(aget state.sockets socket-path)
-          ;connect
-            ;(fn [connect]
-              ;(socket-server.once "connection" (fn [socket]
-                ;(let [updated
-                        ;(fn [arg]
-                          ;(socket.send (JSON.stringify
-                            ;{ :event this.event :arg arg }))) ]
-                  ;(engine.events.on "notion.updated.*" updated)
-                  ;(socket.on "close" (fn [code msg]
-                    ;(engine.events.off "notion.updated.*" updated)
-                    ;(connect connect)))
-                  ;(log "connected socket" socket-path)))))]
-      ;(connect connect)
-      ;((endpoint route handler (fn [])) state)))))

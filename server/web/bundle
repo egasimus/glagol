@@ -1,6 +1,7 @@
 (fn [root cb]
   (let [engine (require :etude-engine)]
     (-> ((require :browserify) { :basedir root })
+      ;(.transform ./wispify)
       (.add "./index.js")
       (.bundle (fn [err data]
         (if err (throw err))

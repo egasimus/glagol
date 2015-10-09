@@ -2,4 +2,5 @@
   :library   ./library/api
   :sampler   ./sampler/api
   :sequencer ./sequencer/api
-  :transport ./transport/api }
+  :transport ./transport/api
+  :web       ./web/api }

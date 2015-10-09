@@ -1,21 +1,10 @@
 (fn serve [req res]
-  (let [send-data (require "send-data")
-        url (require "url")
-        document (fn [content] (str
-          "<head><meta charset=\"utf-8\"></head><body><script>"
-          content "</script>"))
-        body (str
-          "document.write('loading...!');"
-          "setTimeout(function(){window.location.reload()}, 2000)")
-        respond (fn [req res]
-          (let [embed? (.-query.embed (url.parse req.url true))
-                body   (if embed? body (document body))]
-            (send-data req res
-              { :body    body
-                :headers { "Content-Type"
-                             (str "text/" (if embed? "javascript" "html")
-                               "; charset=utf-8")} })))]
-    (respond req res body)))
+  (let [send   (require "send-data")
+        url    (require "url")
+        embed? (.-query.embed (url.parse req.url true))
+        ctype  (str "text/" (if embed? "javascript" "html") "; charset=utf-8")]
+    (send req res { :body    (if embed? body (./document ./loading))
+                    :headers { "Content-Type" ctype } })))
 
 ;(defn- page2 [path]
   ;(let [notion

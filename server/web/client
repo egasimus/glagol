@@ -1,0 +1,2 @@
+(let [engine (require :etude-engine)]
+  (engine.tree.make-notion-directory "./client/web"))

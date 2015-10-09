@@ -1,11 +1,10 @@
 (fn [root cb]
-  (let [engine (require :etude-engine)]
-    (-> ((require :browserify) { :basedir root })
-      ;(.transform ./wispify)
-      (.add "./index.js")
-      (.bundle (fn [err data]
-        (if err (throw err))
-        (cb data))))))
+  (-> ((require :browserify) { :basedir root })
+    ;(.transform ./wispify)
+    (.add "./index.js")
+    (.bundle (fn [err data]
+      (if err (throw err))
+      (cb data)))))
 
 ;(defn- make-bundle
   ;" Promises a browserified bundle containing any Node.js libs required

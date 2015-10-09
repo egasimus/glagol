@@ -1,1 +1,1 @@
-{ :root (fn [] 8) }
+{ :root (fn [] (JSON.stringify (.freeze (require "etude-engine/bundle") ./client))) }

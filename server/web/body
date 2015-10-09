@@ -1,4 +1,4 @@
 (let [fs    (require :fs)
       state { :content (fs.read-file-sync "./server/web/loading.js" :utf8) }]
-  (./bundle (fn [bundled] (set! state.content bundled)))
+  (./bundle "./client/web" (fn [bundled] (set! state.content bundled)))
   state)

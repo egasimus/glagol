@@ -1,13 +1,5 @@
-(fn [root]
-  (let [path (require :path)
-        index-url (str "file://" (path.join __dirname "index.html"))
-        app (require :app)
-        BrowserWindow (require :browser-window)
-        main-window nil]
-    (.start (require :crash-reporter))
-    (app.on :ready (fn []
-      (log.as :opening index-url)
-      (set! main-window (BrowserWindow. {}))
-      (main-window.open-dev-tools)
-      (main-window.on :closed (fn [] (set! main-window nil)))
-      (main-window.load-url index-url)))))
+(do
+  ;(debug "\nindex" ./state)
+  (./vdom/insert-css (require "./style.styl"))
+  (./vdom/update ./view ./state)) ; i'm not sure why this works
+                                  ; or if

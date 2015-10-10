@@ -6,26 +6,34 @@ document.body.style.fontSize=8;
 function error (err) { console.log(err); }
 
 document.body.innerText = 'connecting';
+
 var socket = new WebSocket("ws://localhost:1620");
 var events = new (require('eventemitter2').EventEmitter2)();
 var api = { emit: function emit (evt, arg) { events.emit(evt, arg); } };
 var conn = new (require("q-connection"))(socket, api);
+
 socket.addEventListener('open', function () {
   document.body.innerText = 'connected';
   conn.get('web').invoke('root').then(start, error).done();
 });
+
 function start (data) {
   document.body.innerText = data;
-  data = JSON.parse(data);
-  if (data.type === "FrozenNotion")
-    evaluate(data);
-  else if (data.type === "FrozenNotionDirectory")
-    evaluate(data.notions.main);
+  var root =
+        JSON.parse(data)
+    , notion =
+        root.type === "FrozenNotion"          ? root              :
+        root.type === "FrozenNotionDirectory" ? root.notions.main :
+        null;
+  notion.value =
+    require('vm').runInNewContext(notion.code, makeContext(notion));
+  if (typeof notion.value === "function") {
+    notion.value(root);
+  }
+  return notion;
 }
 
 function evaluate (notion) {
-  notion.value = require('vm').runInNewContext(
-    notion.code, makeContext(notion));
   return notion;
 }
 

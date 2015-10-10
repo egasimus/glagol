@@ -1,1 +1,1 @@
-(alert "foo")
+(do (log "FOO") (fn [root] (log root) (alert "foobar!")))

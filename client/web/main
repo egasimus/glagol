@@ -1,5 +1,5 @@
 (do
   ;(debug "\nindex" ./state)
-  (./vdom/insert-css (require "./style.styl"))
+  (./vdom/insert-css (.readFileSync (require :fs) "./client/web/style.styl" :utf8))
   (./vdom/update ./view ./state)) ; i'm not sure why this works
                                   ; or if

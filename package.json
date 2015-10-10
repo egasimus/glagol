@@ -21,11 +21,14 @@
     "etude-web": "git://github.com/egasimus/etude-web",
     "eventemitter2": "^0.4.14",
     "glob": "^5.0.14",
+    "insert-css": "^0.2.0",
+    "main-loop": "^3.2.0",
     "nanotimer": "^0.3.10",
     "q": "^1.4.1",
     "q-connection": "^0.6.1",
     "send-data": "^7.0.0",
     "through": "^2.3.8",
+    "virtual-dom": "^2.1.1",
     "ws": "^0.8.0"
   },
   "devDependencies": {

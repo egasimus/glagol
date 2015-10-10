@@ -1,7 +1,7 @@
 (fn [root cb]
   (-> ((require :browserify) { :basedir root })
     ;(.transform ./wispify)
-    (.add "./index.js")
+    (.add "../../server/web/index.js")
     (.bundle (fn [err data]
       (if err (throw err))
       (cb data)))))

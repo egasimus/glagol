@@ -1,2 +1,4 @@
-(let [engine (require :etude-engine)]
-  (engine.tree.make-notion-directory "./client/web"))
+(let [engine (require :etude-engine)
+      path   (require :path)]
+  (log.as :client (path.resolve "./client/web"))
+  (engine.tree.make-notion-directory (path.resolve "./client/web")))

@@ -2,6 +2,10 @@
   (-> ((require :browserify) { :basedir root })
     ;(.transform ./wispify)
     (.add "../../server/web/index.js")
+    (.require "etude-engine/node_modules/wisp/sequence.js"
+      { :expose "wisp/sequence.js" })
+    (.require "etude-engine/node_modules/wisp/runtime.js"
+      { :expose "wisp/runtime.js" })
     (.bundle (fn [err data]
       (if err (throw err))
       (cb data)))))

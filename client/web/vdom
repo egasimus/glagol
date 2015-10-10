@@ -19,7 +19,7 @@
           (context.replace-child node context.first-child)
           { :context  context
             :template template
-            :tree     template
+            :tree     tree
             :node     node     }))
 
     :update

@@ -1,4 +1,9 @@
 { :root (fn []
-  (log.as :root ./client)
-  ;(log.as :bundle (.freeze (require "etude-engine/bundle") ./client))
-  16) };(JSON.stringify (.freeze (require "etude-engine/bundle") ./client))) }
+    (let [frozen (.freeze (require "etude-engine/bundle") ./client)
+          string (JSON.stringify frozen)]
+      (log frozen)
+      string)) }
+  ;(let)
+  ;;(log.as :root ./client)
+  ;(log.as :bundle )
+  ;16) };(JSON.stringify (.freeze (require "etude-engine/bundle") ./client))) }

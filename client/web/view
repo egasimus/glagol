@@ -1,2 +1,3 @@
-(./vdom/init document.body ./template ./state)
+(fn [document]
+  (./vdom/init document.body ./template ./state))
 

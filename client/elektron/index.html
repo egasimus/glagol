@@ -1,4 +1,9 @@
 <body><script>
-var engine = require('etude-engine');
-alert('foo');
+console.log(__dirname);
+var engine = require('etude-engine')
+  , tree = engine.tree
+  , root = tree.makeNotionDirectory(__dirname + '/../web')
+  , main = tree.descend(root, 'main')
+  , val = main.value;
+if (typeof val === 'function') val(document);
 </script>

@@ -1,5 +1,6 @@
-(do
-  ;(debug "\nindex" ./state)
+(fn [document]
   (./vdom/insert-css (.readFileSync (require :fs) "./client/web/style.styl" :utf8))
-  (./vdom/update ./view ./state)) ; i'm not sure why this works
-                                  ; or if
+  (./vdom/update (./view document) ./state))
+  ;(debug "\nindex" ./state)
+  ;(./vdom/update ./view ./state)) ; i'm not sure why this works
+                                  ;; or if

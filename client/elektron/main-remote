@@ -1,3 +1,4 @@
+#!/usr/bin/env etude-electron
 (fn [root]
   (let [path (require :path)
         index-url "http://localhost:1620"

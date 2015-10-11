@@ -27,6 +27,7 @@
     "q": "^1.4.1",
     "q-connection": "^0.6.1",
     "send-data": "^7.0.0",
+    "stylus": "^0.52.4",
     "through": "^2.3.8",
     "virtual-dom": "^2.1.1",
     "ws": "^0.8.0"

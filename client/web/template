@@ -1,3 +1,0 @@
-(fn [s]
-  (./vdom/h "#app"
-    [(./vdom/h ".foo")]))

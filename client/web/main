@@ -1,5 +1,5 @@
 (fn [document]
-  (let [mainloop (./vdom/start #(./template %1) ./state)]
+  (let [mainloop (./vdom/start #(./templates/main %1) ./state)]
 
     (set! document.body.innerHTML "")
     (document.body.append-child mainloop.target)

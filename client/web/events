@@ -1,0 +1,9 @@
+(let [emitter
+        (new (.-EventEmitter2 (require "eventemitter2"))
+          { :maxListeners 64 :wildcard true } )]
+
+  (emitter.on :search-results (fn []
+    (log "search results" arguments)))
+
+  emitter)
+

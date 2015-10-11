@@ -1,0 +1,16 @@
+(let [throttle     nil
+      last-query   ""]
+  (fn search [q]
+    (if throttle (clear-timeout throttle))
+    (let [q (q.trim)
+          result (fn [data] (./events/emit :search-results data))
+          empty-search { :query "" :results [] }]
+      (if (not (= q last-query)) (do
+        (set! last-query q)
+        (if (= q "")
+          (result empty-search)
+          (set! throttle (set-timeout (fn []
+            (result (assoc empty-search :query q))
+            (-> (./api :invoke "library/search" state.input)
+              (.then (fn [results]
+                (result { :query q :results (JSON.parse results)})))))))))))))

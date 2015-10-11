@@ -1,6 +1,9 @@
-(fn template-search [s])
-  ;(let [h
-          ;../vdom/h
+(fn template-search [s]
+  (let [h ../vdom/h]
+    (h ".search"
+      [ (h "input.searcher"
+          { :placeholder "( ͡° ͜ʖ ͡°)" })
+        (h "output.results") ])))
         ;pages
           ;(if (> s.search.pages 1)
             ;[(h ".result-pages"

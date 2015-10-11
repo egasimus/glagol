@@ -1,0 +1,16 @@
+(fn [s]
+  (./h ".library"
+    [ (./h "input.searcher"
+        { :placeholder "search ( ͡° ͜ʖ ͡°)"
+          :oninput ../search
+          ;:oninput (fn [e] (log e.target.value))
+          ;:onkeyup   (fn [e] (log e)); (./search e.target.value))
+          ;:onkeydown (fn [e] e.target.value)
+          ;:onkeyup   (fn [evt] evt.target.value)
+          ;:onkeydown (fn [e] (e.stop-propagation))
+        }) ]))
+    ;]))
+      ;(./h ".flex.col" [
+        ;;(./sequencer :kick  s.kick.length)
+        ;;(./sequencer :snare s.kick.length)
+        ;(./samplers s) ]) ]))

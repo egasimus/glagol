@@ -2,7 +2,9 @@
   (let [h ../vdom/h]
     (h ".search"
       [ (h "input.searcher"
-          { :placeholder "( ͡° ͜ʖ ͡°)" })
+          { :placeholder "search ( ͡° ͜ʖ ͡°)" 
+            :onkeyup   #(./search (.-target.value %1))
+            :onkeydown #(.stop-propagation %1) })
         (h "output.results") ])))
         ;pages
           ;(if (> s.search.pages 1)

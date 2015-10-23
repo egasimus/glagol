@@ -1,4 +1,4 @@
-# Glagol 1.0.0
+# Glagol 1.1.0
 
 [![](https://img.shields.io/npm/v/glagol.svg)](https://www.npmjs.com/package/glagol)
 [![](https://img.shields.io/david/egasimus/glagol.svg)](https://david-dm.org/egasimus/glagol)

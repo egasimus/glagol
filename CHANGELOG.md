@@ -2,6 +2,10 @@
 
 **2015-10-21**  Adam Avramov  <fallenblood@gmail.com>
 
+* **version 1.1.0** *polyglotify*
+* support for wisp, eslisp, and coffeescript (including literate mode)
+* update documentation and metadata
+
 * **version 1.0.0** *glagolify*
 * rename project and core types.
 * rewrite core in vanilla JS.

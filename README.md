@@ -1,4 +1,4 @@
-# Glagol 1.1.0
+# Glagol 1.1.1
 
 Glagol is a Node.js live coding framework. It enables you to build programs that can be
 edited on the fly. It also lets you use preprocessors, such as [Wisp](https://github.com/Gozala/wisp),
@@ -6,9 +6,9 @@ or [eslisp](https://github.com/anko/eslisp), or [CoffeeScript](http://coffeescri
 directly, reloading source files on demand, so you don't have to set up a
 complicated build system to compile them in advance.
 
-[![](https://img.shields.io/npm/v/glagol.svg)](https://www.npmjs.com/package/glagol)
-[![](https://img.shields.io/david/egasimus/glagol.svg)](https://david-dm.org/egasimus/glagol)
-[![](https://img.shields.io/badge/chat-gitter_→-blue.svg)](https://gitter.im/egasimus/glagol)
+[![NPM](https://img.shields.io/npm/v/glagol.svg)](https://www.npmjs.com/package/glagol)
+[![David](https://img.shields.io/david/egasimus/glagol.svg)](https://david-dm.org/egasimus/glagol)
+[![Gitter](https://img.shields.io/badge/chat-gitter_%E2%86%92-blue.svg)](https://gitter.im/egasimus/glagol)
 
 ## In a nutshell
 

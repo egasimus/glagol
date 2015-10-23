@@ -16,7 +16,6 @@
     "glob": "^5.0.14",
     "jasmine": "^2.3.2",
     "require-like": "^0.1.2",
-    "resolve": "^1.1.6",
     "source-map-support": "^0.3.2"
   }
 }

@@ -2,9 +2,8 @@ module.exports =
   { compileSource: compileSource
   , makeContext:   makeContext };
 
-var fs      = require('fs')
-  , path    = require('path')
-  , resolve = require('resolve');
+var fs   = require('fs')
+  , path = require('path');
 
 function compileSource (source, opts) {
 
@@ -66,20 +65,16 @@ function makeContext (script, opts) {
 }
 
 function findWisp (scriptPath) {
-  var scriptDir =
-        path.dirname(scriptPath)
-    , wispDir =
-        path.dirname(resolve.sync('wisp', { basedir: scriptDir }))
-    , requireWisp =
-        function (x) { return require(path.join(wispDir, x)) }
+  var _require =
+        require('require-like')(scriptPath)
     , wisp =
-        { _path:    wispDir
-        , ast:      requireWisp('ast.js')
-        , compiler: requireWisp('compiler.js')
-        , expander: requireWisp('expander.js')
-        , runtime:  requireWisp('runtime.js')
-        , sequence: requireWisp('sequence.js')
-        , string:   requireWisp('string.js') };
+        { _require: _require
+        , ast:      _require('wisp/ast.js')
+        , compiler: _require('wisp/compiler.js')
+        , expander: _require('wisp/expander.js')
+        , runtime:  _require('wisp/runtime.js')
+        , sequence: _require('wisp/sequence.js')
+        , string:   _require('wisp/string.js') };
 
   return wisp;
 }
@@ -152,7 +147,7 @@ function patchWriter (wisp) {
      There's also a typo carried over from upstream: `originam-form` should
      instead be `original-form` in the originam code. */
 
-  var _writer = require(path.join(wisp._path, 'backend/escodegen/writer.js'));
+  var _writer = wisp._require('wisp/backend/escodegen/writer.js');
   enableNestedNamespaces(wisp, _writer);
   enableVarlessDefs(wisp, _writer);
 

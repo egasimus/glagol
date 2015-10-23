@@ -6,7 +6,7 @@
 
 Glagol is a Node.js live coding framework. It enables you to build programs that can be
 edited on the fly. It also lets you use preprocessors, such as [Wisp](https://github.com/Gozala/wisp),
-or [CoffeeScript](http://coffeescript.org/), or [Babel](https://babeljs.io/),
+or [eslisp](https://github.com/anko/eslisp), or [CoffeeScript](http://coffeescript.org/),
 directly, reloading source files on demand, so you don't have to set up a
 complicated build system to compile them in advance.
 

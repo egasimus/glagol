@@ -29,6 +29,12 @@ var Script = module.exports = function Script (srcPath, srcData) {
     case '.esl':
       this.runtime = require('../runtimes/eslisp.js');
       break;
+    case '.coffee':
+      this.runtime = require('../runtimes/coffeescript.js');
+      break;
+    case '.litcoffee':
+      this.runtime = require('../runtimes/coffeescript-literate.js');
+      break;
   }
 
   // define "smart" properties

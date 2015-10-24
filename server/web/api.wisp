@@ -1,7 +1,9 @@
 { :root (fn []
+    (console.log 1)
+    (console.log ./client)
     (let [frozen (./client/freeze)
           string (JSON.stringify frozen)]
-      (log frozen)
+      (console.log frozen)
       string)) }
   ;(let)
   ;;(log.as :root ./client)

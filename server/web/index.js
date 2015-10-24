@@ -3,6 +3,7 @@ document.body.style.backgroundColor='#1d1f21';
 document.body.style.color='d5d8d6';
 document.body.style.fontFamily="'Terminess Powerline', Inconsolata, monospace";
 document.body.style.fontSize=8;
+
 function error (err) { console.log(err); }
 
 document.body.innerText = 'connecting';

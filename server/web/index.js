@@ -20,25 +20,26 @@ socket.addEventListener('open', function () {
 
 function start (data) {
   document.body.innerText = data;
-  var root =
-        JSON.parse(data)
-    , notion =
-        root.type === "FrozenNotion"          ? root              :
-        root.type === "FrozenNotionDirectory" ? root.notions.main :
-        null;
-  notion.value =
-    require('vm').runInNewContext(notion.code, makeContext(notion));
-  if (typeof notion.value === "function") {
-    notion.value(root);
+  var root   = JSON.parse(data)
+    , script = root.code ? root : root.nodes ? root.nodes['main.wisp'] : null;
+
+  console.log(root)
+  console.log(script)
+
+  script.value = require('vm').runInNewContext(script.code, makeContext(script));
+
+  if (typeof script.value === "function") {
+    script.value(root);
   }
-  return notion;
+
+  return script;
 }
 
-function evaluate (notion) {
-  return notion;
+function evaluate (script) {
+  return script;
 }
 
-function makeContext (notion) {
+function makeContext (script) {
   return {
       _:            {}
     , assoc:        require('wisp/sequence.js').assoc

@@ -98,8 +98,12 @@ Directory.prototype.freeze = function () {
     , time:  String(Date.now()) 
     , nodes: {} };
 
-  Object.keys(this.nodes).map(function (k) {
+  Object.keys(this.nodes).map(freezeNode, this);
+
+  function freezeNode (k) {
     frozen.nodes[k] = this.nodes[k].freeze();
-  })
+  }
+
+  return frozen;
 
 }

@@ -38,8 +38,7 @@ function start () {
 
     process.argv = process.argv.slice(3);
 
-    var tree = module.exports.tree
-      , root = module.exports.Directory(path.dirname(arg1))
+    var root = module.exports.Directory(path.dirname(arg1))
       , main = root.descend(path.basename(arg1))
       , val  = main.value;
 

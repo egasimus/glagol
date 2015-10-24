@@ -71,8 +71,7 @@ Script.prototype.load = function () {
 Script.prototype.compile = function () {
   return this.source
     ? this.runtime
-      ? this.compiled = this.runtime.compileSource(
-          this.source, { name: this.name, path: this.path })
+      ? this.compiled = this.runtime.compileSource.call(this)
       : this.source
     : undefined
 }

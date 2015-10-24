@@ -2,10 +2,10 @@ module.exports =
   { compileSource: compileSource
   , makeContext:   makeContext };
 
-var path    = require('path');
+var path = require('path');
 
-function compileSource (source, opts) {
-  return source;
+function compileSource () {
+  return this.source;
 }
 
 function makeContext (script) {

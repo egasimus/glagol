@@ -5,22 +5,22 @@ module.exports =
 var fs   = require('fs')
   , path = require('path');
 
-function compileSource (source, opts) {
+function compileSource () {
 
   // find wisp relative to project directory rather than glagol install path
-  var wisp = patchWisp(findWisp(opts.path));
+  var wisp = patchWisp(findWisp(this.path));
 
-  var forms = wisp.compiler.readForms(source, opts.filename).forms;
+  var forms = wisp.compiler.readForms(this.source, this.name).forms;
 
   var processed = wisp.compiler.analyzeForms(forms)
-  if (processed.error) throw ERR_ANALYZER(opts.filename, processed.error)
+  if (processed.error) throw ERR_ANALYZER(this.name, processed.error)
 
   var options =
-        { 'source-uri': opts.filename || "<???>"
-        , 'source':     source }
+        { 'source-uri': this.name || "<???>"
+        , 'source':     this.source }
     , output  =
         wisp.compiler.generate.bind(null, options).apply(null, processed.ast);
-  if (output.error) throw ERR_COMPILER(opts.filename, output.error)
+  if (output.error) throw ERR_COMPILER(this.name, output.error)
 
   return output.code;
 
@@ -115,7 +115,7 @@ function installMacros(wisp) {
        ; 4oz
   */
 
-  wisp.expander.installMacro("->", getArrowMacro);
+  wisp.expander.installMacro("->", getArrowMacro(wisp));
 
 }
 

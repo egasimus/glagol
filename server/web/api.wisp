@@ -1,5 +1,5 @@
 { :root (fn []
-    (let [frozen (.freeze (require "glagol/bundle") ./client)
+    (let [frozen (./client/freeze)
           string (JSON.stringify frozen)]
       (log frozen)
       string)) }

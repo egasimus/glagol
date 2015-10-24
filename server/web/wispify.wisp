@@ -3,7 +3,7 @@
   (let [through
           (require :through) $ (log through)
         runtime
-          (require "etude-engine/runtime") $ (log runtime)
+          (require "glagol/runtime") $ (log runtime)
         compiled
           (fn [data file]
             (.-code (.-output (runtime.compile-source data file)))) $(log compiled)

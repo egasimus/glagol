@@ -2,10 +2,8 @@
   (-> ((require :browserify) { :basedir root })
     ;(.transform ./wispify)
     (.add "../../server/web/index.js")
-    (.require "etude-engine/node_modules/wisp/sequence.js"
-      { :expose "wisp/sequence.js" })
-    (.require "etude-engine/node_modules/wisp/runtime.js"
-      { :expose "wisp/runtime.js" })
+    (.require "wisp/sequence.js" { :expose "wisp/sequence.js" })
+    (.require "wisp/runtime.js"  { :expose "wisp/runtime.js"  })
     (.bundle (fn [err data]
       (if err (throw err))
       (cb data)))))
@@ -21,7 +19,7 @@
           ;requires  {}
           ;resolved  {}
           ;mapped    {}
-          ;br-paths  [ "./node_modules/etude-engine/node_modules" ]
+          ;br-paths  [ "./node_modules/glagol/node_modules" ]
           ;br        (browserify { :paths br-paths })]
 
       ;(br.transform util.wispify)
@@ -31,8 +29,8 @@
       ;(br.require "observ" { :expose "observ" })
       ;(br.require "wisp/sequence.js" { :expose "wisp/sequence.js" })
       ;(br.require "wisp/runtime.js" { :expose "wisp/runtime.js" })
-      ;(br.require "etude-engine/tree.wisp" { :expose "tree" })
-      ;;(br.require "etude-engine/engine.wisp" { :expose "etude-engine" })
+      ;(br.require "glagol/tree.wisp" { :expose "tree" })
+      ;;(br.require "glagol/engine.wisp" { :expose "glagol" })
       ;;(br.exclude "chokidar")
 
       ;(.map (.filter notions (fn [x] x))

@@ -1,6 +1,6 @@
 <body>Loading...<script>
-var engine = require('etude-engine')
-  , tree = engine.tree
+var glagol = require('glagol')
+  , tree = glagol.tree
   , root = tree.makeNotionDirectory(__dirname + '/../web')
   , main = tree.descend(root, 'main')
   , val = main.value;

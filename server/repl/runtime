@@ -1,1 +1,1 @@
-(aget (require :etude-engine) :runtime)
+(aget (require :glagol) :runtime)

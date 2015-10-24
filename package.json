@@ -16,10 +16,10 @@
     "bluebird": "^2.10.1",
     "browserify": "^11.2.0",
     "etude-bless": "git://github.com/egasimus/etude-bless",
-    "etude-engine": "git://github.com/egasimus/etude-engine",
     "etude-jack": "git://github.com/egasimus/etude-jack",
     "etude-web": "git://github.com/egasimus/etude-web",
     "eventemitter2": "^0.4.14",
+    "glagol": "git://github.com/egasimus/glagol",
     "glob": "^5.0.14",
     "insert-css": "^0.2.0",
     "main-loop": "^3.2.0",
@@ -30,6 +30,7 @@
     "stylus": "^0.52.4",
     "through": "^2.3.8",
     "virtual-dom": "^2.1.1",
+    "wisp": "^0.10.0",
     "ws": "^0.8.0"
   },
   "devDependencies": {

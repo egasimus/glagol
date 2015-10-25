@@ -162,21 +162,9 @@ function enableNestedNamespaces (wisp, _writer) {
      the more consistent result `foo.bar.baz`, which accidentally is perfect
      for implementing a file tree equivalent for each Script.
 
-     This is how in a Script the identifier `../options/setting` is made to
-     return the value of the script at the corresponding filesystem path,
-     relative to the calling script. Note that only the language construct is
-     available runtime-wide; the functionality is not available from non-Script
-     code (basically any code that comes into being by being `require`d).
-
-     Strangely enough it also seems to be a magic/more magic switch, since to
-     the cursory inspection the function seems to be doing nothing, yet things
-     seemed to break last time I messed with it. TODO: check */
-
-  var _translate = _writer.translateIdentifierWord;
-  _writer.translateIdentifierWord = function translateIdentifierWord_patched () {
-    var id = _translate.apply(null, arguments);
-    return id;
-  }
+     TODO: doing this via monkeypatching would require copying and pasting
+           an inordinate amount of Wisp code; the right thing to do here is
+           just submit a patch to Wisp upstream and hope it gets accepted. */
 
 }
 

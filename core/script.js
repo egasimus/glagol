@@ -8,11 +8,12 @@ var Script = module.exports = function Script (srcPath, srcData) {
   if (!(this instanceof Script)) return new Script(srcPath, srcData);
 
   // define basic properties
-  this.type   = "Script";
-  this.path   = srcPath || "";
-  this.name   = path.basename(this.path);
-  this.parent = null;
-  this._cache =
+  this.type    = "Script";
+  this.path    = srcPath || "";
+  this.name    = path.basename(this.path);
+  this.options = {}
+  this.parent  = null;
+  this._cache  =
     { source:   typeof srcData === 'string' ? srcData : undefined
     , compiled: undefined
     , value:    undefined };

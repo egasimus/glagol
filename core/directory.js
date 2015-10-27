@@ -16,10 +16,11 @@ var Directory = module.exports = function Directory (dirPath, options) {
 
   options = options || {};
 
-  this.type  = "Directory";
-  this.path  = path.resolve(dirPath);
-  this.name  = path.basename(this.path);
-  this.nodes = {};
+  this.type    = "Directory";
+  this.path    = path.resolve(dirPath);
+  this.name    = path.basename(this.path);
+  this.nodes   = {};
+  this.options = options || {};
 
   if (fs.existsSync(this.path)) {
     this._load("*", { nodir: true }, Script);
@@ -30,9 +31,9 @@ var Directory = module.exports = function Directory (dirPath, options) {
 
 }
 
-Directory.prototype._load = function (rel, opts, type) {
+Directory.prototype._load = function (rel, globOptions, type) {
 
-  glob.sync(path.join(this.path, rel), opts)
+  glob.sync(path.join(this.path, rel), globOptions)
     .filter(function (f) {
       return -1 === f.indexOf('node_modules');
     }).map(function (f) {
@@ -45,7 +46,8 @@ Directory.prototype._load = function (rel, opts, type) {
 
 Directory.prototype._watch = function () {
 
-  this._watcher = chokidar.watch(this.path, { depth: 0, persistent: false });
+  this._watcher = require('chokidar').watch(
+    this.path, { depth: 0, persistent: false });
 
   this._watcher.on("change", function (f) {
     this.nodes[path.basename(f)].refresh();
@@ -56,6 +58,12 @@ Directory.prototype._watch = function () {
       this.nodes[path.basename(f)] = Script(f);
     };
   }.bind(this));
+
+}
+
+Directory.prototype.tree = function () {
+
+  return require('./tree.js')(this);
 
 }
 

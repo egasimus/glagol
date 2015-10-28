@@ -20,8 +20,7 @@ socket.addEventListener('open', function () {
 
 function start (data) {
   document.body.innerText = data;
-  var root   = JSON.parse(data)
-    , script = root.code ? root : root.nodes ? root.nodes['main.wisp'] : null;
-
+  var root = require('glagol').Directory(null, { thaw: JSON.parse(data) });
+  console.log(root);
   return script;
 }

@@ -1,0 +1,1 @@
+(obj "root" (fun () (JSON.stringify (./client/freeze))))

@@ -1,0 +1,28 @@
+(fun (req res)
+  (var send  (require "send-data"))
+  (var url   (require "url"))
+  (var embed (. (url.parse req.url true) query embed))
+  (var ctype (+ "text/" (if embed "javascript" "html") "; charset=utf-8"))
+  (var just  (fn [x] x))
+  (send req res (obj
+    "body"    ((if embed just ./document) ./body/content)
+    "headers" (obj "Content-Type" ctype))))
+
+;(defn- page2 [path]
+  ;(let [notion
+          ;(engine.tree.get-notion-by-path state.options.notion client-path)
+
+
+        ;compile
+          ;(fn []
+            ;; reload harness, start cooking up code bundle, serve when ready
+            ;(set! harness (fs.readFileSync harness-path "utf-8"))
+            ;(-> (make-bundle notion)
+              ;(.then (fn [bundled]
+                ;(log "compiled client from notion" (colors.green notion.name))
+                ;(set! body bundled)))
+              ;(.done)))
+
+        ;watcher
+          ;(.watch (require "chokidar") harness-path { :persistent true })
+        ;]

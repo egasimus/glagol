@@ -1,0 +1,5 @@
+(var state ((. (require "fs") read-file-sync) "./server/web/loading.js" "utf8"))
+(var built (fun (bundled) (set! state.cntent bundled)))
+(var build (fun () (./bundle "./client/web" built)))
+(build)
+state

@@ -1,0 +1,5 @@
+(fun (port)
+  (var server (new (. (require "http") Server)))
+  (server.on "request" ./handler)
+  (server.listen port)
+  server)

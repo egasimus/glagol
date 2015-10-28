@@ -1,0 +1,2 @@
+((. (require "glagol") Directory)
+  ((. (require "path") resolve) "./client/web"))

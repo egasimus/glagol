@@ -1,5 +1,8 @@
 ((lambda ()
-  (var state ((. (require "fs") read-file-sync) "./web/loading.js" "utf8"))
+
+  (var state (object "content"
+    ((. (require "fs") read-file-sync) "./web/loading.js" "utf8")))
+
   (build)
   (return state)
 

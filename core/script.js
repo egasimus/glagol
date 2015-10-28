@@ -2,19 +2,26 @@ var path = require('path')
   , fs   = require('fs')
   , vm   = require('vm');
 
-var Script = module.exports = function Script (srcPath, srcData) {
+var Script = module.exports = function Script (srcPath, sourceOrOptions) {
 
   // enforce usage of `new` keyword even if omitted
-  if (!(this instanceof Script)) return new Script(srcPath, srcData);
+  if (!(this instanceof Script)) return new Script(srcPath, sourceOrOptions);
 
   // define basic properties
   this.type    = "Script";
   this.path    = srcPath || "";
   this.name    = path.basename(this.path);
-  this.options = {}
+  this.options = typeof sourceOrOptions === 'object' ? sourceOrOptions : {}
   this.parent  = null;
-  this._cache  =
-    { source:   typeof srcData === 'string' ? srcData : undefined
+
+  var source = typeof sourceOrOptions === 'string'
+    ? sourceOrOptions
+    : typeof this.options.source === 'string'
+      ? this.options.source
+      : undefined;
+
+  this._cache =
+    { source:   source
     , compiled: undefined
     , value:    undefined };
 

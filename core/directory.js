@@ -37,7 +37,7 @@ Directory.prototype._load = function (rel, globOptions, type) {
     .filter(function (f) {
       return -1 === f.indexOf('node_modules');
     }).map(function (f) {
-      var s = type(f);
+      var s = type(f, this.options);
       s.parent = this;
       this.nodes[s.name] = s;
     }, this);

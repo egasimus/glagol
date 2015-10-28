@@ -1,44 +1,43 @@
-(let [create    (require "virtual-dom/create-element")
-      diff      (require "virtual-dom/diff")
-      patch     (require "virtual-dom/patch")
-      main-loop (require "main-loop")]
+((lambda ()
 
-  { :create    create
-    :diff      diff
-    :h         (require "virtual-dom/h")
-    :insertCss (require "insert-css")
-    :patch     patch
-    :mainLoop  main-loop
+  (var create    (require "virtual-dom/create-element"))
+  (var diff      (require "virtual-dom/diff"))
+  (var patch     (require "patch"))
+  (var main-loop (require "main-loop"))
 
-    :focusMe   (require "virtual-dom/virtual-hyperscript/hooks/focus-hook.js")
+  (return (object
+    "create"    create
+    "diff"      diff
+    "h"         (require "virtual-dom/h")
+    "insertCss" (require "insert-css")
+    "patch"     patch
+    "mainLoop"  main-loop
 
-    :init
-      (fn init [context template data]
-        (let [tree (template data)
-              node (create tree)]
-          (context.replace-child node context.first-child)
-          { :context  context
-            :template template
-            :tree     tree
-            :node     node     }))
+    "focusMe"   (require "virtual-dom/virtual-hyperscript/hooks/focus-hook.js")
 
-    :update
-      (fn update [view data]
-        (let [new-tree (view.template data)
-              patches  (diff view.tree new-tree)
-              focused  false]
-          (set! view.node (patch view.node patches))
-          (set! view.tree new-tree)
-          (Array.prototype.map.call
-            (view.context.get-elements-by-class-name "focus-me")
-            (fn [el]
-              (if (not focused) (do (el.focus) (set! focused true)))
-              (el.class-list.remove "focus-me")))
-          view))
+    "init" (lambda init (context template data)
+      (var tree (template data))
+      (var node (create tree))
+      (context.replace-child node context.first-child)
+      (object
+        "context"  context
+        "template" template
+        "tree"     tree
+        "node"     node))
 
-    :start
-      (fn start [template state]
-        (main-loop state template
-          { :create create
-            :diff   diff
-            :patch  patch })) })
+    "update" (lambda update (view data)
+      (var new-tree (view.template data))
+      (var patches  (diff view.tree new-tree))
+      (var focused false)
+      (= view.node (patch view.node patches))
+      (= view.tree new-tree)
+      (Array.prototype.map.call
+        (view.context.get-elements-by-class-name "focus-me")
+        (lambda (el)
+          (if (not focused) (block (el.focus) (= focused true)))
+          (el.class-list.remove "focus-me")))
+      view)
+
+    "start" (lambda (template state)
+      (main-loop state template (object
+        "create" create "diff" diff "patch" patch)))))))

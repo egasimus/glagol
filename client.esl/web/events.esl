@@ -1,12 +1,11 @@
-(let [emitter
-        (new (.-EventEmitter2 (require "eventemitter2"))
-          { :maxListeners 64 :wildcard true } )]
+((lambda ()
+  (var emitter (new (. (require "eventemitter2") EventEmitter2)
+    (object "maxListeners" 64 "wildcard" true)))
 
-  (emitter.on :search (fn []
-    (./search (.-value (document.get-element-by-id "searcher")))))
+  (emitter.on "search" (lambda ()
+    (./search (. (document.get-element-by-id "searcher") value))))
 
-  (emitter.on :search-results (fn []
+  (emitter.on "search-results" (lambda ()
     (log "search results" arguments)))
 
-  emitter)
-
+  (return emitter)))

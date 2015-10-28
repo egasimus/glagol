@@ -1,29 +1,13 @@
 (lambda handler (req res)
+
   (console.log req.method req.url)
-  (var send    (require "send-data"))
-  (var url     (require "url"))
-  (var embed   (. (url.parse req.url true) query embed))
-  (var ctype   (+ "text/" (?: embed "javascript" "html") "; charset=utf-8"))
-  (var just    (lambda (x) (return x)))
-  (var body    ((?: embed just ./document) ./body/content))
-  (var headers (object "Content-Type" ctype))
-  (send req res (object "body" body "headers" headers)))
 
-;(defn- page2 [path]
-  ;(let [notion
-          ;(engine.tree.get-notion-by-path state.options.notion client-path)
+  (var embed (. ((. (require "url") parse) req.url true) query embed))
+  (var ctype (+ "text/" (?: embed "javascript" "html") "; charset=utf-8"))
 
+  (function just (x) (return x))
 
-        ;compile
-          ;(fn []
-            ;; reload harness, start cooking up code bundle, serve when ready
-            ;(set! harness (fs.readFileSync harness-path "utf-8"))
-            ;(-> (make-bundle notion)
-              ;(.then (fn [bundled]
-                ;(log "compiled client from notion" (colors.green notion.name))
-                ;(set! body bundled)))
-              ;(.done)))
-
-        ;watcher
-          ;(.watch (require "chokidar") harness-path { :persistent true })
-        ;]
+  (./bundle "./client.esl/web" (lambda (bundled)
+    ((require "send-data") req res
+      (object "body" ((?: embed just ./document) bundled)
+              "headers" (object "Content-Type" ctype))))))

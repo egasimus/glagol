@@ -22,5 +22,6 @@ function start (data) {
   document.body.innerText = data;
   var root = require('glagol').Directory(null, { thaw: JSON.parse(data) });
   console.log(root);
+  console.log(root.tree().main);
   return script;
 }

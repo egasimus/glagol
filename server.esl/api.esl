@@ -1,4 +1,4 @@
-(obj
+(object
   "jack"      ./jack/api
   "library"   ./library/api
   "sampler"   ./sampler/api

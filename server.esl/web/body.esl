@@ -1,5 +1,7 @@
-(var state ((. (require "fs") read-file-sync) "./server/web/loading.js" "utf8"))
-(var built (fun (bundled) (set! state.cntent bundled)))
-(var build (fun () (./bundle "./client/web" built)))
-(build)
-state
+((lambda ()
+  (var state ((. (require "fs") read-file-sync) "./web/loading.js" "utf8"))
+  (build)
+  (return state)
+
+  (function built (result) (= state.content result))
+  (function build () (./bundle "./client/web" built))))

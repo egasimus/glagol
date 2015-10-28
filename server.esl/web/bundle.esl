@@ -1,9 +1,9 @@
-(fun (root cb)
-  (-> ((require "browserify") (obj "basedir" root))
-    (add "../../server/web/index.js")
-    (bundle (fn (err data)
-      (if err (throw err)
-      (cb data))))))
+(lambda bundle (root cb)
+  (var br ((require "browserify") (object "basedir" root)))
+  (br.add "../../web/index.js")
+  (br.bundle (lambda (err data)
+    (if err (throw err)
+      (cb data)))))
 
 ;(defn- make-bundle
   ;" Promises a browserified bundle containing any Node.js libs required

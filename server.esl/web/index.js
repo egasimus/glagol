@@ -42,9 +42,6 @@ function evaluate (script) {
 function makeContext (script) {
   return {
       _:            {}
-    , assoc:        require('wisp/sequence.js').assoc
-    , conj:         require('wisp/sequence.js').conj
-    , isEqual:      require('wisp/runtime.js').isEqual
     , log:          function () { console.log.apply(console, arguments) }
     , require:      function () {}
     , setTimeout:   setTimeout

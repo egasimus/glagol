@@ -3,18 +3,25 @@ var path = require('path')
 
 var Script = require('../core/script.js');
 
-var Directory = module.exports = function Directory (dirPath, options) {
+var Directory = module.exports = function Directory () {
+
+  var pathname, options;
+  if (arguments[0] && typeof arguments[0] === 'object') {
+    pathname = null;
+    options  = arguments[0];
+  } else {
+    pathname = arguments[0] || '';
+    options  = arguments[1] || {};
+  }
 
   // enforce usage of `new` keyword even if omitted
-  if (!(this instanceof Directory)) return new Directory(dirPath, options);
-
-  options = options || {};
+  if (!(this instanceof Directory)) return new Directory(pathname, options);
 
   this.type    = "Directory";
-  this.path    = dirPath ? path.resolve(dirPath)  : null;
-  this.name    = dirPath ? path.basename(dirPath) : '';
+  this.path    = pathname ? path.resolve(pathname)  : null;
+  this.name    = pathname ? path.basename(pathname) : null;
   this.nodes   = {};
-  this.options = options || {};
+  this.options = options;
 
   if (this.options.thaw) {
     Object.keys(this.options.thaw.nodes).map(function (k) {

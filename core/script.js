@@ -32,25 +32,13 @@ var Script = module.exports = function Script () {
     , compiled: undefined
     , value:    undefined };
 
-  this.runtime = null;
-
-  switch (path.extname(this.path)) {
-    case '.js':
-      this.runtime = require('../runtimes/javascript.js');
-      break;
-    case '.wisp':
-      this.runtime = require('../runtimes/wisp.js');
-      break;
-    case '.esl':
-      this.runtime = require('../runtimes/eslisp.js');
-      break;
-    case '.coffee':
-      this.runtime = require('../runtimes/coffeescript.js');
-      break;
-    case '.litcoffee':
-      this.runtime = require('../runtimes/coffeescript-literate.js');
-      break;
-  }
+  var runtimes =
+    { '.js':        require('../runtimes/javascript.js')
+    , '.wisp':      require('../runtimes/wisp.js')
+    , '.esl':       require('../runtimes/eslisp.js')
+    , '.coffee':    require('../runtimes/coffeescript.js')
+    , '.litcoffee': require('../runtimes/coffeescript-literate.js') };
+  this.runtime = options.runtime || runtimes[path.extname(this.path)] || null;
 
   // define "smart" properties
   // these comprise the core of the live updating functionality:

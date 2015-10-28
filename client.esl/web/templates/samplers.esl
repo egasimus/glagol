@@ -1,4 +1,5 @@
-(fn [s])
+(lambda ())
+;(fn [s])
   ;(let [h ../vdom/h]
     ;(h ".samplers"
       ;(s.samplers.map (fn [sampler i]

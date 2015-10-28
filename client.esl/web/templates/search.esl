@@ -1,11 +1,13 @@
-(fn template-search [s]
-  (let [h ../vdom/h]
-    (h ".search"
-      [ (h "input.searcher#searcher"
-          { :placeholder "search (° ͜ʖ ͡°)"
-            :onkeyup     (fn [e] (log e));(./emit :search)
-            :onkeydown   #(.stop-propagation %1) })
-        (h "output.results") ])))
+(lambda ())
+
+;(fn template-search [s]
+;  (let [h ../vdom/h]
+;    (h ".search"
+;      [ (h "input.searcher#searcher"
+;          { :placeholder "search (° ͜ʖ ͡°)"
+;            :onkeyup     (fn [e] (log e));(./emit :search)
+;            :onkeydown   #(.stop-propagation %1) })
+;        (h "output.results") ])))
 
         ;pages
           ;(if (> s.search.pages 1)

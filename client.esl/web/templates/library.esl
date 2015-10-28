@@ -2,4 +2,4 @@
   (./h ".library"
     (./h "input.searcher#searcher" (object
       "placeholder" "search ( ͡° ͜ʖ ͡°)"
-      "oninput"     (./emit :search)))))
+      "oninput"     (./emit "search")))))

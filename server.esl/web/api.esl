@@ -1,1 +1,1 @@
-(obj "root" (fun () (JSON.stringify (./client/freeze))))
+(object "root" (lambda () (return (JSON.stringify (./client/freeze)))))

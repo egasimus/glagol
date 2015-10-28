@@ -6,8 +6,8 @@ var options =
       [ require('eslisp-camelify')
       , require('eslisp-propertify') ] }};
 
-var app = require('glagol').Directory('.', options);
+var app = require('glagol').Directory(__dirname, options);
 
-console.log(app.nodes['web'].nodes['bundle.esl'].compiled)
+console.log(app);
 
 app.tree()['main'](app);

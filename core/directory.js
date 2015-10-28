@@ -1,15 +1,9 @@
 var path = require('path')
   , fs   = require('fs');
 
-var glob     = require('glob')
-  , chokidar = require('chokidar');
-
 var Script = require('../core/script.js');
 
 var Directory = module.exports = function Directory (dirPath, options) {
-
-  // TODO: uniform interface for Script and Directory!
-  //       pass directory options in place of srcData!
 
   // enforce usage of `new` keyword even if omitted
   if (!(this instanceof Directory)) return new Directory(dirPath, options);
@@ -17,23 +11,27 @@ var Directory = module.exports = function Directory (dirPath, options) {
   options = options || {};
 
   this.type    = "Directory";
-  this.path    = path.resolve(dirPath);
-  this.name    = path.basename(this.path);
+  this.path    = dirPath ? path.resolve(dirPath)  : null;
+  this.name    = dirPath ? path.basename(dirPath) : '';
   this.nodes   = {};
   this.options = options || {};
 
-  if (fs.existsSync(this.path)) {
+  if (this.options.thaw) {
+    Object.keys(this.options.thaw.nodes).map(function (k) {
+      console.log(k);
+    }, this);
+  } else if (this.path && fs.existsSync(this.path)) {
     this._load("*", { nodir: true }, Script);
     this._load(path.join("*", path.sep), {}, Directory);
   }
 
-  if (!options.nowatch) this._watch();
+  if (this.path && !options.nowatch) this._watch();
 
 }
 
 Directory.prototype._load = function (rel, globOptions, type) {
 
-  glob.sync(path.join(this.path, rel), globOptions)
+  require('glob').sync(path.join(this.path, rel), globOptions)
     .filter(function (f) {
       return -1 === f.indexOf('node_modules');
     }).map(function (f) {

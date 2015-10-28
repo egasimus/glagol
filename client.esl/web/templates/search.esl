@@ -1,0 +1,28 @@
+(fn template-search [s]
+  (let [h ../vdom/h]
+    (h ".search"
+      [ (h "input.searcher#searcher"
+          { :placeholder "search (° ͜ʖ ͡°)"
+            :onkeyup     (fn [e] (log e));(./emit :search)
+            :onkeydown   #(.stop-propagation %1) })
+        (h "output.results") ])))
+
+        ;pages
+          ;(if (> s.search.pages 1)
+            ;[(h ".result-pages"
+              ;(./times s.search.pages (fn [i]
+                ;(h (str ".result-page" (if (= i s.search.page) ".current" ""))
+                  ;(str (+ i 1))))))] [])
+        ;results
+          ;(s.search.results.map (fn [i]
+            ;(h ".result"
+              ;{ :dataset { :file i }
+                ;:onclick (fn [evt] (./sampler-add evt.target.dataset.file)) }
+              ;(.slice (i.split "/") -1))))]
+    ;(h ".search" [
+      ;(h "input.searcher"
+        ;{ :placeholder "( ͡° ͜ʖ ͡°)"
+          ;:onkeyup     (fn [evt] (./search evt.target.value))
+          ;:onkeydown   (fn [evt] (evt.stop-propagation))
+          ;:value       s.search.query })
+      ;(h "output.results" (pages.concat results)) ])))

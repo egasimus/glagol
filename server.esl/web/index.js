@@ -23,29 +23,5 @@ function start (data) {
   var root   = JSON.parse(data)
     , script = root.code ? root : root.nodes ? root.nodes['main.wisp'] : null;
 
-  console.log(root)
-  console.log(script)
-
-  script.value = require('vm').runInNewContext(script.code, makeContext(script));
-
-  if (typeof script.value === "function") {
-    script.value(root);
-  }
-
   return script;
 }
-
-function evaluate (script) {
-  return script;
-}
-
-function makeContext (script) {
-  return {
-      _:            {}
-    , log:          function () { console.log.apply(console, arguments) }
-    , require:      function () {}
-    , setTimeout:   setTimeout
-    , clearTimeout: clearTimeout
-    , WebSocket:    WebSocket
-    , XMLHttpRequest: XMLHttpRequest };
-};

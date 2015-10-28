@@ -8,4 +8,4 @@
   (return state)
 
   (function built (result) (= state.content result))
-  (function build () (./bundle "./client/web" built))))
+  (function build () (./bundle "./client.esl/web" built))))

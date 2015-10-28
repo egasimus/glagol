@@ -1,5 +1,4 @@
 (lambda main (app)
-
   (console.log "starting with modules:" ((. (Object.keys ./api) join) " "))
 
   (var port 1620)

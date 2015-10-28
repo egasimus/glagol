@@ -18,21 +18,26 @@ var Directory = module.exports = function Directory () {
   if (!(this instanceof Directory)) return new Directory(pathname, options);
 
   this.type    = "Directory";
-  this.path    = pathname ? path.resolve(pathname)  : null;
+  this.path    = pathname || null;
   this.name    = pathname ? path.basename(pathname) : null;
   this.nodes   = {};
   this.options = options;
 
   if (this.options.thaw) {
+    this.name = this.options.thaw.name;
     Object.keys(this.options.thaw.nodes).map(function (k) {
-      console.log(k);
+      var node = this.options.thaw.nodes[k];
+      if (node.nodes) {
+        this.nodes[k] = Directory({ thaw: node })
+      } else if (node.code) {
+        this.nodes[k] = Script(node.name, node.code)
+      }
     }, this);
   } else if (this.path && fs.existsSync(this.path)) {
     this._load("*", { nodir: true }, Script);
     this._load(path.join("*", path.sep), {}, Directory);
+    if (!options.nowatch) this._watch();
   }
-
-  if (this.path && !options.nowatch) this._watch();
 
 }
 

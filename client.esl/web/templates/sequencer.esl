@@ -1,3 +1,4 @@
+(lambda ())
 ;(let [h     (.-h @vdom)
 ;      emit  (fn emit [evt & args1] (fn [& args2]
 ;              (.apply (.-emit @events) @events

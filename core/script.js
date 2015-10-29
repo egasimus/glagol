@@ -32,13 +32,10 @@ var Script = module.exports = function Script () {
     , compiled: undefined
     , value:    undefined };
 
-  var runtimes =
-    { '.js':        require('../runtimes/javascript.js')
-    , '.wisp':      require('../runtimes/wisp.js')
-    , '.esl':       require('../runtimes/eslisp.js')
-    , '.coffee':    require('../runtimes/coffeescript.js')
-    , '.litcoffee': require('../runtimes/coffeescript-literate.js') };
-  this.runtime = options.runtime || runtimes[path.extname(this.path)] || null;
+  this.runtime =
+    options.runtime ||
+    require('../runtimes/index.js')[path.extname(this.path)] ||
+    null;
 
   // define "smart" properties
   // these comprise the core of the live updating functionality:

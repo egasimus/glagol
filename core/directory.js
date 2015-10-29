@@ -28,9 +28,13 @@ var Directory = module.exports = function Directory () {
     Object.keys(this.options.thaw.nodes).map(function (k) {
       var node = this.options.thaw.nodes[k];
       if (node.nodes) {
-        this.nodes[k] = Directory({ thaw: node })
+        this.nodes[k] = Directory(
+          { thaw:    node
+          , runtime: this.options.runtime })
       } else if (node.code) {
-        this.nodes[k] = Script(node.name, node.code)
+        this.nodes[k] = Script(node.name,
+          { source:  node.code
+          , runtime: this.options.runtime })
       }
     }, this);
   } else if (this.path && fs.existsSync(this.path)) {

@@ -1,10 +1,26 @@
-(lambda deps (ice)
+(lambda deps (ice callback)
+
+  (var mdeps (require "module-deps"))
+  (var json  (require "JSONStream"))
   (var deps-list (array))
+
   (if ice.nodes
     ((. (Object.keys ice.nodes) map) (lambda (k)
-      (console.log (deps (get ice.nodes k)))))
-    (block
-      (console.log ice.code)
-      (var md ((require "module-deps")))
-      ((. (md.pipe ((. (require "JSONStream") stringify))) pipe) process.stdout)))
-  (return deps-list))
+      (console.log "X" (deps (get ice.nodes k)))))
+    (bundle-deps ice))
+
+  (if callback (callback deps-list))
+
+  (function bundle-deps (ice)
+    (var cache (object))
+    (= (get cache ice.name) ice.code)
+    (console.log "Y" (Object.keys cache))
+
+    (var opts (object "fileCache" cache "resolve" resolve))
+
+    (var md (mdeps opts))
+    ((. (md.pipe (json.stringify)) pipe) process.stdout)
+    (md.end (object "file" ice.name)))
+
+  (function resolve (id parent cb)
+    (console.log "RESOLVE" id)))

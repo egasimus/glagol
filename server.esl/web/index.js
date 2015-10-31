@@ -15,7 +15,7 @@ var conn = new (require("q-connection"))(socket, api);
 
 socket.addEventListener('open', function () {
   document.body.innerText = 'connected';
-  conn.get('web').invoke('root').then(start, error).done();
+  conn.get('web').invoke('root', start).catch(error);
 });
 
 function start (data) {

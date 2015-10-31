@@ -1,34 +1,27 @@
-(lambda deps (node callback)
+(lambda deps (node)
 
-  (if node.nodes
-    (descend node callback)
-    (bundle-deps node callback))
+  (return (?: node.nodes
+    (descend node)
+    (bundle-deps node)))
 
-  (function bundle-deps (node callback)
-
-    ; prepare for recursive dependency detection
-    (var resolve (require "resolve"))
+  (function bundle-deps (node)
+    ; detect 'require' calls in code and figure out what they point to
     (var path    (require "path"))
-
-    ; store all found dependencies and pass them to the callback when done
-    (var result (object))
-    (= (get result node.path)
+    (var resolve (require "resolve"))
+    (var shortid (require "shortid"))
+    (return
       ((. ((require "detective") node.compiled) reduce)
         (lambda (x y)
           (= (get x y) (resolve.sync y (object "basedir" (path.dirname node.path))))
           (return x))
-        (object)))
+        (object))))
 
-    (callback result))
-
-  (function descend (node callback)
-    (var combined-deps (object))
+  (function descend (node)
+    ; iterate over all child scripts of a directory
     (var nodes (Object.keys node.nodes))
-    (var i 0)
-    (nodes.map (lambda (n)
-      (deps (get node.nodes n) (lambda (resolved-deps)
-        (var paths (Object.keys resolved-deps))
-        (paths.map (lambda (p)
-          (= (get combined-deps p) (get resolved-deps p))))
-        (++ i)
-        (if (== i nodes.length) (callback combined-deps))))))))
+    (return (nodes.reduce
+      (lambda (x y)
+        (var n (get node.nodes y))
+        (= (get x n.path) (bundle-deps n))
+        (return x))
+      (object)))))

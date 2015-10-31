@@ -1,12 +1,13 @@
 (object
   "root"
     (lambda (callback)
-      (var ice)
       (try
+        (var ice)
         (= ice (./client/freeze))
         (catch e (console.error "Error freezing client:\n" e.stack)))
       (try
-        (./deps ./client (lambda (deps-list)
-          (console.log "deps" deps-list)
-          (callback (JSON.stringify ice))))
-        (catch e (console.error "Error bundling client deps:\n" e.stack)))))
+        (var deps)
+        (= deps (./deps ./client))
+        (console.log "deps" deps)
+        (catch e (console.error "Error bundling client deps:\n" e.stack)))
+      (callback (JSON.stringify ice))))

@@ -6,20 +6,20 @@
 
   (function bundle-deps (node callback)
 
-    ; prepare recursive dependency detector
-    (var cache (object))
-    (var md    ((require "module-deps") (object "fileCache" cache)))
+    ; prepare for recursive dependency detection
+    (var resolve (require "resolve"))
+    (var path    (require "path"))
 
     ; store all found dependencies and pass them to the callback when done
-    (var resolved-deps (object))
-    (md.on "data" (lambda (data)
-      (if (!= data.id node.path) (block
-        (= (get resolved-deps data.id) ((. (require "shortid") generate)))))))
-    (md.on "end" (lambda () (callback resolved-deps)))
+    (var result (object))
+    (= (get result node.path)
+      ((. ((require "detective") node.compiled) reduce)
+        (lambda (x y)
+          (= (get x y) (resolve.sync y (object "basedir" (path.dirname node.path))))
+          (return x))
+        (object)))
 
-    ; inject script's code into module-deps cache and start streaming deps
-    (= (get cache node.path) node.compiled)
-    (md.end (object "file" node.path)))
+    (callback result))
 
   (function descend (node callback)
     (var combined-deps (object))

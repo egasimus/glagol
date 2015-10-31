@@ -1,18 +1,24 @@
 (lambda deps (node)
 
-  (return (?: node.nodes
-    (descend node)
-    (bundle-deps node)))
+  (var path    (require "path"))
+  (var resolve (require "resolve"))
+  (var shortid (require "shortid"))
 
-  (function bundle-deps (node)
+  (var ids (object))
+
+  (return (object
+    "deps" (?: node.nodes (descend node) (detect node))
+    "ids"  ids))
+
+  (function detect (node)
     ; detect 'require' calls in code and figure out what they point to
-    (var path    (require "path"))
-    (var resolve (require "resolve"))
-    (var shortid (require "shortid"))
     (return
       ((. ((require "detective") node.compiled) reduce)
         (lambda (x y)
-          (= (get x y) (resolve.sync y (object "basedir" (path.dirname node.path))))
+          (var opts (object "basedir" (path.dirname node.path)))
+          (var resolved (resolve.sync y opts))
+          (= (get x y) resolved)
+          (= (get ids resolved) (shortid.generate))
           (return x))
         (object))))
 
@@ -22,6 +28,6 @@
     (return (nodes.reduce
       (lambda (x y)
         (var n (get node.nodes y))
-        (= (get x n.path) (bundle-deps n))
+        (= (get x n.path) (detect n))
         (return x))
       (object)))))

@@ -1,26 +1,34 @@
-(lambda deps (ice callback)
+(lambda deps (node callback)
 
-  (var mdeps (require "module-deps"))
-  (var json  (require "JSONStream"))
-  (var deps-list (array))
+  (if node.nodes
+    (descend node callback)
+    (bundle-deps node callback))
 
-  (if ice.nodes
-    ((. (Object.keys ice.nodes) map) (lambda (k)
-      (console.log "X" (deps (get ice.nodes k)))))
-    (bundle-deps ice))
+  (function bundle-deps (node callback)
 
-  (if callback (callback deps-list))
-
-  (function bundle-deps (ice)
+    ; prepare recursive dependency detector
     (var cache (object))
-    (= (get cache ice.name) ice.code)
-    (console.log "Y" (Object.keys cache))
+    (var md    ((require "module-deps") (object "fileCache" cache)))
 
-    (var opts (object "fileCache" cache "resolve" resolve))
+    ; store all found dependencies and pass them to the callback when done
+    (var resolved-deps (object))
+    (md.on "data" (lambda (data)
+      (if (!= data.id node.path) (block
+        (= (get resolved-deps data.id) ((. (require "shortid") generate)))))))
+    (md.on "end" (lambda () (callback resolved-deps)))
 
-    (var md (mdeps opts))
-    ((. (md.pipe (json.stringify)) pipe) process.stdout)
-    (md.end (object "file" ice.name)))
+    ; inject script's code into module-deps cache and start streaming deps
+    (= (get cache node.path) node.compiled)
+    (md.end (object "file" node.path)))
 
-  (function resolve (id parent cb)
-    (console.log "RESOLVE" id)))
+  (function descend (node callback)
+    (var combined-deps (object))
+    (var nodes (Object.keys node.nodes))
+    (var i 0)
+    (nodes.map (lambda (n)
+      (deps (get node.nodes n) (lambda (resolved-deps)
+        (var paths (Object.keys resolved-deps))
+        (paths.map (lambda (p)
+          (= (get combined-deps p) (get resolved-deps p))))
+        (++ i)
+        (if (== i nodes.length) (callback combined-deps))))))))

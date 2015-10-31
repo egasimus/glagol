@@ -2,7 +2,7 @@
 
   (var create    (require "virtual-dom/create-element"))
   (var diff      (require "virtual-dom/diff"))
-  (var patch     (require "patch"))
+  (var patch     (require "virtual-dom/patch"))
   (var main-loop (require "main-loop"))
 
   (return (object

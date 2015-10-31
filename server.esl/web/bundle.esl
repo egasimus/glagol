@@ -8,6 +8,7 @@
   (shim "runtimes.js" "../runtimes/index.js")
   (shim "require.js"  "require-like")
   (br.exclude "chokidar")
+  (br.exclude "glob")
 
   (br.add (rel "index.js"))
 

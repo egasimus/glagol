@@ -6,7 +6,7 @@
         (= ice (./client/freeze))
         (catch e (console.error "Error freezing client:\n" e.stack)))
       (try
-        (./deps ice (lambda (deps-list)
+        (./deps ./client (lambda (deps-list)
           (console.log "deps" deps-list)
           (callback (JSON.stringify ice))))
         (catch e (console.error "Error bundling client deps:\n" e.stack)))))

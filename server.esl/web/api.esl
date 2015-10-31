@@ -1,1 +1,5 @@
-(object "root" (lambda () (return (JSON.stringify (./client/freeze)))))
+(object
+  "root" (lambda ()
+    (var ice (./client/freeze))
+    (console.log (./deps ice))
+    (return (JSON.stringify (./client/freeze)))))

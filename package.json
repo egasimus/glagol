@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "JSONStream": "^1.0.6",
     "bluebird": "^2.10.1",
     "browserify": "^11.2.0",
     "eslisp": "^0.6.2",
@@ -28,6 +29,7 @@
     "glob": "^5.0.14",
     "insert-css": "^0.2.0",
     "main-loop": "^3.2.0",
+    "module-deps": "^4.0.2",
     "nanotimer": "^0.3.10",
     "q": "^1.4.1",
     "q-connection": "^0.6.1",

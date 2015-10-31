@@ -1,6 +1,4 @@
 (lambda main (app)
-  (console.log "starting with modules:" ((. (Object.keys ./api) join) " "))
-
   (var port 1620)
   (var server-http (./web/server port))
 
@@ -8,5 +6,5 @@
   (server-ws.on "connection" on-ws)
   (function on-ws (socket)
     (console.log "ws connection")
-    (console.log ./api)
-    ((require "q-connection") socket ./api)))
+    (console.log (./api))
+    ((require "q-connection") socket (./api))))

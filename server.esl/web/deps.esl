@@ -1,0 +1,10 @@
+(lambda deps (ice)
+  (var deps-list (array))
+  (if ice.nodes
+    ((. (Object.keys ice.nodes) map) (lambda (k)
+      (console.log (deps (get ice.nodes k)))))
+    (block
+      (console.log ice.code)
+      (var md ((require "module-deps")))
+      ((. (md.pipe ((. (require "JSONStream") stringify))) pipe) process.stdout)))
+  (return deps-list))

@@ -1,14 +1,11 @@
-var dependencies = null;
-
-module.exports = function () {
-  console.log(deps, require);
-  return require;
+module.exports = function (from) {
+  return function require (what) {
+    return module.exports.bundle(module.exports.deps[from.slice(1)][what]);
+  };
 };
 
 module.exports.install = function (deps, bundle) {
-  dependencies = deps;
-  document.body.innerHTML = "";
-  var script = document.createElement('script');
-  script.text = bundle;
-  document.body.appendChild(script);
+  module.exports.deps = deps;
+  module.exports.bundle = eval(
+    "(function () { var " + bundle + " return require})()");
 }

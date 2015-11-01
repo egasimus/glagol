@@ -13,16 +13,11 @@ socket.addEventListener('open', function () {
 });
 
 function start (data) {
-  document.body.innerText = data;
   var parsed = JSON.parse(data);
-  require('require-like').install(parsed.deps, parsed.bundle);
+  require('require-like').install(parsed.deps.deps, parsed.bundle);
   var app = require('glagol').Directory(null, { thaw: parsed.ice })
     , root = app.tree();
-  console.log(1);
-  console.log(root);
-  console.log(2);
   console.log(root.main);
-  console.log(3);
   console.log(root.vdom);
   root.main(document);
 }

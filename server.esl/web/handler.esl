@@ -1,0 +1,13 @@
+(lambda handler (req res)
+
+  (console.log req.method req.url)
+
+  (var embed (. ((. (require "url") parse) req.url true) query embed))
+  (var ctype (+ "text/" (?: embed "javascript" "html") "; charset=utf-8"))
+
+  (function just (x) (return x))
+
+  (./bundle "./client.esl/web" (lambda (bundled)
+    ((require "send-data") req res
+      (object "body" ((?: embed just ./document) bundled)
+              "headers" (object "Content-Type" ctype))))))

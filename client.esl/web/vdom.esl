@@ -1,0 +1,44 @@
+((lambda ()
+
+  (var create    (require "virtual-dom/create-element"))
+  (var diff      (require "virtual-dom/diff"))
+  (var patch     (require "virtual-dom/patch"))
+  (var main-loop (require "main-loop"))
+
+  (return (object
+    "create"    create
+    "diff"      diff
+    "h"         (require "virtual-dom/h")
+    "insertCss" (require "insert-css")
+    "patch"     patch
+    "mainLoop"  main-loop
+
+    "focusMe"   (require "virtual-dom/virtual-hyperscript/hooks/focus-hook.js")
+
+    "init" (lambda init (context template data)
+      (var tree (template data))
+      (var node (create tree))
+      (context.replace-child node context.first-child)
+      (return (object
+        "context"  context
+        "template" template
+        "tree"     tree
+        "node"     node)))
+
+    "update" (lambda update (view data)
+      (var new-tree (view.template data))
+      (var patches  (diff view.tree new-tree))
+      (var focused false)
+      (= view.node (patch view.node patches))
+      (= view.tree new-tree)
+      (Array.prototype.map.call
+        (view.context.get-elements-by-class-name "focus-me")
+        (lambda (el)
+          (if (not focused) (block (el.focus) (= focused true)))
+          (el.class-list.remove "focus-me")))
+      (return view))
+
+    "start" (lambda (document template state)
+      (return (main-loop state template (object
+        "create" create "diff" diff "patch" patch
+        "document" document))))))))

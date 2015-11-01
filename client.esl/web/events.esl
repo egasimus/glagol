@@ -1,0 +1,11 @@
+((lambda ()
+  (var emitter (new (. (require "eventemitter2") EventEmitter2)
+    (object "maxListeners" 64 "wildcard" true)))
+
+  (emitter.on "search" (lambda ()
+    (./search (. (document.get-element-by-id "searcher") value))))
+
+  (emitter.on "search-results" (lambda ()
+    (log "search results" arguments)))
+
+  (return emitter)))

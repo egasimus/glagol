@@ -1,0 +1,17 @@
+(lambda bundle (root cb)
+
+  (var path (require "path"))
+  (function rel (p) (return (path.join __dirname p)))
+
+  (var br ((require "browserify") (object "basedir" root)))
+  (function shim (p q) (br.require (rel p) (object "expose" q)))
+  (shim "runtimes.js" "../runtimes/index.js")
+  (shim "require.js"  "require-like")
+  (br.exclude "chokidar")
+  (br.exclude "glob")
+
+  (br.add (rel "index.js"))
+
+  (br.bundle (lambda (err data)
+    (if err (throw err)
+      (cb data)))))

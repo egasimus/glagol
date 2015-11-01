@@ -1,0 +1,10 @@
+(lambda main (app)
+  (var port 1620)
+  (var server-http (./web/server port))
+
+  (var server-ws (new (. (require "ws") Server) (object "server" server-http)))
+  (server-ws.on "connection" on-ws)
+  (function on-ws (socket)
+    (console.log "ws connection")
+    (console.log (./api))
+    ((require "q-connection") socket (./api))))

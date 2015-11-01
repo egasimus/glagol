@@ -1,0 +1,17 @@
+(lambda (state)
+  (var h ../vdom/h)
+  (h ".toolbar" (array
+    (h ".section" (array
+      (h ".btn.play"  "▶")))
+    (h ".section" (array
+      (h ".btn.bpm"   "140")
+      (h ".btn.meter" "4/4")
+      (h ".btn.quant" "1 bar")))
+    (h ".section" (array
+      (h ".btn.osc"   "OSC")
+      (h ".btn.midi"  "MIDI")
+      (h ".btn.kbd"   "KBD")))
+    (h ".section" (array
+      (h ".btn.cpu"   "CPU")
+      (h ".btn.mem"   "RAM")
+      (h ".btn.audio" "Audio"))))))

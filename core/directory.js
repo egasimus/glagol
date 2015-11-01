@@ -24,19 +24,7 @@ var Directory = module.exports = function Directory () {
   this.options = options;
 
   if (this.options.thaw) {
-    this.name = this.options.thaw.name;
-    Object.keys(this.options.thaw.nodes).map(function (k) {
-      var node = this.options.thaw.nodes[k];
-      if (node.nodes) {
-        this.nodes[k] = Directory(
-          { thaw:    node
-          , runtime: this.options.runtime })
-      } else if (node.code) {
-        this.nodes[k] = Script(node.name,
-          { source:  node.code
-          , runtime: this.options.runtime })
-      }
-    }, this);
+    this._thaw();
   } else if (this.path && fs.existsSync(this.path)) {
     this._load("*", { nodir: true }, Script);
     this._load(path.join("*", path.sep), {}, Directory);
@@ -56,6 +44,23 @@ Directory.prototype._load = function (rel, globOptions, type) {
       this.nodes[s.name] = s;
     }, this);
 
+}
+
+Directory.prototype._thaw = function () {
+  this.name = this.options.thaw.name;
+  Object.keys(this.options.thaw.nodes).map(function (k) {
+    var node = this.options.thaw.nodes[k];
+    if (node.nodes) {
+      this.nodes[k] = Directory(
+        { thaw:    node
+        , runtime: this.options.runtime })
+    } else if (node.code) {
+      this.nodes[k] = Script(node.name,
+        { source:  node.code
+        , runtime: this.options.runtime })
+    }
+    this.nodes[k].parent = this;
+  }, this);
 }
 
 Directory.prototype._watch = function () {

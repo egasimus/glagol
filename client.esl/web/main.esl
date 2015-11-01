@@ -1,4 +1,7 @@
-(lambda (document)
+(lambda (app connection)
+
+  ; pass connection to api
+  (./api/connect connection)
 
   ; start vdom main loop
   (= document.body.innerHTML "")

@@ -20,6 +20,6 @@
 
     (function do-search ()
       (result (object "query" q "results" (array)))
-      ((. (./api "invoke" "library/search" q) then)
-        (then (lambda (results)
-          (result (object "query" q "results" (JSON.parse results)))))))))))
+      ((. (./api/call "invoke" "library/search" q) then)
+        (lambda (results)
+          (result (object "query" q "results" (JSON.parse results))))))))))

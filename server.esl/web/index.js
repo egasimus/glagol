@@ -19,5 +19,5 @@ function start (data) {
   require('require-like').install(parsed.deps.deps, parsed.bundle);
   var app = require('glagol').Directory(null, { thaw: parsed.ice })
     , root = app.tree();
-  root.main(document);
+  root.main(app, conn);
 }

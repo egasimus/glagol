@@ -1,15 +1,12 @@
 (lambda (document)
 
-  (console.log ./vdom)
-
   ; start vdom main loop
-  (var render (lambda (state) (./templates/main state)))
-  (var mainloop (./vdom/start render ./state))
   (= document.body.innerHTML "")
+  (var mainloop (./vdom/start document render ./state))
   (document.body.append-child mainloop.target)
+  (function render (state) (return (./templates/main state)))
 
   ; preprocess and insert css
-  (console.log ./style)
-  (./vdom/insert-css css)
+  (./vdom/insert-css ./style)
 
   (return mainloop))

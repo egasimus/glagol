@@ -1,7 +1,7 @@
 (lambda (s)
-  (var h (../vdom/h))
-  (h ".app" (object "attributes" (object "tabindex" 1) "hook" ../vdom/focus-me)
-    (array (./toolbar s) (./library s))))
+  (return (./h ".app")))
+    ;(./h ".app" (object "attributes" (object "tabindex" 1) "hook" ../vdom/focus-me)
+    ;  (array (./toolbar s) (./library s))))
 
 ;:onkeydown
   ;(fn [evt] (log "keydown" evt)

@@ -14,10 +14,9 @@ socket.addEventListener('open', function () {
 
 function start (data) {
   var parsed = JSON.parse(data);
+  document.body.innerText = JSON.stringify(parsed.ice);
   require('require-like').install(parsed.deps.deps, parsed.bundle);
   var app = require('glagol').Directory(null, { thaw: parsed.ice })
     , root = app.tree();
-  console.log(root.main);
-  console.log(root.vdom);
   root.main(document);
 }

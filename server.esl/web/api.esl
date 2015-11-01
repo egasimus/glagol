@@ -6,6 +6,14 @@
         (catch e (console.error "Error freezing client:\n" e.stack)))
       (try
         (var deps (./deps ./client))
-        (console.log "deps" deps)
-        (catch e (console.error "Error bundling client deps:\n" e.stack)))
-      (callback (JSON.stringify ice))))
+        (catch e (console.error "Error detecting client deps:\n" e.stack)))
+      (try
+        (var br ((require "browserify")))
+        ((. (Object.keys deps.ids) map) (lambda (module)
+          (br.require module (object "expose" (get deps.ids module)))))
+        (br.bundle (lambda (err buf)
+          (if err (throw err))
+          (var response (object "ice" ice "deps" deps "bundled" (String buf)))
+          (console.log response)
+          (callback (JSON.stringify response))))
+        (catch e (console.error "Error bundling client deps:\n" e.stack)))))

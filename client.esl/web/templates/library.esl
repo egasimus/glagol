@@ -1,5 +1,6 @@
 (lambda (s)
-  (./h ".library"
-    (./h "input.searcher#searcher" (object
-      "placeholder" "search ( ͡° ͜ʖ ͡°)"
-      "oninput"     (./emit "search")))))
+  (return
+    (./h ".library"
+      (./h "input.searcher#searcher" (object
+        "placeholder" "search ( ͡° ͜ʖ ͡°)"
+        "oninput"     (./emit "search"))))))

@@ -6,6 +6,6 @@
     (./search (. (document.get-element-by-id "searcher") value))))
 
   (emitter.on "search-results" (lambda ()
-    (log "search results" arguments)))
+    (console.log "search results" arguments)))
 
   (return emitter)))

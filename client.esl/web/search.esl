@@ -1,25 +1,25 @@
 ((lambda ()
 
-  (var throttle null)
-  (var last-query "")
+  (var throttle     null)
+  (var last-query   "")
+  (var empty-search (object "query" "" "results" (array)))
 
   (return (lambda search (q)
 
+    (= q (q.trim))
+
     (if throttle (clear-timeout throttle))
-
-    (var q (q.trim))
-    (var empty-search (object "query" "" "results" (array)))
-
-    (function result (data) (./events/emit "search-results" data))
-
-    (function do-search ()
-      (result (object "query" q "results" (array)))
-      (-> (./api "invoke" "library/search" state.input)
-        (then (lambda (results)
-          (results (object "query" q "results" (JSON.parse results)))))))
 
     (if (!== q last-query) (block
       (= last-query q)
       (if (== q "")
         (result empty-search)
-        (= throttle (set-timeout do-search 100)))))))))
+        (= throttle (set-timeout do-search 100)))))
+
+    (function result (data) (./events/emit "search-results" data))
+
+    (function do-search ()
+      (result (object "query" q "results" (array)))
+      ((. (./api "invoke" "library/search" q) then)
+        (then (lambda (results)
+          (result (object "query" q "results" (JSON.parse results)))))))))))

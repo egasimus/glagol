@@ -1,5 +1,7 @@
 (lambda (s)
-  (return (./h ".app")))
+  (return
+    (./h ".app" (object "attributes" (object "tabindex" 1) "hook" ../vdom/focus-me)
+      (array (./library s)))))
     ;(./h ".app" (object "attributes" (object "tabindex" 1) "hook" ../vdom/focus-me)
     ;  (array (./toolbar s) (./library s))))
 

@@ -1,22 +1,22 @@
-(lambda api-call (op path))
-;
-;  (var args ((. (array) slice call) arguments 2))
-;
-;  (var ready ./server/socket/ready-state)
-;
-;  (function call ()
-;    (var p (path.split "/"))
-;    (var q ./server/api)
-;    (function recur () (call (p.slice 1) (q.get (. p 0))))
-;    (function apply () ((. (get q op) apply) q ((. (array p) concat) args)))
-;    (function error () (throw (Error "api: say path")))
-;    (if (> 1 p.length) (error)
-;      (if (< 1 p.length) (recur)
-;        (apply))))
-;
-;  (if (= 0 ready)
-;    (new (. (require "q") Promise) (lambda (resolve)
-;      (./server/socket/on "open" (lambda () (resolve (call))))))
-;    (if (== 1 ready)
-;      (call)
-;      (throw (Error (+ "api socket in state " ready))))))
+(lambda api-call (op path)
+
+  (var args ((. (array) slice call) arguments 2))
+
+  (var ready ./server/socket/ready-state)
+
+  (function call ()
+    (var p (path.split "/"))
+    (var q ./server/api)
+    (function recur () (call (p.slice 1) (q.get (. p 0))))
+    (function apply () ((. (get q op) apply) q ((. (array p) concat) args)))
+    (function error () (throw (Error "api: say path")))
+    (if (> 1 p.length) (error)
+      (if (< 1 p.length) (recur)
+        (apply))))
+
+  (if (== 0 ready)
+    (new (. (require "q") Promise) (lambda (resolve)
+      (./server/socket/on "open" (lambda () (resolve (call))))))
+    (if (== 1 ready)
+      (call)
+      (throw (Error (+ "api socket in state " ready))))))

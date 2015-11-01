@@ -3,4 +3,5 @@ module.exports =
   , '.wisp':      require('./wisp.js')
   , '.esl':       require('./eslisp.js')
   , '.coffee':    require('./coffeescript.js')
-  , '.litcoffee': require('./coffeescript-literate.js') };
+  , '.litcoffee': require('./coffeescript-literate.js')
+  , '.styl':      require('./stylus.js') };

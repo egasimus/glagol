@@ -1,17 +1,19 @@
 (object
+
   "connection"
     null
+
   "connect"
     (lambda (c) (= this.connection c))
+
   "call"
     (lambda api-call (op path)
 
-      (var q this.connection)
+      (var args (Array.prototype.slice.call arguments 2))
 
-      (return ((lambda call ()
-        (var args (Array.prototype.slice.call arguments 2))
-        (var p (path.split "/"))
+      (return (call (path.split "/") this.connection))
 
+      (function call (p q)
         (function recur () (return (call (p.slice 1) (q.get (. p 0)))))
         (function apply () (return ((. (get q op) apply) q ((. (array p) concat) args))))
         (function error () (throw (Error "api: say path")))
@@ -19,4 +21,4 @@
         (return
           (?: (> 1 p.length) (error)
             (?: (< 1 p.length) (recur)
-              (apply)))))))))
+              (apply)))))))

@@ -13,7 +13,6 @@
           (br.require module (object "expose" (get deps.ids module)))))
         (br.bundle (lambda (err buf)
           (if err (throw err))
-          (var response (object "ice" ice "deps" deps "bundled" (String buf)))
-          (console.log deps)
+          (var response (object "ice" ice "deps" deps "bundle" (String buf)))
           (callback (JSON.stringify response))))
         (catch e (console.error "Error bundling client deps:\n" e.stack)))))

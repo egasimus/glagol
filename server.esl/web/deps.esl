@@ -17,8 +17,8 @@
         (lambda (x y)
           (var opts (object "basedir" (path.dirname node.path)))
           (var resolved (resolve.sync y opts))
-          (= (get x y) resolved)
-          (= (get ids resolved) (shortid.generate))
+          (= (get ids resolved) (|| (get ids resolved) (shortid.generate)))
+          (= (get x y) (get ids resolved))
           (return x))
         (object))))
 
@@ -28,6 +28,6 @@
     (return (nodes.reduce
       (lambda (x y)
         (var n (get node.nodes y))
-        (= (get x n.path) (detect n))
+        (= (get x n.name) (detect n))
         (return x))
       (object)))))

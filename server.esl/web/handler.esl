@@ -6,8 +6,10 @@
   (var ctype (+ "text/" (?: embed "javascript" "html") "; charset=utf-8"))
 
   (function just (x) (return x))
+  (function wrap (x) (return
+    (+ "<head><meta charset=\"utf-8\"></head><body><script>" x "</script>")))
 
   (./bundle "./client.esl/web" (lambda (bundled)
     ((require "send-data") req res
-      (object "body" ((?: embed just ./document) bundled)
+      (object "body" ((?: embed just wrap) bundled)
               "headers" (object "Content-Type" ctype))))))

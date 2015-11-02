@@ -1,4 +1,5 @@
 (object
   "search"
     (lambda ()
-      (console.log "searching!" arguments)))
+      (console.log "searching!" arguments)
+      (console.log ./data)))

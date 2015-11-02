@@ -1,0 +1,37 @@
+((lambda ()
+
+  (var fs   (require "fs"))
+  (var glob (require "glob"))
+  (var path (require "path"))
+
+  (var library-dir  "/home/epimetheus/Music")
+  (var library-file (path.join library-dir "data.json"))
+
+  (return (|| (load-library) (scan-library)))
+
+  (function load-library ()
+    (console.log "loading library from" library-file)
+    (try
+      (var data (fs.read-file-sync library-file "utf8"))
+      (catch err
+        (console.error "error reading" library-file)
+        (return (scan-library))))
+    (try
+      (return (JSON.parse data))
+      (catch err
+        (console.error "error parsing" library-file)
+        (return (scan-library)))))
+
+  (function scan-library ()
+    (console.log "scanning library at" library-dir)
+    (var files (glob.sync (path.join library-dir "**" "*")))
+    (return (files.reduce (lambda (library file)
+      (= (get library file) null) (return library)) (object))))
+
+  (function write-library (data)
+    (try
+      (fs.write-file-sync library-file (JSON.stringify data))
+      (catch err
+        (console.error "error writing" library-file))))
+
+))

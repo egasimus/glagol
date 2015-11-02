@@ -14,8 +14,9 @@
       (return (call (path.split "/") this.connection))
 
       (function call (p q)
+
         (function recur () (return (call (p.slice 1) (q.get (. p 0)))))
-        (function apply () (return ((. (get q op) apply) q ((. (array p) concat) args))))
+        (function apply () (return ((. (get q op) apply) q (p.concat args))))
         (function error () (throw (Error "api: say path")))
 
         (return

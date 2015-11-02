@@ -22,4 +22,6 @@
       (result (object "query" q "results" (array)))
       ((. (./api/call "invoke" "library/search" q) then)
         (lambda (results)
-          (result (object "query" q "results" (JSON.parse results))))))))))
+          (result (object "query" q "results" (JSON.parse results))))
+        (lambda (error)
+          (console.log "search error" error error.stack))))))))

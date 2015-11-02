@@ -24,7 +24,9 @@
 
   (function scan-library ()
     (console.log "scanning library at" library-dir)
-    (var files (glob.sync (path.join library-dir "**" "*")))
+    (var files (glob.sync
+      (path.join library-dir "**" "*")
+      (object "nodir" true)))
     (return (files.reduce (lambda (library file)
       (= (get library file) null) (return library)) (object))))
 

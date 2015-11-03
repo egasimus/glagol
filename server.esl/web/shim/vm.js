@@ -4,7 +4,15 @@ module.exports =
       return context }
 
   , runInContext: function (code, context, options) {
-      eval(Object.keys(context).reduce(function(x, y) {
-        return x + "var " + y + "=context['" + y + "'];";
-      }, ""));
-      return eval(code); } };
+      try {
+        eval(Object.keys(context).reduce(function(x, y) {
+          return x + "var " + y + "=context['" + y + "'];";
+        }, ""));
+      } catch (e) {
+        console.error(e);
+      }
+      try {
+        return eval(code);
+      } catch (e) {
+        console.error(e);
+      } } };

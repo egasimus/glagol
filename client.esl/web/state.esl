@@ -1,25 +1,12 @@
 ((lambda ()
 
+  (var Var ./observ/Var)
+  (var Arr ./observ/Arr)
+  (var Obj ./observ/Obj)
+
   (return (Obj
     "results" (Arr)
     "tracks"  (Arr)))
-
-  (function Var (val)
-    (return ((require "observ") val)))
-
-  (function Arr ()
-    (var values (Array.prototype.slice.call arguments 0))
-    (return ((require "observ-array") values)))
-
-  (function Obj ()
-    (var args (Array.prototype.slice.call arguments 0))
-    (if (== 1 (% args 2)) (throw (Error "odd number of args to Obj")))
-    (return ((require "observ-struct")
-      (args.reduce
-        (lambda (x y i)
-          (if (== 1 (% i 2)) (= (get x (get args (- i 1))) y))
-          (return x))
-        (object)))))
 
 ;  (capmacro Var (lambda (val)
 ;    (return `((require "observ") ,val))))

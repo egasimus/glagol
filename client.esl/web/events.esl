@@ -5,7 +5,7 @@
   (emitter.on "search" (lambda ()
     (./search (. (document.get-element-by-id "searcher") value))))
 
-  (emitter.on "search-results" (lambda ()
-    (console.log "search results" arguments)))
+  (emitter.on "search-results" (lambda (results)
+    (./state/results/set results.results)))
 
   (return emitter)))

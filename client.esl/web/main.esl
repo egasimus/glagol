@@ -5,9 +5,10 @@
 
   ; start vdom main loop
   (= document.body.innerHTML "")
-  (var mainloop (./vdom/mainloop document render ./state))
+  (var mainloop (./vdom/mainloop document render (./state)))
   (document.body.append-child mainloop.target)
   (function render (state) (return (./templates/main state)))
+  (./state (lambda (state) (mainloop.update state)))
 
   ; preprocess and insert css
   (./vdom/insert-css ./style)

@@ -1,6 +1,8 @@
 (lambda (s)
   (return
-    (./h ".library"
+    (./h ".library" (array
       (./h "input.searcher#searcher" (object
         "placeholder" "search ( ͡° ͜ʖ ͡°)"
-        "oninput"     (./emit "search"))))))
+        "oninput"     (./emit "search")))
+      (./h "ul.results" (s.results.map (lambda (result)
+        (./h "li.result" result))))))))

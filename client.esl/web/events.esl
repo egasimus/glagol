@@ -8,4 +8,7 @@
   (emitter.on "search-results" (lambda (results)
     (./state/results/set results.results)))
 
+  (emitter.on "add-track" (lambda (fullpath)
+    (./state/tracks/push fullpath)))
+
   (return emitter)))

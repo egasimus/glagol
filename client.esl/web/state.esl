@@ -1,7 +1,8 @@
 ((lambda ()
 
   (return (Obj
-    "results" (Arr)))
+    "results" (Arr)
+    "tracks"  (Arr)))
 
   (function Var (val)
     (return ((require "observ") val)))

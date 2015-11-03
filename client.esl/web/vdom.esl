@@ -38,7 +38,6 @@
           (el.class-list.remove "focus-me")))
       (return view))
 
-    "mainloop" (lambda (document template state)
+    "mainloop" (lambda (template state)
       (return (main-loop state template (object
-        "create" create "diff" diff "patch" patch
-        "document" document))))))))
+        "create" create "diff" diff "patch" patch))))))))

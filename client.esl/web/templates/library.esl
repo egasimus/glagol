@@ -5,4 +5,4 @@
         "placeholder" "search ( ͡° ͜ʖ ͡°)"
         "oninput"     (./emit "search")))
       (./h "ul.results" (s.results.map (lambda (result)
-        (./h "li.result" result))))))))
+        (return (./h "li.result" result)))))))))

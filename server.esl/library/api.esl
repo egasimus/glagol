@@ -4,6 +4,7 @@
       (console.log "searching for" query)
       (var names (Object.keys ./data))
       (var results (names.filter (lambda (name)
+        (= name ((. (String name) to-lower-case)))
         (return (< -1 (name.index-of query))))))
       (console.log "found" results.length)
       (return results)))

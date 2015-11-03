@@ -1,1 +1,16 @@
-(object)
+((lambda ()
+
+  (macro Var (lambda (val)
+    (return `((require "observ") ,val))))
+
+  (macro Arr (lambda ()
+    (var args (Array.prototype.slice.call arguments 0))
+    (return `((require "observ-array") (array ,@args)))))
+
+  (macro Obj (lambda ()
+    (var args (Array.prototype.slice.call arguments 0))
+    (return `((require "observ-struct") (object ,@args)))))
+
+  (return (Obj))
+
+))

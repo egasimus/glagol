@@ -1,0 +1,2 @@
+(lambda (data)
+  ((. console log) data))

@@ -22,6 +22,7 @@ var Directory = module.exports = function Directory () {
   this.name    = pathname ? path.basename(pathname) : null;
   this.nodes   = {};
   this.options = options;
+  this.parent  = options.parent || null;
 
   if (this.options.thaw) {
     this._thaw();
@@ -48,19 +49,20 @@ Directory.prototype._load = function (rel, globOptions, type) {
 
 Directory.prototype._thaw = function () {
   this.name = this.options.thaw.name;
-  Object.keys(this.options.thaw.nodes).map(function (k) {
-    var node = this.options.thaw.nodes[k];
+  Object.keys(this.options.thaw.nodes).map(thaw, this);
+
+  function thaw (k) {
+    var node = this.options.thaw.nodes[k]
+      , pathname = path.join(this.path || '/', node.name)
+      , opts = { parent: this, runtime: this.options.runtime };
     if (node.nodes) {
-      this.nodes[k] = Directory(
-        { thaw:    node
-        , runtime: this.options.runtime })
+      opts.thaw = node;
+      this.nodes[k] = Directory(pathname, opts);
     } else if (node.code) {
-      this.nodes[k] = Script(node.name,
-        { source:  node.code
-        , runtime: this.options.runtime })
+      opts.source = node.code;
+      this.nodes[k] = Script(pathname, opts);
     }
-    this.nodes[k].parent = this;
-  }, this);
+  };
 }
 
 Directory.prototype._watch = function () {

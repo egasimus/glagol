@@ -25,7 +25,7 @@ var Script = module.exports = function Script () {
   this.path    = pathname ? path.resolve(pathname)  : null;
   this.name    = pathname ? path.basename(pathname) : null;
   this.options = options;
-  this.parent  = null;
+  this.parent  = options.parent || null;
 
   this._cache =
     { source:   options.source

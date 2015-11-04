@@ -1,7 +1,7 @@
 var path = require('path')
   , fs   = require('fs');
 
-var Script = require('../core/script.js');
+var Script = require('./script.js');
 
 var Directory = module.exports = function Directory () {
 
@@ -24,9 +24,7 @@ var Directory = module.exports = function Directory () {
   this.options = options;
   this.parent  = options.parent || null;
 
-  if (this.options.thaw) {
-    this._thaw();
-  } else if (this.path && fs.existsSync(this.path)) {
+  if (!this.options.thawed && this.path && fs.existsSync(this.path)) {
     this._load("*", { nodir: true }, Script);
     this._load(path.join("*", path.sep), {}, Directory);
     if (!options.nowatch) this._watch();
@@ -45,24 +43,6 @@ Directory.prototype._load = function (rel, globOptions, type) {
       this.nodes[s.name] = s;
     }, this);
 
-}
-
-Directory.prototype._thaw = function () {
-  this.name = this.options.thaw.name;
-  Object.keys(this.options.thaw.nodes).map(thaw, this);
-
-  function thaw (k) {
-    var node = this.options.thaw.nodes[k]
-      , pathname = path.join(this.path || '/', node.name)
-      , opts = { parent: this, runtime: this.options.runtime };
-    if (node.nodes) {
-      opts.thaw = node;
-      this.nodes[k] = Directory(pathname, opts);
-    } else if (node.code) {
-      opts.source = node.code;
-      this.nodes[k] = Script(pathname, opts);
-    }
-  };
 }
 
 Directory.prototype._watch = function () {

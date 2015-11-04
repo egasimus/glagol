@@ -8,7 +8,7 @@ var getTree = module.exports = function getTree (node) {
     if (!node.parent) ERR_NO_PARENT(node);
     return getTree(node.parent);
 
-  } else {
+  } else if (node.type === "Directory") {
 
     var tree = {};
     tree._ = tree;
@@ -23,7 +23,7 @@ var getTree = module.exports = function getTree (node) {
     if (node.parent) tree.__ = getTree(node.parent);
     return tree;
 
-  }
+  } else throw ERR_UNKNOWN_TYPE(node);
 
 };
 
@@ -74,7 +74,8 @@ function ERR_NO_PARENT (node) {
 }
 
 function ERR_UNKNOWN_TYPE (node) {
-  throw Error("foreign body in script tree, possible name: " + node.name);
+  throw Error("foreign body in script tree, possible name: "
+    + JSON.stringify(node.name));
 }
 
 function ERR_CANT_SET () {

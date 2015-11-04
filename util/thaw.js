@@ -33,7 +33,7 @@ function thawScript (ice, parent) {
   var node = glagol.Script(
     path.join((parent || {}).path || '/', ice.name),
     { thawed: true
-    , source: ice.source
+    , source: ice.code
     , parent: parent });
 
   return node;
@@ -45,10 +45,10 @@ function thawDirectory (ice, parent) {
   var node = glagol.Directory(
     parent ? path.join(parent.path, ice.name) : '/',
     { thawed: true
-    , parent: this });
+    , parent: parent });
 
   Object.keys(ice.nodes).map(function (i) {
-    node.nodes[i] = thaw(ice.nodes[i]);
+    node.nodes[i] = thaw(ice.nodes[i], node);
   })
 
   return node;

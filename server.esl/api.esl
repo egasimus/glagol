@@ -1,3 +1,2 @@
 (lambda () (return (object
-  "web"     ./web/api
   "library" ./library/api)))

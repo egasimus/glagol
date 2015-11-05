@@ -1,5 +1,0 @@
-(lambda server (port)
-  (var s (new (. (require "http") Server)))
-  (s.on "request" (lambda (req res) (./handler req res)))
-  (s.listen port)
-  (return s))

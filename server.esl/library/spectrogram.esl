@@ -1,0 +1,11 @@
+(lambda spectrogram (fullpath)
+  (var spawn (. (require "child_process" spawn-sync)))
+  (var read  (. (require "fs") read-file-sync))
+  (var output (+ fullpath ".png"))
+  (spawn "sox" (array
+    fullpath
+    "-n" "spectrogram"
+    "-r" "-a"
+    "-x" 1024 "-y" 96
+    "-o" output))
+  (return (fs.read-file-sync output)))

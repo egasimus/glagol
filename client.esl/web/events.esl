@@ -9,6 +9,10 @@
     (./state/results/set results.results)))
 
   (emitter.on "add-track" (lambda (fullpath)
-    (./state/tracks/push fullpath)))
+    ((. (./api/call "invoke" "library/detail" fullpath) then)
+      (lambda (results)
+        (console.log results)
+        (./state/tracks/push fullpath))
+      (lambda (error) (console.log "detail error" error error.stack)))))
 
   (return emitter)))

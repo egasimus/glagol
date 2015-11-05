@@ -1,5 +1,0 @@
-((. (require "glagol") Directory)
-  ((. (require "path") resolve) __dirname "../../client.esl/web")
-  (object "eslisp" (object "transform" (array
-    (require "eslisp-camelify")
-    (require "eslisp-propertify")))))

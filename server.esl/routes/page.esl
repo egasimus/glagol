@@ -1,6 +1,16 @@
-(object
-  "root"
-    (lambda (callback)
+((lambda ()
+
+  (if (!== req.url "/app") (return false))
+
+  (var client
+    ((. (require "glagol") Directory)
+      ((. (require "path") resolve) __dirname "../../client.esl/web")
+      (object "eslisp" (object "transform" (array
+        (require "eslisp-camelify")
+        (require "eslisp-propertify"))))))
+
+  (return
+    (lambda (req res)
       (var cryo (require "glagol-cryo"))
       (try
         (var ice (cryo.freeze ./client))
@@ -15,5 +25,7 @@
         (br.bundle (lambda (err buf)
           (if err (throw err))
           (var response (object "ice" ice "deps" deps "bundle" (String buf)))
-          (callback (JSON.stringify response))))
+          ((require "send-data/json") req res (JSON.stringify response))))
         (catch e (console.error "Error bundling client deps:\n" e.stack)))))
+
+))

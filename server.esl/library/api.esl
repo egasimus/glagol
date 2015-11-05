@@ -1,10 +1,22 @@
-(object
-  "search"
-    (lambda (query)
-      (console.log "searching for" query)
-      (var names (Object.keys ./data))
-      (var results (names.filter (lambda (name)
-        (= name ((. (String name) to-lower-case)))
-        (return (< -1 (name.index-of query))))))
-      (console.log "found" results.length)
-      (return results)))
+((lambda ()
+
+  (var Q (require "q"))
+
+  (return (object
+    "search"
+      (lambda (query)
+        (console.log "searching for" query)
+        (var names (Object.keys ./data))
+        (var results (names.filter (lambda (name)
+          (= name ((. (String name) to-lower-case)))
+          (return (< -1 (name.index-of query))))))
+        (console.log "found" results.length)
+        (return results))
+    "detail"
+      (lambda (path)
+        (var details (get ./data path))
+        (= details.spectrogram (./spectrogram fullpath))        
+        (console.log "details for" path (JSON.stringify details))
+        (return details))))
+
+))

@@ -1,5 +1,3 @@
-function error (err) { console.log(err); }
-
 document.body.innerText = 'connecting';
 
 var socket = new WebSocket("ws://localhost:1620");
@@ -13,11 +11,20 @@ socket.addEventListener('open', function () {
 });
 
 function start (data) {
-  var parsed = JSON.parse(data);
-  document.body.innerText = JSON.stringify(parsed.ice);
-  require('require-like').install(parsed.deps.deps, parsed.bundle);
-  var app = require('glagol').Directory(null, { thaw: parsed.ice })
-    , root = app.tree();
-  console.log(app);
-  root.main(app, conn);
+  try {
+    var parsed = JSON.parse(data);
+    document.body.innerText = JSON.stringify(parsed.ice);
+    require('require-like').install(parsed.deps.deps, parsed.bundle);
+    var app = require('glagol-cryo/lib/thaw')(parsed.ice)
+      , root = app.tree();
+    console.log(app);
+    root.main(app, conn);
+  } catch (e) {
+    error(e);
+  }
+}
+
+function error (err) {
+  console.error(err.message);
+  console.log(err.stack)
 }

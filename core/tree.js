@@ -49,26 +49,6 @@ function translate (name) {
   return name;
 }
 
-// TODO
-//(defn- setter [i n]
-  //(fn [args]
-    //(if (not (vector? args)) (throw (Error. (str
-        //"pass a [operation arg1 arg2 ... argN] vector "
-        //"when writing to a notion"))))
-      //(let [operation (aget args 0)]
-        //(cond
-          //(= operation :watch)
-            //(cond
-              //(= n.type "Notion")
-                //(n.value (aget args 1))
-              //(= n.type "NotionDirectory")
-                //(.map (keys n.notions) (fn [i]
-                  //(.value (aget n.notions i) (aget args 1)))))
-          //:else (throw (Error. (str
-            //operation " is not a valid operation, "
-            //"unlike :watch"))))
-        //nil)))
-
 function ERR_NO_PARENT (node) {
   throw Error("node " + node.name + " is not connected to a tree");
 }

@@ -99,20 +99,3 @@ function ERR_BROKEN_PATH(step, path) {
 function ERR_REACHED_FILE(step, path) {
   throw Error("Step " + step + " in path " + path + " is a file");
 }
-
-Directory.prototype.freeze = function () {
-
-  var frozen =
-    { name:  this.name
-    , time:  String(Date.now()) 
-    , nodes: {} };
-
-  Object.keys(this.nodes).map(freezeNode, this);
-
-  function freezeNode (k) {
-    frozen.nodes[k] = this.nodes[k].freeze();
-  }
-
-  return frozen;
-
-}

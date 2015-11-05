@@ -107,11 +107,3 @@ Script.prototype.makeContext = function () {
 
   return vm.createContext(ctx);
 }
-
-Script.prototype.freeze = function () {
-
-  return { name: this.name
-         , time: String(Date.now()) 
-         , code: this.compiled };
-
-}

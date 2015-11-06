@@ -9,13 +9,10 @@
     (./state/results/set results.results)))
 
   (emitter.on "add-track" (lambda (fullpath)
-    ((. (./api/call "invoke" "library/detail" fullpath) then)
+    ((. (./api/call "invoke" "sequencer/track-add" fullpath) then)
       (lambda (results)
-        (console.log results)
-        (./state/tracks/push (./lib/observ/Obj
-          "label" ((. (require "path") basename) fullpath)
-          "path"  fullpath
-          "seq"   (./lib/observ/Arr 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))))
+        (./state/tracks/push (./models/track fullpath))
+        (./api/call "invoke" "library/detail" fullpath))
       (lambda (error)
         (console.error "error getting details for" fullpath)))))
 

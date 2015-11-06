@@ -1,0 +1,5 @@
+(lambda (fullpath) (return
+  (../lib/observ/Obj
+    "label" ((. (require "path") basename) fullpath)
+    "path"  fullpath
+    "seq"   (../lib/observ/Arr 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))))

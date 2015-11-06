@@ -1,2 +1,3 @@
 (lambda () (return (object
-  "library" (./library/api))))
+  "library"   (./library/api)
+  "sequencer" (./sequencer/api))))

@@ -32,6 +32,7 @@
     (shim   br "client/vm.js"       "vm")
     (br.exclude "chokidar")
     (br.exclude "glob")
+    (br.require "glagol-cryo/lib/thaw")
     ;(br.add (rel "client/index.js"))
 
     ; add client-specific dependencies, dependency map, and client source
@@ -75,11 +76,12 @@
     "<head><meta charset=\"utf-8\"></head><body><script>" x "</script>")))
 
   (function wrap-js (x) (return (+
-    ";(function(deps, ice){ " x ";"
-    "require(\"require-like\").install(deps);"
+    ";(function(deps, ice){"
+    "var " x ";"
+    "require(\"require-like\").install(deps, require);"
     "var app = require(\"glagol-cryo/lib/thaw\")(ice);"
     "app.tree().main(app)"
-    "})(" (JSON.stringify app.deps) "," (JSON.stringify app.ice) ")")))
+    "})(" (JSON.stringify app.deps.deps) "," (JSON.stringify app.ice) ")")))
 
   (function rel (p)
     (return (path.join __dirname p)))

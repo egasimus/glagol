@@ -1,2 +1,2 @@
 (lambda () (return (object
-  "library" ./library/api)))
+  "library" (./library/api))))

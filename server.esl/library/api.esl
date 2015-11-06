@@ -1,4 +1,4 @@
-((lambda ()
+(lambda ()
 
   (var Q (require "q"))
 
@@ -15,8 +15,7 @@
     "detail"
       (lambda (path)
         (var details (get ./data path))
-        (= details.spectrogram (./spectrogram fullpath))        
         (console.log "details for" path (JSON.stringify details))
         (return details))))
 
-))
+)

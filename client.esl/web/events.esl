@@ -3,7 +3,7 @@
     (object "maxListeners" 64 "wildcard" true)))
 
   (emitter.on "search" (lambda ()
-    (./search (. (document.get-element-by-id "searcher") value))))
+    (./search (. (document.get-element-by-id "prompt") value))))
 
   (emitter.on "search-results" (lambda (results)
     (./state/results/set results.results)))
@@ -12,7 +12,15 @@
     ((. (./api/call "invoke" "library/detail" fullpath) then)
       (lambda (results)
         (console.log results)
-        (./state/tracks/push fullpath))
-      (lambda (error) (console.log "detail error" error error.stack)))))
+        (./state/tracks/push (./lib/observ/Obj
+          "label" ((. (require "path") basename) fullpath)
+          "path"  fullpath
+          "seq"   (./lib/observ/Arr 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))))
+      (lambda (error)
+        (console.error "error getting details for" fullpath)))))
+
+  (emitter.on "sequencer-click" (lambda (track-n step-n)
+    (var track (get (./state/tracks) track-n))
+    (console.log track step-n)))
 
   (return emitter)))

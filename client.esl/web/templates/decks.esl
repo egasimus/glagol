@@ -1,4 +1,0 @@
-(lambda (s)
-  (return (./h ".decks"
-    (s.tracks.map (lambda (track) (return
-      (./h ".deck" track)))))))

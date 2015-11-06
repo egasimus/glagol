@@ -1,3 +1,5 @@
 (lambda (event-name)
   (var args (Array.prototype.slice.call arguments 1))
-  (return (lambda () (../events/emit event-name args))))
+  (args.unshift event-name)
+  (return (lambda ()
+    (../events/emit/apply ../events args))))

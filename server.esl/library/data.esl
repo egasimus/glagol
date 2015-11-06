@@ -4,7 +4,7 @@
   (var glob (require "glob"))
   (var path (require "path"))
 
-  (var library-dir  "/home/epimetheus/Music")
+  (var library-dir  "/home/epimetheus/Sounds")
   (var library-file (path.join library-dir "data.json"))
 
   (return (|| (load-library) (scan-library)))

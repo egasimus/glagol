@@ -17,7 +17,8 @@ function compileSource () {
 
   } catch (e) {
 
-    console.log("\nCompile error (eslisp):", e.message, "\n" + JSON.stringify(e.node));
+    if (e.node) e.message += "\n" + JSON.stringify(e.node);
+    throw e;
 
   }
 

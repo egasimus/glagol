@@ -78,7 +78,15 @@ Script.prototype.load = function () {
 Script.prototype.compile = function () {
   return this.source
     ? this.runtime
-      ? this.compiled = this.runtime.compileSource.call(this)
+      ? (function () {
+          try {
+            return this.compiled = this.runtime.compileSource.call(this)
+          } catch (e) {
+            console.error("!!! ERROR compiling " + this.path);
+            console.error(e.message);
+            console.error(e.stack)
+          }
+        }).call(this)
       : this.source
     : undefined
 }
@@ -94,7 +102,7 @@ Script.prototype.evaluate = function () {
               , result  = vm.runInContext(src, context, { filename: this.path });
             if (context.error) throw context.error;
             return this._cache.value = result;
-          }).bind(this)()
+          }).call(this)
         : this.compiled
       : undefined;
 }

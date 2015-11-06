@@ -2,7 +2,7 @@ var path = require('path')
   , fs   = require('fs')
   , vm   = require('vm');
 
-var Script = module.exports = function Script () {
+var File = module.exports = function File () {
 
   var pathname, options;
   if (arguments[0] && typeof arguments[0] === 'object') {
@@ -18,10 +18,10 @@ var Script = module.exports = function Script () {
   }
 
   // enforce usage of `new` keyword even if omitted
-  if (!(this instanceof Script)) return new Script(pathname, options);
+  if (!(this instanceof File)) return new File(pathname, options);
 
   // define basic properties
-  this.type    = "Script";
+  this.type    = "File";
   this.path    = pathname ? path.resolve(pathname)  : null;
   this.name    = pathname ? path.basename(pathname) : null;
   this.options = options;
@@ -37,9 +37,8 @@ var Script = module.exports = function Script () {
     require('../runtimes/index.js')[path.extname(this.path)] ||
     null;
 
-  // define "smart" properties
-  // these comprise the core of the live updating functionality:
-  // the script's source is loaded, processed, and updated on demand
+  // define "smart" properties which comprise the core of the live updating
+  // magic: the file's contents are loaded, processed and updated on demand
   Object.keys(this._cache).map(function (k) {
     Object.defineProperty(this, k,
       { configurable: true
@@ -48,12 +47,12 @@ var Script = module.exports = function Script () {
       , set: setter.bind(this, k) });
   }, this);
 
-  // hidden metadata, internal use only
+  // hidden metadata for duck typing when instanceof fails
   Object.defineProperty(this, "_glagol",
     { configurable: false
     , enumerable:   false
     , value: { version: require('../package.json').version
-             , type:    "Script" } })
+             , type:    "File" } })
 
 }
 
@@ -69,13 +68,13 @@ function setter (k, v) {
   this._cache[k] = v;
 }
 
-Script.prototype.load = function () {
+File.prototype.load = function () {
   return this.path
     ? this.source = fs.readFileSync(this.path, "utf8")
     : undefined;
 }
 
-Script.prototype.compile = function () {
+File.prototype.compile = function () {
   return this.source
     ? this.runtime
       ? (function () {
@@ -91,7 +90,7 @@ Script.prototype.compile = function () {
     : undefined
 }
 
-Script.prototype.evaluate = function () {
+File.prototype.evaluate = function () {
   return (this._cache.value !== undefined)
     ? this._cache.value
     : (this.source && this.compiled)
@@ -107,13 +106,13 @@ Script.prototype.evaluate = function () {
       : undefined;
 }
 
-Script.prototype.refresh = function () {
+File.prototype.refresh = function () {
   ["source", "compiled", "value"].map(function (k) {
     this._cache[k] = undefined;
   }, this);
 }
 
-Script.prototype.makeContext = function () {
+File.prototype.makeContext = function () {
   var ctx  = this.runtime.makeContext(this, { path: this.path })
     , tree = this.parent ? require('./tree.js')(this) : {};
 

@@ -4,23 +4,23 @@ var path = require('path')
 var core    = require('..');
 
 var ROOT         = './spec/sample'
-  , NEW_FILE     = path.join(ROOT, 'new-script')
+  , NEW_FILE     = path.join(ROOT, 'new-file')
   , NEW_DIR      = path.join(ROOT, 'new-directory')
-  , NEW_DIR_FILE = path.join(NEW_DIR, 'new-script-2');
+  , NEW_DIR_FILE = path.join(NEW_DIR, 'new-file-2');
 
-describe('a script directory', function () {
+describe('a glagol.Directory', function () {
 
   var d;
 
   beforeEach(function () {
     // if they already exist at load time (e.g. previous run didn't clean up),
     // delete those files and directories that will be created at runtime and
-    // be used to check whether creating new scripts at runtime works
+    // be used to check whether creating new files at runtime works
     if (fs.existsSync(NEW_FILE))     fs.unlinkSync(NEW_FILE);
     if (fs.existsSync(NEW_DIR_FILE)) fs.unlinkSync(NEW_DIR_FILE);
     if (fs.existsSync(NEW_DIR))      fs.rmdirSync(NEW_DIR);
 
-    // create a fresh script dir instance in the root path
+    // create a fresh dir instance in the root path
     d = core.Directory(ROOT);
   })
 
@@ -34,21 +34,21 @@ describe('a script directory', function () {
     expect(d.path).toBe(path.resolve(ROOT));
   })
 
-  function compareScriptTree (nodes, contents) {
+  function compareTree (nodes, contents) {
     expect(Object.keys(nodes).length).toBe(Object.keys(contents).length);
     Object.keys(contents).map(function (x) {
       expect(nodes[x]).toBeDefined();
       if (nodes[x]) {
         if (x[0] === 'd') {
           expect(nodes[x].type).toBe('Directory');
-          compareScriptTree(nodes[x].nodes, contents[x]);
-        } else if (x[0] === 'n') expect(nodes[x].type).toBe('Script');
+          compareTree(nodes[x].nodes, contents[x]);
+        } else if (x[0] === 'n') expect(nodes[x].type).toBe('File');
       }
     });
   }
 
   it('recursively loads its contents', function () {
-    compareScriptTree(d.nodes,
+    compareTree(d.nodes,
       { d1: { d11: { n111: null }
             , d12: { n121: null, n122: null }
             , n11: null }
@@ -63,7 +63,7 @@ describe('a script directory', function () {
     function hasParent (n) { return d.nodes[n].parent === d };
   })
 
-  it('creates a Script object for a newly created file', function (done) {
+  it('creates a File object for a newly created file', function (done) {
 
     // create a new file, then wait for the watcher to pick it up
 

@@ -1,7 +1,7 @@
 var path = require('path');
 
 module.exports =
-  { Script:    require('./script.js')
+  { File:      require('./file.js')
   , Directory: require('./directory.js')
   , export:    export_ };
 

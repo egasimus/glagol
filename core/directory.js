@@ -1,7 +1,7 @@
 var path = require('path')
   , fs   = require('fs');
 
-var Script = require('./script.js');
+var File = require('./file.js');
 
 var Directory = module.exports = function Directory () {
 
@@ -25,12 +25,12 @@ var Directory = module.exports = function Directory () {
   this.parent  = options.parent || null;
 
   if (!this.options.thawed && this.path && fs.existsSync(this.path)) {
-    this._load("*", { nodir: true }, Script);
+    this._load("*", { nodir: true }, File);
     this._load(path.join("*", path.sep), {}, Directory);
     if (!options.nowatch) this._watch();
   }
 
-  // hidden metadata, internal use only
+  // hidden metadata for duck typing when instanceof fails
   Object.defineProperty(this, "_glagol",
     { configurable: false
     , enumerable:   false
@@ -63,7 +63,7 @@ Directory.prototype._watch = function () {
 
   this._watcher.on("add", function (f) {
     if (-1 === Object.keys(this.nodes).indexOf(path.basename(f))) {
-      this.nodes[path.basename(f)] = Script(f);
+      this.nodes[path.basename(f)] = File(f);
     };
   }.bind(this));
 

@@ -1,6 +1,5 @@
 # Roadmap
 
-* Rename `Script` to `File`
 * Regard `Directory` as just another file type
 * Factor out loaders so there's a single chokidar instance per process
 * Support `module.exports` using setters

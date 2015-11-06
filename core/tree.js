@@ -3,7 +3,7 @@ var getTree = module.exports = function getTree (node) {
   // from file, . points to parent and .. to grandparent;
   // from dir, .. points to parent and . to self.
 
-  if (node.type === "Script") {
+  if (node.type === "File") {
 
     if (!node.parent) ERR_NO_PARENT(node);
     return getTree(node.parent);
@@ -28,7 +28,7 @@ var getTree = module.exports = function getTree (node) {
 };
 
 function getter (node) {
-  return node.type === "Script"
+  return node.type === "File"
     ? node.value
     : node.type === "Directory"
       ? getTree(node)
@@ -54,8 +54,7 @@ function ERR_NO_PARENT (node) {
 }
 
 function ERR_UNKNOWN_TYPE (node) {
-  throw Error("foreign body in script tree, possible name: "
-    + JSON.stringify(node.name));
+  throw Error("foreign body in glagol tree: " + JSON.stringify(node));
 }
 
 function ERR_CANT_SET () {

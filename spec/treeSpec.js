@@ -2,7 +2,7 @@ var path = require('path')
   , fs   = require('fs');
 
 var core      = require('..')
-  , Script    = core.Script
+  , File      = core.File
   , Directory = core.Directory
   , tree      = require('../core/tree.js');
 
@@ -45,18 +45,18 @@ describe('a value tree', function () {
   function s (x) { return JSON.stringify(Object.keys(x)) }
 
   var view_from_n121_ =
-    { _:  { n121: "Script"
-          , n122: "Script" }
-    , __: { d11: { n111: "Script" }
+    { _:  { n121: "File"
+          , n122: "File" }
+    , __: { d11: { n111: "File" }
           , d12: "Directory"
           , _:   "Directory"
           , __:  { d1: { d11: "Directory"
                        , d12: "Directory"
-                       , n11: "Script" }
-                 , d2: { n21: "Script" }
+                       , n11: "File" }
+                 , d2: { n21: "File" }
                  , d3: { }
-                 , n1: "Script"
-                 , n2: "Script"
+                 , n1: "File"
+                 , n2: "File"
                  , _:  "Directory"
                  , __: null } } };
 

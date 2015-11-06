@@ -2,8 +2,7 @@
 
   (var host "0.0.0.0")
   (var port 1620)
-  (var http (require "glagol-http"))
-  (var server-http (http.server host port (lambda () (return ./routes))))
+  (var server-http (./web/server host port (lambda () (return ./web/routes))))
 
   (var server-ws (new (. (require "ws") Server) (object "server" server-http)))
   (server-ws.on "connection" on-ws)

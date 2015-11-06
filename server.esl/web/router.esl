@@ -1,0 +1,8 @@
+(lambda (routes req res)
+
+  (console.log req.method req.url)
+
+  ((. (Object.keys routes) some) (lambda (name)
+    (var route (get routes name))
+    (if (== "function" (typeof route))
+      (return (route req res))))))

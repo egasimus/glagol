@@ -1,0 +1,5 @@
+(lambda server (host port get-routes)
+  (var s (new (. (require "http") Server)))
+  (s.on "request" (lambda (req res) (./router (get-routes) req res)))
+  (s.listen port)
+  (return s))

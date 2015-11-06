@@ -18,22 +18,20 @@
 
   (try
     ; bundle the client code into a snapshot and get dependency map
-    (var cryo (require "glagol-cryo"))
     (var app (object
-      "ice"  (cryo.freeze client)
-      "deps" (cryo.deps client)))
+      "ice"  (../cryo/freeze client)
+      "deps" (../cryo/deps client)))
     (catch e (return (err e "Error creating initial client snapshot:"))))
 
   (try
     ; instantiate browserify and add common glagol dependencies
     (var br ((require "browserify")))
-    (shim br "client/runtimes.js" "../runtimes/index.js")
-    (shim br "client/require.js"  "require-like")
-    (shim br "client/vm.js"       "vm")
+    (shim br "../client/runtimes.js" "../runtimes/index.js")
+    (shim br "../client/require.js"  "require-like")
+    (shim br "../client/vm.js"       "vm")
+    (shim br "../client/thaw.js"     "__glagol_thaw")
     (br.exclude "chokidar")
     (br.exclude "glob")
-    (br.require "glagol-cryo/lib/thaw")
-    ;(br.add (rel "client/index.js"))
 
     ; add client-specific dependencies, dependency map, and client source
     ((. (Object.keys app.deps.ids) map) (lambda (module)
@@ -79,7 +77,7 @@
     ";(function(deps, ice){"
     "var " x ";"
     "require(\"require-like\").install(deps, require);"
-    "var app = require(\"glagol-cryo/lib/thaw\")(ice);"
+    "var app = require(\"__glagol_thaw\")(ice);"
     "app.tree().main(app)"
     "})(" (JSON.stringify app.deps.deps) "," (JSON.stringify app.ice) ")")))
 

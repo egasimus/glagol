@@ -35,18 +35,19 @@ body
     flex-direction row
 
 .prompt
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  position fixed
+  bottom   0
+  left     0
+  right    0
+  z-index  1
 
   padding 9px 12px
-  height 36px
+  height  36px
   display block
   width   100%
 
   border: none;
-  background: none;
+  background rgba(21,22,23,0.6)
   color: white;
 
   font-size: 18px;
@@ -63,9 +64,8 @@ body
   overflow auto
   padding 12px
   margin 0
-  background rgba(0,0,0,0.4)
+  background rgba(21,22,23,0.8)
   list-style none
-  box-shadow 3px 3px 6px rgba(0,0,0,0.8)
 
   .result
     padding 3px 6px

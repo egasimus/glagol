@@ -27,9 +27,9 @@
   (try
     ; instantiate browserify and add common glagol dependencies
     (var br ((require "browserify")))
-    (shim   br "client/runtimes.js" "../runtimes/index.js")
-    (shim   br "client/require.js"  "require-like")
-    (shim   br "client/vm.js"       "vm")
+    (shim br "client/runtimes.js" "../runtimes/index.js")
+    (shim br "client/require.js"  "require-like")
+    (shim br "client/vm.js"       "vm")
     (br.exclude "chokidar")
     (br.exclude "glob")
     (br.require "glagol-cryo/lib/thaw")

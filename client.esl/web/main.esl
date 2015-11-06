@@ -1,7 +1,8 @@
-(lambda (app connection)
+(lambda (app)
 
-  ; pass connection to api
-  (./api/connect connection)
+  ; establish connection with api
+  (./api/connect ((require "q-connection")
+    (new WebSocket (+ "ws://" window.location.host))))
 
   ; start vdom main loop
   (= document.body.innerHTML "")

@@ -8,8 +8,8 @@
 
     if (_isDir(node)) {
       return freezeDirectory.call(node)
-    } else if (_isScript(node)) {
-      return freezeScript.call(node)
+    } else if (_isFile(node)) {
+      return freezeFile.call(node)
     } else {
       throw ERR_FOREIGN_BODY(node);
     }
@@ -21,16 +21,16 @@
       || (node._glagol instanceof Object && node._glagol.type === 'Directory'))
   }
 
-  function _isScript (node) {
-    return (node instanceof glagol.Script
-      || (node._glagol instanceof Object && node._glagol.type === 'Script'))
+  function _isFile (node) {
+    return (node instanceof glagol.File
+      || (node._glagol instanceof Object && node._glagol.type === 'File'))
   }
 
   function ERR_FOREIGN_BODY (node) {
     return Error("can't freeze unknown instance in glagol tree");
   }
 
-  function freezeScript () {
+  function freezeFile () {
 
     var ice =
       { name: this.name

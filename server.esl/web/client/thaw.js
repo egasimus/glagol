@@ -11,7 +11,7 @@ function thaw (ice, parent) {
   if (ice.nodes) {
     return thawDirectory(ice, parent)
   } else if (ice.code) {
-    return thawScript(ice, parent)
+    return thawFile(ice, parent)
   } else {
     throw ERR_FOREIGN_BODY(ice);
   }
@@ -28,9 +28,9 @@ function ERR_FOREIGN_BODY (ice) {
 
 var path = require('path');
 
-function thawScript (ice, parent) {
+function thawFile (ice, parent) {
 
-  var node = glagol.Script(
+  var node = glagol.File(
     path.join((parent || {}).path || '/', ice.name),
     { thawed: true
     , source: ice.code

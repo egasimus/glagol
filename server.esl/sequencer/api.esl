@@ -1,0 +1,6 @@
+(lambda () (return (object
+  "track-add" (lambda (fullpath)
+    (console.log "adding track" fullpath)
+    (./state/tracks/push fullpath))
+  "track-list" (lambda ()
+    (return ./state/tracks)))))

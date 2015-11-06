@@ -17,7 +17,9 @@
         (console.error "error getting details for" fullpath)))))
 
   (emitter.on "sequencer-click" (lambda (track-n step-n)
-    (var track (get (./state/tracks) track-n))
-    (console.log track step-n)))
+    (var track (./state/tracks/get track-n))
+    (var value (- 127 (track.seq.get step-n)))
+    (track.seq.put step-n value)
+    (./api/call "invoke" "sequencer/step-set" track-n step-n)))
 
   (return emitter)))

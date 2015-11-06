@@ -15,7 +15,6 @@
       (./api/call "invoke" "library/detail" fullpath))))
     (lambda (e) (console.error "error retrieving track list")))
 
-
   (return state)
 
 ;  (capmacro Var (lambda (val)

@@ -2,8 +2,9 @@
   (./h ".sounds" (s.tracks.map (lambda (track i)
     (var steps (array))
     (for (var j 0) (< j track.seq.length) (++ j)
-      (steps.push (./h ".sequencer-step" (object
-        "onclick" (./emit "sequencer-click" i j)))))
+      (steps.push (./h
+        (+ ".sequencer-step" (?: (> (get track.seq j) 0) ".active" ""))
+        (object "onclick" (./emit "sequencer-click" i j)))))
     (return
       (./h ".sound" (array
         (./h ".sound-label"

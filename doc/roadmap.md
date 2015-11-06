@@ -1,8 +1,11 @@
 # Roadmap
 
-* Finalize runtime API
+* Rename `Script` to `File`
+* Regard `Directory` as just another file type
+* Factor out loaders so there's a single chokidar instance per process
+* Support `module.exports` using setters
+* Finalize runtime API (use `makeContext.call(script)`)
 * Add API for specifying custom globals and custom sandboxing methods.
-* Unify `Script` and `Directory` classes -- see dirs as just another file type
 * Replace Jasmine's built-in test runner with a dogfooded one
 * Write detailed documentation for the available classes
 

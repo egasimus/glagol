@@ -1,0 +1,79 @@
+(lambda (req res)
+
+  ; not the handler you're looking for?
+  (if (!== req.url "/") (return false))
+
+  (var path (require "path"))
+
+  (try
+    ; create a server-side glagol instance for the client code
+    (var glagol (require "glagol"))
+    (var client-path (path.resolve __dirname "../../client.esl/web"))
+    (var client-opts
+      (object "eslisp" (object "transform" (array
+        (require "eslisp-camelify")
+        (require "eslisp-propertify")))))
+    (var client (glagol.Directory client-path client-opts))
+    (catch e (return (err e "Error initializing client:"))))
+
+  (try
+    ; bundle the client code into a snapshot and get dependency map
+    (var cryo (require "glagol-cryo"))
+    (var ice (cryo.freeze ./client))
+    (var deps (cryo.deps ./client))
+    (catch e (return (err e "Error creating initial client snapshot:"))))
+
+  (try
+    ; instantiate browserify and add common glagol dependencies
+    (var br ((require "browserify")))
+    (shim br "client/runtimes.js" "../runtimes/index.js")
+    (shim br "client/require.js"  "require-like")
+    (shim br "client/vm.js"       "vm")
+    (br.exclude "chokidar")
+    (br.exclude "glob")
+    (br.add (rel "client/index.js"))
+
+    ; add client-specific dependencies, dependency map, and client source
+    ((. (Object.keys deps.ids) map) (lambda (module)
+      (br.require module (object "expose" (get deps.ids module)))))
+
+    ; roll it all into a big bundle
+    (var embed (. ((. (require "url") parse) req.url true) query embed))
+    (var ctype (+ "text/" (?: embed "javascript" "html") "; charset=utf-8"))
+    (br.bundle (lambda (err data)
+      (if err (throw err))
+      ((require "send-data") req res
+        (object "body" ((?: embed just wrap) bundled)
+                "headers" (object "Content-Type" ctype)))))
+
+    (catch e (console.error "Error bundling client:\n" e.stack)))
+
+  ; that was it, look no further
+  (return true)
+
+  ; helper functions
+
+  (function err (e msg)
+    (console.error msg)
+    (console.log e.stack)
+    (if (&& req req.headers req.headers.accept req.headers.accept.index-of
+            (< -1 (req.headers.accept.index-of "text/html")))
+      ((require "send-data/html") req res
+        (object "statusCode" 500 "body" (err-to-html e)))
+      ((require "send-data/error") req res (object "body" e))))
+
+  (function err-to-html (e) (return (+
+    "<head><meta charset=\"utf-8\"></head>"
+    "<body><pre><strong>" e.message "</strong>\n\n" e.stack "</pre></body>")))
+
+  (function just (x)
+    (return x))
+
+  (function wrap (x) (return (+
+    "<head><meta charset=\"utf-8\"></head><body><script>" x "</script>")))
+
+  (function rel (p)
+    (return (path.join __dirname p)))
+
+  (function shim (b p q)
+    (b.require (rel p) (object "expose" q))))

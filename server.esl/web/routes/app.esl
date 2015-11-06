@@ -8,7 +8,7 @@
   (try
     ; create a server-side glagol instance for the client code
     (var glagol (require "glagol"))
-    (var client-path (path.resolve __dirname "../../client.esl/web"))
+    (var client-path (path.resolve __dirname "../../../client.esl/web"))
     (var client-opts
       (object "eslisp" (object "transform" (array
         (require "eslisp-camelify")

@@ -48,6 +48,13 @@ var Script = module.exports = function Script () {
       , set: setter.bind(this, k) });
   }, this);
 
+  // hidden metadata, internal use only
+  Object.defineProperty(this, "_glagol",
+    { configurable: false
+    , enumerable:   false
+    , value: { version: require('../package.json').version
+             , type:    "Script" } })
+
 }
 
 var operations = { source: "load", compiled: "compile", value: "evaluate" };

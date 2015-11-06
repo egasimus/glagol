@@ -30,6 +30,13 @@ var Directory = module.exports = function Directory () {
     if (!options.nowatch) this._watch();
   }
 
+  // hidden metadata, internal use only
+  Object.defineProperty(this, "_glagol",
+    { configurable: false
+    , enumerable:   false
+    , value: { version: require('../package.json').version
+             , type:    "Directory" } })
+
 }
 
 Directory.prototype._load = function (rel, globOptions, type) {

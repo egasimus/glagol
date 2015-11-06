@@ -19,31 +19,35 @@
   (try
     ; bundle the client code into a snapshot and get dependency map
     (var cryo (require "glagol-cryo"))
-    (var ice (cryo.freeze client))
-    (var deps (cryo.deps client))
+    (var app (object
+      "ice"  (cryo.freeze client)
+      "deps" (cryo.deps client)))
     (catch e (return (err e "Error creating initial client snapshot:"))))
 
   (try
     ; instantiate browserify and add common glagol dependencies
     (var br ((require "browserify")))
-    (shim br "client/runtimes.js" "../runtimes/index.js")
-    (shim br "client/require.js"  "require-like")
-    (shim br "client/vm.js"       "vm")
+    (stream br app.ice              "__glagol_app")
+    (stream br app.deps             "__glagol_deps")
+    (shim   br "client/runtimes.js" "../runtimes/index.js")
+    (shim   br "client/require.js"  "require-like")
+    (shim   br "client/vm.js"       "vm")
     (br.exclude "chokidar")
     (br.exclude "glob")
     (br.add (rel "client/index.js"))
 
     ; add client-specific dependencies, dependency map, and client source
-    ((. (Object.keys deps.ids) map) (lambda (module)
-      (br.require module (object "expose" (get deps.ids module)))))
+    ((. (Object.keys app.deps.ids) map) (lambda (module)
+      (br.require module (object "expose" (get app.deps.ids module)))))
 
     ; roll it all into a big bundle
     (var embed (. ((. (require "url") parse) req.url true) query embed))
     (var ctype (+ "text/" (?: embed "javascript" "html") "; charset=utf-8"))
     (br.bundle (lambda (err data)
       (if err (throw err))
+      (= data (String data))
       ((require "send-data") req res
-        (object "body" ((?: embed just wrap) (String data))
+        (object "body" ((?: embed just wrap-html) data)
                 "headers" (object "Content-Type" ctype)))))
 
     (catch e (console.error "Error bundling client:\n" e.stack)))
@@ -69,11 +73,16 @@
   (function just (x)
     (return x))
 
-  (function wrap (x) (return (+
+  (function wrap-html (x) (return (+
     "<head><meta charset=\"utf-8\"></head><body><script>" x "</script>")))
 
   (function rel (p)
     (return (path.join __dirname p)))
 
   (function shim (b p q)
-    (b.require (rel p) (object "expose" q))))
+    (b.require (rel p) (object "expose" q)))
+
+  (function stream (b obj name)
+    (var data (new Buffer (JSON.stringify obj)))
+    (var file (new (require "vinyl") (object "contents" data)))
+    (b.require data (object "expose" name))))

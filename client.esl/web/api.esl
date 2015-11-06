@@ -11,7 +11,7 @@
 
       (var args (Array.prototype.slice.call arguments 2))
 
-      (return (call (path.split "/") this.connection))
+      (return (call (path.split "/") (this.connection.invoke)))
 
       (function call (p q)
 

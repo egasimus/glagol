@@ -19,8 +19,8 @@
   (try
     ; bundle the client code into a snapshot and get dependency map
     (var cryo (require "glagol-cryo"))
-    (var ice (cryo.freeze ./client))
-    (var deps (cryo.deps ./client))
+    (var ice (cryo.freeze client))
+    (var deps (cryo.deps client))
     (catch e (return (err e "Error creating initial client snapshot:"))))
 
   (try
@@ -43,7 +43,7 @@
     (br.bundle (lambda (err data)
       (if err (throw err))
       ((require "send-data") req res
-        (object "body" ((?: embed just wrap) bundled)
+        (object "body" ((?: embed just wrap) (String data))
                 "headers" (object "Content-Type" ctype)))))
 
     (catch e (console.error "Error bundling client:\n" e.stack)))

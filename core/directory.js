@@ -1,5 +1,4 @@
 var path = require('path')
-  , fs   = require('fs');
 
 var File = require('./file.js');
 
@@ -24,48 +23,12 @@ var Directory = module.exports = function Directory () {
   this.options = options;
   this.parent  = options.parent || null;
 
-  if (!this.options.thawed && this.path && fs.existsSync(this.path)) {
-    this._load("*", { nodir: true }, File);
-    this._load(path.join("*", path.sep), {}, Directory);
-    if (!options.nowatch) this._watch();
-  }
-
   // hidden metadata for duck typing when instanceof fails
   Object.defineProperty(this, "_glagol",
     { configurable: false
     , enumerable:   false
     , value: { version: require('../package.json').version
              , type:    "Directory" } })
-
-}
-
-Directory.prototype._load = function (rel, globOptions, type) {
-
-  require('glob').sync(path.join(this.path, rel), globOptions)
-    .filter(function (f) {
-      return -1 === f.indexOf('node_modules');
-    }).map(function (f) {
-      var s = type(f, this.options);
-      s.parent = this;
-      this.nodes[s.name] = s;
-    }, this);
-
-}
-
-Directory.prototype._watch = function () {
-
-  this._watcher = require('chokidar').watch(
-    this.path, { depth: 0, persistent: false });
-
-  this._watcher.on("change", function (f) {
-    this.nodes[path.basename(f)].refresh();
-  }.bind(this))
-
-  this._watcher.on("add", function (f) {
-    if (-1 === Object.keys(this.nodes).indexOf(path.basename(f))) {
-      this.nodes[path.basename(f)] = File(f);
-    };
-  }.bind(this));
 
 }
 

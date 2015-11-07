@@ -2,7 +2,8 @@
   "name": "glagol",
   "version": "1.1.1",
   "description": "",
-  "main": "core/index.js",
+  "main": "index.js",
+  "browser": "browser.js",
   "bin": {
     "glagol": "./bin/glagol"
   },

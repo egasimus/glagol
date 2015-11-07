@@ -21,7 +21,6 @@ var File = module.exports = function File () {
   if (!(this instanceof File)) return new File(pathname, options);
 
   // define basic properties
-  this.type    = "File";
   this.path    = pathname ? path.resolve(pathname)  : null;
   this.name    = pathname ? path.basename(pathname) : null;
   this.options = options;

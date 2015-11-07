@@ -16,7 +16,6 @@ var Directory = module.exports = function Directory () {
   // enforce usage of `new` keyword even if omitted
   if (!(this instanceof Directory)) return new Directory(name, options);
 
-  this.type    = "Directory";
   this.name    = name;
   this.nodes   = {};
   this.options = options;

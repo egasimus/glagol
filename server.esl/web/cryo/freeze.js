@@ -6,24 +6,14 @@
 
   function freeze (node) {
 
-    if (_isDir(node)) {
+    if (glagol.File.is(node)) {
       return freezeDirectory.call(node)
-    } else if (_isFile(node)) {
+    } else if (glagol.Directory.is(node)) {
       return freezeFile.call(node)
     } else {
       throw ERR_FOREIGN_BODY(node);
     }
 
-  }
-
-  function _isDir (node) {
-    return (node instanceof glagol.Directory
-      || (node._glagol instanceof Object && node._glagol.type === 'Directory'))
-  }
-
-  function _isFile (node) {
-    return (node instanceof glagol.File
-      || (node._glagol instanceof Object && node._glagol.type === 'File'))
   }
 
   function ERR_FOREIGN_BODY (node) {

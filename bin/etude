@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 
-var app =
-  require('glagol').Directory(
-    require('path').resolve(__dirname, '../server.esl'),
-    { eslisp:
-      { transform:
-        [ require('eslisp-camelify')
-        , require('eslisp-propertify') ] }});
+var app = require('glagol')(
+  require('path').resolve(__dirname, '../server.esl'),
+  { eslisp:
+    { transform:
+      [ require('eslisp-camelify')
+      , require('eslisp-propertify') ] }});
+
+console.log(app);
 
 app.tree()['main'](app);

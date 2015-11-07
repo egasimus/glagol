@@ -7,11 +7,11 @@ var watcher =
   new (require('chokidar').FSWatcher)(
     { persistent: false, depth: 0 });
 
-watcher.on('add',       function (f) { events.add(f)    });
-watcher.on('addDir',    function (f) { events.add(f)    });
-watcher.on('change',    function (f) { events.change(f) });
-watcher.on('unlink',    function (f) { events.remove(f) });
-watcher.on('unlinkDir', function (f) { events.remove(f) })
+watcher.on('add',       added)
+watcher.on('addDir',    added)
+watcher.on('change',    changed)
+watcher.on('unlink',    removed)
+watcher.on('unlinkDir', removed)
 
 module.exports = load;
 
@@ -40,7 +40,9 @@ function load (basepath, options) {
   }
 
   function _loadDirectory (location) {
-    var node = Directory(path.relative(basepath, location) || "/", options);
+    var node = Directory(
+      path.basename(path.relative(basepath, location) || "/"),
+      options);
     require('glob').sync(path.join(location, "*"))
       .filter(function (f) {
         return -1 === f.indexOf('node_modules')
@@ -54,7 +56,19 @@ function load (basepath, options) {
 
 };
 
-Directory.prototype._watch = function () {
+function added (f, s) {
+  console.log("added", f)
+}
+
+function changed (f, s) {
+  console.log("changed", f)
+}
+
+function removed (f, s) {
+  console.log("removed", f)
+}
+
+function x () {
 
   this._watcher = require('chokidar').watch(
     this.path, { depth: 0, persistent: false });

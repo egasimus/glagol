@@ -1,14 +1,17 @@
+var File      = require('./file.js')
+  , Directory = require('./directory.js');
+
 var getTree = module.exports = function getTree (node) {
 
   // from file, . points to parent and .. to grandparent;
   // from dir, .. points to parent and . to self.
 
-  if (node.type === "File") {
+  if (File.is(node)) {
 
     if (!node.parent) ERR_NO_PARENT(node);
     return getTree(node.parent);
 
-  } else if (node.type === "Directory") {
+  } else if (Directory.is(node)) {
 
     var tree = {};
     tree._ = tree;

@@ -4,21 +4,20 @@ var File = require('./file.js');
 
 var Directory = module.exports = function Directory () {
 
-  var pathname, options;
+  var name, options;
   if (arguments[0] && typeof arguments[0] === 'object') {
-    pathname = null;
-    options  = arguments[0];
+    name    = null;
+    options = arguments[0];
   } else {
-    pathname = arguments[0] || '';
-    options  = arguments[1] || {};
+    name    = arguments[0] || '';
+    options = arguments[1] || {};
   }
 
   // enforce usage of `new` keyword even if omitted
-  if (!(this instanceof Directory)) return new Directory(pathname, options);
+  if (!(this instanceof Directory)) return new Directory(name, options);
 
   this.type    = "Directory";
-  this.path    = pathname || null;
-  this.name    = pathname ? path.basename(pathname) : null;
+  this.name    = name;
   this.nodes   = {};
   this.options = options;
   this.parent  = options.parent || null;
@@ -68,4 +67,9 @@ function ERR_BROKEN_PATH(step, path) {
 
 function ERR_REACHED_FILE(step, path) {
   throw Error("Step " + step + " in path " + path + " is a file");
+}
+
+Directory.is = function (node) {
+  return (node instanceof Directory ||
+    (node._glagol instanceof Object && node._glagol.type === 'Directory'));
 }

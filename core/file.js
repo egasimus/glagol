@@ -4,12 +4,12 @@ var path = require('path')
 
 var File = module.exports = function File () {
 
-  var pathname, options;
+  var name, options;
   if (arguments[0] && typeof arguments[0] === 'object') {
-    pathname = null;
-    options  = arguments[0]
+    name = null;
+    options = arguments[0];
   } else {
-    pathname = arguments[0] || '';
+    name = arguments[0] || '';
     if (typeof arguments[1] === 'string') {
       options = { source: arguments[1] }
     } else {
@@ -18,11 +18,10 @@ var File = module.exports = function File () {
   }
 
   // enforce usage of `new` keyword even if omitted
-  if (!(this instanceof File)) return new File(pathname, options);
+  if (!(this instanceof File)) return new File(name, options);
 
   // define basic properties
-  this.path    = pathname ? path.resolve(pathname)  : null;
-  this.name    = pathname ? path.basename(pathname) : null;
+  this.name    = name;
   this.options = options;
   this.parent  = options.parent || null;
 
@@ -119,4 +118,9 @@ File.prototype.makeContext = function () {
   ctx.__ = tree.__;
 
   return vm.createContext(ctx);
+}
+
+File.is = function (node) {
+  return (node instanceof File ||
+    (node._glagol instanceof Object && node._glagol.type === 'File'));
 }

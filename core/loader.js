@@ -3,7 +3,9 @@ var fs        = require('fs')
   , File      = require('./file.js')
   , Directory = require('./directory.js');
 
-var watcher = require('chokidar').FSWatcher({ persistent: false, depth: 0 });
+var watcher =
+  new (require('chokidar').FSWatcher)(
+    { persistent: false, depth: 0 });
 
 watcher.on('add',       function (f) { events.add(f)    });
 watcher.on('addDir',    function (f) { events.add(f)    });
@@ -32,15 +34,13 @@ function load (basepath, options) {
   }
 
   function _loadFile (location) {
-    var node = File(
-      { path:   path.relative(basepath, location)
-      , source: fs.readFileSync(location, 'utf8') });
+    var node = File(path.basename(location), options);
+    node.source = fs.readFileSync(location, 'utf8');
     return node;
   }
 
   function _loadDirectory (location) {
-    var node = Directory(
-      { path: path.relative(basepath, location) });
+    var node = Directory(path.relative(basepath, location) || "/", options);
     require('glob').sync(path.join(location, "*"))
       .filter(function (f) {
         return -1 === f.indexOf('node_modules')

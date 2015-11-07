@@ -30,7 +30,7 @@ var File = require('glagol').File
 ```
 
 * `File.is(obj)` checks whether `obj` is an instance of `File`, i.e.
-  either `obj instanceof File` is `true` *or* `obj._glagol.type` is `File`.
+  either `obj instanceof File` is `true` *or* `obj._glagol.type` is `"File"`.
 
 ```
 var file = File()
@@ -56,6 +56,10 @@ The following magic attributes work through getters and setters:
 * `file.value`
 
 The following methods are available:
+* `file.load`
+* `file.compile`
+* `file.evaluate`
+* `file.makeContext`
 
 The following non-magic attributes are part of the private API:
 * `file._cache`
@@ -71,7 +75,7 @@ Using the `new` keyword when instantiating a `File` is optional.
 
 * `Directory.is(obj)` checks whether `obj` is an instance of `Directory`, i.e.
   either `obj instanceof Directory` is `true` *or* `obj._glagol.type` is
-  `Directory`.
+  `"Directory"`.
 
 ```
 var dir = Directory()
@@ -87,6 +91,8 @@ A `Directory` instance has the following non-magic attributes:
   mapped by name.
 
 The following methods are available:
+* `dir.tree`
+* `dir.descend`
 
 The following non-magic attributes are part of the private API:
 * `dir._glagol`

@@ -31,9 +31,9 @@ var getTree = module.exports = function getTree (node) {
 };
 
 function getter (node) {
-  return node.type === "File"
+  return File.is(node)
     ? node.value
-    : node.type === "Directory"
+    : Directory.is(node)
       ? getTree(node)
       : ERR_UNKNOWN_TYPE(node);
 }

@@ -32,7 +32,7 @@ var File = module.exports = function File () {
 
   this.runtime =
     options.runtime ||
-    require('../runtimes/index.js')[path.extname(this.path)] ||
+    require('../runtimes/index.js')[path.extname(this.name)] ||
     null;
 
   // define "smart" properties which comprise the core of the live updating

@@ -22,7 +22,6 @@
     "eslisp-propertify": "^0.1.4",
     "eventemitter2": "^0.4.14",
     "glagol": "git://github.com/egasimus/glagol",
-    "glagol-cryo": "git://github.com/egasimus/glagol-cryo",
     "glob": "^5.0.15",
     "insert-css": "^0.2.0",
     "main-loop": "^3.2.0",

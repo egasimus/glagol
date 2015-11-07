@@ -1,27 +1,41 @@
 # Glagol API
 
-## Loader
-
-The default loader interacts with the file system. It constructs instances of
-`File` and `Directory`, and updates them when the underlying filesystem objects
-are changed. To get started with Glagol on the server, simply require it:
+To get started with Glagol on the server, simply `require` it:
 
 ```
 var glagol = require('glagol')
 ```
 
-This returns a function `load(path, options)`.
+`glagol` then has the following properties:
+* `glagol.File`
+* `glagol.Directory`
 
-* When `path` points to a file, `glagol(path)` returns a `File` instance
-  populated with the contents of that file.
-* When `path` points to a directory, `glagol(path)` returns a `Directory`
-  instance recursively populated with `File` and `Directory` instances
-  corresponding to the contents of that directory.
-* In both cases, the value of `options` is passed down to each instance.
-* In both cases, the resulting instances are not aware of their full paths.
+However, you don't need to use these directly. Instead, use the...
 
-For easy access, `glagol.File` and `glagol.Directory` are references to the
-corresponding classes, as documented below.
+## Loader
+
+`glagol` itself is a function `load(path, options)`. For example:
+
+```
+var app = glagol(require('path').join(__dirname, 'src'))
+var app = glagol('/foo/bar/baz.js', { option: "value" })
+```
+
+The loader interacts with the filesystem: it constructs instances of `File` and
+`Directory` based on the contents of the given path, and then keeps them up to
+date with any changes to the underlying filesystem objects.
+
+* `glagol(pathToSomeFile)` returns a `File` instance populated with the
+  contents of that file. The instance's `parent` property defaults to `null`.
+* `glagol(pathToSomeDirectory)` returns a `Directory` instance recursively
+  populated with `File` and `Directory` instances that correspond to the
+  full contents of that directory. (For now, a hardcoded exception is being
+  made for anything that has `node_modules` in its name; such files and
+  directories are completely)
+
+In both cases, the resulting instances are not aware of their full paths.
+
+The value of `options` is simply passed down to each instance.
 
 ## File
 

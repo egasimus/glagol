@@ -1,14 +1,11 @@
 var path = require('path');
 
-module.exports =
-  { File:      require('./core/file.js')
-  , Directory: require('./core/directory.js')
-  , export:    export_ };
+module.exports = load;
 
-function export_ (_module, dir) {
-  var rel = path.join.bind(null, path.dirname(_module.id))
-    , dir = module.exports.Directory(rel(dir));
-  dir.name = require(rel('package.json')).name;
-  _module.exports = require('./core/tree.js')(dir);
-  return _module.exports;
+module.exports.File = require('./core/file.js');
+
+module.exports.Directory = require('./core/directory.js');
+
+function load () {
+  return require('./core/loader.js').apply(null, arguments);
 }

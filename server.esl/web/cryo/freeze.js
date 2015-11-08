@@ -7,9 +7,9 @@
   function freeze (node) {
 
     if (glagol.File.is(node)) {
-      return freezeDirectory(node)
-    } else if (glagol.Directory.is(node)) {
       return freezeFile(node)
+    } else if (glagol.Directory.is(node)) {
+      return freezeDirectory(node)
     } else {
       throw ERR_FOREIGN_BODY(node);
     }

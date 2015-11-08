@@ -18,8 +18,8 @@
           _detect(node.nodes[n], ids, deps);
         })
       } else if (node.compiled) {
-        var opts   = { basedir: path.dirname(node.path) }
-          , myDeps = deps[path.relative(rootNode.path, node.path)] = {}
+        var opts   = { basedir: path.dirname(node._filename) }
+          , myDeps = deps[path.relative(rootNode._filename, node._filename)] = {}
         require('detective')(node.compiled).map(function (d) {
           var resolved = require('resolve').sync(d, opts);
           ids[resolved] = ids[resolved] || require('shortid').generate();

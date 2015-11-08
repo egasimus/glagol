@@ -1,20 +1,23 @@
 var glagol = require('glagol');
 
-module.exports = thaw;
+module.exports = function thaw (ice, parent) {
 
-function thaw (ice, parent) {
-
-  if (parent && !(parent instanceof glagol.Directory)) {
+  if (parent && !(glagol.Directory.is(parent)))
     throw ERR_WRONG_PARENT(parent, ice)
-  }
 
   if (ice.nodes) {
-    return thawDirectory(ice, parent)
+    var node = glagol.Directory(ice.name)
+    Object.keys(ice.nodes).map(install);
+    function install (i) { node.nodes[i] = thaw(ice.nodes[i], node); }
   } else if (ice.code) {
-    return thawFile(ice, parent)
+    var node = glagol.File(ice.name, ice.code);
   } else {
     throw ERR_FOREIGN_BODY(ice);
   }
+
+  node.parent = parent;
+
+  return node;
 
 }
 
@@ -25,33 +28,4 @@ function ERR_WRONG_PARENT (parent, ice) {
 function ERR_FOREIGN_BODY (ice) {
   return Error("can't thaw unknown instance in frozen glagol tree: ",
     + JSON.stringify(ice));
-}
-
-var path = require('path');
-
-function thawFile (ice, parent) {
-
-  var node = glagol.File(
-    path.join((parent || {}).path || '/', ice.name),
-    { thawed: true
-    , source: ice.code
-    , parent: parent });
-
-  return node;
-
-}
-
-function thawDirectory (ice, parent) {
-
-  var node = glagol.Directory(
-    parent ? path.join(parent.path, ice.name) : '/',
-    { thawed: true
-    , parent: parent });
-
-  Object.keys(ice.nodes).map(function (i) {
-    node.nodes[i] = thaw(ice.nodes[i], node);
-  })
-
-  return node;
-
 }

@@ -34,15 +34,15 @@ function ERR_COMPILER (filename, error) {
   return Error("Wisp compiler error in " + filename + ": " + error);
 }
 
-function makeContext (script, opts) {
+function makeContext () {
 
-  var wisp = patchWisp(findWisp(opts.path));
+  var wisp = patchWisp(findWisp(this.path));
 
   var isBrowserify = process.browser
     , isElectron   = Boolean(process.versions.electron)
     , isBrowser    = isBrowserify || isElectron;
 
-  var context = require('./javascript.js').makeContext(script);
+  var context = require('./javascript.js').makeContext(this);
 
   [ wisp.ast
   , wisp.sequence

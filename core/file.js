@@ -111,7 +111,7 @@ File.prototype.refresh = function () {
 }
 
 File.prototype.makeContext = function () {
-  var ctx  = this.runtime.makeContext(this, { path: this.path })
+  var ctx  = this.runtime.makeContext.call(this);
 
   if (this.parent) {
     var tree = require('./tree.js')(this);

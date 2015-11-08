@@ -8,14 +8,12 @@ function compileSource () {
   return this.source;
 }
 
-function makeContext (script) {
-
-  var filename = script.path;
+function makeContext () {
 
   var context =
     { exports:       {}
-    , __dirname:     path.dirname(filename)
-    , __filename:    filename
+    , __dirname:     path.dirname(this._filename)
+    , __filename:    this._filename
     , console:       console
     , process:       { cwd:    process.cwd
                      , stdin:  process.stdin
@@ -27,7 +25,7 @@ function makeContext (script) {
     , clearTimeout:  clearTimeout
     , setInterval:   setInterval
     , clearInterval: clearInterval
-    , require:       require('require-like')(filename) };
+    , require:       require('require-like')(this._filename) };
 
   return context;
 

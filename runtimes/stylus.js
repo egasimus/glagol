@@ -6,4 +6,4 @@ function compileSource () {
   return require('require-like')(this.path)('stylus').render(this.source);
 }
 
-function makeContext (script) {}
+function makeContext () {}

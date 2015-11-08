@@ -29,14 +29,13 @@ function load (basepath, options) {
     } else {
       throw ERR_UNSUPPORTED(location);
     }
-    watcher.add(location);
+    watcher.add(node._filename = location);
     return node;
   }
 
   function _loadFile (location) {
     var node = nodes[location] = File(path.basename(location), options);
     node.source = fs.readFileSync(location, 'utf8');
-    node._filename = location;
     return node;
   }
 

@@ -1,7 +1,5 @@
 var path = require('path')
 
-var File = require('./file.js');
-
 var Directory = module.exports = function Directory () {
 
   var name, options;

@@ -30,17 +30,17 @@ function load (basepath, options) {
       throw ERR_UNSUPPORTED(location);
     }
     watcher.add(node._filename = location);
-    return node;
+    return nodes[location] = node;
   }
 
   function _loadFile (location) {
-    var node = nodes[location] = File(path.basename(location), options);
+    var node = File(path.basename(location), options);
     node.source = fs.readFileSync(location, 'utf8');
     return node;
   }
 
   function _loadDirectory (location) {
-    var node = nodes[location] = Directory(
+    var node = Directory(
       path.basename(path.relative(basepath, location) || "/"),
       options);
     require('glob').sync(path.join(location, "*"))

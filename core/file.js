@@ -96,7 +96,7 @@ File.prototype.evaluate = function () {
         ? (function(){
             var context = this.makeContext()
               , src     = this.compiled
-              , result  = vm.runInContext(src, context, { filename: this.path });
+              , result  = vm.runInContext(src, context, { filename: this._filename });
             if (context.error) throw context.error;
             return this._cache.value = result;
           }).call(this)

@@ -1,3 +1,3 @@
 module.exports =
-  { File:      require('./file.js')
-  , Directory: require('./directory.js') };
+  { File:      require('./core/file.js')
+  , Directory: require('./core/directory.js') };

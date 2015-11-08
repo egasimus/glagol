@@ -33,8 +33,6 @@ date with any changes to the underlying filesystem objects.
   made for anything that has `node_modules` in its name; such files and
   directories are completely)
 
-In both cases, the resulting instances are not aware of their full paths.
-
 The value of `options` is simply passed down to each instance.
 
 ## File
@@ -78,6 +76,8 @@ The following methods are available:
 The following non-magic attributes are part of the private API:
 * `file._cache`
 * `file._glagol`
+* `file._filename` is set by the loader and contains the absolute path to the
+  source file.
 
 ## Directory
 
@@ -110,6 +110,8 @@ The following methods are available:
 
 The following non-magic attributes are part of the private API:
 * `dir._glagol`
+* `file._filename` is set by the loader and contains the absolute path to the
+  source directory.
 
 ## Options
 

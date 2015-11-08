@@ -24,12 +24,6 @@ var File = module.exports = function File () {
   this.name    = name;
   this.options = options;
   this.parent  = options.parent || null;
-
-  this._cache =
-    { source:   options.source
-    , compiled: undefined
-    , value:    undefined };
-
   this.runtime =
     options.runtime ||
     require('../runtimes/index.js')[path.extname(this.name)] ||
@@ -37,77 +31,82 @@ var File = module.exports = function File () {
 
   // define "smart" properties which comprise the core of the live updating
   // magic: the file's contents are loaded, processed and updated on demand
-  Object.keys(this._cache).map(function (k) {
-    Object.defineProperty(this, k,
+  this._cache =
+    { source:    options.source
+    , compiled:  undefined
+    , evaluated: false
+    , value:     undefined };
+
+  Object.defineProperties(this,
+    { source:
       { configurable: true
       , enumerable:   true
-      , get: getter.bind(this, k)
-      , set: setter.bind(this, k) });
-  }, this);
+      , get: getSource.bind(this)
+      , set: setSource.bind(this) }
+    , compiled:
+      { configurable: true
+      , enumerable:   true
+      , get: compile.bind(this) }
+    , value:
+      { configurable: true
+      , enumerable:   true
+      , get: evaluate.bind(this) }});
 
   // hidden metadata for duck typing when instanceof fails
   Object.defineProperty(this, "_glagol",
     { configurable: false
     , enumerable:   false
-    , value: { version: require('../package.json').version
-             , type:    "File" } })
+    , value:
+      { version: require('../package.json').version
+      , type:    "File" } })
 
 }
 
-var operations = { source: "load", compiled: "compile", value: "evaluate" };
-
-function getter (k) {
-  return this._cache[k] === undefined
-    ? this[operations[k]]()
-    : this._cache[k];
+function getSource () {
+  return this._cache.source;
 }
 
-function setter (k, v) {
-  this._cache[k] = v;
+function setSource (v) {
+  this._cache.source    = v;
+  this._cache.compiled  = undefined;
+  this._cache.evaluated = false
+};
+
+function compile () {
+  if (this._cache.compiled) return this._cache.compiled;
+  if (this.runtime) {
+    if (this.source) {
+      try {
+        return this.compiled = this.runtime.compileSource.call(this);
+      } catch (e) {
+        console.error("Error compiling " + this.name + ":");
+        console.log(e.message);
+        console.log(e.stack);
+      }
+    } else {
+      return this._cache.compiled = undefined;
+    }
+  } else {
+    return this._cache.compiled = this.source;
+  }
 }
 
-File.prototype.load = function () {
-  return this.path
-    ? this.source = fs.readFileSync(this.path, "utf8")
-    : undefined;
-}
-
-File.prototype.compile = function () {
-  return this.source
-    ? this.runtime
-      ? (function () {
-          try {
-            return this.compiled = this.runtime.compileSource.call(this)
-          } catch (e) {
-            console.error("!!! ERROR compiling " + this.path);
-            console.error(e.message);
-            console.error(e.stack)
-          }
-        }).call(this)
-      : this.source
-    : undefined
-}
-
-File.prototype.evaluate = function () {
-  return (this._cache.value !== undefined)
-    ? this._cache.value
-    : (this.source && this.compiled)
-      ? this.runtime
-        ? (function(){
-            var context = this.makeContext()
-              , src     = this.compiled
-              , result  = vm.runInContext(src, context, { filename: this._filename });
-            if (context.error) throw context.error;
-            return this._cache.value = result;
-          }).call(this)
-        : this.compiled
-      : undefined;
+function evaluate () {
+  if (this._cache.evaluated) return this._cache.value;
+  if (this.runtime) {
+    var context = this.makeContext()
+      , src = this.compiled
+      , result = vm.runInContext(src, context, { filename: this.filename });
+    if (context.error) throw context.error;
+    return this._cache.value = result;
+  } else {
+    return this.compiled;
+  }
 }
 
 File.prototype.refresh = function () {
-  ["source", "compiled", "value"].map(function (k) {
-    this._cache[k] = undefined;
-  }, this);
+  this._cache.compiled  = false;
+  this._cache.evaluated = false;
 }
 
 File.prototype.makeContext = function () {

@@ -7,9 +7,9 @@
   function freeze (node) {
 
     if (glagol.File.is(node)) {
-      return freezeDirectory.call(node)
+      return freezeDirectory(node)
     } else if (glagol.Directory.is(node)) {
-      return freezeFile.call(node)
+      return freezeFile(node)
     } else {
       throw ERR_FOREIGN_BODY(node);
     }
@@ -20,26 +20,26 @@
     return Error("can't freeze unknown instance in glagol tree");
   }
 
-  function freezeFile () {
+  function freezeFile (file) {
 
     var ice =
-      { name: this.name
+      { name: file.name
       , time: String(Date.now())
-      , code: this.compiled };
+      , code: file.compiled };
 
     return ice;
 
   }
 
-  function freezeDirectory () {
+  function freezeDirectory (dir) {
 
     var ice =
-      { name:  this.name
+      { name:  dir.name
       , time:  String(Date.now())
       , nodes: {} };
 
-    Object.keys(this.nodes).map(function freezeNode (k) {
-      ice.nodes[k] = freeze(this.nodes[k]);
+    Object.keys(dir.nodes).map(function freezeNode (k) {
+      ice.nodes[k] = freeze(dir.nodes[k]);
     }, this);
 
     return ice;

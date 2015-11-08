@@ -13,7 +13,7 @@
       (object "eslisp" (object "transform" (array
         (require "eslisp-camelify")
         (require "eslisp-propertify")))))
-    (var client (glagol.Directory client-path client-opts))
+    (var client (glagol client-path client-opts))
     (catch e (return (err e "Error initializing client:"))))
 
   (try

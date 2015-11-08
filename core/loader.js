@@ -36,6 +36,7 @@ function load (basepath, options) {
   function _loadFile (location) {
     var node = nodes[location] = File(path.basename(location), options);
     node.source = fs.readFileSync(location, 'utf8');
+    node._filename = location;
     return node;
   }
 

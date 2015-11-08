@@ -112,10 +112,17 @@ File.prototype.refresh = function () {
 
 File.prototype.makeContext = function () {
   var ctx  = this.runtime.makeContext(this, { path: this.path })
-    , tree = this.parent ? require('./tree.js')(this) : {};
 
-  ctx._  = tree;
-  ctx.__ = tree.__;
+  if (this.parent) {
+    var tree = require('./tree.js')(this);
+    ctx._  = tree;
+    ctx.__ = tree.__;
+  }
+
+  if (this._filename) {
+    ctx.__filename = this._filename;
+    ctx.__dirname  = path.dirname(this._filename);
+  }
 
   return vm.createContext(ctx);
 }

@@ -1,71 +1,115 @@
 var fs        = require('fs')
   , path      = require('path')
+  , chokidar  = require('chokidar')
+  , glob      = require('glob')
   , File      = require('./file.js')
   , Directory = require('./directory.js');
 
-var watcher = new (require('chokidar').FSWatcher)(
-      { persistent: false, depth: 0 })
-  , nodes = {};
+module.exports = Loader;
 
-watcher.on('add',       added)
-watcher.on('addDir',    added)
-watcher.on('change',    changed)
-watcher.on('unlink',    removed)
-watcher.on('unlinkDir', removed)
+function Loader () {
 
-module.exports = load;
+  if (this instanceof Loader) return Loader();
 
-function load (basepath, options) {
+  var watcher = new chokidar.FSWatcher({ persistent: false, depth: 0 })
+    , nodes   = {}
+    , _opts   = { logger: console.log.bind(console)
+               , eager:  true };
 
-  return _load(basepath);
+  watcher.on('add',       added)
+  watcher.on('addDir',    added)
+  watcher.on('change',    changed)
+  watcher.on('unlink',    removed)
+  watcher.on('unlinkDir', removed)
 
-  function _load (location) {
-    if (!fs.existsSync(location)) throw ERR_FILE_NOT_FOUND(path);
-    var stat = fs.statSync(location);
-    if (stat.isFile()) {
-      var node = _loadFile(location);
-    } else if (stat.isDirectory()) {
-      var node = _loadDirectory(location);
-    } else {
-      throw ERR_UNSUPPORTED(location);
+  return load;
+
+  function load (basepath, options) {
+
+    options = options || {};
+
+    return _load(basepath);
+
+    function _load (location) {
+      location = path.resolve(location);
+      if (!fs.existsSync(location)) throw ERR_FILE_NOT_FOUND(path);
+      var stat = fs.statSync(location);
+      if (stat.isFile()) {
+        var node = _loadFile(location);
+      } else if (stat.isDirectory()) {
+        var node = _loadDirectory(location);
+      } else {
+        throw ERR_UNSUPPORTED(location);
+      }
+      watcher.add(node._filename = location);
+      return nodes[location] = node;
     }
-    watcher.add(node._filename = location);
-    return nodes[location] = node;
+
+    function _loadFile (location) {
+      var node = File(path.basename(location), options);
+      if (_opts.eager) {
+        node.source = fs.readFileSync(location, 'utf8');
+      } else {
+        Object.defineProperty(node, "source",
+          { enumerable:   true
+          , configurable: true
+          , get: function () {
+              return this.cache.source
+                ? this._cache.source
+                : this._cache.source = fs.readFileSync(this._filename, 'utf8');
+              }
+          , set: function () {
+              this._cache.compiled = undefined;
+              this._cache.evaluated = false;
+              return this._cache.source = v;
+            } });
+      }
+      return node;
+    }
+
+    function _loadDirectory (location) {
+      var node = Directory(
+        path.basename(path.relative(basepath, location) || "/"),
+        options);
+      require('glob').sync(path.join(location, "*"))
+        .filter(function (f) {
+          return -1 === f.indexOf('node_modules')
+        }).map(function (f) {
+          var node2 = _load(f, options)
+          node2.parent = node;
+          node.nodes[node2.name] = node2;
+        })
+      return node;
+    }
+
+  };
+
+  load.options = _opts;
+
+  function added (f, s) {
+    if (!nodes[f]) {
+      _opts.logger("added", f);
+      nodes[f] = load(f);
+    }
   }
 
-  function _loadFile (location) {
-    var node = File(path.basename(location), options);
-    node.source = fs.readFileSync(location, 'utf8');
-    return node;
+  function changed (f, s) {
+    if (nodes[f]) {
+      _opts.logger("changed", f);
+      if (_opts.eager && File.is(nodes[f])) {
+        nodes[f].source = fs.readFileSync(f, 'utf8');
+      }
+    }
   }
 
-  function _loadDirectory (location) {
-    var node = Directory(
-      path.basename(path.relative(basepath, location) || "/"),
-      options);
-    require('glob').sync(path.join(location, "*"))
-      .filter(function (f) {
-        return -1 === f.indexOf('node_modules')
-      }).map(function (f) {
-        var node2 = _load(f, options)
-        node2.parent = node;
-        node.nodes[node2.name] = node2;
-      })
-    return node;
+  function removed (f, s) {
+    if (nodes[f]) {
+      _opts.logger("removed", f);
+      delete nodes[f].parent.nodes[nodes[f].name];
+      delete nodes[f];
+    }
   }
 
-};
-
-function added (f, s) {
-  if (!nodes[f]) console.log("added", f)
-}
-
-function changed (f, s) {
-  console.log("changed", f)
-}
-
-function removed (f, s) {
-  if (nodes[f]) console.log("removed", f)
 }
 
 function x () {

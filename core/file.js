@@ -67,9 +67,9 @@ function getSource () {
 }
 
 function setSource (v) {
-  this._cache.source    = v;
-  this._cache.compiled  = undefined;
-  this._cache.evaluated = false
+  this._cache.compiled = undefined;
+  this._cache.evaluated = false;
+  return this._cache.source = v;
 };
 
 function compile () {

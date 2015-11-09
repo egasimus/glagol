@@ -146,3 +146,81 @@ time, but expect your program to momentarily pause to load parts of itself
 as they are needed.*
 
 ## Meeting the neighbors
+
+Remember `app.tree()`? `tree` is a method of `Directory` which builds a tree
+out of just the `value` property of all `File` and `Directory` instances that
+are contained in the parent `Directory`'s `nodes` property. To clarify, this:
+
+```
+app = Directory {
+  name: ''
+  nodes: {
+    'alice.js': File {
+      name:  'alice.js'
+      value: [Getter] }
+    'mad-tea-party': Directory {
+      name: 'C'
+      nodes: {
+        'dormouse.js': File {
+          name:  'dormouse.js'
+          value: [Getter] }
+        'mad-hatter.js': File {
+          name:  'mad-hatter.js'
+          value: [Getter] }
+        'march-hare.js': File {
+          name:  'march-hare.js'
+          value: [Getter] } } } } }
+```
+
+Is transformed into this:
+
+```
+tree =
+  { _:  [points to self]
+    __: null
+    alice: [Getter]
+  , madTeaParty: {
+      _:  [points to self]
+      __: [points to parent]
+      dormouse:  [Getter]
+      madHatter: [Getter]
+      marchHare: [Getter]}}
+```
+
+Attentive readers will notice a few things:
+
+* The `_` and `__` keys suggest, and indeed correspond to, the familiar
+  `.` and `..` entries that point to the current and parent directories of a
+  filesystem.
+* File extensions are removed and hyphens are replaced with camel case.
+  This constraint is imposed in order to facilitate syntax in the form of
+  `app.tree().madTeaParty.madHatter`.
+
+Now here's the rub: when evaluating scripts, `_` and `__` are exposed as global
+objects. So, when `alice.js` is executed, accessing `_.madTeaParty.madHatter`
+returns the value of `mad-tea-party/mad-hatter.js`; and, conversely, from within
+`mad-hatter.js`, `_.dormouse` and `__.alice` are both valid
+
+*__TIP__: In non-JS languages where the syntax supports customization (currently
+just Eslisp), this is further integrated: for example, `../alice` or
+`./mad-tea-party/mad-hatter` are completely valid.*
+
+## Wait, what?
+
+This is the core functionality of Glagol. The minimal syntax for querying the
+values of neighboring files lets you break down your program into smaller
+logical units. This makes it easy for Glagol to know exactly what's changing
+as you edit the source code, and reload nothing more than what's needed.
+
+With the filesystem serving as glue for your finely modularized code, and as
+long as you adhere to some basic tenets of functional programming that go a long
+way towards making sure that side effects are not unnecessarily repeated, you
+end up with a smooth live coding experience involving significantly fewer
+restarts of the application than normally needed.
+
+Furthermore, keeping every logical unit of code in plain sight, rather than
+lumping multiple vaguely related yet disparate things into large modules that
+are opaque to the ubiquitous filesystem API, expands the range of manipulations
+that you can apply to your code without enlisting the help of complex
+language-specific instrumentation (e.g. IDEs, preprocessing pipelines such as
+Grunt or Gulp, et cetera.)

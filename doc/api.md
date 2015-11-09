@@ -1,29 +1,25 @@
-# Glagol API
 
-To get started with Glagol on the server, simply `require` it:
+The JavaScript code of each script is executed using `vm.createContext` and
+`vm.runInContext`. Alongside the built-in globals that you automatically get
+in a new `vm` context, the following globals are explicitly made available:
 
-```
-var glagol = require('glagol')
-```
+* `__filename`, `__dirname` are self-explanatory.
+* `console` is a reference to the global `console` object.
+* `process` is an object exposing the `argv`, `cwd`, `exit`, `stderr`, `stdin`,
+  `stdout`, `stderr` and `versions` properties of the global `process` object.
+* `setTimeout`, `clearTimeout`, `setInterval`, `clearInterval`
+* `require` is an instance of [require-like](https://github.com/felixge/node-require-like)
+  which resolves `require` calls relative to the script's filename.
 
-`glagol` then has the following properties:
-* `glagol.File`
-* `glagol.Directory`
-
-However, you don't need to use these directly. Instead, use the...
+For details, see `runtimes/javascript.js` as well as the runtime for your
+language of choice.
 
 ## Loader
 
-`glagol` itself is a function `load(path, options)`. For example:
-
-```
-var app = glagol(require('path').join(__dirname, 'src'))
-var app = glagol('/foo/bar/baz.js', { option: "value" })
-```
-
-The loader interacts with the filesystem: it constructs instances of `File` and
-`Directory` based on the contents of the given path, and then keeps them up to
-date with any changes to the underlying filesystem objects.
+The loader takes care of all interaction with the filesystem: it constructs
+instances of `File` and `Directory` based on the contents of the given path,
+and then keeps them up to date with any changes to the underlying filesystem
+objects.
 
 * `glagol(pathToSomeFile)` returns a `File` instance populated with the
   contents of that file. The instance's `parent` property defaults to `null`.

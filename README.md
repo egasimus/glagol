@@ -37,6 +37,7 @@ will be made available in due time.
 
 ## Documentation
 
+* [Guide (start here!)](https://github.com/egasimus/glagol/blob/master/doc/guide.md)
 * [API reference](https://github.com/egasimus/glagol/blob/master/doc/api.md)
 * [Changelog](https://github.com/egasimus/glagol/blob/master/CHANGELOG.md)
 * [Roadmap](https://github.com/egasimus/glagol/blob/master/doc/roadmap.md)

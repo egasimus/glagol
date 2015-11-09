@@ -14,7 +14,7 @@ function Loader () {
   var watcher = new chokidar.FSWatcher({ persistent: false, depth: 0 })
     , nodes   = {}
     , _opts   = { logger: console.log.bind(console)
-               , eager:  true };
+                , eager:  true };
 
   watcher.on('add',       added)
   watcher.on('addDir',    added)

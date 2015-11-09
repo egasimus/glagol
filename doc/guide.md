@@ -6,11 +6,11 @@ To get started with Glagol on the server, simply `require` it:
 var glagol = require('glagol')
 ```
 
-`glagol` is now a `function load (path, options)`; pass it the path to your
+`glagol` is now a `function load (path, options)`; give it the path to your
 source code and it returns a `File` or `Directory`, configured with any
 `options` you might have provided.
 
-`glagol` also has the following properties:
+*TIP:* `glagol` also has the following properties:
 * `glagol.Loader`
 * `glagol.File`
 * `glagol.Directory`
@@ -19,26 +19,31 @@ In the general scenario, you wouldn't need to use any of those directly.
 They are constructors for the underlying components that make up Glagol;
 a description of how they work is provided in the API docs.
 
-# Creating an application
+## Initializing a Glagol application
 
-For example, let's say you have some code in `src/` and this executable at
-`bin/launcher.js`:
+For example, let's say you have a source code directory, `src/`, and also the
+following executable at `bin/launcher.js`:
 
 ```
 #!/usr/bin/env node
 app = require('glagol')(__dirname + '/../src');
 ```
 
-Using `__dirname` ensures the program will work the same when launched from
-any directory. If you pass just `../src`, the path will be resolved relative to
-your current working directory -- which is usually not what you want. If you're
-pedantic, or care about non-Unix systems, you could instead phrase it as:
+*TIP:* Using `__dirname` ensures the program will work the same when launched
+from any directory. If you pass just `../src`, the path will be resolved
+relative to your current working directory -- which is usually not what you
+want. If you're pedantic, or care about non-Unix systems, you could instead
+phrase it as:
 
 ```
 app = require('glagol')(require('path').join(__dirname, '..', 'src'));
 ```
 
-Same thing. Let's see what `app` looks like, shall we? Add `console.log(app)`
+Same thing.
+
+## Looking at Glagol from a safe distance
+
+Let's see what `app` looks like, shall we? Add `console.log(app)`
 to the launcher, and have a gander:
 
 ```
@@ -50,18 +55,13 @@ Directory {
   _filename: '/path/to/the/directory/called/src' }
 ```
 
-Okay, so far so good.
-
-## Running a script; what it looks like; what it sees
-
-Picture this: you have the setup from the above example, and then you add a
-file called `alice.js` in `src/`:
+Okay, so far so good. Now you add a file called `alice.js` in `src/`:
 
 ```
 console.log("Hello wonderland!")
 ```
 
-Let's first see how it looks on the outside:
+When you run `bin/launcher.js` again, you will see this:
 
 ```
 Directory {
@@ -83,27 +83,59 @@ Directory {
   _filename: '/path/to/the/directory/called/src' }
 ```
 
-Nothing surprising. Now how do we run this code you say? Well, just add this to
-the launcher:
+## Actually evaluating files
+
+In order to run the code in `alice.js` you say, just add this to the end of
+`launcher.js`:
 
 ```
 app.nodes['alice.js'].value;
 ```
 
---or, alternatively--
+--or, equivalently--
 
 ```
 app.tree().alice;
 ```
 
-This works thanks to the magic of JavaScript's [property getters](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get#Description).
+This is made possible thanks to the magic of JavaScript's [property getters](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get#Description).
 The first time you try to access its value, the code in `alice.js` is evaluated,
 and any side effects, such as printing something to the console, are executed.
-
-The value is then cached: even if you type `app.tree().alice` a few more times,
-you will still get only one `Hello wonderland!` printed to the screen.
+The value is then cached: even if you add the above lines more than once to
+your launcher, you will still get only one `Hello wonderland!` on the screen.
 
 However, if you change `src/alice.js` (in fact, even if you just save it without
-making any changes), Glagol's `Loader` immediately picks this up and marks the
-`File` object as needing update. Next time you access the value, the code will
-be evaluated anew, executing any side effects.
+making any actual changes), Glagol's `Loader` will pick this up, and mark the
+`File` object as needing update. Next time you access the value, the reloaded
+code will be evaluated anew, and any side effects will be executed again.
+Change `alice.js` to say `Math.random()`, and try this for a feel:
+
+```
+var fs = require('fs');
+var alice = app.nodes['alice.js'];
+console.log(1, alice.value);
+setTimeout(function () {
+  console.log(2, alice.value)
+  fs.writeFileSync(alice._filename, alice.source);
+  setTimeout(function () {
+    console.log(3, alice.value)
+  }, 1000);
+}, 1000);
+```
+
+TIP: The read(-preprocess)-evaluate process happens _synchronously_ for each
+file, which means loading the source code from the filesystem might become a
+bottleneck in certain hypothetical scenarios. The value of the loader's
+(i.e. `glagol`'s) `eager` property determines at what point the the source code
+is read. When `glagol.eager` is  `true` (the default), each `File` object will
+initially come pre-loaded with its initial source code, and will be updated
+immediately, every time a change is detected. On the other hand, when you set
+`glagol.eager = false`, each `File` loaded afterwards will only read from disk
+when needed -- that is, as soon as its `source`, `compiled`, or `value`
+properties are accessed. This constitutes a tradeoff: set `eager` to `true` if
+you value consistent quick responsiveness and are not updating the files watched
+by Glagol at outrageous rates; set it to `false` for a faster initial loading
+time, but expect your program to momentarily pause to load parts of itself
+as they are needed.
+
+## Meeting the neighbors

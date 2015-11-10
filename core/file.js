@@ -84,9 +84,13 @@ function setSource (v) {
 };
 
 function compile () {
+
   if (this._cache.compiled) return this._cache.compiled;
+
   if (this.runtime) {
+
     if (this.source) {
+
       try {
         return this.compiled = this.runtime.compileSource.call(this);
       } catch (e) {
@@ -94,25 +98,39 @@ function compile () {
         console.log(e.message);
         console.log(e.stack);
       }
+
     } else {
       return this._cache.compiled = undefined;
     }
+
   } else {
     return this._cache.compiled = this.source;
   }
+
 }
 
 function evaluate () {
+
   if (this._cache.evaluated) return this._cache.value;
+
   if (this.runtime) {
+
     var context = this.makeContext()
-      , src = this.compiled
-      , result = vm.runInContext(src, context, { filename: this.filename });
+      , src     = this.compiled
+      , result  = vm.runInContext(src, context, { filename: this.filename });
+
     if (context.error) throw context.error;
-    return this._cache.value = result;
+
+    if (context.hasOwnProperty('exports')) {
+      return this._cache.value = context.exports;
+    } else {
+      return this._cache.value = result;
+    }
+
   } else {
     return this.compiled;
   }
+
 }
 
 File.prototype.refresh = function () {

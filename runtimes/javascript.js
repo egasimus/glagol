@@ -11,8 +11,7 @@ function makeContext () {
   var _path = this._sourcePath || this.path;
 
   var context =
-    { exports:       {}
-    , __dirname:     require('path').dirname(_path)
+    { __dirname:     require('path').dirname(_path)
     , __filename:    _path
     , console:       console
     , process:       { cwd:      process.cwd

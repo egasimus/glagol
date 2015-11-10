@@ -112,19 +112,6 @@ function Loader () {
 
 }
 
-function x () {
-
-  this._watcher = require('chokidar').watch(
-    this.path, { depth: 0, persistent: false });
-
-  this._watcher.on("change", function (f) {
-    this.nodes[path.basename(f)].refresh();
-  }.bind(this))
-
-  this._watcher.on("add", function (f) {
-    if (-1 === Object.keys(this.nodes).indexOf(path.basename(f))) {
-      this.nodes[path.basename(f)] = File(f);
-    };
-  }.bind(this));
-
+function ERR_FILE_NOT_FOUND (location) {
+  return Error("file not found: " + location);
 }

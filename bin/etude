@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 var app = require('glagol')(
-  require('path').resolve(__dirname, '../server.esl'),
+  require('path').resolve(__dirname, '../server'),
   { eslisp:
     { transform:
       [ require('eslisp-camelify')

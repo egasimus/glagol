@@ -3,7 +3,8 @@ module.exports =
   , makeContext:   makeContext };
 
 function compileSource () {
-  return require('require-like')(this.path)('stylus').render(this.source);
+  var _path = this._sourcePath || this.path;
+  return require('require-like')(_path)('stylus').render(this.source);
 }
 
 function makeContext () {}

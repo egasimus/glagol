@@ -8,7 +8,8 @@ var fs   = require('fs')
 function compileSource () {
 
   // find wisp relative to project directory rather than glagol install path
-  var wisp = patchWisp(findWisp(this.path));
+  var _path = this._sourcePath || this.path;
+  var wisp = patchWisp(findWisp(_path));
 
   var forms = wisp.compiler.readForms(this.source, this.name).forms;
 
@@ -36,7 +37,8 @@ function ERR_COMPILER (filename, error) {
 
 function makeContext () {
 
-  var wisp = patchWisp(findWisp(this.path));
+  var _path = this._sourcePath || this.path;
+  var wisp = patchWisp(findWisp(_path));
 
   var isBrowserify = process.browser
     , isElectron   = Boolean(process.versions.electron)

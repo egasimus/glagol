@@ -2,18 +2,18 @@ module.exports =
   { compileSource: compileSource
   , makeContext:   makeContext };
 
-var path = require('path');
-
 function compileSource () {
   return this.source;
 }
 
 function makeContext () {
 
+  var _path = this._sourcePath || this.path;
+
   var context =
     { exports:       {}
-    , __dirname:     path.dirname(this._filename)
-    , __filename:    this._filename
+    , __dirname:     require('path').dirname(_path)
+    , __filename:    _path
     , console:       console
     , process:       { cwd:      process.cwd
                      , stdin:    process.stdin
@@ -26,7 +26,7 @@ function makeContext () {
     , clearTimeout:  clearTimeout
     , setInterval:   setInterval
     , clearInterval: clearInterval
-    , require:       require('require-like')(this._filename || this.path) };
+    , require:       require('require-like')(_path) };
 
   return context;
 

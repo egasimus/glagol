@@ -3,6 +3,7 @@ module.exports =
   , makeContext:   require('./javascript.js').makeContext };
 
 function compileSource () {
-  return require('require-like')(this.path)('coffee-script').compile(
+  var _path = this._sourcePath || this.path;
+  return require('require-like')(_path)('coffee-script').compile(
     this.source, { literate: true });
 }

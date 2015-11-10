@@ -41,7 +41,7 @@ function Loader () {
       } else {
         throw ERR_UNSUPPORTED(location);
       }
-      watcher.add(node._filename = location);
+      watcher.add(node._sourcePath = location);
       return nodes[location] = node;
     }
 
@@ -56,7 +56,7 @@ function Loader () {
           , get: function () {
               return this.cache.source
                 ? this._cache.source
-                : this._cache.source = fs.readFileSync(this._filename, 'utf8');
+                : this._cache.source = fs.readFileSync(this._sourcePath, 'utf8');
               }
           , set: function () {
               this._cache.compiled = undefined;

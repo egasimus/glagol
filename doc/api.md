@@ -72,7 +72,7 @@ The following methods are available:
 The following non-magic attributes are part of the private API:
 * `file._cache`
 * `file._glagol`
-* `file._filename` is set by the loader and contains the absolute path to the
+* `file._sourcePath` is set by the loader and contains the absolute path to the
   source file.
 
 ## Directory
@@ -106,7 +106,7 @@ The following methods are available:
 
 The following non-magic attributes are part of the private API:
 * `dir._glagol`
-* `file._filename` is set by the loader and contains the absolute path to the
+* `dir._sourcePath` is set by the loader and contains the absolute path to the
   source directory.
 
 ## Options

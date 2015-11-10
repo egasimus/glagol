@@ -11,9 +11,9 @@ function compileSource () {
 
   try {
 
-    return require('require-like')(this.path)('eslisp')(this.source, {
-      transformMacros: [ glagolify ].concat(extraTransformMacros)
-    });
+    var _path = this._sourcePath || this.path;
+    return require('require-like')(_path)('eslisp')(this.source,
+      { transformMacros: [ glagolify ].concat(extraTransformMacros)});
 
   } catch (e) {
 

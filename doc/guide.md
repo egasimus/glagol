@@ -53,7 +53,7 @@ Directory {
   nodes: {},
   options: {}
   parent: null,
-  _filename: '/path/to/the/directory/called/src' }
+  _sourcePath: '/path/to/the/directory/called/src' }
 ```
 
 Suppose you add a file called `alice.js` in `src/`:
@@ -78,10 +78,10 @@ Directory {
        source:    [Getter/Setter],
        compiled:  [Getter],
        value:     [Getter],
-       _filename: '/path/to/the/directory/called/src/alice.js' } },
+       _sourcePath: '/path/to/the/directory/called/src/alice.js' } },
   options: {},
   parent: null,
-  _filename: '/path/to/the/directory/called/src' }
+  _sourcePath: '/path/to/the/directory/called/src' }
 ```
 
 Okay, so far so good. 
@@ -119,7 +119,7 @@ var alice = app.nodes['alice.js'];
 console.log(1, alice.value);
 setTimeout(function () {
   console.log(2, alice.value)
-  fs.writeFileSync(alice._filename, alice.source);
+  fs.writeFileSync(alice._sourcePath, alice.source);
   setTimeout(function () {
     console.log(3, alice.value)
   }, 1000);

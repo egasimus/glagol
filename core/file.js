@@ -129,11 +129,6 @@ File.prototype.makeContext = function () {
     ctx.__ = tree.__;
   }
 
-  if (this._filename) {
-    ctx.__filename = this._filename;
-    ctx.__dirname  = path.dirname(this._filename);
-  }
-
   return vm.createContext(ctx);
 }
 

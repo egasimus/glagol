@@ -121,6 +121,7 @@ function evaluate () {
 
     if (context.error) throw context.error;
 
+    this._cache.evaluated = true;
     if (context.hasOwnProperty('exports')) {
       return this._cache.value = context.exports;
     } else {

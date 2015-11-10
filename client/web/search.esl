@@ -14,7 +14,7 @@
       (= last-query q)
       (if (== q "")
         (result empty-search)
-        (= throttle (set-timeout do-search 100)))))
+        (= throttle (set-timeout do-search 400)))))
 
     (function result (data) (./events/emit "search-results" data))
 

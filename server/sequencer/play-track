@@ -1,4 +1,0 @@
-(fn play-track [t index]
-  (let [track (aget ./tracks t)]
-    (if (aget track.seq index)
-      (track.chain.play))))

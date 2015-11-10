@@ -1,4 +1,0 @@
-(let [screen (./bless/Screen {})]
-  (screen.on :keypress ./keypress)
-  ;(screen.enable-keys)
-  screen)

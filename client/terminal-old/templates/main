@@ -1,6 +1,0 @@
-(fn template-main [state]
-  [ :main {}
-        [ :prompt        {} ]
-    (-> [ :searchResults {} ]
-          (.concat (state.results.map (fn [data]
-            [ :searchResult {} data ])))) ])

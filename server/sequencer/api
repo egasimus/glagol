@@ -1,6 +1,0 @@
-{ :tracks
-    (fn [] (JSON.stringify ./tracks))
-  :add
-    (fn [n t opts]
-      (./tracks/push
-        (merge { :name n :type t :seq [0 0 0 0 0 0 0 0] } opts))) }

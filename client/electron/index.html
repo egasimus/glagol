@@ -1,8 +1,0 @@
-<body>Loading...<script>
-var glagol = require('glagol')
-  , tree = glagol.tree
-  , root = tree.makeNotionDirectory(__dirname + '/../web')
-  , main = tree.descend(root, 'main')
-  , val = main.value;
-if (typeof val === 'function') val(document);
-</script>

@@ -1,3 +1,0 @@
-((require "q-connection") (WebSocket. "ws://localhost:2097/jack") {
-  :emit (fn [evt arg] (.emit @events evt arg))
-})

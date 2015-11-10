@@ -1,2 +1,0 @@
-(fn [sampler]
-  (.done (.invoke @api-client "play" sampler.port)))

@@ -1,6 +1,0 @@
-(fn keyboard [cb]
-  (let [cb2 (fn [k c] (if k (cb k c)))]
-    (process.stdin.on "keypress" cb2)
-    (process.stdin.set-raw-mode true)
-    (process.stdin.resume)
-    { :undo (fn [] (process.stdin.remove-listener "keypress" cb2))}))

@@ -1,1 +1,0 @@
-(fn [] (../bless/Box { :bottom 0 :height 1 :left 0 :right 0 }))

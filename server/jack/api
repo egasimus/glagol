@@ -1,9 +1,0 @@
-(let [jack (require "etude-jack")]
-  { :start (fn []
-      (-> (jack.init)
-        (.progress (fn [msg] (log.as :jack-init msg)))
-        (.done)))
-
-    :started jack.after-session-start
-
-    :spawn jack.spawn })

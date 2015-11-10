@@ -1,3 +1,0 @@
-(fn template-sidebar [state]
-  [ :sidebar {} ])
-

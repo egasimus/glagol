@@ -1,5 +1,4 @@
 var path = require('path')
-  , fs   = require('fs')
   , vm   = require('vm');
 
 var File = module.exports = function File () {
@@ -20,7 +19,7 @@ var File = module.exports = function File () {
   // enforce usage of `new` keyword even if omitted
   if (!(this instanceof File)) return new File(name, options);
 
-  // define basic properties
+  // basic properties
   this.name    = name;
   this.options = options;
   this.parent  = options.parent || null;
@@ -29,14 +28,14 @@ var File = module.exports = function File () {
     require('../runtimes/index.js')[path.extname(this.name)] ||
     null;
 
-  // define "smart" properties which comprise the core of the live updating
-  // magic: the file's contents are loaded, processed and updated on demand
+  // stores actual values of source, compiled and value properties
   this._cache =
     { source:    options.source
     , compiled:  undefined
     , evaluated: false
     , value:     undefined };
 
+  // magic properties
   Object.defineProperties(this,
     { source:
       { configurable: true
@@ -50,16 +49,28 @@ var File = module.exports = function File () {
     , value:
       { configurable: true
       , enumerable:   true
-      , get: evaluate.bind(this) }});
+      , get: evaluate.bind(this) }
+    , path:
+      { configurable: true
+      , enumerable:   true
+      , get: getPath.bind(this) }
+    , _glagol:
+      { configurable: false
+      , enumerable:   false
+      , value:
+        { version: require('../package.json').version
+        , type:    "File" } } });
 
-  // hidden metadata for duck typing when instanceof fails
-  Object.defineProperty(this, "_glagol",
-    { configurable: false
-    , enumerable:   false
-    , value:
-      { version: require('../package.json').version
-      , type:    "File" } })
+};
 
+function getPath () {
+  if (this.parent) {
+    return this.parent.path +
+      (this.parent.parent ? '/' : '') +
+      this.name;
+  } else {
+    return this.name;
+  }
 }
 
 function getSource () {

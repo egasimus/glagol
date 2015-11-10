@@ -26,7 +26,7 @@ function makeContext () {
     , clearTimeout:  clearTimeout
     , setInterval:   setInterval
     , clearInterval: clearInterval
-    , require:       require('require-like')(this._filename) };
+    , require:       require('require-like')(this._filename || this.path) };
 
   return context;
 

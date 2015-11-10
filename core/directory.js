@@ -20,18 +20,31 @@ var Directory = module.exports = function Directory () {
   this.parent  = options.parent || null;
 
   // hidden metadata for duck typing when instanceof fails
-  Object.defineProperty(this, "_glagol",
-    { configurable: false
-    , enumerable:   false
-    , value: { version: require('../package.json').version
-             , type:    "Directory" } })
+  Object.defineProperties(this,
+    { path:
+      { configurable: false
+      , enumerable:   false
+      , get: getPath.bind(this) }
+    , _glagol:
+      { configurable: false
+      , enumerable:   false
+      , value: { version: require('../package.json').version
+               , type:    "Directory" } } });
 
 }
 
+function getPath () {
+  if (this.parent) {
+    return this.parent.path +
+      (this.parent.parent ? '/' : '') +
+      this.name;
+  } else {
+    return '/';
+  }
+}
+
 Directory.prototype.tree = function () {
-
   return require('./tree.js')(this);
-
 }
 
 Directory.prototype.descend = function (relPath) {

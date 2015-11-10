@@ -1,16 +1,17 @@
-var glagol = require('glagol');
+var File      = require('glagol').File
+  , Directory = require('glagol').Directory;
 
 module.exports = function thaw (ice, parent) {
 
-  if (parent && !(glagol.Directory.is(parent)))
+  if (parent && !(Directory.is(parent)))
     throw ERR_WRONG_PARENT(parent, ice)
 
   if (ice.nodes) {
-    var node = glagol.Directory(ice.name)
+    var node = Directory(ice.name)
     Object.keys(ice.nodes).map(install);
     function install (i) { node.nodes[i] = thaw(ice.nodes[i], node); }
   } else if (ice.code) {
-    var node = glagol.File(ice.name, ice.code);
+    var node = File(ice.name, ice.code);
   } else {
     throw ERR_FOREIGN_BODY(ice);
   }

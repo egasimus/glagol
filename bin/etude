@@ -7,6 +7,4 @@ var app = require('glagol')(
       [ require('eslisp-camelify')
       , require('eslisp-propertify') ] }});
 
-console.log(app);
-
 app.tree()['main'](app);

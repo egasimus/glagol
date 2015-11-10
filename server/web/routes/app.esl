@@ -1,85 +1,100 @@
-(lambda (req res)
-
-  ; not the handler you're looking for?
-  (if (!== req.url "/") (return false))
+((lambda ()
 
   (var path (require "path"))
 
-  (try
-    ; create a server-side glagol instance for the client code
-    (var glagol (require "glagol"))
-    (var client-path (path.resolve __dirname "../../../client/web"))
-    (var client-opts
-      (object "eslisp" (object "transform" (array
-        (require "eslisp-camelify")
-        (require "eslisp-propertify")))))
-    (var client (glagol client-path client-opts))
-    (catch e (return (err e "Error initializing client:"))))
+  (var client null)
+  (var common null)
+  (var client-path (path.resolve __dirname "../../../client/web"))
+  (var common-path (path.resolve __dirname "../../../common"))
+  (var glagol-opts
+    (object "eslisp" (object "transform" (array
+      (require "eslisp-camelify")
+      (require "eslisp-propertify")))))
 
-  (try
-    ; bundle the client code into a snapshot and get dependency map
-    (var app (object
-      "ice"  (../cryo/freeze client)
-      "deps" (../cryo/deps client)))
-    (catch e (return (err e "Error creating initial client snapshot:"))))
+  (function init-client ()
+    (try
+      ; create a server-side glagol instance for the client code
+      (= client ((require "glagol") client-path glagol-opts))
+      (= common ((require "glagol") common-path glagol-opts))
+      (= (get client.nodes.lib.nodes "observ.esl")
+        (get common.nodes.lib.nodes "observ.esl"))
+      (= (get client.nodes "models") (get common.nodes "models"))
+      (catch e (return (err e "Error initializing client:")))))
 
-  (try
-    ; instantiate browserify and add common glagol dependencies
-    (var br ((require "browserify")))
-    (br.require "glagol" (object "expose" "glagol"))
-    (shim br "../client/runtimes.js" "../runtimes/index.js")
-    (shim br "../client/thaw.js"     "__glagol_thaw")
+  (return (lambda (req res)
 
-    ; add client-specific dependencies, dependency map, and client source
-    ((. (Object.keys app.deps.ids) map) (lambda (module)
-      (br.require module (object "expose" (get app.deps.ids module)))))
+    ; not the handler you're looking for?
+    (if (!== req.url "/") (return false))
 
-    ; roll it all into a big bundle
-    (var embed (. ((. (require "url") parse) req.url true) query embed))
-    (var ctype (+ "text/" (?: embed "javascript" "html") "; charset=utf-8"))
-    (br.bundle (lambda (err data)
-      (if err (throw err))
-      (= data (String data))
-      ((require "send-data") req res
-        (object "body" ((?: embed just wrap-html) (wrap-js data))
-                "headers" (object "Content-Type" ctype)))))
+    (if (=== null client) (init-client))
 
-    (catch e (console.error "Error bundling client:\n" e.stack)))
+    (try
+      ; bundle the client code into a snapshot and get dependency map
+      (var app (object
+        "ice"  (../cryo/freeze client)
+        "deps" (../cryo/deps client)))
+      (catch e (return (err e "Error creating initial client snapshot:"))))
 
-  ; that was it, look no further
-  (return true)
+    (try
+      ; instantiate browserify and add common glagol dependencies
+      (var br ((require "browserify")))
+      (br.require "glagol" (object "expose" "glagol"))
+      (shim br "../client/runtimes.js" "../runtimes/index.js")
+      (shim br "../client/thaw.js"     "__glagol_thaw")
 
-  ; helper functions
+      ; add client-specific dependencies, dependency map, and client source
+      ((. (Object.keys app.deps.ids) map) (lambda (module)
+        (br.require module (object "expose" (get app.deps.ids module)))))
 
-  (function err (e msg)
-    (console.error msg)
-    (console.log e.stack)
-    (if (&& req req.headers req.headers.accept req.headers.accept.index-of
-            (< -1 (req.headers.accept.index-of "text/html")))
-      ((require "send-data/html") req res
-        (object "statusCode" 500 "body" (err-to-html e)))
-      ((require "send-data/error") req res (object "body" e))))
+      ; roll it all into a big bundle
+      (var embed (. ((. (require "url") parse) req.url true) query embed))
+      (var ctype (+ "text/" (?: embed "javascript" "html") "; charset=utf-8"))
+      (br.bundle (lambda (err data)
+        (if err (throw err))
+        (= data (String data))
+        ((require "send-data") req res
+          (object "body" ((?: embed just wrap-html) (wrap-js data))
+                  "headers" (object "Content-Type" ctype)))))
 
-  (function err-to-html (e) (return (+
-    "<head><meta charset=\"utf-8\"></head>"
-    "<body><pre><strong>" e.message "</strong>\n\n" e.stack "</pre></body>")))
+      (catch e (console.error "Error bundling client:\n" e.stack)))
 
-  (function just (x)
-    (return x))
+    ; that was it, look no further
+    (return true)
 
-  (function wrap-html (x) (return (+
-    "<head><meta charset=\"utf-8\"></head><body><script>" x "</script>")))
+    ; helper functions
 
-  (function wrap-js (x) (return (+
-    ";(function(deps, ice){"
-    "var " x ";"
-    "require(\"glagol\").require.install(deps, require);"
-    "var app = require(\"__glagol_thaw\")(ice);"
-    "app.tree().main(app)"
-    "})(" (JSON.stringify app.deps.deps) "," (JSON.stringify app.ice) ")")))
+    (function err (e msg)
+      (console.error msg)
+      (console.log e.stack)
+      (if (&& req req.headers req.headers.accept req.headers.accept.index-of
+              (< -1 (req.headers.accept.index-of "text/html")))
+        ((require "send-data/html") req res
+          (object "statusCode" 500 "body" (err-to-html e)))
+        ((require "send-data/error") req res (object "body" e))))
 
-  (function rel (p)
-    (return (path.join __dirname p)))
+    (function err-to-html (e) (return (+
+      "<head><meta charset=\"utf-8\"></head>"
+      "<body><pre><strong>" e.message "</strong>\n\n" e.stack "</pre></body>")))
 
-  (function shim (b p q)
-    (b.require (rel p) (object "expose" q))))
+    (function just (x)
+      (return x))
+
+    (function wrap-html (x) (return (+
+      "<head><meta charset=\"utf-8\"></head><body><script>" x "</script>")))
+
+    (function wrap-js (x) (return (+
+      ";(function(deps, ice){"
+      "var " x ";"
+      "require(\"glagol\").require.install(deps, require);"
+      "var app = require(\"__glagol_thaw\")(ice);"
+      "app.tree().main(app)"
+      "})(" (JSON.stringify app.deps.deps) "," (JSON.stringify app.ice) ")")))
+
+    (function rel (p)
+      (return (path.join __dirname p)))
+
+    (function shim (b p q)
+      (b.require (rel p) (object "expose" q)))))
+
+))
+

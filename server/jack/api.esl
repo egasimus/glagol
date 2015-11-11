@@ -2,6 +2,9 @@
 
   (return (object
     "status" (lambda ()
-      (return "churnin"))))
+      (return "churnin"))
+      
+    "init" (lambda ()
+      (./init))))
 
 )

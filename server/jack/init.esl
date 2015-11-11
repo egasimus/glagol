@@ -1,0 +1,36 @@
+(lambda init ()
+  (console.log "initializing jack...")
+  (var dbus         (. (require "dbus-native") session-bus))
+  (var dbus-name    "org.jackaudio.service")
+  (var dbus-path    "/org/jackaudio/Controller")
+  (var dbus-service (dbus.get-service dbus-name))
+
+  (var control  null)
+  (var patchbay null)
+  (var started  false)
+
+  (dbus-service.get-interface dbus-path "org.jackaudio.JackControl" got-control)
+
+  (function got-control (err c)
+    (if err (throw err))
+    (console.log "connected to jack control")
+    (= control c)
+    (control.StartServer
+      got-server))
+
+  (function got-server (err s)
+    (if err (throw err))
+    (console.log "jack server started")
+    (dbus-service.get-interface dbus-path "org.jackaudio.JackPatchbay"
+      got-patchbay))
+
+  (function got-patchbay (err p)
+    (if err (throw err))
+    (console.log "connected to jack patchbay")
+    (= patchbay p)
+    (./update all-done))
+
+  (function all-done ()
+    (console.log "initialization complete")
+    (./bind)
+    (= started true)))

@@ -5,7 +5,11 @@
   (emitter.once "init" (lambda ()
 
     ((. (./api/call "invoke" "jack/status") then)
-      (lambda (status) (console.log "JACK status" status))
+      (lambda (status)
+        (console.log "JACK status" status)
+        ((. (./api/call "invoke" "jack/init") then)
+          (lambda () (console.log "initialized JACK"))
+          (err "error initializing JACK")))
       (err "error retrieving JACK status"))
 
     ((. (./api/call "invoke" "sequencer/track-list") then)

@@ -1,0 +1,7 @@
+(lambda update (cb)
+  ((. (./state/patchbay) GetGraph) "0"
+    (lambda (err graph clients connections)
+      (if err (throw err))
+      (./state/clients/set     clients)
+      (./state/connections/set connections)
+      (if cb (cb)))))

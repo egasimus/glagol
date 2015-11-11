@@ -1,0 +1,8 @@
+(lambda ()
+
+  (return
+    "list" (lambda ())
+    "add"  (lambda ())
+    "play" (lambda (id)))
+
+)

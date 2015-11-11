@@ -1,0 +1,86 @@
+(lambda init-transport (tempo meter)
+
+  (var jack-osc (jack.spawn "jack-osc" jack-osc "-p" 57130))
+  (var klick    (jack.spawn "klick" klick "-T" meter tempo))
+
+  (var osc-send (osc.bind-to 57130))
+  (var bitmask  (Long.fromString "FFFFFFF" false 16))
+
+  (var state (object
+    "rolling"     null
+    "bpm"         null
+    "meterTop"    null
+    "meterBottom" null
+    "fps"         null
+    "frames"      null
+    "seconds"     null
+    "beats"       null
+    "bars"        null))
+
+  (function update-state (fps bpm meter-t meter-b rolling)
+    (= state.fps          fps)
+    (= state.bpm          bpm)
+    (= state.meter-top    meter-t)
+    (= state.meter-bottom meter-b)
+    (= state.rolling      rolling))
+
+  (function update-pos (frame)
+    (= state.frames  frame)
+    (= state.seconds (frame->second state.fps frame))
+    (= state.beats   (secont->beat state.bpm state.seconds))
+    (= state.bards   (beat->bar state.meter-top state.beats)))
+
+  (var events (event2.EventEmitter2. (object "maxListeners" 64 )))
+
+  (function on-status (fps ppm ppc pt rolling)
+    (update-state fps ppm ppc pt rolling))
+
+  (function on-pulse (ntp utc frm p-ntp p-utc p-frm pulse)
+    (events.emit "pulse"))
+
+  (function on-tick (ntp utc frm frame pulse)
+    (var h frame.high)
+    (var l frame.low)
+    (= frame.high l)
+    (= frame.low  h)
+    (update-pos frame)
+    (events.emit "tick"))
+
+  (function on-drift (ntp utc frm ntp-dif utc-dif))
+
+  (function on-transport (ntp utc frm fps ppm ppc pt rolling)
+    (log (?: rolling "Playing" "Stopped"))
+    (update-state fps ppm ppc pt rolling))
+
+  (function after (after-beats cb)
+    (var cue (+ state.beats after-beats))
+    (expect events "pulse" (lambda () (= cue state.beats)) cb))
+
+  ; as soon as a client with name starting with jack-osc comes online
+  ; connect to it via osc and ask it to send jack transport updates
+  (expect jack.state.events "client-online"
+    (lambda (c-name) (= 0 (c-name.index-of "jack-osc")))
+    (lambda () (osc-send "/receive" bitmask)
+               (osc-send "/status")
+               (osc-send "/current")))
+
+  (osc.on "message" (fn (lambda) (cond
+    (= msg.address "/status.reply")  (on-status.apply    nil msg.args)
+    (= msg.address "/pulse")         (on-pulse.apply     nil msg.args)
+    (= msg.address "/tick")          (on-tick.apply      nil msg.args)
+    (= msg.address "/drift")         (on-drift.apply     nil msg.args)
+    (= msg.address "/transport")     (on-transport.apply nil msg.args)
+    :else nil)))
+
+  (return (object
+    "tempo" tempo
+    "meter" meter
+
+    "stop" (fn [] (osc-send "/stop"))
+    "play" (fn [] (osc-send "/start"))
+
+    "events" events
+    "state"  state
+    "after"  after
+
+    "each" each )))

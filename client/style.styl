@@ -82,21 +82,13 @@ body
       &:hover
         background #333
 
-shadowed()
-  box-shadow 0 3px 6px rgba(0,0,0,0.5);
+bg-faded()
+  background linear-gradient(to bottom,
+    rgba(255,255,255,0.1) 0%,
+    rgba(0,0,0,0.0) 3px,
+    rgba(0,0,0,0.3) 100%)
 
-red-button()
-  transition      box-shadow 0.4s
-  padding         6px 12px
-  color           rgba(0,0,0,0.8)
-  cursor          pointer
-  text-align      center
-  display         flex
-  flex-direction  column
-  justify-content space-between
-  background      linear-gradient(to bottom, orangered, red)
-  border-radius   2px
-  border-top      1px solid rgba(255,255,255,0.5)
+// SEQUENCER
 
 .sounds
   display flex
@@ -104,9 +96,9 @@ red-button()
   padding 12px
 
 .sound
+  bg-faded()
   padding 12px 12px
   line-height 24px
-  background linear-gradient(to bottom,rgba(0,0,0,0) 0%, rgba(0,0,0,0.2) 100%)
   display flex
   flex-direction row
 
@@ -132,22 +124,68 @@ red-button()
     &:hover
       opacity 0.5
 
-//////////////////////////////////////
+/// TOOLBAR
 
 .toolbar
-  width      100%
-  background #070707
-  padding    6px
-
-  display         flex
+  bg-faded()
+  padding 6px
+  display flex
   justify-content space-between
+  border-bottom 1px solid black
 
   .section
     display flex
+    border 1px solid black
 
-    .btn
-      cursor  pointer
-      padding 3px 6px
-      margin  0 3px
-      &:hover
-        background rgba(0,0,0,0.3)
+  .btn
+    font-weight bold
+    color #ccc
+    &:hover
+      color #fff
+    text-shadow 0 1px 0 black
+    cursor pointer
+
+    background #202020
+    border-top 1px solid rgba(255,255,255,0.1)
+    border-left 1px solid rgba(255,255,255,0.1)
+    border-right 1px solid #111
+    &:last-child
+      border-right none
+    display inline-block
+    padding 3px 8px
+
+//////////////////////////////////////
+
+//.toolbar
+  //width      100%
+  //background #070707
+  //padding    6px
+
+  //display         flex
+  //justify-content space-between
+
+  //.section
+    //display flex
+
+    //.btn
+      //cursor  pointer
+      //padding 3px 6px
+      //margin  0 3px
+      //&:hover
+        //background rgba(0,0,0,0.3)
+
+shadowed()
+  box-shadow 0 3px 6px rgba(0,0,0,0.5);
+
+red-button()
+  transition      box-shadow 0.4s
+  padding         6px 12px
+  color           rgba(0,0,0,0.8)
+  cursor          pointer
+  text-align      center
+  display         flex
+  flex-direction  column
+  justify-content space-between
+  background      linear-gradient(to bottom, orangered, red)
+  border-radius   2px
+  border-top      1px solid rgba(255,255,255,0.5)

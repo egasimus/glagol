@@ -1,0 +1,7 @@
+(lambda ()
+
+  (return (object
+    "status" (lambda ()
+      (return "churnin"))))
+
+)

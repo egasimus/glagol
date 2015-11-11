@@ -3,11 +3,18 @@
     (object "maxListeners" 64 "wildcard" true)))
 
   (emitter.once "init" (lambda ()
+
+    ((. (./api/call "invoke" "jack/status") then)
+      (lambda (status) (console.log "JACK status" status))
+      (err "error retrieving JACK status"))
+
     ((. (./api/call "invoke" "sequencer/track-list") then)
       (lambda (results) (results.map (lambda (data)
         (./state/tracks/push (./models/track data))
         (./api/call "invoke" "library/detail" data.path))))
-      (lambda (e) (console.error "error retrieving track list")))))
+      (err "error retrieving track list"))
+
+  ))
 
   (emitter.on "search" (lambda ()
     (./search (. (document.get-element-by-id "prompt") value))))
@@ -20,13 +27,15 @@
       (lambda (results)
         (./state/tracks/push (./models/track fullpath))
         (./api/call "invoke" "library/detail" fullpath))
-      (lambda (error)
-        (console.error "error getting details for" fullpath)))))
+      (err (+ "error getting details for " fullpath)))))
 
   (emitter.on "sequencer-click" (lambda (track-n step-n)
     (var track (./state/tracks/get track-n))
     (var value (- 127 (track.seq.get step-n)))
     (track.seq.put step-n value)
     (./api/call "invoke" "sequencer/step-set" track-n step-n value)))
+
+  (function err (msg) (return (lambda (e)
+    (console.error msg) (console.log e.stack))))
 
   (return emitter)))

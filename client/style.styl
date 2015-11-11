@@ -82,28 +82,22 @@ body
       &:hover
         background #333
 
-bg-faded()
-  background linear-gradient(to bottom,
-    rgba(255,255,255,0.1) 0%,
-    rgba(0,0,0,0.0) 3px,
-    rgba(0,0,0,0.3) 100%)
-
-// SEQUENCER
+/// SEQUENCER
 
 .sounds
-  display flex
-  flex-direction column
+  display table
+  width 100%
   padding 12px
 
 .sound
-  bg-faded()
   padding 12px 12px
   line-height 24px
-  display flex
-  flex-direction row
+  display table-row
 
-.sound-label
-  width: 32%
+.sound-label,
+.sound-body
+  display table-cell
+  vertical-align top
 
 .sequencer
   display flex
@@ -124,35 +118,45 @@ bg-faded()
     &:hover
       opacity 0.5
 
+.knob
+  width  30px
+  height 30px
+  border-radius 15px
+  border 2px dotted rgba(0,0,0,0.5)
+  box-shadow 0 3px 3px rgba(0,0,0,0.5)
+  background: linear-gradient(to bottom, #333 0%, #222 100%);
+
 /// TOOLBAR
 
 .toolbar
-  bg-faded()
   padding 6px
   display flex
   justify-content space-between
-  border-bottom 1px solid black
 
   .section
     display flex
     border 1px solid black
 
   .btn
+    display inline-block
+    padding 2px 8px
+
     font-weight bold
-    color #ccc
+    color rgba(255,255,255,0.9)
     &:hover
-      color #fff
+      color rgba(255,255,255,1)
     text-shadow 0 1px 0 black
     cursor pointer
 
     background #202020
+    &.green
+      background #009b2a
+
     border-top 1px solid rgba(255,255,255,0.1)
     border-left 1px solid rgba(255,255,255,0.1)
     border-right 1px solid #111
     &:last-child
       border-right none
-    display inline-block
-    padding 3px 8px
 
 //////////////////////////////////////
 

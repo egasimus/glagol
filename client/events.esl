@@ -7,6 +7,7 @@
     ((. (./api/call "invoke" "jack/status") then)
       (lambda (status)
         (console.log "JACK status" status)
+        (./state/jackStarted/set status)
         ((. (./api/call "invoke" "jack/init") then)
           (lambda () (console.log "initialized JACK"))
           (err "error initializing JACK")))
@@ -40,6 +41,8 @@
     (./api/call "invoke" "sequencer/step-set" track-n step-n value)))
 
   (function err (msg) (return (lambda (e)
-    (console.error msg) (console.log e.stack))))
+    (console.error msg)
+    (console.log e.message)
+    (console.log e.stack))))
 
   (return emitter)))

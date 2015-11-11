@@ -1,12 +1,4 @@
-((lambda ()
-
-  (var Var ./lib/observ/Var)
-  (var Arr ./lib/observ/Arr)
-  (var Obj ./lib/observ/Obj)
-
-  (return
-    (Obj
-      "results" (Arr)
-      "tracks"  (Arr)))
-
-))
+(./lib/observ/Obj
+  "results"     (./lib/observ/Arr)
+  "tracks"      (./lib/observ/Arr)
+  "jackStarted" (./lib/observ/Var false))

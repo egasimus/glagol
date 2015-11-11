@@ -1,10 +1,18 @@
 (lambda ()
 
-  (return (object
-    "status" (lambda ()
-      (return "churnin"))
-      
-    "init" (lambda ()
-      (./init))))
+  (var Q (require "q"))
 
-)
+  (return (object
+
+    "init" ./init
+
+    "status" (lambda () (return (Q.Promise
+      (lambda (resolve reject)
+        (var state (./state))
+        (if state.control
+          (state.control.IsStarted (lambda (err s)
+            (if err (reject err))
+            (resolve (?: s "started" "stopped"))))
+          (resolve "uninitialized"))))))
+
+  )))

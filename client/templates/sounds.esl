@@ -9,4 +9,5 @@
       (./h ".sound" (array
         (./h ".sound-label"
           ((. (require "path") basename) track.label))
-        (./h ".sequencer" steps)))))))))
+        (./h ".sound-body"
+          (./h ".sequencer" steps))))))))))

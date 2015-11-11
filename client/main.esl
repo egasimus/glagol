@@ -14,4 +14,7 @@
   ; preprocess and insert css
   (./lib/vdom/insert-css ./style)
 
+  ; load data from server
+  (./events/emit "init")
+
   (return mainloop))

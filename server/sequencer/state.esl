@@ -1,2 +1,2 @@
-(object
-  "tracks" (array))
+(../lib/observ/Obj
+  "tracks" (../lib/observ/Arr))

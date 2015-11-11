@@ -1,5 +1,18 @@
-(lambda (fullpath) (return
-  (../lib/observ/Obj
-    "label" ((. (require "path") basename) fullpath)
-    "path"  fullpath
-    "seq"   (../lib/observ/Arr 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))))
+(lambda track (data)
+
+  (var Var ../lib/observ/Var)
+  (var Arr ../lib/observ/Arr)
+  (var Obj ../lib/observ/Obj)
+
+  (if (=== "string" (typeof data))
+    (return (track (object
+      "label" ((. (require "path") basename) data)
+      "path"  data
+      "seq"   (array 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))))
+
+  (console.log "creating track from" data)
+
+  (return (Obj
+    "label" (Var data.label)
+    "path"  (Var data.path)
+    "seq"   (Arr.apply Arr data.seq))))

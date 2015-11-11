@@ -4,7 +4,7 @@
 
   (var client null)
   (var common null)
-  (var client-path (path.resolve __dirname "../../../client/web"))
+  (var client-path (path.resolve __dirname "../../../client/"))
   (var common-path (path.resolve __dirname "../../../common"))
   (var glagol-opts
     (object "eslisp" (object "transform" (array

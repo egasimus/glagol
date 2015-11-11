@@ -2,6 +2,13 @@
   (var emitter (new (. (require "eventemitter2") EventEmitter2)
     (object "maxListeners" 64 "wildcard" true)))
 
+  (emitter.once "init" (lambda ()
+    ((. (./api/call "invoke" "sequencer/track-list") then)
+      (lambda (results) (results.map (lambda (data)
+        (./state/tracks/push (./models/track data))
+        (./api/call "invoke" "library/detail" data.path))))
+      (lambda (e) (console.error "error retrieving track list")))))
+
   (emitter.on "search" (lambda ()
     (./search (. (document.get-element-by-id "prompt") value))))
 
@@ -20,6 +27,6 @@
     (var track (./state/tracks/get track-n))
     (var value (- 127 (track.seq.get step-n)))
     (track.seq.put step-n value)
-    (./api/call "invoke" "sequencer/step-set" track-n step-n)))
+    (./api/call "invoke" "sequencer/step-set" track-n step-n value)))
 
   (return emitter)))

@@ -1,10 +1,20 @@
 #!/usr/bin/env node
 
-var app = require('glagol')(
-  require('path').resolve(__dirname, '../server'),
-  { eslisp:
-    { transform:
-      [ require('eslisp-camelify')
-      , require('eslisp-propertify') ] }});
+var resolve =
+      require('path').resolve
+  , glagol =
+      require('glagol')
+  , options =
+      { eslisp:
+        { transform:
+          [ require('eslisp-camelify')
+          , require('eslisp-propertify') ] } }
+  , app =
+      glagol(resolve(__dirname, '../server'), options)
+  , common =
+      glagol(resolve(__dirname, '../common'), options)
 
-app.tree()['main'](app);
+app.nodes.lib    = common.nodes.lib;
+app.nodes.models = common.nodes.models;
+
+app.tree().main(app);

@@ -7,7 +7,12 @@
         (object "onclick" (./emit "sequencer-click" i j)))))
     (return
       (./h ".sound" (array
-        (./h ".sound-label"
-          ((. (require "path") basename) track.label))
+        (./h ".sound-header" (array
+          (./h ".sound-label" track.label)
+          (./h ".sound-controls" (array
+            (./h ".btngroup" (array
+              (./h ".btn" "M")
+              (./h ".btn" "S")))
+            (./h ".knob")))))
         (./h ".sound-body"
           (./h ".sequencer" steps))))))))))

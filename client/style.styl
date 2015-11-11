@@ -34,6 +34,53 @@ body
   &.row
     flex-direction row
 
+/// BASIC CONTROLS
+
+.knob
+  width  24px
+  height 24px
+  border-radius 12px
+  box-shadow 0 3px 3px rgba(0,0,0,0.5)
+  background linear-gradient(to bottom, #333 0%, #222 100%);
+  border-top    1px solid rgba(255,255,255,0.2)
+  border-bottom 1px solid black
+  border-left   none
+  border-right  none
+  position relative
+  &:after
+    content    ''
+    position   absolute
+    top        -1px
+    bottom     70%
+    left       50%
+    width      1px
+    background rgba(255,255,255,0.8)
+
+.btngroup
+  display flex
+  border 1px solid black
+
+.btn
+  display inline-block
+  padding 2px 8px
+
+  font-weight bold
+  color rgba(255,255,255,0.9)
+  &:hover
+    color rgba(255,255,255,1)
+  text-shadow 0 1px 0 black
+  cursor pointer
+
+  background #202020
+  &.green
+    background #009b2a
+
+  border-top 1px solid rgba(255,255,255,0.1)
+  border-left 1px solid rgba(255,255,255,0.1)
+  border-right 1px solid #111
+  &:last-child
+    border-right none
+
 .prompt
   position fixed
   bottom   0
@@ -87,17 +134,38 @@ body
 .sounds
   display table
   width 100%
-  padding 12px
+  padding 3px
 
 .sound
   padding 12px 12px
   line-height 24px
   display table-row
 
-.sound-label,
+.sound-header,
 .sound-body
   display table-cell
   vertical-align top
+
+.sound-label
+  background #222
+  padding 0 6px
+  color #ccc
+  font-weight bold
+  text-shadow 0 1px 0 black
+  border-left 3px solid orangered
+
+.sound-controls
+  display flex
+  flex-direction row
+  align-items center
+  margin-bottom 6px
+  margin-left 3px
+  & .btn
+    width 24px
+    padding 0
+    text-align center
+  & .knob
+    margin-left 6px
 
 .sequencer
   display flex
@@ -118,45 +186,12 @@ body
     &:hover
       opacity 0.5
 
-.knob
-  width  30px
-  height 30px
-  border-radius 15px
-  border 2px dotted rgba(0,0,0,0.5)
-  box-shadow 0 3px 3px rgba(0,0,0,0.5)
-  background: linear-gradient(to bottom, #333 0%, #222 100%);
-
 /// TOOLBAR
 
 .toolbar
   padding 6px
   display flex
   justify-content space-between
-
-  .section
-    display flex
-    border 1px solid black
-
-  .btn
-    display inline-block
-    padding 2px 8px
-
-    font-weight bold
-    color rgba(255,255,255,0.9)
-    &:hover
-      color rgba(255,255,255,1)
-    text-shadow 0 1px 0 black
-    cursor pointer
-
-    background #202020
-    &.green
-      background #009b2a
-
-    border-top 1px solid rgba(255,255,255,0.1)
-    border-left 1px solid rgba(255,255,255,0.1)
-    border-right 1px solid #111
-    &:last-child
-      border-right none
 
 //////////////////////////////////////
 

@@ -2,13 +2,13 @@
 
   (./h ".toolbar" (array
 
-    (./h ".section" (array
+    (./h ".btngroup" (array
       (./h (+ ".btn.jack" (?: s.jack-started ".green" ""))
         "JACK")
       (./h ".btn.play"
         "▶")))
 
-    (./h ".section" (array
+    (./h ".btngroup" (array
       (./h ".btn.bpm"
         "140")
       (./h ".btn.meter"
@@ -16,11 +16,11 @@
       (./h ".btn.quant"
         "1 bar")))))))
 
-;      (./h ".section" (array
+;      (./h ".btngroup" (array
 ;        (./h ".btn.osc"   "OSC")
 ;        (./h ".btn.midi"  "MIDI")
 ;        (./h ".btn.kbd"   "KBD")))
-;      (./h ".section" (array
+;      (./h ".btngroup" (array
 ;        (./h ".btn.cpu"   "CPU")
 ;        (./h ".btn.mem"   "RAM")
 ;        (./h ".btn.audio" "Audio")))))))

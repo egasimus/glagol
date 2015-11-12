@@ -1,4 +1,7 @@
 (./lib/observ/Obj
-  "results"     (./lib/observ/Arr)
-  "tracks"      (./lib/observ/Arr)
-  "jackStarted" (./lib/observ/Var false))
+  "server"    (./lib/observ/Var false)
+  "results"   (./lib/observ/Arr)
+  "tracks"    (./lib/observ/Arr)
+  "jack"      (./lib/observ/Obj
+    "dbus"    (./lib/observ/Var false)
+    "started" (./lib/observ/Var false)))

@@ -2,9 +2,11 @@
   box-sizing border-box
   position   relative
 
-body
+body, input, button
   font-family Open Sans
   font-size 12px
+
+body
   //background url('http://distortedarts.com/wp-content/uploads/2013/03/the-city-rises-1911.jpg')
   background #151617
   background-size cover
@@ -62,22 +64,29 @@ body
 
 .btn
   display inline-block
-  padding 2px 8px
+  padding 2px 5px
 
   font-weight bold
   color rgba(255,255,255,0.9)
   &:hover
     color rgba(255,255,255,1)
+  &:disabled
+    color rgba(180,180,180,0.9)
+    &:hover
+      color rgba(180,180,180,0.9)
   text-shadow 0 1px 0 black
   cursor pointer
 
   background #202020
   &.green
     background #009b2a
+  &:disabled
+    background #303030
 
   border-top 1px solid rgba(255,255,255,0.1)
   border-left 1px solid rgba(255,255,255,0.1)
   border-right 1px solid #111
+  border-bottom none
   &:last-child
     border-right none
 

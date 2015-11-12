@@ -1,20 +1,29 @@
-(lambda (s) (return
+(lambda (s)
 
-  (./h ".toolbar" (array
+  (function group () (return
+    (./h ".btngroup" (Array.prototype.slice.call arguments))))
 
-    (./h ".btngroup" (array
-      (./h (+ ".btn.jack" (?: s.jack-started ".green" ""))
-        "JACK")
-      (./h ".btn.play"
-        "▶")))
+  (function btn (name text highlighted disabled) (return
+    (./h (+ "button.btn." name (?: (&& highlighted (! disabled)) ".green" ""))
+      (?: disabled (object "disabled" "disabled") (object))
+      text)))
 
-    (./h ".btngroup" (array
-      (./h ".btn.bpm"
-        "140")
-      (./h ".btn.meter"
-        "4/4")
-      (./h ".btn.quant"
-        "1 bar")))))))
+  (return (./h ".toolbar" (array
+
+    (group
+      (btn "bpm"   "140")
+      (btn "meter" "4/4")
+      (btn "quant" "1 bar"))
+
+    (group
+      (btn "play"   "PLAY")
+      (btn "stop"   "STOP")
+      (btn "record" "REC"))
+
+    (group
+      (btn "server" "Server" s.server)
+      (btn "dbus"   "DBUS"   s.jack.dbus    (! s.server))
+      (btn "jack"   "JACK"   s.jack.started (! s.server)))))))
 
 ;      (./h ".btngroup" (array
 ;        (./h ".btn.osc"   "OSC")

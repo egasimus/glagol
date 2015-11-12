@@ -4,10 +4,15 @@
 
   (emitter.once "init" (lambda ()
 
+    ((. (./api/call "invoke" "jack/init") then)
+      (lambda ()
+        (./state/jack/dbus/set true))
+      (err "error initialzing DBUS connection to JACK"))
+
     ((. (./api/call "invoke" "jack/status") then)
       (lambda (status)
         (console.log "JACK status" status)
-        (./state/jackStarted/set status)
+        (./state/jack/started/set status)
         ((. (./api/call "invoke" "jack/init") then)
           (lambda () (console.log "initialized JACK"))
           (err "error initializing JACK")))

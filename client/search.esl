@@ -16,7 +16,7 @@
         (result empty-search)
         (= throttle (set-timeout do-search 400)))))
 
-    (function result (data) (./events/emit "search-results" data))
+    (function result (data) (./events/emit "search.results" data))
 
     (function do-search ()
       (result (object "query" q "results" (array)))

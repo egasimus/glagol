@@ -3,5 +3,5 @@
     (./h "ul.results"
       (s.results.map (lambda (result) (return
         (./h "li.result"
-          (object "onclick" (./emit "add-track" result))
+          (object "onclick" (./emit "track.add" result))
           result))))) null)))

@@ -2,4 +2,4 @@
   (./h "input.prompt#prompt"
     (object
       "placeholder" "search ( ͡° ͜ʖ ͡°)"
-      "oninput"     (./emit "search")))))
+      "oninput"     (./emit "search.query")))))

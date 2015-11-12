@@ -4,7 +4,7 @@
     (for (var j 0) (< j track.seq.length) (++ j)
       (steps.push (./h
         (+ ".sequencer-step" (?: (> (get track.seq j) 0) ".active" ""))
-        (object "onclick" (./emit "sequencer-click" i j)))))
+        (object "onclick" (./emit "track.sequencer.click" i j)))))
     (return
       (./h ".sound" (array
         (./h ".sound-header" (array

@@ -37,20 +37,20 @@
 
   ))
 
-  (emitter.on "search" (lambda ()
+  (emitter.on "search.query" (lambda ()
     (./search (. (document.get-element-by-id "prompt") value))))
 
-  (emitter.on "search-results" (lambda (results)
+  (emitter.on "search.results" (lambda (results)
     (./state/results/set results.results)))
 
-  (emitter.on "add-track" (lambda (fullpath)
+  (emitter.on "track.add" (lambda (fullpath)
     ((. (./api/call "invoke" "sequencer/track-add" fullpath) then)
       (lambda (results)
         (./state/tracks/push (./models/track fullpath))
         (./api/call "invoke" "library/detail" fullpath))
       (err (+ "error getting details for " fullpath)))))
 
-  (emitter.on "sequencer-click" (lambda (track-n step-n)
+  (emitter.on "track.sequencer.click" (lambda (track-n step-n)
     (var track (./state/tracks/get track-n))
     (var value (- 127 (track.seq.get step-n)))
     (track.seq.put step-n value)

@@ -5,6 +5,7 @@
     (./state/tracks/push (../models/track fullpath)))
 
   "track-list" (lambda ()
+    (console.log "trl")
     (return (./state/tracks)))
 
   "step-set" (lambda (track-n step-n value)

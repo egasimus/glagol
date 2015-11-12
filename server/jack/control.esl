@@ -1,0 +1,5 @@
+((. (require "q") Promise) (lambda (resolve reject)
+  (./dbus "org.jackaudio.JackControl" (lambda (err c)
+    (if err (reject err))
+    (console.log "connected to jack control")
+    (resolve c)))))

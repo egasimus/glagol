@@ -1,0 +1,5 @@
+((. (require "q") Promise) (lambda (resolve reject)
+  (./dbus "org.jackaudio.JackPatchbay" (lambda (err p)
+    (if err (throw err))
+    (console.log "connected to jack patchbay")
+    (resolve p)))))

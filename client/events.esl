@@ -1,22 +1,33 @@
 ((lambda ()
+
+  (function err (msg) (return (lambda (e)
+    (console.error msg)
+    (console.log e.message)
+    (console.log e.stack))))
+
   (var emitter (new (. (require "eventemitter2") EventEmitter2)
     (object "maxListeners" 64 "wildcard" true)))
 
   (emitter.once "init" (lambda ()
 
-    ((. (./api/call "invoke" "jack/init") then)
-      (lambda ()
-        (./state/jack/dbus/set true))
-      (err "error initialzing DBUS connection to JACK"))
+    (./api/call "invoke" "jack/control/IsStarted" (lambda (e status)
+      (if e (err e))
+      (./state/jack/started/set status)))
 
-    ((. (./api/call "invoke" "jack/status") then)
-      (lambda (status)
-        (console.log "JACK status" status)
-        (./state/jack/started/set status)
-        ((. (./api/call "invoke" "jack/init") then)
-          (lambda () (console.log "initialized JACK"))
-          (err "error initializing JACK")))
-      (err "error retrieving JACK status"))
+    (./api/call "invoke" "jack/control/on" "ServerStarted" (lambda ()
+      (./state/jack/started/set true)))
+
+    (./api/call "invoke" "jack/control/on" "ServerStopped" (lambda ()
+      (./state/jack/started/set false)))
+
+    ;((. (./api/call "invoke" "jack/status") then)
+    ;  (lambda (status)
+    ;    (console.log "JACK status" status)
+    ;    (./state/jack/started/set status)
+    ;    ((. (./api/call "invoke" "jack/init") then)
+    ;      (lambda () (console.log "initialized JACK"))
+    ;      (err "error initializing JACK")))
+    ;  (err "error retrieving JACK status"))
 
     ((. (./api/call "invoke" "sequencer/track-list") then)
       (lambda (results) (results.map (lambda (data)
@@ -44,10 +55,5 @@
     (var value (- 127 (track.seq.get step-n)))
     (track.seq.put step-n value)
     (./api/call "invoke" "sequencer/step-set" track-n step-n value)))
-
-  (function err (msg) (return (lambda (e)
-    (console.error msg)
-    (console.log e.message)
-    (console.log e.stack))))
 
   (return emitter)))

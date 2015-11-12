@@ -1,6 +1,4 @@
 (../lib/observ/Obj
-  "control"      (../lib/observ/Var)
-  "patchbay"     (../lib/observ/Var)
   "started"      (../lib/observ/Var)
   "clients"      (../lib/observ/Arr)
   "connections"  (../lib/observ/Arr))

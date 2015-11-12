@@ -4,9 +4,7 @@
     null
 
   "connect"
-    (lambda (socket)
-      (= this.connection ((require "q-connection") socket))
-      (./state/server/set true))
+    (lambda (socket) (= this.connection ((require "q-connection") socket)))
 
   "call"
     (lambda api-call (op path)

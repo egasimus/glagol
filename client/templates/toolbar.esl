@@ -3,10 +3,12 @@
   (function group () (return
     (./h ".btngroup" (Array.prototype.slice.call arguments))))
 
-  (function btn (name text highlighted disabled) (return
-    (./h (+ "button.btn." name (?: (&& highlighted (! disabled)) ".green" ""))
-      (?: disabled (object "disabled" "disabled") (object))
-      text)))
+  (function btn (name text highlighted disabled)
+    (var selector (+ "button.btn." name))
+    (if (&& highlighted (! disabled)) (+= selector ".green"))
+    (var attrs (object "onclick" (./emit (+ "toolbar." name))))
+    (if disabled (= attrs.disabled "disabled"))
+    (return (./h selector attrs text)))
 
   (return (./h ".toolbar" (array
 
@@ -22,7 +24,6 @@
 
     (group
       (btn "server" "Server" s.server)
-      (btn "dbus"   "DBUS"   s.jack.dbus    (! s.server))
       (btn "jack"   "JACK"   s.jack.started (! s.server)))))))
 
 ;      (./h ".btngroup" (array

@@ -3,5 +3,4 @@
   "results"   (./lib/observ/Arr)
   "tracks"    (./lib/observ/Arr)
   "jack"      (./lib/observ/Obj
-    "dbus"    (./lib/observ/Var false)
     "started" (./lib/observ/Var false)))

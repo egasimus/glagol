@@ -56,4 +56,9 @@
     (track.seq.put step-n value)
     (./api/call "invoke" "sequencer/step-set" track-n step-n value)))
 
+  (emitter.on "toolbar.jack" (lambda ()
+    (if (./state/jack/started)
+      (./api/call "invoke" "jack/control/StopServer")
+      (./api/call "invoke" "jack/control/StartServer"))))
+
   (return emitter)))

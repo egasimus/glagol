@@ -1,5 +1,0 @@
-(lambda init ()
-
-  (console.log "initializing jack...")
-
-

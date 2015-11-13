@@ -1,5 +1,5 @@
 (lambda update ()
-  (./state/patchbay/then
+  (./patchbay/then
     (lambda (p)
       (p.GetGraph 0 (lambda (err ver clients connections)
         (if err (throw err))

@@ -1,4 +1,7 @@
 (lambda () (return (object
   "library"   (./library/api)
   "sequencer" (./sequencer/api)
-  "jack"      (./jack/api))))
+  "sampler"   (./sampler/api)
+  "jack"      (./jack/api)
+
+  "exit" (lambda () (process.exit)))))

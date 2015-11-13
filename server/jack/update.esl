@@ -1,7 +1,11 @@
-(lambda update (cb)
-  ((. (./state/patchbay) GetGraph) "0"
-    (lambda (err graph clients connections)
-      (if err (throw err))
-      (./state/clients/set     clients)
-      (./state/connections/set connections)
-      (if cb (cb)))))
+(lambda update ()
+  (./state/patchbay/then
+    (lambda (p)
+      (p.GetGraph 0 (lambda (err ver clients connections)
+        (if err (throw err))
+        (./state/clients/set clients)
+        (./state/connections/set connections))))
+    (lambda (e)
+      (console.error "error getting jack patchbay for updating jack graph")
+      (console.log e.message)
+      (console.log e.stack))))

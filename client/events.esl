@@ -8,48 +8,51 @@
   (var emitter (new (. (require "eventemitter2") EventEmitter2)
     (object "maxListeners" 64 "wildcard" true)))
 
-  (emitter.once "init" (lambda ()
+  (emitter.once "init"
+    (lambda ()
+      (./api/call "invoke" "jack/control/IsStarted" (lambda (e status)
+        (if e (err e))
+        (./state/jack/started/set status)))
+      (./api/call "invoke" "jack/control/on" "ServerStarted" (lambda ()
+        (./state/jack/started/set true)))
+      (./api/call "invoke" "jack/control/on" "ServerStopped" (lambda ()
+        (./state/jack/started/set false)))
+      ((. (./api/call "invoke" "sequencer/track-list") then)
+        (lambda (results) (results.map (lambda (data)
+          (./state/tracks/push (./models/track data))
+          (./api/call "invoke" "library/detail" data.path))))
+        (err "error retrieving track list"))))
 
-    (./api/call "invoke" "jack/control/IsStarted" (lambda (e status)
-      (if e (err e))
-      (./state/jack/started/set status)))
+  (emitter.on "search.query"
+    (lambda ()
+      (./search (. (document.get-element-by-id "prompt") value))))
 
-    (./api/call "invoke" "jack/control/on" "ServerStarted" (lambda ()
-      (./state/jack/started/set true)))
+  (emitter.on "search.results"
+    (lambda (results)
+      (./state/results/set results.results)))
 
-    (./api/call "invoke" "jack/control/on" "ServerStopped" (lambda ()
-      (./state/jack/started/set false)))
+  (emitter.on "track.add"
+    (lambda (fullpath)
+      ((. (./api/call "invoke" "sequencer/track-add" fullpath) then)
+        (lambda (results)
+          (./state/tracks/push (./models/track fullpath))
+          (./api/call "invoke" "library/detail" fullpath))
+        (err (+ "error adding track for " fullpath)))
+      ((. (./api/call "invoke" "sampler/add" fullpath) then)
+        (lambda () (console.log "sampler added: " fullpath))
+        (err (+ "error creating sampler for" fullpath)))))
 
-    ((. (./api/call "invoke" "sequencer/track-list") then)
-      (lambda (results) (results.map (lambda (data)
-        (./state/tracks/push (./models/track data))
-        (./api/call "invoke" "library/detail" data.path))))
-      (err "error retrieving track list"))
+  (emitter.on "track.sequencer.click"
+    (lambda (track-n step-n)
+      (var track (./state/tracks/get track-n))
+      (var value (- 127 (track.seq.get step-n)))
+      (track.seq.put step-n value)
+      (./api/call "invoke" "sequencer/step-set" track-n step-n value)))
 
-  ))
-
-  (emitter.on "search.query" (lambda ()
-    (./search (. (document.get-element-by-id "prompt") value))))
-
-  (emitter.on "search.results" (lambda (results)
-    (./state/results/set results.results)))
-
-  (emitter.on "track.add" (lambda (fullpath)
-    ((. (./api/call "invoke" "sequencer/track-add" fullpath) then)
-      (lambda (results)
-        (./state/tracks/push (./models/track fullpath))
-        (./api/call "invoke" "library/detail" fullpath))
-      (err (+ "error getting details for " fullpath)))))
-
-  (emitter.on "track.sequencer.click" (lambda (track-n step-n)
-    (var track (./state/tracks/get track-n))
-    (var value (- 127 (track.seq.get step-n)))
-    (track.seq.put step-n value)
-    (./api/call "invoke" "sequencer/step-set" track-n step-n value)))
-
-  (emitter.on "toolbar.jack" (lambda ()
-    (if (./state/jack/started)
-      (./api/call "invoke" "jack/control/StopServer")
-      (./api/call "invoke" "jack/control/StartServer"))))
+  (emitter.on "toolbar.jack"
+    (lambda ()
+      (if (./state/jack/started)
+        (./api/call "invoke" "jack/control/StopServer")
+        (./api/call "invoke" "jack/control/StartServer"))))
 
   (return emitter)))

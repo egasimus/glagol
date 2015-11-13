@@ -1,24 +1,49 @@
 ((lambda ()
 
-  (var path (require "path"))
+  (var path  (require "path"))
+  (var Q     (require "q"))
+  (var spawn (. (require "child_process") spawn))
 
   (function Sampler (sample)
 
-    (= this.name (path.basename sample))
-    (= this.path (path.resolve sample))
+    (var state (= this.state (object)))
+    (= state.name (path.basename sample))
+    (= state.path (path.resolve  sample))
+    (= state.proc null)
 
-    (../jack/control/IsStarted (lambda (e status)
-      (if e (throw e))
-      (if status
-        (spawn)
-        (../jack/control/on "ServerStarted" spawn))))
+    (Q.spread (array ../jack/control ../jack/patchbay) start err)
 
-    (function spawn ()
-      (../jack/patchbay/GetGraph 0 (lambda (err graph clients connections)
-        (if err (throw err))
-        (console.log "graph"       graph)
-        (console.log "clients"     clients)
-        (console.log "connections" connections)))))
+    (function start (control patchbay)
+      (c.IsStarted (lambda (e started)
+        (if e (throw e))
+        (if started (spawn) (control.on "ServerStarted" spawn-once))))
+
+      (function spawn-once ()
+        (control.remove-listener "ServerStarted" spawn-once)
+        (spawn))
+
+      (function spawn ()
+        (= state.proc (spawn ./options/sampler-path))
+        (control.on  "ServerStopped"  premature-stop)
+        (patchbay.on "ClientAppeared" client-appeared))
+
+      (function premature-stop ()
+        ; server stopped before client appeared
+        (control.remove-listener  "ServerStopped"  premature-stop)
+        (patchbay.remove-listener "ClientAppeared" client-appeared)
+        (state.proc.on "exit" (lambda (code signal)
+          (control.on "ServerStarted" spawn-once)))
+        (state.proc.kill))
+
+      (function client-appeared (ver id name)
+        (if (=== name state.name) (block
+          (control.remove-listener  "ServerStopped"  premature-stop)
+          (patchbay.remove-listener "ClientAppeared" client-appeared)))))
+
+    (function err (e)
+      (console.error "error getting jack dbus interface when starting sampler")
+      (console.log e.message)
+      (console.log e.stack)))
 
   (return Sampler)
 

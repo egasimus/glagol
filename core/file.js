@@ -117,7 +117,7 @@ function evaluate () {
 
     var context = this.makeContext()
       , src     = this.compiled
-      , result  = vm.runInContext(src, context, { filename: this.filename });
+      , result  = vm.runInContext(src, context, { filename: this._sourcePath });
 
     if (context.error) throw context.error;
 

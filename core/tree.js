@@ -43,11 +43,9 @@ function setter (node, value) {
 }
 
 function translate (name) {
-  // strip extension
+  // strip extension, replace hyphenated-identifiers with camelCasedOnes
   if (-1 < name.indexOf('.')) name = name.substr(0, name.lastIndexOf('.'))
-
-  // replace hyphen with camelCase
-  // TODO
+  name = name.replace(/-(.)/g, function (g) { return g[1].toUpperCase() });
 
   return name;
 }

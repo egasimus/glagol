@@ -16,23 +16,19 @@
     (function start (control patchbay)
       (control.IsStarted (lambda (e started)
         (if e (throw e))
-        (console.log "is-started" started)
         (if started (spawn-sampler) (control.on "ServerStarted" spawn-once))))
 
       (function spawn-once ()
-        (console.log "spawn-once")
         (control.remove-listener "ServerStarted" spawn-once)
         (spawn-sampler))
 
       (function spawn-sampler ()
-        (console.log "spawn-sampler")
-        (console.log ./options/sampler-path)
-        (= state.proc (spawn ./options/sampler-path))
+        (var args (array "-n" state.name))
+        (= state.proc (spawn ./options/sampler-path args))
         (control.on  "ServerStopped"  premature-stop)
         (patchbay.on "ClientAppeared" client-appeared))
 
       (function premature-stop ()
-        (console.log "premature-stop")
         ; server stopped before client appeared
         (control.remove-listener  "ServerStopped"  premature-stop)
         (patchbay.remove-listener "ClientAppeared" client-appeared)
@@ -41,8 +37,8 @@
         (state.proc.kill))
 
       (function client-appeared (ver id name)
-        (console.log "client-appeared" id name)
         (if (=== name state.name) (block
+          (console.log "jack client online:" state.name)
           (control.remove-listener  "ServerStopped"  premature-stop)
           (patchbay.remove-listener "ClientAppeared" client-appeared)))))
 

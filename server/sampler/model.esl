@@ -1,0 +1,25 @@
+((lambda ()
+
+  (var path (require "path"))
+
+  (function Sampler (sample)
+
+    (= this.name (path.basename sample))
+    (= this.path (path.resolve sample))
+
+    (../jack/control/IsStarted (lambda (e status)
+      (if e (throw e))
+      (if status
+        (spawn)
+        (../jack/control/on "ServerStarted" spawn))))
+
+    (function spawn ()
+      (../jack/patchbay/GetGraph 0 (lambda (err graph clients connections)
+        (if err (throw err))
+        (console.log "graph"       graph)
+        (console.log "clients"     clients)
+        (console.log "connections" connections)))))
+
+  (return Sampler)
+
+))

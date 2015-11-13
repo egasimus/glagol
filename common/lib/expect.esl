@@ -1,0 +1,21 @@
+(lambda expect ()
+
+  (switch arguments.length
+    (4 (return (expect4.apply null arguments)))
+    (6 (return (expect6.apply null arguments)))
+    (default (throw (new Error "expect takes 4 or 6 arguments"))))
+
+  (function expect4 (emitter event finder found)
+    (emitter.on event finder_)
+    (function finder_ ()
+      (if (finder.apply null arguments) (block
+        (found.apply null arguments)
+        (emitter.off event finder_)))))
+
+  (function expect6 (pre-promise pre-finder emitter event finder found)
+    (pre-promise.then (lambda ()
+      (var pre-found (pre-finder.apply null arguments))
+      (if pre-found
+        (found.apply null (array pre-found))
+        (expect emitter event finder found))))))
+

@@ -1,3 +1,5 @@
 (lambda () (return (object
   "control"  ./control
-  "patchbay" ./patchbay)))
+  "patchbay" ./patchbay
+  "client" (object
+    "add" ./client-add))))

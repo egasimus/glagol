@@ -20,15 +20,6 @@
     (./api/call "invoke" "jack/control/on" "ServerStopped" (lambda ()
       (./state/jack/started/set false)))
 
-    ;((. (./api/call "invoke" "jack/status") then)
-    ;  (lambda (status)
-    ;    (console.log "JACK status" status)
-    ;    (./state/jack/started/set status)
-    ;    ((. (./api/call "invoke" "jack/init") then)
-    ;      (lambda () (console.log "initialized JACK"))
-    ;      (err "error initializing JACK")))
-    ;  (err "error retrieving JACK status"))
-
     ((. (./api/call "invoke" "sequencer/track-list") then)
       (lambda (results) (results.map (lambda (data)
         (./state/tracks/push (./models/track data))

@@ -21,8 +21,18 @@
 
       ((. (./api/call "invoke" "sequencer/list") then)
         (lambda (results)
+          (= results (JSON.parse results))
+          (= ids (Object.keys results))
+          (ids.map (lambda (id) (add-track (get results id))))
           (console.log "sequencer list" results))
         (err "error retrieving track list"))))
+
+  (function add-track (data)
+    (console.log "add-track" data)
+    (var tracks (./state/tracks))
+    (console.log "tracks" tracks)
+    (= (get tracks data.id) (./models/track data))
+    (./state/tracks/set tracks))
 
   (emitter.on "search.query"
     (lambda ()

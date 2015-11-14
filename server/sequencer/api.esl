@@ -1,6 +1,13 @@
 (lambda () (return (object
 
-  "list" (lambda () (return (./state/tracks)))
+  "list" (lambda ()
+    (var tracks (./state/tracks))
+    (var ids (Object.keys tracks))
+    (var output (object))
+    (ids.map (lambda (id)
+      (= (get output id) ((get tracks id)))))
+    (return (JSON.stringify output)))
+
   "add"  ./add
   "set"  ./set
 

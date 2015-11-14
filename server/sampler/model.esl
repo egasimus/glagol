@@ -75,7 +75,14 @@
 
     (function connect-osc ()
       (= state.osc (new osc.Client "127.0.0.1" state.osc-port))
-      (state.osc.send "/load" 0 (. (state.track) path)))
+      (var track (state.track))
+      (console.log state.track.step)
+      (state.osc.send "/load" 0 track.path)
+      (state.track.step play-step))
+
+    (function play-step (step)
+      (console.log "STEP" step))
+
 
     )
 

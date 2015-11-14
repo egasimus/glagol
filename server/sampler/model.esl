@@ -13,14 +13,10 @@
 
     (console.log "init sampler" track-id)
 
-    (var track)
-    (var tracks (../sequencer/state/tracks))
-    (for (var i 0) (< i tracks.length) (++ i)
-      (var track (get tracks i)))
-
     (var state (object
-      "path" (../sequencer/state/tracks/get track-id)
-      "proc" null))
+      "track" (get (../sequencer/state/tracks) track-id)
+      "proc"  null))
+
     ((.
       (Q.spread
         (array ../jack/control ../jack/patchbay)
@@ -79,7 +75,7 @@
 
     (function connect-osc ()
       (= state.osc (new osc.Client "127.0.0.1" state.osc-port))
-      (state.osc.send "/load" 0 state.track.path))
+      (state.osc.send "/load" 0 (. (state.track) path)))
 
     )
 

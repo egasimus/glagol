@@ -8,12 +8,40 @@
       (= (get output id) ((get tracks id)))))
     (return (JSON.stringify output)))
 
-  "add"  ./add
-  "set"  ./set
+  "add" (lambda (fullpath)
+    (console.log "adding track" fullpath)
+    (var tracks (./state/tracks))
+    (var track (../models/track fullpath))
+    (var id (. (track) id))
+    (= (get tracks id) track)
+    (./state/tracks/set tracks)
+    (return (track)))
 
-  "play" ./play
-  "stop" ./stop
+  "set" (lambda (track-id step-n value)
+    (console.log "set!" track-id step-n value)
+    (var track (get (./state/tracks) track-id))
+    (console.log track)
+    (track.seq.put step-n value)
+    (console.log (track.seq))
+    (return (track.seq)))
 
-  "step" ./step
+  "play" (lambda ()
+    (this.stop)
+    (./state/timer/set (set-interval this.step 150)))
+
+  "step" (lambda ()
+    (var tracks (./state/tracks))
+    ((. (Object.keys tracks) map) (lambda (id)
+      (var track (get tracks id))
+      (var step (track.step))
+      (var len (. (track.seq) length))
+      (if (< step (- len 1))
+        (track.step.set (+ step 1))
+        (track.step.set 0)))))
+
+  "stop" (lambda ()
+    (var timer (./state/timer))
+    (if timer (clear-interval timer))
+    (./state/timer/set null))
 
 )))

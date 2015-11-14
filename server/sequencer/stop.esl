@@ -1,4 +1,0 @@
-(lambda ()
-  (var timer (./state/timer))
-  (if timer (clear-interval timer))
-  (./state/timer/set null))

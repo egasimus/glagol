@@ -1,8 +1,0 @@
-(lambda (fullpath)
-  (console.log "adding track" fullpath)
-  (var tracks (./state/tracks))
-  (var track (../models/track fullpath))
-  (var id (. (track) id))
-  (= (get tracks id) track)
-  (./state/tracks/set tracks)
-  (return (track)))

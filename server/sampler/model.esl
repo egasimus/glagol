@@ -81,7 +81,7 @@
       (state.track.step play-step))
 
     (function play-step (step)
-      (console.log "STEP" step))
+      (console.log "STEP" step ((. state.track.seq get) step)))
 
 
     )

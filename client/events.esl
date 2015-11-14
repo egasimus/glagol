@@ -10,6 +10,7 @@
 
   (emitter.once "init"
     (lambda ()
+
       (./api/call "invoke" "jack/control/IsStarted" (lambda (e status)
         (if e (err e))
         (./state/jack/started/set status)))
@@ -17,10 +18,10 @@
         (./state/jack/started/set true)))
       (./api/call "invoke" "jack/control/on" "ServerStopped" (lambda ()
         (./state/jack/started/set false)))
+
       ((. (./api/call "invoke" "sequencer/list") then)
-        (lambda (results) (results.map (lambda (data)
-          (./state/tracks/push (./models/track data))
-          (./api/call "invoke" "library/detail" data.path))))
+        (lambda (results)
+          (console.log "sequencer list" results))
         (err "error retrieving track list"))))
 
   (emitter.on "search.query"
@@ -32,8 +33,8 @@
       (./state/results/set results.results)))
 
   (emitter.on "track.add"
-    (lambda (fullpath)
-      ((. (./api/call "invoke" "sequencer/add" fullpath) then)
+    (lambda (data)
+      ((. (./api/call "invoke" "sequencer/add" data) then)
         (lambda (track)
           (./state/tracks/push (./models/track track))
           (console.log "created track" track)
@@ -43,8 +44,11 @@
         (err (+ "error adding sequencer for " fullpath)))))
 
   (emitter.on "track.sequencer.click"
-    (lambda (track-n step-n)
-      (var track (./state/tracks/get track-n))
+    (lambda (track-id step-n)
+      (console.log "CLICK" track-id)
+      (var tracks (./state/tracks))
+      (console.log tracks)
+      (var track (get tracks track-id))
       (var value (- 127 (track.seq.get step-n)))
       (track.seq.put step-n value)
       (./api/call "invoke" "sequencer/set" track-n step-n value)))

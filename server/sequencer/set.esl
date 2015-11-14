@@ -1,0 +1,6 @@
+(lambda (track-n step-n value)
+  (var track (./state/tracks/get track-n))
+  (track.seq.put step-n value)
+  (console.log "step" track-n step-n value)
+  (console.log (track.seq))
+  (return (track.seq)))

@@ -1,0 +1,3 @@
+(lambda ()
+  (./stop)
+  (./state/timer/set (set-interval ./step 150)))

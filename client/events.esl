@@ -17,7 +17,7 @@
         (./state/jack/started/set true)))
       (./api/call "invoke" "jack/control/on" "ServerStopped" (lambda ()
         (./state/jack/started/set false)))
-      ((. (./api/call "invoke" "sequencer/track-list") then)
+      ((. (./api/call "invoke" "sequencer/list") then)
         (lambda (results) (results.map (lambda (data)
           (./state/tracks/push (./models/track data))
           (./api/call "invoke" "library/detail" data.path))))
@@ -33,21 +33,23 @@
 
   (emitter.on "track.add"
     (lambda (fullpath)
-      ((. (./api/call "invoke" "sequencer/track-add" fullpath) then)
+      ((. (./api/call "invoke" "sequencer/add" fullpath) then)
         (lambda (results)
           (./state/tracks/push (./models/track fullpath))
           (./api/call "invoke" "library/detail" fullpath))
         (err (+ "error adding track for " fullpath)))
       ((. (./api/call "invoke" "sampler/add" fullpath) then)
-        (lambda () (console.log "sampler added: " fullpath))
-        (err (+ "error creating sampler for" fullpath)))))
+        (lambda (results)
+          (./state/tracks/push (./models/track fullpath))
+          (./api/call "invoke" "library/detail" fullpath))
+        (err (+ "error adding track for " fullpath)))))
 
   (emitter.on "track.sequencer.click"
     (lambda (track-n step-n)
       (var track (./state/tracks/get track-n))
       (var value (- 127 (track.seq.get step-n)))
       (track.seq.put step-n value)
-      (./api/call "invoke" "sequencer/step-set" track-n step-n value)))
+      (./api/call "invoke" "sequencer/set" track-n step-n value)))
 
   (emitter.on "toolbar.jack"
     (lambda ()

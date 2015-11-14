@@ -1,0 +1,4 @@
+(lambda ()
+  (console.log "STEP!")
+  ((. (./state/tracks) map) (lambda (t)
+    (console.log t.seq))))

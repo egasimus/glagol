@@ -1,0 +1,4 @@
+(lambda (fullpath)
+  (console.log "adding track" fullpath)
+  (var track (../models/track fullpath))
+  (./state/tracks/push (../models/track fullpath)))

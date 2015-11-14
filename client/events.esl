@@ -34,15 +34,13 @@
   (emitter.on "track.add"
     (lambda (fullpath)
       ((. (./api/call "invoke" "sequencer/add" fullpath) then)
-        (lambda (results)
-          (./state/tracks/push (./models/track fullpath))
-          (./api/call "invoke" "library/detail" fullpath))
-        (err (+ "error adding track for " fullpath)))
-      ((. (./api/call "invoke" "sampler/add" fullpath) then)
-        (lambda (results)
-          (./state/tracks/push (./models/track fullpath))
-          (./api/call "invoke" "library/detail" fullpath))
-        (err (+ "error adding track for " fullpath)))))
+        (lambda (track)
+          (./state/tracks/push (./models/track track))
+          (console.log "created track" track)
+          ((. (./api/call "invoke" "sampler/add" track.id) then)
+            (lambda (sampler))
+            (err (+ "error adding sampler for " id))))
+        (err (+ "error adding sequencer for " fullpath)))))
 
   (emitter.on "track.sequencer.click"
     (lambda (track-n step-n)

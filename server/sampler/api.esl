@@ -1,7 +1,6 @@
 (lambda () (return (object
 
   "list" (lambda () (return (./state/samplers)))
-  "add"  (lambda (sample) (./state/samplers/push (new ./model sample)))
-  "play" (lambda (id)))
+  "add"  ./add
 
-))
+)))

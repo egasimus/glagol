@@ -2,6 +2,7 @@
 
   (if (=== "string" (typeof data))
     (return (track (object
+      "id"    ((. (require "shortid") generate))
       "label" ((. (require "path") basename) data)
       "path"  data
       "seq"   (array 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))))
@@ -13,6 +14,7 @@
   (var Obj ../lib/observ/Obj)
 
   (return (Obj
+    "id"    (Var data.id)
     "label" (Var data.label)
     "path"  (Var data.path)
     "seq"   (Arr.apply Arr data.seq))))

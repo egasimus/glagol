@@ -9,15 +9,25 @@
 
   (return init)
 
-  (function init (sample)
+  (function init (track-id)
+
+    (console.log "init sampler" track-id)
+
+    (var track)
+    (var tracks (../sequencer/state/tracks))
+    (for (var i 0) (< i tracks.length) (++ i)
+      (var track (get tracks i)))
+
+    (var state (object
+      "path" (../sequencer/state/tracks/get track-id)
+      "proc" null))
     ((.
       (Q.spread
         (array ../jack/control ../jack/patchbay)
-        (start.bind null (object
-          "path" (path.resolve sample)
-          "proc" null)))
+        (start.bind null state))
       catch)
-        (../lib/error "error spawning sampler")))
+        (../lib/error "error spawning sampler"))
+    (return state))
 
   (function start (state control patchbay)
     (control.IsStarted is-jack-started)
@@ -62,14 +72,14 @@
           (block (unlisten) (client-found pid id name)))))))
 
     (function client-found (pid id name)
-      (console.log "client" pid id name "is us:" state.path)
+      (console.log "client" pid id name "is us" state)
       (= state.jack-id id)
       (= state.jack-name name)
       (connect-osc))
 
     (function connect-osc ()
       (= state.osc (new osc.Client "127.0.0.1" state.osc-port))
-      (state.osc.send "/load" 0 state.path))
+      (state.osc.send "/load" 0 state.track.path))
 
     )
 

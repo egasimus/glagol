@@ -55,4 +55,12 @@
         (./api/call "invoke" "jack/control/StopServer")
         (./api/call "invoke" "jack/control/StartServer"))))
 
+  (emitter.on "toolbar.play"
+    (lambda ()
+      (./api/call "invoke" "sequencer/play")))
+
+  (emitter.on "toolbar.stop"
+    (lambda ()
+      (./api/call "invoke" "sequencer/stop")))
+
   (return emitter)))

@@ -2,6 +2,7 @@
 
   "track-add" (lambda (fullpath)
     (console.log "adding track" fullpath)
+    (var track (../models/track fullpath))
     (./state/tracks/push (../models/track fullpath)))
 
   "track-list" (lambda ()
@@ -12,4 +13,20 @@
     (track.seq.put step-n value)
     (console.log "step" track-n step-n value)
     (console.log (track.seq))
-    (return (track.seq))))))
+    (return (track.seq)))
+
+  "play" (lambda ()
+    (this.stop)
+    (./state/timer/set (set-interval this.step 150)))
+
+  "stop" (lambda ()
+    (var timer (./state/timer))
+    (if timer (clear-interval timer))
+    (./state/timer/set null))
+
+  "step" (lambda ()
+    (console.log "STEP!")
+    ((. (./state/tracks) map) (lambda (t)
+      (console.log t.seq))))
+
+)))

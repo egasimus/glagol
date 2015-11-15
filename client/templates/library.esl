@@ -1,9 +1,29 @@
-(lambda (s) (var path (require "path")) (return
-  (?: s.results.length
-    (./h "ul.results"
-      (s.results.map (lambda (result) (return
-        (./h "li.result"
-          (object "onclick" (./emit "track.add" result))
-          (array
-            (./h ".result-title" (path.basename result))
-            (./h ".result-dir"   (path.dirname result)))) )))) null)))
+(lambda (s)
+
+  (var path (require "path"))
+
+  (var results (s.results.reduce group (object)))
+
+  (return
+    (?: s.results.length
+      (./h ".results"
+        ((. (Object.keys results) map) render-group))
+      null))
+
+  (function render-group (dir)
+    (var items (get results dir))
+    (return (./h ".result-group" (array
+      (./h ".result-group-header" dir)
+      (./h "ul.result-group-items"
+        (items.map (lambda (result) (return
+          (./h "li.result"
+            (object "onclick" (./emit "track.add" result))
+            (./h ".result-title" (path.basename result)))))))))))
+
+  (function group (groups fullpath)
+    (var name (path.basename fullpath))
+    (var dir  (path.dirname fullpath))
+    (if (get groups dir)
+      ((. (get groups dir) push) name)
+      (= (get groups dir) (array name)))
+    (return groups)))

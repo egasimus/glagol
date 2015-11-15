@@ -46,7 +46,9 @@ function glagolify (token) {
 
   return token;
 
-  function atom (f) { return { atom: f } }
+  function atom (f) {
+    return { atom: f === '..' ? '__' : f === '.' ? '_' : f }
+  }
 
 }
 

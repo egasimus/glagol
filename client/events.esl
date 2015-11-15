@@ -29,11 +29,8 @@
     (lambda (track-id step-n)
       (./commands/track/sequencer/click track-id step-n)))
 
-  (emitter.on "toolbar.jack"
-    (lambda () (./commands/toolbar/jack)))
-  (emitter.on "toolbar.play"
-    (lambda () (./commands/toolbar/play)))
-  (emitter.on "toolbar.stop"
-    (lambda () (./commands/toolbar/stop)))
+  (emitter.on "toolbar.jack" (lambda () (./commands/toolbar/jack)))
+  (emitter.on "toolbar.play" (lambda () (./commands/toolbar/play)))
+  (emitter.on "toolbar.stop" (lambda () (./commands/toolbar/stop)))
 
   (return emitter)))

@@ -1,17 +1,16 @@
 (lambda ()
-
   (../api/call "invoke" "jack/control/IsStarted"
     (lambda (e status)
-      (if e (err e))
-      (./state/jack/started/set status)))
+      (if e (./err e))
+      (../state/jack/started/set status)))
 
   (../api/call "invoke" "jack/control/on" "ServerStarted"
     (lambda ()
-      (./state/jack/started/set true)))
+      (../state/jack/started/set true)))
 
   (../api/call "invoke" "jack/control/on" "ServerStopped"
     (lambda ()
-      (./state/jack/started/set false)))
+      (../state/jack/started/set false)))
 
   ((. (../api/call "invoke" "sequencer/list") then)
     (lambda (results)
@@ -19,4 +18,4 @@
       (= ids (Object.keys results))
       (ids.map (lambda (id) (add-track (get results id))))
       (console.log "sequencer list" results))
-    (err "error retrieving track list")))
+    (./err "error retrieving track list")))

@@ -1,10 +1,5 @@
 ((lambda ()
 
-  (function err (msg) (return (lambda (e)
-    (console.error msg)
-    (console.log e.message)
-    (console.log e.stack))))
-
   (function add-track (data)
     (console.log "add-track" data)
     (var tracks (./state/tracks))

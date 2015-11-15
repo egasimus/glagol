@@ -1,0 +1,4 @@
+(lambda err (msg) (return (lambda (e)
+  (console.error msg)
+  (console.log e.message)
+  (console.log e.stack))))

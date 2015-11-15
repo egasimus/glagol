@@ -1,7 +1,7 @@
 (lambda main (app)
   (var host "0.0.0.0")
   (var port 1620)
-  (var server-http (./web/server host port (lambda () (return ./web/routes))))
+  (var server-http (./web/server host port))
   (var server-ws (new (. (require "ws") Server) (object "server" server-http)))
   (server-ws.on "connection" (lambda (socket)
     ((require "q-connection") socket (lambda () (return (./api)))))))

@@ -1,0 +1,10 @@
+(lambda (req res)
+  (if (!== req.url "/file") (return false))
+
+  (var body "FOO")
+  (var headers (object))
+
+  ((require "send-data") req res (object "body" body "headers" headers))
+
+  (return true)
+)

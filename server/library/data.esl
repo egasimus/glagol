@@ -28,7 +28,8 @@
       (path.join library-dir "**" "*")
       (object "nodir" true)))
     (return (files.reduce (lambda (library file)
-      (= (get library file) (object)) (return library)) (object))))
+      (= (get library (path.relative library-dir file)) (object))
+      (return library)) (object))))
 
   (function write-library (data)
     (console.log "writing library to" library-file)

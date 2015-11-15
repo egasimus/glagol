@@ -1,0 +1,2 @@
+(lambda ()
+  (../../api/call "invoke" "sequencer/play"))

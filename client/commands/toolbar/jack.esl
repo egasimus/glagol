@@ -1,0 +1,4 @@
+(lambda ()
+  (if (../../state/jack/started)
+    (../../api/call "invoke" "jack/control/StopServer")
+    (../../api/call "invoke" "jack/control/StartServer")))

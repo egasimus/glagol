@@ -5,28 +5,6 @@
     (console.log e.message)
     (console.log e.stack))))
 
-  (var emitter (new (. (require "eventemitter2") EventEmitter2)
-    (object "maxListeners" 64 "wildcard" true)))
-
-  (emitter.once "init"
-    (lambda ()
-
-      (./api/call "invoke" "jack/control/IsStarted" (lambda (e status)
-        (if e (err e))
-        (./state/jack/started/set status)))
-      (./api/call "invoke" "jack/control/on" "ServerStarted" (lambda ()
-        (./state/jack/started/set true)))
-      (./api/call "invoke" "jack/control/on" "ServerStopped" (lambda ()
-        (./state/jack/started/set false)))
-
-      ((. (./api/call "invoke" "sequencer/list") then)
-        (lambda (results)
-          (= results (JSON.parse results))
-          (= ids (Object.keys results))
-          (ids.map (lambda (id) (add-track (get results id))))
-          (console.log "sequencer list" results))
-        (err "error retrieving track list"))))
-
   (function add-track (data)
     (console.log "add-track" data)
     (var tracks (./state/tracks))
@@ -34,47 +12,28 @@
     (= (get tracks data.id) (./models/track data))
     (./state/tracks/set tracks))
 
-  (emitter.on "search.query"
-    (lambda ()
-      (./search (. (document.get-element-by-id "prompt") value))))
+  (var emitter (new (. (require "eventemitter2") EventEmitter2)
+    (object "maxListeners" 64 "wildcard" true)))
 
+  (emitter.once "init"
+    (lambda () (./commands/init)))
+
+  (emitter.on "search.query"
+    (lambda () (./commands/search/query)))
   (emitter.on "search.results"
-    (lambda (results)
-      (./state/results/set results.results)))
+    (lambda (results) (./commands/search/results results)))
 
   (emitter.on "track.add"
-    (lambda (data)
-      ((. (./api/call "invoke" "sequencer/add" data) then)
-        (lambda (track)
-          (./state/tracks/push (./models/track track))
-          (console.log "created track" track)
-          ((. (./api/call "invoke" "sampler/add" track.id) then)
-            (lambda (sampler))
-            (err (+ "error adding sampler for " id))))
-        (err (+ "error adding sequencer for " fullpath)))))
-
+    (lambda (data) (./commands/track/add data)))
   (emitter.on "track.sequencer.click"
     (lambda (track-id step-n)
-      (console.log "CLICK" track-id)
-      (var tracks (./state/tracks))
-      (console.log tracks)
-      (var track (get tracks track-id))
-      (var value (- 127 (track.seq.get step-n)))
-      (track.seq.put step-n value)
-      (./api/call "invoke" "sequencer/set" track-n step-n value)))
+      (./commands/track/sequencer/click track-id step-n)))
 
   (emitter.on "toolbar.jack"
-    (lambda ()
-      (if (./state/jack/started)
-        (./api/call "invoke" "jack/control/StopServer")
-        (./api/call "invoke" "jack/control/StartServer"))))
-
+    (lambda () (./commands/toolbar/jack)))
   (emitter.on "toolbar.play"
-    (lambda ()
-      (./api/call "invoke" "sequencer/play")))
-
+    (lambda () (./commands/toolbar/play)))
   (emitter.on "toolbar.stop"
-    (lambda ()
-      (./api/call "invoke" "sequencer/stop")))
+    (lambda () (./commands/toolbar/stop)))
 
   (return emitter)))

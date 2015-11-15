@@ -1,7 +1,9 @@
-(lambda (s) (return
+(lambda (s) (var path (require "path")) (return
   (?: s.results.length
     (./h "ul.results"
       (s.results.map (lambda (result) (return
         (./h "li.result"
           (object "onclick" (./emit "track.add" result))
-          result))))) null)))
+          (array
+            (./h ".result-title" (path.basename result))
+            (./h ".result-dir"   (path.dirname result)))) )))) null)))

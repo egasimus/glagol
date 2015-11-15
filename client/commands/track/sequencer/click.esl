@@ -1,0 +1,8 @@
+(lambda (track-id step-n)
+  (console.log "CLICK" track-id)
+  (var tracks (../../../state/tracks))
+  (console.log tracks)
+  (var track (get tracks track-id))
+  (var value (- 127 (track.seq.get step-n)))
+  (track.seq.put step-n value)
+  (../../../api/call "invoke" "sequencer/set" track-n step-n value))

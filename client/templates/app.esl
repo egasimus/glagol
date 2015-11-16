@@ -2,10 +2,11 @@
   (./h ".app"
     (object "attributes" (object "tabindex" 1) "hook" ../lib/vdom/focus-me)
     (array 
-      (./toolbar s)
-      (./prompt  s)
-      (./tracks  s)
-      (./library s)))))
+      (./bar-top    s)
+      (./bar-bottom s)
+      (./session    s)
+      (./tracks     s)
+      (./library    s)))))
 
 
 

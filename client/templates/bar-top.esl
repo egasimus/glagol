@@ -10,7 +10,7 @@
     (if disabled (= attrs.disabled "disabled"))
     (return (./h selector attrs text)))
 
-  (return (./h ".toolbar" (array
+  (return (./h ".toolbar.top" (array
 
     (group
       (btn "bpm"   "140")

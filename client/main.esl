@@ -1,4 +1,4 @@
-(lambda (app)
+(lambda start-main-loop (app)
 
   ; establish connection with api
   (./connect)
@@ -7,7 +7,7 @@
   (= document.body.innerHTML "")
   (var mainloop (./lib/vdom/mainloop render (./state)))
   (document.body.append-child mainloop.target)
-  (function render (state) (return (./templates/main state)))
+  (function render (state) (return (./templates/app state)))
   (./state (lambda (state) (mainloop.update state)))
 
   ; preprocess and insert css

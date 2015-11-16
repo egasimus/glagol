@@ -24,7 +24,7 @@
   "play" (lambda ()
     (var api (./api))
     (api.stop)
-    (var t (set-interval (lambda () (api.step)) 150))
+    (var t (set-interval (lambda () (api.step)) 107.14))
     (./state/timer/set t))
 
   "step" (lambda ()

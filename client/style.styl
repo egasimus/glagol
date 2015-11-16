@@ -93,26 +93,21 @@ body
     border-right none
 
 .prompt
-  position fixed
-  bottom   0
-  left     0
-  right    0
-  z-index  1
 
   //padding 9px 12px
+  width   100%
   height  36px
   display block
-  width   100%
 
-  border: none;
+  border none
   background #202020
   //background rgba(21,22,23,0.6)
-  color: white;
+  color white
 
-  font-size: 14px;
-  border-bottom: 2px solid rgba(255,255,255,0.5);
-  outline: none;
-  text-align: center;
+  font-size 14px
+  border-bottom 2px solid rgba(255,255,255,0.5);
+  outline none
+  text-align center
 
 .results
   position absolute
@@ -196,7 +191,7 @@ body
     width 24px
     height 24px
     background rgba(0,0,0,0.5)
-    margin 0 2px
+    margin 0 0 0 2px
 
     &:hover
       background rgba(0,0,0,0.2)
@@ -210,9 +205,54 @@ body
 /// TOOLBAR
 
 .toolbar
+  z-index 1
   padding 6px
   display flex
   justify-content space-between
+
+  &.top
+    position fixed
+    top 0
+    left 0
+    right 0
+    width 100%
+    & .btngroup
+      padding 3px
+      background rgba(33,33,33,0.5)
+      border none
+
+  &.bottom
+    position fixed
+    bottom 0
+    left 0
+    right 0
+    width 100%
+    padding-bottom 0
+
+// SESSION VIEW
+
+.session
+  margin-top 36px
+  display flex
+  flex-direction row
+  justify-content center
+
+  .track
+    display flex
+    flex-direction column
+    line-height 20px
+
+    .track-name
+      font-weight bold
+      font-style italic
+      padding 2px 18px
+      background linear-gradient(to bottom,rgba(0,0,0,0.0), rgba(0,0,0,0.5))
+
+    .clip
+      padding 2px 6px
+      background rgba(0,0,0,0.5)
+
+    
 
 //////////////////////////////////////
 

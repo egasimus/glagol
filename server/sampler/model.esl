@@ -82,7 +82,11 @@
       (state.track.step play-step))
 
     (function play-step (step)
-      (console.log "STEP" step ((. state.track.seq get) step)))
+      (var track (state.track))
+      (var value ((. state.track.seq get) step))
+      (if (> value 0)
+        (state.osc.send "/play" 0 0))
+      (console.log "->>" track step value))
 
 
     )

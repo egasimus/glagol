@@ -22,8 +22,10 @@
     (return (track.seq)))
 
   "play" (lambda ()
-    (this.stop)
-    (./state/timer/set (set-interval this.step 150)))
+    (var api (./api))
+    (api.stop)
+    (var t (set-interval (lambda () (api.step)) 150))
+    (./state/timer/set t))
 
   "step" (lambda ()
     (var tracks (./state/tracks))

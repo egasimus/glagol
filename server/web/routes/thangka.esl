@@ -3,7 +3,7 @@
   (if (!== req.url "/thangka") (return false))
 
   ((require "glob")
-    "/home/epimetheus/Pictures/*.@(jpg|png)"
+    "/home/epimetheus/Pictures/*.@(jpg|png|gif)"
     (object "nodir" true)
     pick-file)
 

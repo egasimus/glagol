@@ -1,8 +1,8 @@
 (lambda (s)
-  (console.log s.tracks)
+  (console.log "s.tracks" s.tracks)
   (var ids (Object.keys s.tracks))
   (return (./h ".sounds" (ids.map (lambda (id)
-    (var track (get s id))
+    (var track ((get s.tracks id)))
     (var steps (array))
     (for (var j 0) (< j track.seq.length) (++ j)
       (steps.push (./h

@@ -1,4 +1,11 @@
 (lambda ()
+
+  (function add-track (data)
+    (var tracks (../state/tracks))
+    (var track (../models/track data))
+    (= (get tracks data.id) (../models/track data))
+    (./state/tracks/set tracks))
+
   (../api/call "invoke" "jack/control/IsStarted"
     (lambda (e status)
       (if e (./err e))

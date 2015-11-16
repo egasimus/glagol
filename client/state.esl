@@ -1,6 +1,6 @@
 (./lib/observ/Obj
   "server"    (./lib/observ/Var false)
   "results"   (./lib/observ/Arr)
-  "tracks"    (./lib/observ/Obj)
+  "tracks"    (./lib/observ/Var (object))
   "jack"      (./lib/observ/Obj
     "started" (./lib/observ/Var false)))

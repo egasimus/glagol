@@ -5,5 +5,5 @@
       (console.log "created track" track)
       ((. (../../api/call "invoke" "sampler/add" track.id) then)
         (lambda (sampler))
-        (err (+ "error adding sampler for " id))))
-    (err (+ "error adding sequencer for " fullpath))))
+        (../err (+ "error adding sampler for " id))))
+    (../err (+ "error adding sequencer for " data))))

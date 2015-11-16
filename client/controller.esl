@@ -1,0 +1,24 @@
+((lambda ()
+
+  (var emitter (new (. (require "eventemitter2") EventEmitter2)
+    (object "maxListeners" 64 "wildcard" true)))
+
+  (emitter.on "init"
+    (lambda () (./events/init)))
+
+  (emitter.on "search.query"
+    (lambda () (./events/search/query)))
+  (emitter.on "search.results"
+    (lambda (results) (./events/search/results results)))
+
+  (emitter.on "track.add"
+    (lambda (data) (./events/track/add data)))
+  (emitter.on "track.sequencer.click"
+    (lambda (track-id step-n)
+      (./events/track/sequencer/click track-id step-n)))
+
+  (emitter.on "toolbar.jack" (lambda () (./events/toolbar/jack)))
+  (emitter.on "toolbar.play" (lambda () (./events/toolbar/play)))
+  (emitter.on "toolbar.stop" (lambda () (./events/toolbar/stop)))
+
+  (return emitter)))

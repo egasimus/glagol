@@ -9,7 +9,7 @@
         (var names (Object.keys ./data))
         (var results (names.filter (lambda (name)
           (= name ((. (String name) to-lower-case)))
-          (return (< -1 (name.index-of query))))))
+          (return (< -1 (name.index-of (query.to-lower-case)))))))
         (console.log "found" results.length)
         (return results))
     "detail"

@@ -4,39 +4,36 @@
   (var glob (require "glob"))
   (var path (require "path"))
 
-  (var library-dir  "/home/epimetheus/Sounds")
-  (var library-file (path.join library-dir "data.json"))
-
   (return (|| (load-library) (scan-library)))
 
   (function load-library ()
-    (console.log "loading library from" library-file)
+    (console.log "loading library from" ./options/file)
     (try
-      (var data (fs.read-file-sync library-file "utf8"))
+      (var data (fs.read-file-sync ./options/file "utf8"))
       (catch err
-        (console.error "error reading" library-file)
+        (console.error "error reading" ./options/file)
         (return (write-library (scan-library)))))
     (try
       (return (JSON.parse data))
       (catch err
-        (console.error "error parsing" library-file)
+        (console.error "error parsing" ./options/file)
         (return (write-library (scan-library))))))
 
   (function scan-library ()
-    (console.log "scanning library at" library-dir)
+    (console.log "scanning library at" ./options/dir)
     (var files (glob.sync
-      (path.join library-dir "**" "*")
+      (path.join ./options/dir "**" "*")
       (object "nodir" true)))
     (return (files.reduce (lambda (library file)
-      (= (get library (path.relative library-dir file)) (object))
+      (= (get library (path.relative ./options/dir file)) (object))
       (return library)) (object))))
 
   (function write-library (data)
-    (console.log "writing library to" library-file)
+    (console.log "writing library to" ./options/file)
     (try
-      (fs.write-file-sync library-file (JSON.stringify data))
+      (fs.write-file-sync ./options/file (JSON.stringify data))
       (catch err
-        (console.error "error writing" library-file))
+        (console.error "error writing" ./options/file))
       (finally
         (return data))))
 

@@ -17,7 +17,7 @@
       (./h "ul.result-group-items"
         (items.map (lambda (result) (return
           (./h "li.result"
-            (object "onclick" (./emit "track.add" result))
+            (object "onclick" (./emit "track.add" (path.join dir result)))
             (./h ".result-title" (path.basename result)))))))))))
 
   (function group (groups fullpath)

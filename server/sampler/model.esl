@@ -77,7 +77,8 @@
       (= state.osc (new osc.Client "127.0.0.1" state.osc-port))
       (var track (state.track))
       (console.log state.track.step)
-      (state.osc.send "/load" 0 track.path)
+      (state.osc.send "/load" 0
+        (path.join ../library/options/dir track.path))
       (state.track.step play-step))
 
     (function play-step (step)

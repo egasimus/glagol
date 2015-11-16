@@ -2,11 +2,8 @@
 
   "list" (lambda ()
     (var tracks (./state/tracks))
-    (var ids (Object.keys tracks))
-    (var output (object))
-    (ids.map (lambda (id)
-      (= (get output id) ((get tracks id)))))
-    (return (JSON.stringify output)))
+    (console.log tracks)
+    (return (JSON.stringify tracks)))
 
   "add" (lambda (fullpath)
     (console.log "adding track" fullpath)

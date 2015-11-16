@@ -1,8 +1,7 @@
 (lambda () (return (object
 
   "list" (lambda ()
-    (var tracks (./state/tracks))
-    (console.log tracks)
+    (var tracks (((require "observ-struct") (./state/tracks)))) ; dang!
     (return (JSON.stringify tracks)))
 
   "add" (lambda (fullpath)

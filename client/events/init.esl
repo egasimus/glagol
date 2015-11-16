@@ -1,11 +1,5 @@
 (lambda ()
 
-  (function add-track (data)
-    (var tracks (../state/tracks))
-    (var track (../models/track data))
-    (= (get tracks data.id) (../models/track data))
-    (./state/tracks/set tracks))
-
   (../api/call "invoke" "jack/control/IsStarted"
     (lambda (e status)
       (if e (./err e))
@@ -23,6 +17,11 @@
     (lambda (results)
       (= results (JSON.parse results))
       (= ids (Object.keys results))
-      (ids.map (lambda (id) (add-track (get results id))))
-      (console.log "sequencer list" results))
-    (./err "error retrieving track list")))
+      (var tracks (../state/tracks))
+      (ids.map (lambda (id)
+        (var data (get results id))
+        (= (get tracks data.id) (../models/track data))))
+      (../state/tracks/set tracks))
+    (./err "error receiving track list"))
+
+)

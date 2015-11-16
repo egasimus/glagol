@@ -1,0 +1,7 @@
+(lambda (track)
+  (var steps (array))
+  (for (var i 0) (< i track.seq.length) (++ i)
+    (steps.push (./h
+      (+ ".sequencer-step" (?: (> (get track.seq i) 0) ".active" ""))
+      (object "onclick" (./emit "track.sequencer.click" track.id i)))))
+  (return (./h ".sequencer" steps)))

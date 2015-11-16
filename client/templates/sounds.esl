@@ -1,5 +1,4 @@
 (lambda (s)
-  (console.log "s.tracks" s.tracks)
   (var ids (Object.keys s.tracks))
   (return (./h ".sounds" (ids.map (lambda (id)
     (var track ((get s.tracks id)))

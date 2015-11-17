@@ -5,6 +5,7 @@
       (./bar-top    s)
       (./bar-bottom s)
 ;      (./session    s)
+      (./piano)
       (./tracks     s)
       (./library    s)))))
 

@@ -7,43 +7,43 @@
       (if err (throw err))
       (cb port))))
 
-  (function get-port (daemon cb)
-    (var d (get ./state/daemons daemon))
-    (var p (d.port))
-    (if p (cb p) (freeport cb)))
+  (function daemon (name)
 
-  (function dead (daemon)
-    (var d (get ./state/daemons daemon))
-    (var p (d.proc))
-    (var dead (|| (=== null p) p.dead false))
-    (console.log "is" daemon "dead?" dead)
-    (return dead))
+    (var d (get ./state/daemons name))
 
-  (function start (daemon port)
-    (var d (get ./state/daemons daemon))
-    (d.port.set port)
-    (console.log "starting" daemon "on" port)
-    (var cmd  (. (get ./options daemon) path))
-    (var args (. (get ./options daemon) args))
-    (var opts (object "stdio" "inherit"))
-    (console.log "spawn" cmd args opts)
-    (var proc (spawn cmd args opts))
-    (proc.on "exit" (lambda (code signal)
-      (= proc.dead true)
-      (console.log daemon "exited with code" code)))
-    (d.proc.set proc))
+    (if (is-dead)
+      (get-port
+        start))
+
+    (function is-dead ()
+      (var p (d.proc))
+      (var dead (|| (=== null p) p.dead false))
+      (console.log "is" name "dead?" dead)
+      (return dead))
+
+    (function get-port (cb)
+      (var p (d.port))
+      (if p (cb p) (freeport cb)))
+
+    (function start (port)
+      (d.port.set port)
+      (console.log "starting" name "on" port)
+      (var cmd  (. (get ./options name) path))
+      (var args (. (get ./options name) args))
+      (var opts (object "stdio" "inherit"))
+      (console.log "spawn" cmd args opts)
+      (var proc (spawn cmd args opts))
+      (proc.on "exit" (lambda (code signal)
+        (= proc.dead true)
+        (console.log name "exited with code" code)))
+      (d.proc.set proc)))
 
   (return (lambda init-transport ()
 
     (console.log "init transport")
 
-    (if (dead "jackOsc")
-      (get-port "jackOsc"
-        (start.bind null "jackOsc")))
-
-    (if (dead "klick")
-      (get-port "klick"
-        (start.bind null "klick")))
+    (daemon "jackOsc")
+    (daemon "klick")
 
   ))
 

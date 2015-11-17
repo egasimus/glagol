@@ -13,6 +13,8 @@
     (lambda ()
       (../state/jack/started/set false)))
 
+  ((. (../api/call "invoke" "transport/init") done))
+
   ((. (../api/call "invoke" "sequencer/list") then)
     (lambda (results)
       (= results (JSON.parse results))

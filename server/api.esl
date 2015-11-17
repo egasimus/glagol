@@ -2,6 +2,7 @@
   "library"   (./library/api)
   "sequencer" (./sequencer/api)
   "sampler"   (./sampler/api)
+  "transport" (./transport/api)
   "jack"      (./jack/api)
 
   "exit" (lambda () (process.exit)))))

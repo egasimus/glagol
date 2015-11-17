@@ -1,4 +1,15 @@
 (../lib/observ/Obj
+
+  "daemons" (../lib/observ/Obj
+    "klick"
+      (../lib/observ/Obj
+        "port" (../lib/observ/Var null)
+        "proc" (../lib/observ/Var null))
+    "jackOsc"
+      (../lib/observ/Obj
+        "port" (../lib/observ/Var null)
+        "proc" (../lib/observ/Var null)))
+
   "rolling"     (../lib/observ/Var false)
   "bpm"         (../lib/observ/Var 140)
   "meterTop"    (../lib/observ/Var 4)

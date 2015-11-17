@@ -3,25 +3,40 @@
   (var freeport (require "freeport"))
   (var spawn    (. (require "child_process") spawn))
 
+  (function freeport (cb)
+    ((require "freeport" (lambda (err port)
+      (if err (throw err))
+      (cb port)))))
+
+  (function get-port (daemon cb)
+    (var d (get ./state/daemons daemon))
+    (var p (d.port))
+    (if p (cb p) (freeport cb)))
+
+  (function not-started (daemon)
+    (var d (get ./state/daemons daemon))
+    (var p (d.proc))
+    (return (|| (=== null p) (!== null p.exit-code))))
+
   (return (lambda init-transport ()
 
-    (var state)
+    (if (not-started "jackOsc")
+      (get-port "jackOsc" (lambda (port)
+        (console.log "starting jack-osc on" port)
+        (./state/daemons/jack-osc/port/set port)
+        (var args (array))
+        (var opts (object))
+        (./state/daemons/jack-osc/proc/set
+          (spawn ./options/jack-osc-path args opts)))))
 
-    (freeport (lambda (err port)
-      (if err (throw err))
-      (= state.jack-osc (object "port" port))
-      (var args (array))
-      (var opts (object))
-      (= state.jack-osc.proc (spawn ./options/jack-osc-path args opts))))
-
-    (freeport (lambda (err port)
-      (if err (throw err))
-      (= state.klick (object "port" port))
-      (var args (array))
-      (var opts (object))
-      (= state.klick.proc (spawn ./options/klick-path args opts))))
-      
-    (return state)))
+    (if (not-started "klick")
+      (get-port "klick" (lambda (port)
+        (console.log "starting klick on" port)
+        (./state/daemons/klick/port/set port)
+        (var args (array))
+        (var opts (object))
+        (./state/daemons/klick/proc/set
+          (spawn ./options/klick-path args opts)))))))
 
 ))
 

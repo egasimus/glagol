@@ -1,12 +1,11 @@
 ((lambda ()
 
-  (var freeport (require "freeport"))
-  (var spawn    (. (require "child_process") spawn))
+  (var spawn (. (require "child_process") spawn))
 
   (function freeport (cb)
-    ((require "freeport" (lambda (err port)
+    ((require "freeport") (lambda (err port)
       (if err (throw err))
-      (cb port)))))
+      (cb port))))
 
   (function get-port (daemon cb)
     (var d (get ./state/daemons daemon))
@@ -16,6 +15,7 @@
   (function not-started (daemon)
     (var d (get ./state/daemons daemon))
     (var p (d.proc))
+    (console.log "ns" p.exit-code)
     (return (|| (=== null p) (!== null p.exit-code))))
 
   (return (lambda init-transport ()

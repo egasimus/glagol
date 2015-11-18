@@ -1,5 +1,7 @@
 ((lambda ()
 
+  (var Long (require "long"))
+  (var osc (require "osc"))
   (var spawn (. (require "child_process") spawn))
 
   (function freeport (cb)
@@ -7,7 +9,7 @@
       (if err (throw err))
       (cb port))))
 
-  (function daemon (name)
+  (function daemon (name callback)
 
     (var d (get ./state/daemons name))
 
@@ -26,24 +28,45 @@
       (if p (cb p) (freeport cb)))
 
     (function start (port)
+
       (d.port.set port)
       (console.log "starting" name "on" port)
+
       (var cmd  (. (get ./options name) path))
       (var args (. (get ./options name) args))
       (var opts (object "stdio" "inherit"))
       (console.log "spawn" cmd args opts)
+
       (var proc (spawn cmd args opts))
       (proc.on "exit" (lambda (code signal)
         (= proc.dead true)
         (console.log name "exited with code" code)))
-      (d.proc.set proc)))
+      (d.proc.set proc)
+
+      (var osc-port (new osc.UDPPort (object
+        "localAddress" "localhost"
+        "localPort"    port)))
+      (callback
+        (osc-port.on.bind osc-port)
+        (lambda ()
+          (var addr (get arguments 0))
+          (var args (Array.prototype.slice.call arguments 1))
+          (osc-port.send (object "address" addr "args" args)
+            "localhost" port))))
+
+  )
 
   (return (lambda init-transport ()
 
     (console.log "init transport")
 
-    (daemon "jackOsc")
-    (daemon "klick")
+    (daemon "jackOsc" (lambda (on send)
+      (send "/receive" (Long.fromString "FFFFFFF" false 16))
+      (send "/status")
+      (send "/current")
+      (console.log "JACK" osc "JACK")))
+    (daemon "klick" (lambda (on send)
+      (console.log "KLICK" osc "K1LICK")))
 
   ))
 

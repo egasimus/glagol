@@ -1,0 +1,2 @@
+(lambda (msg)
+  (console.log msg.address msg.args))

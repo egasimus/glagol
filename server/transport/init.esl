@@ -2,68 +2,36 @@
 
   (var Long (require "long"))
   (var osc (require "osc"))
-  (var spawn (. (require "child_process") spawn))
 
-  (function freeport (cb)
-    ((require "freeport") (lambda (err port)
-      (if err (throw err))
-      (cb port))))
+  (return init-transport)
 
-  (function daemon (name callback)
+  (function init-transport ()
+    (var osc-client (./state/osc-client))
+    (console.log "INIT" osc-client)
+    (if osc-client
+      (start osc-client)
+      (./freeport (lambda (port)
+        (console.log "init transport on" port)
+        (var opts (object "localAddress" "localhost" "localPort" port))
+        (./state/osc-client/set (= osc-client (new osc.UDPPort opts)))
+        (osc-client.open)
+        (osc-client.on "message" (lambda ()
+          (./events/message/apply null arguments)))
+        (start osc-client))))
 
-    (var d (get ./state/daemons name))
-
-    (if (is-dead)
-      (get-port
-        start))
-
-    (function is-dead ()
-      (var p (d.proc))
-      (var dead (|| (=== null p) p.dead false))
-      (console.log "is" name "dead?" dead)
-      (return dead))
-
-    (function get-port (cb)
-      (var p (d.port))
-      (if p (cb p) (freeport cb)))
-
-    (function start (port)
-
-      (d.port.set port)
-      (console.log "starting" name "on" port)
-
-      (var cmd  (. (get ./options name) path))
-      (var args (. (get ./options name) args))
-      (var opts (object "stdio" "inherit"))
-      (console.log "spawn" cmd args opts)
-
-      (var proc (spawn cmd args opts))
-      (proc.on "exit" (lambda (code signal)
-        (= proc.dead true)
-        (console.log name "exited with code" code)))
-      (d.proc.set proc)
-
-      (set-timeout (lambda () (callback port)) 10000) ))
-
-  (return (lambda init-transport ()
-
-    (freeport (lambda (my-port)
-      (console.log "init transport on" my-port)
-
-      (var osc-port (new osc.UDPPort
-        (object "localaddress" "localhost"
-                "localport"    my-port)))
-      (osc-port.open)
-      (osc-port.on "message" (lambda () (console.log "hey jo" arguments)))
+    (function start (osc-client)
 
       (var send (lambda (port addr)
         (var args (Array.prototype.slice.call arguments 2))
-        (osc-port.send (object "address" addr "args" args) "localhost" port)))
+        (osc-client.send (object "address" addr "args" args) "localhost" port)))
 
-      (daemon "jackOsc" (lambda (p)
-        (send p "/receive_at" (Long.fromString "FFFFFFF" false 16) (new Long my-port) "localhost")
+      (./daemon "jackOsc" (lambda (p)
+        (console.log osc-client)
+        (var bitmask (Long.fromString "FFFFFFF" false 16))
+        (var port-no (new Long osc-client.options.local-port)) ; not float
+        (send p "/receive_at" bitmask port-no "localhost")
         (send p "/status")
         (send p "/current")))
 
-      (daemon "klick" (lambda (p)
-        (send p "/ping"))) )) )) ))
+      (./daemon "klick" (lambda (p)
+        (send p "/ping") )) ) ) ))

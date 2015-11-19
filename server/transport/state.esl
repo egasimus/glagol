@@ -10,6 +10,8 @@
         "port" (../lib/observ/Var null)
         "proc" (../lib/observ/Var null)))
 
+  "oscClient"   (../lib/observ/Var null)
+
   "rolling"     (../lib/observ/Var false)
   "bpm"         (../lib/observ/Var 140)
   "meterTop"    (../lib/observ/Var 4)

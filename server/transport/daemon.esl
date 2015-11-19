@@ -1,0 +1,35 @@
+(lambda daemon (name callback)
+
+  (var spawn (. (require "child_process") spawn))
+
+  (var d (get ./state/daemons name))
+
+  (if (is-dead) (get-port start) (callback (d.port)))
+
+  (function is-dead ()
+    (var p (d.proc))
+    (var dead (|| (=== null p) p.dead false))
+    (console.log "is" name "dead?" dead)
+    (return dead))
+
+  (function get-port (cb)
+    (var p (d.port))
+    (if p (cb p) (./freeport cb)))
+
+  (function start (port)
+
+    (d.port.set port)
+    (console.log "starting" name "on" port)
+
+    (var cmd  (. (get ./options name) path))
+    (var args (. (get ./options name) args))
+    (var opts (object "stdio" "inherit"))
+    (console.log "spawn" cmd args opts)
+
+    (var proc (spawn cmd args opts))
+    (proc.on "exit" (lambda (code signal)
+      (= proc.dead true)
+      (console.log name "exited with code" code)))
+    (d.proc.set proc)
+
+    (callback port) ) )

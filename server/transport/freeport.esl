@@ -1,0 +1,4 @@
+(lambda freeport (cb)
+  ((require "freeport") (lambda (err port)
+    (if err (throw err))
+    (cb port))))

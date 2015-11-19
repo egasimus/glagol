@@ -1,7 +1,7 @@
 ((lambda ()
 
   (var freeport (require "freeport"))
-  (var osc      (require "node-osc"))
+  (var osc      (require "osc"))
   (var path     (require "path"))
   (var Q        (require "q"))
   (var shortid  (require "shortid"))
@@ -74,11 +74,15 @@
       (connect-osc))
 
     (function connect-osc ()
-      (= state.osc (new osc.Client "127.0.0.1" state.osc-port))
+      (var opts (object "localAddress" "127.0.0.1" "localPort" state.osc-port))
+      (= state.osc (new osc.UDPPort opts))
+      (state.osc.open)
       (var track (state.track))
       (console.log state.track.step)
-      (state.osc.send "/load" 0
-        (path.join ../library/options/dir track.path))
+      (state.osc.send (object
+        "address"   "/load"
+        "args"      (array 0 (path.join ../library/options/dir track.path)))
+        "localhost" state.osc-port)
       (state.track.step play-step))
 
     (function play-step (step)

@@ -1,3 +1,4 @@
 (lambda (track-id)
+  (console.log "adding sampler for" track-id)
   (var sampler (new ./model track-id))
   (./state/samplers/push sampler))

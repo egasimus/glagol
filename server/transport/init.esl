@@ -7,7 +7,6 @@
 
   (function init-transport ()
     (var osc-client (./state/osc-client))
-    (console.log "INIT" osc-client)
     (if osc-client
       (start osc-client)
       (./freeport (lambda (port)
@@ -22,14 +21,16 @@
     (function start (osc-client)
 
       (var send (lambda (port addr)
-        (var args (Array.prototype.slice.call arguments 2))
-        (osc-client.send (object "address" addr "args" args) "localhost" port)))
+        (osc-client.send (object
+        "address"   addr
+        "args"      (Array.prototype.slice.call arguments 2))
+        "localhost" port)))
 
       (./daemon "jackOsc" (lambda (p)
         (console.log osc-client)
         (var bitmask (Long.fromString "FFFFFFF" false 16))
         (var port-no (new Long osc-client.options.local-port)) ; not float
-        (send p "/receive_at" bitmask port-no "localhost")
+        (send p "/receive" bitmask)
         (send p "/status")
         (send p "/current")))
 

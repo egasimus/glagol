@@ -1,2 +1,4 @@
 (lambda (msg)
-  (console.log msg.address msg.args))
+  (switch msg.address
+    ("/tick" (./tick/apply null msg.args) (break))
+    (default msg.address msg.args)))

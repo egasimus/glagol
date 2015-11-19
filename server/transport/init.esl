@@ -43,32 +43,27 @@
         (console.log name "exited with code" code)))
       (d.proc.set proc)
 
-      (var osc-port (new osc.UDPPort (object
-        "localAddress" "localhost"
-        "localPort"    port)))
-      (callback
-        (osc-port.on.bind osc-port)
-        (lambda ()
-          (var addr (get arguments 0))
-          (var args (Array.prototype.slice.call arguments 1))
-          (osc-port.send (object "address" addr "args" args)
-            "localhost" port))))
-
-  )
+      (set-timeout (lambda () (callback port)) 10000) ))
 
   (return (lambda init-transport ()
 
-    (console.log "init transport")
+    (freeport (lambda (my-port)
+      (console.log "init transport on" my-port)
 
-    (daemon "jackOsc" (lambda (on send)
-      (send "/receive" (Long.fromString "FFFFFFF" false 16))
-      (send "/status")
-      (send "/current")
-      (console.log "JACK" osc "JACK")))
-    (daemon "klick" (lambda (on send)
-      (console.log "KLICK" osc "K1LICK")))
+      (var osc-port (new osc.UDPPort
+        (object "localaddress" "localhost"
+                "localport"    my-port)))
+      (osc-port.open)
+      (osc-port.on "message" (lambda () (console.log "hey jo" arguments)))
 
-  ))
+      (var send (lambda (port addr)
+        (var args (Array.prototype.slice.call arguments 2))
+        (osc-port.send (object "address" addr "args" args) "localhost" port)))
 
-))
+      (daemon "jackOsc" (lambda (p)
+        (send p "/receive_at" (Long.fromString "FFFFFFF" false 16) (new Long my-port) "localhost")
+        (send p "/status")
+        (send p "/current")))
 
+      (daemon "klick" (lambda (p)
+        (send p "/ping"))) )) )) ))

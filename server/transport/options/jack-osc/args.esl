@@ -1,1 +1,1 @@
-(array)
+(array "-p" (../../state/daemons/jack-osc/port))

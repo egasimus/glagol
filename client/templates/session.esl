@@ -1,25 +1,7 @@
 (lambda (s)
-
-  (var tracks (array
-    (track "track 1")
-    (track "track 2")
-    (track "track 3")
-    (track "track 4")
-    (track "track 5")
-    (track "track 6")
-    (track "track 7")
-    (track "track 8")))
-
-  (function track (name)
-    (return (./h ".track" (array
-      (./h ".track-name" name)
-      (./h ".clip" "clip 1")
-      (./h ".clip" "clip 2")
-      (./h ".clip" "clip 3")
-      (./h ".clip" "clip 4")
-      (./h ".clip" "clip 5")
-      (./h ".clip" "clip 6")
-      (./h ".clip" "clip 7")
-      (./h ".clip" "clip 8")))))
-
-  (return (./h ".session" tracks)))
+  (var options  (object))
+  (var elements (array))
+  (console.log s.sequencers)
+  (elements.concat ((. (Object.keys s.sequencers) map) ./sequencer))
+  (console.log elements)
+  (return (./h ".session" options elements)))

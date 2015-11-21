@@ -229,9 +229,9 @@ body
     display flex
     flex-direction row-reverse
 
-/// SESSION VIEW
+/// LAUNCHER
 
-.session
+.launcher
   margin-top 36px
   display flex
   flex-direction row
@@ -285,6 +285,37 @@ body
     &:hover
       background rgba(255,255,255,0.1)
 
+
+/// SESSION/PATCHBAY
+
+.session
+  width 100%
+  padding 6px 9px
+  display flex
+  flex-direction row
+  flex-wrap wrap
+
+  .device
+    border-top    1px solid #303030
+    border-left   1px solid #303030
+    border-bottom 1px solid #101010
+    border-right  1px solid #101010
+    border-radius 3px
+
+    padding 6px 9px
+    flex-grow 1
+    flex-basis auto
+    background #202020
+    margin-right 12px
+    margin-bottom 12px
+
+    &-label
+      background none
+      border none
+      border-bottom 1px dotted rgba(255,255,255,0.5)
+      color white
+      &:hover
+        background rgba(0,0,0,0.2)
 
 //////////////////////////////////////
 

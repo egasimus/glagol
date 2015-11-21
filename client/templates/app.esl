@@ -2,15 +2,17 @@
   (var options (object
     "attributes"    (object "tabindex" 1)
     "hook"          ../lib/vdom/focus-me
+    "onclick"       (./emit "app.click")
     "oncontextmenu" (./emit "app.contextMenu")))
   (var elements (array
-    (./context-menu s.context-menu)
     (./bar-top      s)
-    ;(./bar-bottom   s)
-    ; (./session    s)
-    (./piano)
-    (./tracks       s)
-    (./library      s)))
+    ; (./bar-bottom   s)
+    ; (./launcher     s)
+    ; (./piano)
+    (./session      s)
+    (./library      s)
+    (./context-menu s.context-menu)
+  ))
   (return (./h ".app" options elements)))
 
 ;(./h ".app" (object "attributes" (object "tabindex" 1) "hook" ../vdom/focus-me)

@@ -1,7 +1,12 @@
-(lambda (track)
+(lambda (data)
   (var steps (array))
-  (for (var i 0) (< i track.seq.length) (++ i)
-    (steps.push (./h
-      (+ ".sequencer-step" (?: (> (get track.seq i) 0) ".active" ""))
-      (object "onclick" (./emit "track.sequencer.click" track.id i)))))
-  (return (./h ".sequencer" steps)))
+  ;(for (var i 0) (< i track.seq.length) (++ i)
+  ;  (steps.push (./h
+  ;    (+ ".sequencer-step" (?: (> (get track.seq i) 0) ".active" ""))
+  ;    (object "onclick" (./emit "track.sequencer.click" track.id i)))))
+  (var elements (array))
+  (elements.push (./h "input.device-label"
+    (object "placeholder" "label")
+    data.label))
+  (elements.concat steps)
+  (return (./h ".device.sequencer" elements)))

@@ -1,0 +1,20 @@
+(lambda sequencer (data)
+
+  (if (|| (=== false (Boolean data)) (=== "string" (typeof data)))
+    (return (sequencer (object
+      "id"    ((. (require "shortid") generate))
+      "label" data
+      "seq"   (array 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+      "step"  0))))
+
+  (var Var ../lib/observ/Var)
+  (var Arr ../lib/observ/Arr)
+  (var Obj ../lib/observ/Obj)
+
+  (return (Obj
+    "id"    (Var data.id)
+    "label" (Var data.label)
+    "seq"   (Arr.apply Arr data.seq)
+    "step"  (Var data.step)))
+
+)

@@ -1,0 +1,2 @@
+(lambda (ntp utc frm fps ppm ppc pt state)
+  (console.log "TRANSPORT" ntp utc frm fps ppm ppc pt state))

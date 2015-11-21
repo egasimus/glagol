@@ -27,7 +27,6 @@
         "localhost" port)))
 
       (./daemon "jackOsc" (lambda (p)
-        (console.log osc-client)
         (var bitmask (Long.fromString "FFFFFFF" false 16))
         (var port-no (new Long osc-client.options.local-port)) ; not float
         (send p "/receive" bitmask)

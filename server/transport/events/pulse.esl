@@ -1,0 +1,2 @@
+(lambda (ntp utc frm p-ntp p-utc p-frm pulse)
+  (console.log "PULSE" pulse))

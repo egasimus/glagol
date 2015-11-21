@@ -1,15 +1,17 @@
-(lambda (s) (return
-  (./h ".app"
-    (object "attributes" (object "tabindex" 1) "hook" ../lib/vdom/focus-me)
-    (array 
-      (./bar-top    s)
-      (./bar-bottom s)
-;      (./session    s)
-      (./piano)
-      (./tracks     s)
-      (./library    s)))))
-
-
+(lambda (s)
+  (var options (object
+    "attributes"    (object "tabindex" 1)
+    "hook"          ../lib/vdom/focus-me
+    "oncontextmenu" (./emit "app.contextMenu")))
+  (var elements (array
+    (./context-menu s.context-menu)
+    (./bar-top      s)
+    ;(./bar-bottom   s)
+    ; (./session    s)
+    (./piano)
+    (./tracks       s)
+    (./library      s)))
+  (return (./h ".app" options elements)))
 
 ;(./h ".app" (object "attributes" (object "tabindex" 1) "hook" ../vdom/focus-me)
 ;  (array (./toolbar s) (./library s))))

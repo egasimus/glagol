@@ -1,6 +1,21 @@
 (./lib/observ/Obj
-  "server"    (./lib/observ/Var false)
-  "results"   (./lib/observ/Arr)
-  "tracks"    (./lib/observ/Var (object))
-  "jack"      (./lib/observ/Obj
-    "started" (./lib/observ/Var false)))
+
+  "server"       (./lib/observ/Var
+    false)
+
+  "jack"         (./lib/observ/Obj
+    "started"    (./lib/observ/Var
+      false))
+
+  "contextMenu"  (./lib/observ/Obj
+    "x"          (./lib/observ/Var
+      null)
+    "y"          (./lib/observ/Var
+      null))
+
+  "results"      (./lib/observ/Arr)
+
+  "tracks"       (./lib/observ/Var
+    (object))
+
+)

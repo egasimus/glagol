@@ -1,0 +1,15 @@
+(lambda (s)
+  (if (&& s.x s.y) (block
+    (var style (+ "position:fixed;left:" s.x "px;top:" s.y "px;"))
+    (var options (object "attributes" (object "style" style)))
+    (var elements (array
+      (item "sequencer.add" "Sequencer")
+      (item "sampler.add"   "Sampler")))
+    (return (./h ".context-menu" options elements))))
+    
+  (function item (evt text)
+    (return (./h "a" (object "onclick" (cb evt)) text)))
+    
+  (function cb (evt) (return (lambda ()
+    ((./emit "contextMenu.close"))
+    ((./emit evt))))))

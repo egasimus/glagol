@@ -1,0 +1,6 @@
+(lambda ()
+  (if (=== this.event.target.class-name "app") (block
+    (this.event.prevent-default)
+    (../../state/context-menu/x/set this.event.client-x)
+    (../../state/context-menu/y/set this.event.client-y)))
+  (console.log this.event arguments))

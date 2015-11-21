@@ -229,7 +229,7 @@ body
     display flex
     flex-direction row-reverse
 
-// SESSION VIEW
+/// SESSION VIEW
 
 .session
   margin-top 36px
@@ -261,7 +261,30 @@ body
       &:hover
         background rgba(0,0,0,0.6)
 
-    
+/// CONTEXT MENU
+
+.context-menu
+  padding    5px 5px
+  background #202020
+  border     1px solid black
+  box-shadow 3px 3px 3px rgba(0,0,0,0.5)
+
+  display        flex
+  flex-direction column
+
+  opacity 0.8
+  transition 0.2s all
+  &:hover
+    opacity 1
+
+  &>a
+    text-align center
+    cursor     pointer
+    display    inline-block
+    padding    3px 6px
+    &:hover
+      background rgba(255,255,255,0.1)
+
 
 //////////////////////////////////////
 

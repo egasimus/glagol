@@ -2,7 +2,7 @@
 
   (../api/call "invoke" "jack/control/IsStarted"
     (lambda (e status)
-      (if e (./err e))
+      (if e (../lib/error e))
       (../state/jack/started/set status)))
 
   (../api/call "invoke" "jack/control/on" "ServerStarted"
@@ -24,6 +24,6 @@
         (var data (get results id))
         (= (get tracks data.id) (../models/track data))))
       (../state/tracks/set tracks))
-    (./err "error receiving track list"))
+    (../lib/error "error receiving track list"))
 
 )

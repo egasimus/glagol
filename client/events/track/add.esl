@@ -8,5 +8,5 @@
       ((. (../../api/call "invoke" "sampler/add" data.id) then)
         (lambda (sampler)
           (console.log "created sampler" sampler))
-        (../err (+ "error adding sampler for " id))))
-    (../err (+ "error adding sequencer for " data))))
+        (../../lib/error (+ "error adding sampler for " id))))
+    (../../lib/error (+ "error adding sequencer for " data))))

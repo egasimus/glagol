@@ -1,12 +1,12 @@
 (lambda (data)
   (var steps (array))
-  ;(for (var i 0) (< i track.seq.length) (++ i)
-  ;  (steps.push (./h
-  ;    (+ ".sequencer-step" (?: (> (get track.seq i) 0) ".active" ""))
-  ;    (object "onclick" (./emit "track.sequencer.click" track.id i)))))
+  (for (var i 0) (< i data.seq.length) (++ i)
+    (steps.push (./h
+      (+ ".sequencer-step" (?: (> (get data.seq i) 0) ".active" ""))
+      (object "onclick" (./emit "sequencer.click" data.id i)))))
   (var elements (array))
   (elements.push (./h "input.device-label"
     (object "placeholder" "label")
-    (data.label)))
-  (console.log elements)
+    data.label))
+  (elements.push (./h ".sequencer-steps" steps))
   (return (./h ".device.sequencer" elements)))

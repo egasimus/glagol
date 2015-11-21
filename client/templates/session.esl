@@ -1,6 +1,12 @@
 (lambda (s)
+
   (var options  (object))
   (var elements (array))
+
   ((. (Object.keys s.sequencers) map)
-    (lambda (id) (elements.push (./sequencer (get s.sequencers id)))))
+    (lambda (id) (elements.push (./sequencer ((get s.sequencers id))))))
+
+  ((. (Object.keys s.samplers) map)
+    (lambda (id) (elements.push (./sampler   ((get s.samplers   id))))))
+
   (return (./h ".session" options elements)))

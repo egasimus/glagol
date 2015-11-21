@@ -9,24 +9,23 @@
 
   (return init)
 
-  (function init (track-id)
+  (function init ()
 
-    (console.log "init sampler" track-id)
+    (console.log "init sampler")
 
-    (var state (object
-      "track" (get (../sequencer/state/tracks) track-id)
-      "proc"  null))
+    (var state (object "id" (shortid.generate) "proc" null))
 
-    ((.
+    (return ((.
       (Q.spread
         (array ../jack/control ../jack/patchbay)
         (start.bind null state))
       catch)
-        (../lib/error "error spawning sampler"))
-    (return state))
+        (../lib/error "error spawning sampler"))))
 
   (function start (state control patchbay)
     (control.IsStarted is-jack-started)
+
+    (return state)
 
     (function is-jack-started (e is-it)
       (if e (throw e))
@@ -58,7 +57,7 @@
           (= state.remote-port remote-port)
           (console.log state)
           (var args (array
-            "-n" (shortid.generate)
+            "-n" state.id
             "-p" remote-port
             "-c" "system:playback_1"))
           (var opts (object "stdio" "inherit"))
@@ -86,18 +85,18 @@
         "remoteAddress" "127.0.0.1"
         "remotePort"    state.remote-port))
       (= state.osc (new osc.UDPPort opts))
-      (state.osc.open)
+      (state.osc.open))
 
-      (var track (state.track))
-      (state.osc.send (object
-        "address"   "/load"
-        "args"      (array 0 (path.join ../library/options/dir track.path))))
+      ;(var track (state.track))
+      ;(state.osc.send (object
+      ;  "address"   "/load"
+      ;  "args"      (array 0 (path.join ../library/options/dir track.path))))
 
-      (state.track.step play-step))
+      ;(state.track.step play-step))
 
     (function play-step (step)
-      (var track (state.track))
-      (var value ((. state.track.seq get) step))
+      ;(var track (state.track))
+      (var value 0);((. state.track.seq get) step))
       (if (> value 0)
         (state.osc.send (object
           "address"   "/play"

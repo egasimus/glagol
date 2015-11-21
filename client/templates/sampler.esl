@@ -1,0 +1,2 @@
+(lambda (data)
+  (return (./h ".device.sampler" elements)))

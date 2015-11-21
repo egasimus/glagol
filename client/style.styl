@@ -185,21 +185,6 @@ body
     display flex
     flex-direction row
 
-  .sequencer-step
-    width 24px
-    height 24px
-    background rgba(0,0,0,0.5)
-    margin 0 0 0 2px
-
-    &:hover
-      background rgba(0,0,0,0.2)
-
-    &.active
-      background linear-gradient(to bottom, orangered, red)
-
-      &:hover
-        opacity 0.5
-
 /// TOOLBAR
 
 .toolbar
@@ -314,8 +299,31 @@ body
       border none
       border-bottom 1px dotted rgba(255,255,255,0.5)
       color white
-      &:hover
-        background rgba(0,0,0,0.2)
+      margin-bottom 3px
+      &:hover, &:focus
+        outline none
+        background rgba(0,0,0,0.5)
+
+/// DEVICE: SEQUENCER
+
+.sequencer-steps
+  display flex
+  flex-direction row
+
+.sequencer-step
+  width 24px
+  height 24px
+  background rgba(0,0,0,0.5)
+  margin 0 2px 0 0
+
+  &:hover
+    background rgba(0,0,0,0.2)
+
+  &.active
+    background linear-gradient(to bottom, orangered, red)
+
+    &:hover
+      opacity 0.5
 
 //////////////////////////////////////
 

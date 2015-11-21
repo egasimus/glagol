@@ -1,0 +1,4 @@
+(lambda (data)
+  ((. (../../api/call "invoke" "sampler/add" data.id) then)
+    (lambda (sampler) (console.log "created sampler" sampler))
+    (../../lib/error (+ "error adding sampler for " id))))

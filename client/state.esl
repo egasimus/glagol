@@ -18,4 +18,10 @@
   "tracks"       (./lib/observ/Var
     (object))
 
+  "sequencers"   (./lib/observ/Var
+    (object))
+
+  "samplers"     (./lib/observ/Var
+    (object))
+
 )

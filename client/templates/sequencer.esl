@@ -7,6 +7,6 @@
   (var elements (array))
   (elements.push (./h "input.device-label"
     (object "placeholder" "label")
-    data.label))
-  (elements.concat steps)
+    (data.label)))
+  (console.log elements)
   (return (./h ".device.sequencer" elements)))

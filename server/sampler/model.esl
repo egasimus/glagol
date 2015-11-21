@@ -52,14 +52,20 @@
       (patchbay.remove-listener "ClientAppeared" client-appeared))
 
     (function spawn-sampler ()
-      (freeport (lambda (err port)
-        (if err (throw err))
-        (= state.osc-port port)
-        (var args (array "-n" (shortid.generate) "-p" port "-c" "system:playback_1"))
-        (var opts (object "stdio" "inherit"))
-        (console.log "spawning" ./options/sampler-path (args.join " "))
-        (= state.proc (spawn ./options/sampler-path args opts))
-        (listen))))
+      ((. (Q.all (array (Q.nfcall freeport) (Q.nfcall freeport))) spread)
+        (lambda (local-port remote-port)
+          (= state.local-port local-port)
+          (= state.remote-port remote-port)
+          (console.log state)
+          (var args (array
+            "-n" (shortid.generate)
+            "-p" remote-port
+            "-c" "system:playback_1"))
+          (var opts (object "stdio" "inherit"))
+          (console.log "spawning" ./options/sampler-path (args.join " "))
+          (= state.proc (spawn ./options/sampler-path args opts))
+          (listen))
+        (../lib/error "error getting two free ports for OSC")))
 
     (function client-appeared (ver id name)
       (patchbay.GetClientPID id (lambda (e pid)
@@ -68,28 +74,34 @@
           (block (unlisten) (client-found pid id name)))))))
 
     (function client-found (pid id name)
-      (console.log "client" pid id name "is us" state)
+      (console.log "client" pid id name "is us")
       (= state.jack-id id)
       (= state.jack-name name)
       (connect-osc))
 
     (function connect-osc ()
-      (var opts (object "localAddress" "127.0.0.1" "localPort" state.osc-port))
+      (var opts (object
+        "localAddress"  "127.0.0.1"
+        "localPort"     state.local-port
+        "remoteAddress" "127.0.0.1"
+        "remotePort"    state.remote-port))
       (= state.osc (new osc.UDPPort opts))
       (state.osc.open)
+
       (var track (state.track))
-      (console.log state.track.step)
       (state.osc.send (object
         "address"   "/load"
-        "args"      (array 0 (path.join ../library/options/dir track.path)))
-        "localhost" state.osc-port)
+        "args"      (array 0 (path.join ../library/options/dir track.path))))
+
       (state.track.step play-step))
 
     (function play-step (step)
       (var track (state.track))
       (var value ((. state.track.seq get) step))
       (if (> value 0)
-        (state.osc.send "/play" 0 0))
+        (state.osc.send (object
+          "address"   "/play"
+          "args"      (array 0 0))))
       (console.log "->>" track step value))
 
 

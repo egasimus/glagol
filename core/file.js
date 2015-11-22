@@ -94,7 +94,7 @@ function compile () {
       try {
         return this.compiled = this.runtime.compileSource.call(this);
       } catch (e) {
-        console.error("Error compiling " + this.name + ":");
+        console.error("Error compiling " + this.path + ":");
         console.log(e.message);
         console.log(e.stack);
       }

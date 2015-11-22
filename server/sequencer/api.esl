@@ -20,25 +20,4 @@
     (console.log (sequencer.seq))
     (return (sequencer.seq)))
 
-  "play" (lambda ()
-    (var api (./api))
-    (api.stop)
-    (var t (set-interval (lambda () (api.step)) 107.14))
-    (./state/timer/set t))
-
-  "step" (lambda ()
-    (var sequencers (./state))
-    ((. (Object.keys sequencers) map) (lambda (id)
-      (var sequencer (get sequencers id))
-      (var step (sequencer.step))
-      (var len (. (sequencer.seq) length))
-      (if (< step (- len 1))
-        (sequencer.step.set (+ step 1))
-        (sequencer.step.set 0)))))
-
-  "stop" (lambda ()
-    (var timer (./state/timer))
-    (if timer (clear-interval timer))
-    (./state/timer/set null))
-
 )))

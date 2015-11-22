@@ -1,0 +1,6 @@
+(lambda (data)
+  (var observ ../lib/observ)
+  (return        (observ.Obj
+    "id"         (observ.Var data.id)
+    "path"       (observ.Var data.pathA
+    "cues"       (observ.Arr)))))

@@ -8,6 +8,9 @@
   (elements.push
     (./h ".device-header" (array
       (./device-label data.label "Sequencer")
-      (./device-info data))))
+      (./device-info (array
+        (array "text" "Type"  "Sequencer")
+        (array "text" "ID"    data.id)
+        (array "step" "Step"  (+ data.step "/" data.seq.length)))))))
   (elements.push (./h ".sequencer-steps" steps))
   (return (./h ".device.sequencer" elements)))

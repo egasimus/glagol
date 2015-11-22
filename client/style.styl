@@ -321,6 +321,7 @@ body
       font-size      16px
 
       &-dropdown
+        cursor default
         font-size 11px
         z-index 1
         padding 6px 9px
@@ -338,11 +339,17 @@ body
           justify-content space-between
 
           &-label
-            font-weight bold
+            font-weight  bold
             margin-right 9px
 
-          &-value
+          &-value, &-button
             margin-left 9px
+
+          &-button
+            width      12px
+            height     12px
+            background #222
+            margin-top 3px
 
 
 /// DEVICE: SEQUENCER
@@ -365,6 +372,13 @@ body
 
     &:hover
       opacity 0.5
+
+
+/// DEVICE: SAMPLER
+
+.sampler-clip, .sampler-clip-add
+  line-height 14px
+  padding 5px 0
 
 //////////////////////////////////////
 

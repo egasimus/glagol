@@ -1,29 +1,41 @@
 ((lambda ()
 
-  (function DeviceInfoWidget ())
+  (function DeviceInfoWidget (options)
+    (= this.options options))
 
   (= DeviceInfoWidget.prototype.type "Widget")
 
   (= DeviceInfoWidget.prototype.init (lambda ()
     (var elem (../lib/vdom/create
       (./h "label.device-info" (array
-        "ℹ"
-        (./h ".device-info-dropdown" (array
-          (./h ".device-info-dropdown-option" (array
-            (./h ".device-info-dropdown-option-label" "Type")
-            (./h ".device-info-dropdown-option-value" "Device")))))))))
+        (./h ".device-info-icon" "ℹ")
+        (./h ".device-info-dropdown" (this.options.map render-option))))))
     (= elem.last-child.style.display "none")
-    (= elem.onclick (lambda ()
+    (= elem.first-child.onclick (lambda ()
       (= elem.last-child.style.display
         (?: (=== "none" elem.last-child.style.display) "block" "none"))))
     (return elem)))
 
-  (= DeviceInfoWidget.prototype.update (lambda (prev elem)
-    (console.log prev elem)))
+  (= DeviceInfoWidget.prototype.update (lambda (prev elem)))
 
   (= DeviceInfoWidget.prototype.destroy (lambda (elem)))
 
-  (return (lambda device-info (data)
-    (return (new DeviceInfoWidget data))))
+  (return (lambda device-info (options)
+    (return (new DeviceInfoWidget options))))
+
+  (function render-option (o)
+    (var type  (get o 0))
+    (var label (get o 1))
+    (var value (get o 2))
+    (var event (get o 3))
+
+    (var elements (array))
+    (elements.push (./h ".device-info-dropdown-option-label" label))
+    (elements.push (?: (=== type "button")
+      (./h (+ ".device-info-dropdown-option-button" (?: value ".active" ""))
+           (?: event (object "onclick" event) (object)))
+      (./h ".device-info-dropdown-option-value"  value)))
+
+    (return (./h ".device-info-dropdown-option" elements)))
 
 ))

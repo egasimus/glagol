@@ -30,24 +30,37 @@ function glagolify (token) {
   // translates path-like syntax to regular
   // attribute access on the `_` object.
 
-  if (token.atom && token.atom.indexOf('./') === 0) {
-    return [ { atom: '.' }, { atom: '_'} ].concat(
-      token.atom.split('/').slice(1).map(atom));
+  if (token.type === "list") {
+    token.values = token.values.map(glagolify);
+    return token;
   }
 
-  if (token.atom && token.atom.indexOf('../') === 0) {
-    return [ { atom: '.' }, { atom: '__'} ].concat(
-      token.atom.split('/').slice(1).map(atom));
+  if (token.type === "atom" && token.value.indexOf('./') === 0) {
+    return {
+      type:     'list',
+      location: token.location,
+      values: [
+        { type: 'atom', value: '.' },
+        { type: 'atom', value: '_' },
+      ].concat(token.value.split('/').slice(1).map(atomize))
+    }
   }
 
-  if (token instanceof Array) {
-    return token.map(glagolify);
+  if (token.type === "atom" && token.value.indexOf('../') === 0) {
+    return {
+      type:     'list',
+      location: token.location,
+      values: [
+        { type: 'atom', value: '.'  },
+        { type: 'atom', value: '__' },
+      ].concat(token.value.split('/').slice(1).map(atomize))
+    }
   }
 
   return token;
 
-  function atom (f) {
-    return { atom: f === '..' ? '__' : f === '.' ? '_' : f }
+  function atomize (f) {
+    return { type: 'atom', value: f === '..' ? '__' : f === '.' ? '_' : f }
   }
 
 }

@@ -1,0 +1,8 @@
+(lambda (data)
+  (var observ ../lib/observ)
+  (return        (observ.Obj
+    "id"         (observ.Var data.id)
+    "localPort"  (observ.Var data.local-port)
+    "remotePort" (observ.Var data.remote-port)
+    "clips"      (observ.Arr))))
+

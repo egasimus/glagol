@@ -7,14 +7,12 @@
       "seq"   (array 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
       "step"  0))))
 
-  (var Var ../lib/observ/Var)
-  (var Arr ../lib/observ/Arr)
-  (var Obj ../lib/observ/Obj)
+  (var observ ../lib/observ)
 
-  (return (Obj
-    "id"    (Var data.id)
-    "label" (Var data.label)
-    "seq"   (Arr.apply Arr data.seq)
-    "step"  (Var data.step)))
+  (return   (observ.Obj
+    "id"    (observ.Var      data.id)
+    "label" (observ.Var      data.label)
+    "seq"   (observ.Arr.from data.seq)
+    "step"  (observ.Var      data.step)))
 
 )

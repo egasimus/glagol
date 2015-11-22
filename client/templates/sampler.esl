@@ -1,6 +1,7 @@
 (lambda (data)
   (var elements (array))
-  (elements.push (./h "input.device-label"
-    (object "placeholder" "label")
-    data.label))
+  (elements.push
+    (./h ".device-header" (array
+      (./device-label data.label "Sampler")
+      (./device-info data))))
   (return (./h ".device.sampler" elements)))

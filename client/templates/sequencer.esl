@@ -5,8 +5,9 @@
       (+ ".sequencer-step" (?: (> (get data.seq i) 0) ".active" ""))
       (object "onclick" (./emit "sequencer.click" data.id i)))))
   (var elements (array))
-  (elements.push (./h "input.device-label"
-    (object "placeholder" "label")
-    data.label))
+  (elements.push
+    (./h ".device-header" (array
+      (./device-label data.label "Sequencer")
+      (./device-info data))))
   (elements.push (./h ".sequencer-steps" steps))
   (return (./h ".device.sequencer" elements)))

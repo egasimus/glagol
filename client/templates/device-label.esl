@@ -1,0 +1,2 @@
+(lambda (value placeholder) (return
+  (./h "input.device-label" (object "placeholder" placeholder) value)))

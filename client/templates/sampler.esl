@@ -1,2 +1,6 @@
 (lambda (data)
+  (var elements (array))
+  (elements.push (./h "input.device-label"
+    (object "placeholder" "label")
+    data.label))
   (return (./h ".device.sampler" elements)))

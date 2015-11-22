@@ -1,7 +1,10 @@
 (lambda () (return (object
 
   "list" (lambda ()
-    (return (./state)))
+    (var samplers (((require "observ-struct") (./state)))) ; dang!
+    (return (JSON.stringify samplers)))
+  ;"list" (lambda ()
+  ;  (return (./state)))
 
   "add"  (lambda ()
     (var samplers (./state))

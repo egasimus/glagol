@@ -1,1 +1,5 @@
-(lambda ())
+(lambda (id)
+  ((. (../../api/call "invoke" "sampler/spawn" id) then)
+    (lambda (state)
+      (console.log "spawned" id))
+    (../../lib/error (+ "error spawning sampler " id))))

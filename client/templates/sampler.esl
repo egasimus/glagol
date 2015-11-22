@@ -1,7 +1,7 @@
 (lambda (data)
 
   (var alive (Boolean data.proc))
-  (var toggle-alive (./emit (?: alive "sampler.spawn" "sampler.kill") data.id))
+  (var toggle-alive (./emit (?: alive "sampler.kill" "sampler.spawn") data.id))
 
   (var elements (array))
 

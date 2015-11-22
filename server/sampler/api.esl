@@ -3,10 +3,8 @@
   "list" (lambda ()
     (var samplers (((require "observ-struct") (./state)))) ; dang!
     (return (JSON.stringify samplers)))
-  ;"list" (lambda ()
-  ;  (return (./state)))
 
-  "add"  (lambda ()
+  "add" (lambda ()
     (var samplers (./state))
     (var sampler  (../models/sampler))
     (var id (. (sampler) id))
@@ -14,18 +12,22 @@
     (./state/set samplers)
     (return (sampler)))
 
-  "spawn" (lambda (sampler-id))
-    ;(return ((. (./init) then)
-    ;  (lambda (sampler)
-    ;    (var samplers (./state))
-    ;    (= (get samplers sampler.id) sampler)
-    ;    (./state/set samplers)
-    ;    (return sampler)))))
+  "spawn" (lambda (sampler-id)
+    (console.log "let's spawn" sampler-id)
+    (return ((. (./spawn ((get (./state) sampler-id))) then)
+      (lambda (sampler)
+        (console.log "spawned" sampler)
+        (var state (./state))
+        (= (get state sampler.id) sampler)
+        (./state/set state)))))
 
-  "kill" (lambda (sampler-id))
+  "kill" (lambda (sampler-id)
+    (return (./kill ((get (./state) sampler-id)))))
 
-  "set-clip" (lambda (sampler-id clip-no path))
+  "set-clip" (lambda (sampler-id clip-no path)
+    (return (./set-clip ((get (./state) sampler-id)) clip-no path)))
 
-  "set-cue"  (lambda (sampler-id clip-no cue-no position))
+  "set-cue" (lambda (sampler-id clip-no cue-no position)
+    (return (./set-cue ((get (./state) sampler-id)) clip-no cue-no position)))
 
 )))

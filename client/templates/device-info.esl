@@ -1,2 +1,29 @@
-(lambda (data)
-  (return (./h ".device-info" "info")))
+((lambda ()
+
+  (function DeviceInfoWidget ())
+
+  (= DeviceInfoWidget.prototype.type "Widget")
+
+  (= DeviceInfoWidget.prototype.init (lambda ()
+    (var elem (../lib/vdom/create
+      (./h "label.device-info" (array
+        "ℹ"
+        (./h ".device-info-dropdown" (array
+          (./h ".device-info-dropdown-option" (array
+            (./h ".device-info-dropdown-option-label" "Type")
+            (./h ".device-info-dropdown-option-value" "Device")))))))))
+    (= elem.last-child.style.display "none")
+    (= elem.onclick (lambda ()
+      (= elem.last-child.style.display
+        (?: (=== "none" elem.last-child.style.display) "block" "none"))))
+    (return elem)))
+
+  (= DeviceInfoWidget.prototype.update (lambda (prev elem)
+    (console.log prev elem)))
+
+  (= DeviceInfoWidget.prototype.destroy (lambda (elem)))
+
+  (return (lambda device-info (data)
+    (return (new DeviceInfoWidget data))))
+
+))

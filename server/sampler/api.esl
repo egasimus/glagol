@@ -1,6 +1,6 @@
 (lambda () (return (object
 
-  "list" (lambda () (return (./state/samplers)))
+  "list" (lambda () (return (./state)))
   "add"  ./add
 
 )))

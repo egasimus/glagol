@@ -11,15 +11,18 @@
       (require "eslisp-camelify")
       (require "eslisp-propertify")))))
 
+  (function lib (name)
+    (= (get client.nodes.lib.nodes (+ name ".esl"))
+      (get common.nodes.lib.nodes (+ name ".esl"))))
+
   (function init-client ()
     (try
       ; create a server-side glagol instance for the client code
       (= client ((require "glagol") client-path glagol-opts))
       (= common ((require "glagol") common-path glagol-opts))
-      (= (get client.nodes.lib.nodes "error.esl")
-        (get common.nodes.lib.nodes "error.esl"))
-      (= (get client.nodes.lib.nodes "observ.esl")
-        (get common.nodes.lib.nodes "observ.esl"))
+      (lib "error")
+      (lib "observ")
+      (lib "q")
       (= (get client.nodes "models") (get common.nodes "models"))
       (catch e (return (err e "Error initializing client:")))))
 

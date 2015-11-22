@@ -6,7 +6,6 @@
 
   "add" (lambda ()
     (var sequencers (./state))
-    ;(console.log (+ "" ../models/sequencer))
     (var sequencer  (../models/sequencer))
     (var id (. (sequencer) id))
     (= (get sequencers id) sequencer)

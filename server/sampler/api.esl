@@ -1,6 +1,28 @@
 (lambda () (return (object
 
-  "list" (lambda () (return (./state)))
-  "add"  ./add
+  "list" (lambda ()
+    (return (./state)))
+
+  "add"  (lambda ()
+    (var samplers (./state))
+    (var sampler  (../models/sampler))
+    (var id (. (sampler) id))
+    (= (get samplers id) sampler)
+    (./state/set samplers)
+    (return (sampler)))
+
+  "spawn" (lambda (sampler-id))
+    ;(return ((. (./init) then)
+    ;  (lambda (sampler)
+    ;    (var samplers (./state))
+    ;    (= (get samplers sampler.id) sampler)
+    ;    (./state/set samplers)
+    ;    (return sampler)))))
+
+  "kill" (lambda (sampler-id))
+
+  "set-clip" (lambda (sampler-id clip-no path))
+
+  "set-cue"  (lambda (sampler-id clip-no cue-no position))
 
 )))

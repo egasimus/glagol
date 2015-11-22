@@ -1,8 +1,8 @@
 (lambda (data)
+  (= data (|| data (object)))
   (var observ ../lib/observ)
   (return        (observ.Obj
-    "id"         (observ.Var data.id)
+    "id"         (observ.Var (|| data.id ((. (require "shortid") generate))))
     "localPort"  (observ.Var data.local-port)
     "remotePort" (observ.Var data.remote-port)
     "clips"      (observ.Arr))))
-

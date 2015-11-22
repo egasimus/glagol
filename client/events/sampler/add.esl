@@ -1,6 +1,7 @@
 (lambda ()
   ((. (../../api/call "invoke" "sampler/add") then)
     (lambda (data)
+      (console.log "added sampler" data)
       ((. (../../lib/q/all (array
         (data.get "id")
         (data.get "localPort")

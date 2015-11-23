@@ -24,6 +24,7 @@
     (return (new DeviceInfoWidget options))))
 
   (function render-option (o)
+    (console.log o)
     (var type  (get o 0))
     (var label (get o 1))
     (var value (get o 2))

@@ -7,7 +7,8 @@ var resolve =
   , options =
       { eslisp:
         { transform:
-          [ require('eslisp-camelify')
+          [ require('eslisp-dotify')
+          , require('eslisp-camelify')
           , require('eslisp-propertify') ] } }
   , app =
       glagol(resolve(__dirname, '../server'), options)

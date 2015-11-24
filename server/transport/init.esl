@@ -20,11 +20,11 @@
 
     (function start (osc-client)
 
-      (var send (lambda (port addr)
+      (function send (port addr)
         (osc-client.send (object
-        "address"   addr
-        "args"      (Array.prototype.slice.call arguments 2))
-        "localhost" port)))
+          "address"   addr
+          "args"      (Array.prototype.slice.call arguments 2))
+          "localhost" port))
 
       (./daemon "jackOsc" (lambda (p)
         (var bitmask (Long.fromString "FFFFFFF" false 16))

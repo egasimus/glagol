@@ -1,62 +1,66 @@
-(lambda () (return (object
+(lambda ()
 
-  "list" (lambda (cb)
-    (if cb
-      (block (cb (./state)) (./state cb))
-      (return (JSON.stringify (./state)))))
+  (var freeport (require "freeport"))
 
   ;(var samplers (((require "observ-struct") (./state)))) ; dang!
 
-  "add" (lambda ()
-    (var samplers (./state))
-    (var sampler  (../models/sampler))
-    (var id (. (sampler) id))
-    (= (get samplers id) sampler)
-    (./state/set samplers)
-    (return (sampler)))
+  (return (object
 
-  "spawn" (lambda (sampler-id)
-    (return (../lib/q/Promise (lambda (win fail)
-      (.spread (../lib/q/all (array ../jack/control ../jack/patchbay))
-        (lambda (control patchbay)
-          (var sampler ((get (./state) sampler-id)))
-          (../jack/after-start/done (lambda do-spawn ()
-            (var freeport (require "freeport"))
-            ((. (../lib/q/all (array (../lib/q/nfcall freeport) (../lib/q/nfcall freeport)))
-              spread) (lambda (local-p remote-p)
-                (= sampler.local-port  local-p)
-                (= sampler.remote-port remote-p)
-                (var args (array "-n" sampler.id "-p" remote-p "-c" "system:playback_1"))
-                (var opts (object "stdio" "inherit"))
-                (= sampler.proc ((. (require "child_process") spawn)
-                  ./options/sampler-path args opts))
-                (patchbay.on "ClientAppeared" (lambda client-appeared (ver id name)
-                (patchbay.GetClientPID id (lambda (e pid)
-                  (if e (throw e))
-                  (if (=== pid sampler.proc.id) (block
-                    (control.off "ClientAppeared" client-appeared)
-                    (= sampler.jack-id   id)
-                    (= sampler.jack-name name)
-                    (= sampler.osc (new osc.UDPPort (object
-                      "localAddress"  "127.0.0.1" "localPort"  state.local-port
-                      "remoteAddress" "127.0.0.1" "remotePort" state.remote-port)))
-                    (sampler.osc.open)
-                    (win sampler)))))))))))))))))
+    "list" (lambda (cb) (if cb
+      (block (cb (./state)) (./state cb))
+      (return (JSON.stringify (./state)))))
 
-    ;(return ((. (./spawn ((get (./state) sampler-id))) then)
-    ;  (lambda (sampler)
-    ;    (console.log "spawned" sampler)
-    ;    (var state (./state))
-    ;    (= (get state sampler.id) sampler)
-    ;    (./state/set state)))))
+    "add" (lambda ()
+      (var samplers (./state))
+      (var sampler  (../models/sampler))
+      (var id (. (sampler) id))
+      (= (get samplers id) sampler)
+      (./state/set samplers)
+      (return (sampler)))
 
-  "kill" (lambda (sampler-id)
-    (return (./kill ((get (./state) sampler-id)))))
+    "spawn" (lambda (sampler-id) (return (../lib/q/Promise (lambda (win fail)
+      (.done (.spread (../lib/q/all (array
+        (../lib/q/nfcall freeport) (../lib/q/nfcall freeport)
+        ../jack/control ../jack/patchbay)) do-spawn))
 
-  "set-clip" (lambda (sampler-id clip-no path)
-    (return (./set-clip ((get (./state) sampler-id)) clip-no path)))
+      (function do-spawn (local-p remote-p control patchbay)
+        (var sampler ((get (./state) sampler-id)))
+        (../jack/after-start/done (lambda ()
+          (= sampler.local-port  local-p)
+          (= sampler.remote-port remote-p)
+          (var args (array "-n" sampler.id "-p" remote-p "-c" "system:playback_1"))
+          (var opts (object "stdio" "inherit"))
+          (= sampler.proc ((. (require "child_process") spawn)
+            ./options/sampler-path args opts))
+          (patchbay.on "ClientAppeared" (lambda client-appeared (ver id name)
+          (patchbay.GetClientPID id (lambda (e pid)
+            (if e (throw e))
+            (if (=== pid sampler.proc.id) (block
+              (control.off "ClientAppeared" client-appeared)
+              (= sampler.jack-id   id)
+              (= sampler.jack-name name)
+              (= sampler.osc (new osc.UDPPort (object
+                "localAddress"  "127.0.0.1" "localPort"  local-p
+                "remoteAddress" "127.0.0.1" "remotePort" remote-p)))
+              (sampler.osc.open)
+              (win sampler))))))))))))))
 
-  "set-cue" (lambda (sampler-id clip-no cue-no position)
-    (return (./set-cue ((get (./state) sampler-id)) clip-no cue-no position)))
+      ;(return ((. (./spawn ((get (./state) sampler-id))) then)
+      ;  (lambda (sampler)
+      ;    (console.log "spawned" sampler)
+      ;    (var state (./state))
+      ;    (= (get state sampler.id) sampler)
+      ;    (./state/set state)))))
 
-)))
+    "kill" (lambda (sampler-id)
+      (return (./kill ((get (./state) sampler-id)))))
+
+    "set-clip" (lambda (sampler-id clip-no path)
+      (return (./set-clip ((get (./state) sampler-id)) clip-no path)))
+
+    "set-cue" (lambda (sampler-id clip-no cue-no position)
+      (return (./set-cue ((get (./state) sampler-id)) clip-no cue-no position)))
+
+  ))
+
+)

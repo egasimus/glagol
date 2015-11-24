@@ -8,6 +8,7 @@
   (var common-path (path.resolve __dirname "../../../common"))
   (var glagol-opts
     (object "eslisp" (object "transform" (array
+      (require "eslisp-dotify")
       (require "eslisp-camelify")
       (require "eslisp-propertify")))))
 

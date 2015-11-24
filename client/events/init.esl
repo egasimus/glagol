@@ -13,9 +13,9 @@
     (lambda ()
       (../state/jack/started/set false)))
 
-  ((. (../api/call "invoke" "transport/init") done))
+  (.done (../api/call "invoke" "transport/init"))
 
-  ((. (../api/call "invoke" "sequencer/list") then)
+  (.then (../api/call "invoke" "sequencer/list")
     (lambda (results)
       (= results (JSON.parse results))
       (= ids (Object.keys results))
@@ -26,15 +26,24 @@
       (../state/sequencers/set sequencers))
     (../lib/error "error receiving sequencer list"))
 
-  ((. (../api/call "invoke" "sampler/list") then)
+  (.then (../api/call "invoke" "sampler/list")
     (lambda (results)
-      (= results (JSON.parse results))
-      (= ids (Object.keys results))
-      (var samplers (../state/samplers))
-      (ids.map (lambda (id)
-        (var data (get results id))
-        (= (get samplers data.id) (../models/sampler data))))
-      (../state/samplers/set samplers))
-    (../lib/error "error receiving sampler list"))
+      (console.log "once" (JSON.parse results)))
+    (../lib/error "error getting sampler list"))
+
+  ;(->
+  ;  (../api/call "invoke" "sampler/list" update-samplers)
+  ;  (catch (../lib/error "error subscribing to sampler list")))
+
+  (function update-samplers (data)
+    (console.log "sub" data))
+    ;(lambda (results)
+    ;  (= results (JSON.parse results))
+    ;  (= ids (Object.keys results))
+    ;  (var samplers (../state/samplers))
+    ;  (ids.map (lambda (id)
+    ;    (var data (get results id))
+    ;    (= (get samplers data.id) (../models/sampler data))))
+    ;  (../state/samplers/set samplers))
 
 )

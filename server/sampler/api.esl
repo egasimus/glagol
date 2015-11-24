@@ -1,8 +1,11 @@
 (lambda () (return (object
 
-  "list" (lambda ()
-    (var samplers (((require "observ-struct") (./state)))) ; dang!
-    (return (JSON.stringify samplers)))
+  "list" (lambda (cb)
+    (if cb
+      (block (cb (./state)) (./state cb))
+      (return (JSON.stringify (./state)))))
+
+  ;(var samplers (((require "observ-struct") (./state)))) ; dang!
 
   "add" (lambda ()
     (var samplers (./state))

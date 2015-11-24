@@ -6,9 +6,7 @@
 
     (function call (p q)
       (function recur () (return (call (p.slice 1) (q.get (. p 0)))))
-      (function apply () (return ((. (get q op) apply) q (p.concat args))))
-      (function error () (throw (Error "api: say path")))
-      (return
-        (?: (> 1 p.length) (error)
-          (?: (< 1 p.length) (recur)
-            (apply)))))))
+      (if (> 1 p.length)
+        (throw (Error "api: say path"))
+        (return (?: (< 1 p.length) 
+          (recur) (.apply (get q op) q (p.concat args))))))))

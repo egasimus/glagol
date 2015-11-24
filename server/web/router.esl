@@ -1,9 +1,8 @@
 (lambda (req res)
-  (var found ((. (Object.keys ./routes) some)
-    (lambda (name)
-      (var route (get ./routes name))
-      (if (== "function" (typeof route))
-        (return (route req res))))))
+  (var found (.some (Object.keys ./routes) (lambda (name)
+    (var route (get ./routes name))
+    (if (== "function" (typeof route))
+      (return (route req res))))))
   (if found
     (console.log (+ 200 " " req.method " " req.url))
     (console.log (+ 404 " " req.method " " req.url))))

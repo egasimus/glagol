@@ -3,7 +3,7 @@
   (if (!== req.url "/thangka") (return false))
 
   ((require "glob")
-    "/home/epimetheus/Pictures/*.@(jpg|png|gif)"
+    "/home/epimetheus/Pictures/*.@(jpg|png|gif|webm)"
     (object "nodir" true)
     pick-file)
 
@@ -11,7 +11,7 @@
     (if err (throw err))
     (var i (Math.floor (* files.length (Math.random))))
     (var file (get files i))
-    ((. (require "fs") read-file) file serve-file))
+    (.read-file (require "fs") file serve-file))
 
   (function serve-file (err data)
     (if err (throw err))

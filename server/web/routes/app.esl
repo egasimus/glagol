@@ -49,11 +49,11 @@
       (shim br "../client/thaw.js"     "__glagol_thaw")
 
       ; add client-specific dependencies, dependency map, and client source
-      ((. (Object.keys app.deps.ids) map) (lambda (module)
+      (.map (Object.keys app.deps.ids) (lambda (module)
         (br.require module (object "expose" (get app.deps.ids module)))))
 
       ; roll it all into a big bundle
-      (var embed (. ((. (require "url") parse) req.url true) query embed))
+      (var embed (. (.parse (require "url") req.url true) query embed))
       (var ctype (+ "text/" (?: embed "javascript" "html") "; charset=utf-8"))
       (br.bundle (lambda (err data)
         (if err (throw err))

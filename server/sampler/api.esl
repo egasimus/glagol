@@ -33,24 +33,17 @@
           (= sampler.proc ((. (require "child_process") spawn)
             ./options/sampler-path args opts))
           (patchbay.on "ClientAppeared" (lambda client-appeared (ver id name)
-          (patchbay.GetClientPID id (lambda (e pid)
-            (if e (throw e))
-            (if (=== pid sampler.proc.id) (block
-              (control.off "ClientAppeared" client-appeared)
-              (= sampler.jack-id   id)
-              (= sampler.jack-name name)
-              (= sampler.osc (new osc.UDPPort (object
-                "localAddress"  "127.0.0.1" "localPort"  local-p
-                "remoteAddress" "127.0.0.1" "remotePort" remote-p)))
-              (sampler.osc.open)
-              (win sampler))))))))))))))
-
-      ;(return ((. (./spawn ((get (./state) sampler-id))) then)
-      ;  (lambda (sampler)
-      ;    (console.log "spawned" sampler)
-      ;    (var state (./state))
-      ;    (= (get state sampler.id) sampler)
-      ;    (./state/set state)))))
+            (patchbay.GetClientPID id (lambda (e pid)
+              (if e (throw e))
+              (if (=== pid sampler.proc.id) (block
+                (control.off "ClientAppeared" client-appeared)
+                (= sampler.jack-id   id)
+                (= sampler.jack-name name)
+                (= sampler.osc (new osc.UDPPort (object
+                  "localAddress"  "127.0.0.1" "localPort"  local-p
+                  "remoteAddress" "127.0.0.1" "remotePort" remote-p)))
+                (sampler.osc.open)
+                (win sampler))))))))))))))
 
     "kill" (lambda (sampler-id)
       (return (./kill ((get (./state) sampler-id)))))

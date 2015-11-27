@@ -15,16 +15,13 @@
 
   (.done (../api/call "invoke" "transport/init"))
 
-  (.done (../api/call "invoke" "sampler/list")
-    update-samplers
-    (../lib/error "error getting sampler list"))
-
   (.done (../api/call "invoke" "sampler/list" update-samplers)
-    (lambda () (console.log "subscribed to sampler list"))
+    update-samplers
     (../lib/error "error subscribing to sampler list"))
 
   (function update-samplers (results)
     (if (=== "string" (typeof results)) (= results (JSON.parse results)))
+    (console.log "update-samplers" results)
     (var samplers (../state/samplers))
     (.map (Object.keys results) (lambda (id)
       (= (get samplers id) (../models/sampler (get results id)))))

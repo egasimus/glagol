@@ -6,11 +6,9 @@
 
   (return (object
 
-    "list" (lambda (cb) (console.log "->" (JSON.stringify (./state))) (if cb
-      (block
-        (cb (./state))
-        (./state (lambda (data) (console.log "UPDATE" data) (cb data))))
-      (return (JSON.stringify (./state)))))
+    "list" (lambda (cb)
+      (if cb (./state cb))
+      (return (JSON.stringify (./state))))
 
     "add" (lambda ()
       (var samplers (./state))

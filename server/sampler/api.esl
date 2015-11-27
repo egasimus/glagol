@@ -4,11 +4,19 @@
 
   ;(var samplers (((require "observ-struct") (./state)))) ; dang!
 
+  (function stringify (state)
+    (return (JSON.stringify state (lambda (key val)
+      (if (instanceof val (.-ChildProcess (require "child_process")))
+        (return (! val.killed)))
+      (if (instanceof val (.-UDPPort (require "osc")))
+        (return true))
+      (return val)))))
+
   (return (object
 
     "list" (lambda (cb)
       (if cb (./state cb))
-      (return (JSON.stringify (./state))))
+      (return (stringify (./state))))
 
     "add" (lambda ()
       (var samplers (./state))
@@ -34,7 +42,6 @@
             ./options/sampler-path args opts))
           (.set (get ./state sampler-id) sampler)
           (patchbay.on "ClientAppeared" (lambda client-appeared (ver id name)
-            (console.log "ClientAppeared" ver id name)
             (patchbay.GetClientPID id (lambda (e pid)
               (if e (throw e))
               (if (=== pid sampler.proc.pid) (block
@@ -45,9 +52,7 @@
                   "localAddress"  "127.0.0.1" "localPort"  local-p
                   "remoteAddress" "127.0.0.1" "remotePort" remote-p)))
                 (sampler.osc.open)
-                (console.log 3 (./state))
                 (.set (get ./state sampler-id) sampler)
-                (console.log 4 (./state))
                 (win sampler))))))))))))))
 
     "kill" (lambda (sampler-id)

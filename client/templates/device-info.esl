@@ -32,9 +32,9 @@
     ;(return elem))
 
   (return DeviceInfoWidget)
-1
-  (function render-option (o)1
-    (console.log o)1
+
+  (function render-option (o)
+    (console.log o)
     (var type  (get o 0))
     (var label (get o 1))
     (var value (get o 2))
@@ -42,10 +42,11 @@
 
     (var elements (array))
     (elements.push (./h ".device-info-dropdown-option-label" label))
-    (elements.push (?: (=== type "button")
-      (./h (+ ".device-info-dropdown-option-button" (?: value ".active" ""))
-           (?: event (object "onclick" event) (object)))
-      (./h ".device-info-dropdown-option-value"  value)))
+    (elements.push (./h ".device-info-dropdown-option-value" value))
+    ;(elements.push (?: (=== type "button")
+    ;  (./h (+ ".device-info-dropdown-option-button" (?: value ".active" ""))
+    ;       (?: event (object "onclick" event) (object)))
+    ;  (./h ".device-info-dropdown-option-value"  value)))
 
     (return (./h ".device-info-dropdown-option" elements)))
 

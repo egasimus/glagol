@@ -10,15 +10,13 @@
 
   (var elements (array))
 
-  (console.log ./device-info)
-
   (elements.push
     (./h ".device-header" (array
       (./device-label data.label "Sampler")
       (./h ".device-buttons" (array
         (./h ".device-power" (object "onclick" (./emit "sampler.spawn" data.id))
           "off")
-        (./device-info info))))))
+        (new ./device-info info))))))
 
   (data.clips.map (lambda (clip i)
     (elements.push (./h ".sampler-clip" (+ i ": " clip.id)))))

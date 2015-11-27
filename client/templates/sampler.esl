@@ -10,6 +10,8 @@
 
   (var elements (array))
 
+  (console.log ./device-info)
+
   (elements.push
     (./h ".device-header" (array
       (./device-label data.label "Sampler")

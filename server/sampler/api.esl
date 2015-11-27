@@ -6,8 +6,10 @@
 
   (return (object
 
-    "list" (lambda (cb) (if cb
-      (block (cb (./state)) (./state cb))
+    "list" (lambda (cb) (console.log "->" (JSON.stringify (./state))) (if cb
+      (block
+        (cb (./state))
+        (./state (lambda (data) (console.log "UPDATE" data) (cb data))))
       (return (JSON.stringify (./state)))))
 
     "add" (lambda ()
@@ -24,7 +26,7 @@
         ../jack/control ../jack/patchbay)) do-spawn))
 
       (function do-spawn (local-p remote-p control patchbay)
-        (var sampler ((get (./state) sampler-id)))
+        (var sampler ((get ./state sampler-id)))
         (../jack/after-start/done (lambda ()
           (= sampler.local-port  local-p)
           (= sampler.remote-port remote-p)
@@ -32,21 +34,26 @@
           (var opts (object "stdio" "inherit"))
           (= sampler.proc ((. (require "child_process") spawn)
             ./options/sampler-path args opts))
+          (.set (get ./state sampler-id) sampler)
           (patchbay.on "ClientAppeared" (lambda client-appeared (ver id name)
+            (console.log "ClientAppeared" ver id name)
             (patchbay.GetClientPID id (lambda (e pid)
               (if e (throw e))
-              (if (=== pid sampler.proc.id) (block
-                (control.off "ClientAppeared" client-appeared)
+              (if (=== pid sampler.proc.pid) (block
+                (control.removeListener "ClientAppeared" client-appeared)
                 (= sampler.jack-id   id)
                 (= sampler.jack-name name)
-                (= sampler.osc (new osc.UDPPort (object
+                (= sampler.osc (new (.-UDPPort (require "osc")) (object
                   "localAddress"  "127.0.0.1" "localPort"  local-p
                   "remoteAddress" "127.0.0.1" "remotePort" remote-p)))
                 (sampler.osc.open)
+                (console.log 3 (./state))
+                (.set (get ./state sampler-id) sampler)
+                (console.log 4 (./state))
                 (win sampler))))))))))))))
 
     "kill" (lambda (sampler-id)
-      (return (./kill ((get (./state) sampler-id)))))
+      (return (./kill (get (./state) sampler-id))))
 
     "set-clip" (lambda (sampler-id clip-no path)
       (return (./set-clip ((get (./state) sampler-id)) clip-no path)))

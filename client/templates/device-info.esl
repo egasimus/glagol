@@ -1,24 +1,31 @@
 ((lambda ()
 
   (function DeviceInfoWidget (options)
-    (= this.options options))
+    (= this.state (object
+      "options" options
+      "visible" false)))
 
   (= DeviceInfoWidget.prototype.type "Widget")
 
   (= DeviceInfoWidget.prototype.init (lambda ()
-    (var elem (../lib/vdom/create
-      (./h "label.device-info" (array
-        (./h ".device-info-icon" "ℹ")
-        (./h ".device-info-dropdown" (this.options.map render-option))))))
-    (= elem.last-child.style.display "none")
-    (= elem.first-child.onclick (lambda ()
-      (= elem.last-child.style.display
-        (?: (=== "none" elem.last-child.style.display) "block" "none"))))
-    (return elem)))
+    (= this.loop (../lib/vdom/mainloop this.state this.render))
+    (return this.loop.target)))
 
-  (= DeviceInfoWidget.prototype.update (lambda (prev elem)))
+  (= DeviceInfoWidget.prototype.update (lambda (prev elem)
+    (console.log "DeviceInfoWidget update" prev elem this)))
 
-  (= DeviceInfoWidget.prototype.destroy (lambda (elem)))
+  (= DeviceInfoWidget.prototype.destroy (lambda (elem)
+    (delete this.loop)))
+
+  (= DeviceInfoWidget.prototype.render (lambda ()
+    (return (./h "label.device-info" (array
+      (./h ".device-info-icon" "ℹ")
+      (./h ".device-info-dropdown" (this.state.options.map render-option)))))))
+    ;(= elem.last-child.style.display "none")
+    ;(= elem.first-child.onclick (lambda ()
+    ;  (= elem.last-child.style.display
+    ;    (?: (=== "none" elem.last-child.style.display) "block" "none"))))
+    ;(return elem))
 
   (return (lambda device-info (options)
     (return (new DeviceInfoWidget options))))

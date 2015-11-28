@@ -1,2 +1,8 @@
 (lambda (ntp utc frm p-ntp p-utc p-frm pulse)
+  (var state (../../sequencer/state))
+  (.map (Object.keys state) (lambda (key)
+    (var sequencer (get state key))
+    (= sequencer.step (% (+ sequencer.step 1) sequencer.seq.length))
+    (console.log (get state key))))
+  (../../sequencer/state/set state)
   (console.log "PULSE" pulse))

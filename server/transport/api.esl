@@ -29,4 +29,10 @@
         "localhost" (./state/daemons/jack-osc/port)))
 
     "seek" (lambda (pos)
-      (console.log "TRANSPORT SEEK" pos)))))
+      (console.log "TRANSPORT SEEK" pos)
+      (.send (./state/osc-client) (object
+        "address"   "/locate"
+        "args"      (array pos))
+        "localhost" (./state/daemons/jack-osc/port)))
+
+  )))

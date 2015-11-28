@@ -2,11 +2,16 @@
 
   (function stringify (state)
     (return (JSON.stringify state (lambda (key val)
+      ;(if (instanceof val (.-ChildProvess (require "child_process")))
+      ;  (return (! val.killed)))
+      ;(if (instanceof val (.-UDPPort (require "osc")))
+      ;  (return true))
       (return val)))))
 
   (return (object
+
     "init" (lambda (cb)
-      (if cb (./state cb))
+      (if cb (./state (lambda (val) (cb (stringify val)))))
       (return (stringify (./state))))
 
     "spawn" ./spawn

@@ -7,7 +7,7 @@
   (return (object
 
     "list" (lambda (cb)
-      (if cb (./state cb))
+      (if cb (./state (lambda (val) (cb (stringify val)))))
       (return (stringify (./state))))
 
     "add" (lambda ()

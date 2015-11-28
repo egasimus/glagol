@@ -1,0 +1,3 @@
+(lambda ()
+  (.done (../../api/call "invoke" "sampler/list" ./update)
+    ./update (../../lib/error "error subscribing to sampler list")))

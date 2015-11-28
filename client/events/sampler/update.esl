@@ -1,0 +1,7 @@
+(lambda (results)
+  (if (=== "string" (typeof results)) (= results (JSON.parse results)))
+  (console.log "update-samplers" results)
+  (var samplers (../../state/samplers))
+  (.map (Object.keys results) (lambda (id)
+    (= (get samplers id) (../../models/sampler (get results id)))))
+  (../../state/samplers/set samplers))

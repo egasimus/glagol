@@ -29,5 +29,5 @@ function ERR_WRONG_PARENT (parent, ice) {
 function ERR_FOREIGN_BODY (ice, parent, id) {
   return Error(
     "can't thaw unknown instance " + id +
-    " in frozen glagol tree of " + parent + ": " + JSON.stringify(ice))
+    " in frozen glagol tree of " + parent.path + ": " + JSON.stringify(ice))
 }

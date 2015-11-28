@@ -1,22 +1,28 @@
-(lambda () (return (object
+(lambda ()
 
-  "list" (lambda ()
-    (var sequencers (((require "observ-struct") (./state)))) ; dang!
-    (return (JSON.stringify sequencers)))
+  (function stringify (state)
+    (return (JSON.stringify state (lambda (key val)
+      (return val)))))
 
-  "add" (lambda ()
-    (var sequencers (./state))
-    (var sequencer  (../models/sequencer))
-    (var id (. (sequencer) id))
-    (= (get sequencers id) sequencer)
-    (./state/set sequencers)
-    (return (sequencer)))
+  (return (object
 
-  "set" (lambda (id step value)
-    (console.log "set!" id step value)
-    (var sequencer (get (./state) id))
-    (sequencer.seq.put step value)
-    (console.log (sequencer.seq))
-    (return (sequencer.seq)))
+    "list" (lambda (cb)
+      (if cb (./state cb))
+      (return (stringify (./state))))
 
-)))
+    "add" (lambda ()
+      (var sequencers (./state))
+      (var sequencer  (../models/sequencer))
+      (var id (. (sequencer) id))
+      (= (get sequencers id) sequencer)
+      (./state/set sequencers)
+      (return (sequencer)))
+
+    "set" (lambda (id step value)
+      (console.log "set!" id step value)
+      (var sequencer (get (./state) id))
+      (sequencer.seq.put step value)
+      (console.log (sequencer.seq))
+      (return (sequencer.seq)))
+
+  )))

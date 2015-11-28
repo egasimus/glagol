@@ -1,8 +1,7 @@
 (object
-  "connection" null
   "call" (lambda api-call (op path)
     (var args (Array.prototype.slice.call arguments 2))
-    (return (call (path.split "/") (this.connection.invoke)))
+    (return (call (path.split "/") (.invoke (./state/connection))))
 
     (function call (p q)
       (function recur () (return (call (p.slice 1) (q.get (. p 0)))))

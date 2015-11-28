@@ -1,17 +1,15 @@
 (./lib/observ/Obj
 
-  "server"       (./lib/observ/Var
-    false)
+  "connection"   (./lib/observ/Var)
+
+  "server"       (./lib/observ/Var false)
 
   "jack"         (./lib/observ/Obj
-    "started"    (./lib/observ/Var
-      false))
+    "started"    (./lib/observ/Var false))
 
   "contextMenu"  (./lib/observ/Obj
-    "x"          (./lib/observ/Var
-      null)
-    "y"          (./lib/observ/Var
-      null))
+    "x"          (./lib/observ/Var null)
+    "y"          (./lib/observ/Var null))
 
   "results"      (./lib/observ/Arr)
 

@@ -13,21 +13,29 @@
   (return (./h ".toolbar.top" (array
 
     (group
-      (btn "bpm"   (|| s.transport.bpm "???"))
-      (btn "meter" (+ (|| s.transport.meter-top    "?")
-                      "/"
-                      (|| s.transport.meter-bottom "?")))
-      (btn "quant" "1 bar"))
+      (btn "bpm"
+        (|| s.transport.bpm "???"))
+      (btn "meter"
+        (+ (|| s.transport.meter-top    "?") "/"
+           (|| s.transport.meter-bottom "?")))
+      (btn "quant"
+        "1 bar"))
 
     (group
-      (btn "rewind" "REW")
-      (btn (?: s.transport.rolling "stop" "play") "PLAY" s.transport.rolling)
-      (btn "record" "REC"))
+      (btn "rewind"
+        "REW")
+      (btn (?: s.transport.rolling "stop" "play")
+        "PLAY" s.transport.rolling)
+      (btn "record"
+        "REC"))
 
     (group
-      (btn "server" "Server" s.server)
-      (btn "jack"   "JACK"   s.jack.started (! s.server))
-      (btn "fps"    (|| s.transport.fps "?????")))))))
+      (btn "server"
+        "Server" s.server)
+      (btn "jack"
+        "JACK"   s.jack.started (! s.server))
+      (btn "fps"
+        (+ (|| s.transport.fps "?????") " Hz") false (! s.server)))))))
 
 ;      (./h ".btngroup" (array
 ;        (./h ".btn.osc"   "OSC")

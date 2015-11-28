@@ -13,8 +13,10 @@
   (return (./h ".toolbar.top" (array
 
     (group
-      (btn "bpm"   "140")
-      (btn "meter" "4/4")
+      (btn "bpm"   (|| s.transport.bpm "???"))
+      (btn "meter" (+ (|| s.transport.meter-top    "?")
+                      "/"
+                      (|| s.transport.meter-bottom "?")))
       (btn "quant" "1 bar"))
 
     (group

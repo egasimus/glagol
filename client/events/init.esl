@@ -13,13 +13,11 @@
     (lambda ()
       (../state/jack/started/set false)))
 
-  (console.log _)
-
   (./sampler/init)
 
   (./sequencer/init)
 
-  (.done (../api/call "invoke" "transport/init"))
+  (./transport/init)
 
   ;(->
   ;  (../api/call "invoke" "sampler/list" update-samplers)

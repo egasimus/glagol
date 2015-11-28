@@ -1,0 +1,3 @@
+(lambda ()
+  (.done (../../api/call "invoke" "transport/init" ./update)
+    ./update (../../lib/error "error subscribing to transport")))

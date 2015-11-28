@@ -1,6 +1,7 @@
 (lambda ()
   (return (object
     "init"  ./init
+    "spawn" ./spawn
     "start" ./start
     "stop"  ./stop
     "seek"  ./seek)))

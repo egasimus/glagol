@@ -1,0 +1,37 @@
+((lambda ()
+
+  (var Long (require "long"))
+  (var osc (require "osc"))
+
+  (return init-transport)
+
+  (function init-transport ()
+    (var osc-client (./state/osc-client))
+    (if osc-client
+      (start osc-client)
+      (./freeport (lambda (port)
+        (console.log "init transport on" port)
+        (var opts (object "localAddress" "localhost" "localPort" port))
+        (./state/osc-client/set (= osc-client (new osc.UDPPort opts)))
+        (osc-client.open)
+        (osc-client.on "message" (lambda ()
+          (./events/message/apply null arguments)))
+        (start osc-client))))
+
+    (function start (osc-client)
+
+      (function send (port addr)
+        (osc-client.send (object
+          "address"   addr
+          "args"      (Array.prototype.slice.call arguments 2))
+          "localhost" port))
+
+      (./daemon "jackOsc" (lambda (p)
+        (var bitmask (Long.fromString "FFFFFFF" false 16))
+        (var port-no (new Long osc-client.options.local-port)) ; not float
+        (send p "/receive" bitmask)
+        (send p "/status")
+        (send p "/current")))
+
+      (./daemon "klick" (lambda (p)
+        (send p "/ping") )) ) ) ))

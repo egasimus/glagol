@@ -1,5 +1,5 @@
 (lambda (data)
-  ((. (../../api/call "invoke" "sequencer/add" data) then)
+  ((. (../../api "invoke" "sequencer/add" data) then)
     (lambda (data)
       (var sequencers (../../state/sequencers))
       (= (get sequencers data.id) (../../models/sequencer data))

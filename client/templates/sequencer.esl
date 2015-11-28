@@ -2,7 +2,9 @@
   (var steps (array))
   (for (var i 0) (< i data.seq.length) (++ i)
     (steps.push (./h
-      (+ ".sequencer-step" (?: (> (get data.seq i) 0) ".active" ""))
+      (+ ".sequencer-step"
+        (?: (> (get data.seq i) 0) ".active"  "")
+        (?: (=== i data.step)      ".current" ""))
       (object "onclick" (./emit "sequencer.click" data.id i)))))
   (var elements (array))
   (elements.push

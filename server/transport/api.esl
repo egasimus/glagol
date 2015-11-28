@@ -17,11 +17,17 @@
     "spawn" ./spawn
 
     "start" (lambda ()
-      (console.log "TRANSPORT ROLLING")
+      (.send (./state/osc-client) (object
+        "address"   "/start"
+        "args"      (array))
+        "localhost" (./state/daemons/jack-osc/port))
       (./state/rolling/set true))
 
     "stop" (lambda ()
-      (console.log "TRANSPORT STOP")
+      (.send (./state/osc-client) (object
+        "address"   "/stop"
+        "args"      (array))
+        "localhost" (./state/daemons/jack-osc/port))
       (./state/rolling/set false))
 
     "seek" (lambda (pos)

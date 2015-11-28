@@ -9,4 +9,5 @@
     "bars"        (observ.Var (|| data.bars         0))
     "beats"       (observ.Var (|| data.beats        0))
     "seconds"     (observ.Var (|| data.seconds      0))
-    "frames"      (observ.Var (|| data.frames       0)))))
+    "frames"      (observ.Var (|| data.frames       0))
+    "fps"         (observ.Var (|| data.fps          0)))))

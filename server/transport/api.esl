@@ -1,7 +1,23 @@
 (lambda ()
+
+  (function stringify (state)
+    (return (JSON.stringify state (lambda (key val)
+      (return val)))))
+
   (return (object
-    "init"  ./init
+    "init" (lambda (cb)
+      (if cb (./state cb))
+      (return (stringify (./state))))
+
     "spawn" ./spawn
-    "start" ./start
-    "stop"  ./stop
-    "seek"  ./seek)))
+
+    "start" (lambda ()
+      (console.log "TRANSPORT ROLLING")
+      (./state/rolling/set true))
+
+    "stop" (lambda ()
+      (console.log "TRANSPORT STOP")
+      (./state/rolling/set false))
+
+    "seek" (lambda (pos)
+      (console.log "TRANSPORT SEEK" pos)))))

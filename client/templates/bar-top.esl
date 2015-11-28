@@ -20,7 +20,7 @@
       (btn "quant" "1 bar"))
 
     (group
-      (btn "play"   "PLAY")
+      (btn "play"   "PLAY" s.transport.rolling)
       (btn "stop"   "STOP")
       (btn "record" "REC"))
 

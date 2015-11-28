@@ -20,15 +20,13 @@
       (.send (./state/osc-client) (object
         "address"   "/start"
         "args"      (array))
-        "localhost" (./state/daemons/jack-osc/port))
-      (./state/rolling/set true))
+        "localhost" (./state/daemons/jack-osc/port)))
 
     "stop" (lambda ()
       (.send (./state/osc-client) (object
         "address"   "/stop"
         "args"      (array))
-        "localhost" (./state/daemons/jack-osc/port))
-      (./state/rolling/set false))
+        "localhost" (./state/daemons/jack-osc/port)))
 
     "seek" (lambda (pos)
       (console.log "TRANSPORT SEEK" pos)))))

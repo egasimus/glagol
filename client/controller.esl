@@ -8,9 +8,10 @@
   (return emitter)
 
   (function dispatch ()
-    (if (=== (typeof this.event) "string")
-      (var event (this.event.split "."))
-      (var event this.event))
+    (var event (?: (=== (typeof this.event) "string")
+      (this.event.split ".")
+      (this.event)))
+    (console.log "dispatch" event)
     (= event (event.reduce resolve-event ./events))
     (event.apply null arguments))
 

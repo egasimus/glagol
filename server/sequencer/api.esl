@@ -19,10 +19,6 @@
       (return (sequencer)))
 
     "set" (lambda (id step value)
-      (console.log "set!" id step value)
-      (var sequencer (get (./state) id))
-      (sequencer.seq.put step value)
-      (console.log (sequencer.seq))
-      (return (sequencer.seq)))
+      (.seq.put (get ./state id) step value))
 
   )))

@@ -1,18 +1,5 @@
 (lambda ()
 
-  (../api "invoke" "jack/control/IsStarted"
-    (lambda (e status)
-      (if e (../lib/error e))
-      (../state/jack/started/set status)))
-
-  (../api "invoke" "jack/control/on" "ServerStarted"
-    (lambda ()
-      (../state/jack/started/set true)))
-
-  (../api "invoke" "jack/control/on" "ServerStopped"
-    (lambda ()
-      (../state/jack/started/set false)))
-
   (./sampler/init)
 
   (./sequencer/init)

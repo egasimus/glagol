@@ -1,5 +1,5 @@
 (lambda main (app)
-  ;(./transport/spawn)
+  (./transport/spawn)
   (var host "0.0.0.0")
   (var port 1620)
   (var server-http (./web/server host port))

@@ -14,6 +14,7 @@
       (var sequencers (./state))
       (var sequencer  (../models/sequencer))
       (var id (. (sequencer) id))
+      (sequencer.step (lambda (v) (console.log id "step" v)))
       (= (get sequencers id) sequencer)
       (./state/set sequencers)
       (return (sequencer)))

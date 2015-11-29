@@ -1,11 +1,10 @@
 (lambda (data)
-  (var steps (array))
-  (for (var i 0) (< i data.seq.length) (++ i)
-    (steps.push (./h
+  (var steps (data.seq.map (lambda (val i)
+    (return (./h
       (+ ".sequencer-step"
-        (?: (> (get data.seq i) 0) ".active"  "")
-        (?: (=== i data.step)      ".current" ""))
-      (object "onclick" (./emit "sequencer.click" data.id i)))))
+        (?: (> val 0)         ".active"  "")
+        (?: (=== i data.step) ".current" ""))
+      (object "onclick" (./emit "sequencer.click" data.id i)))))))
   (var elements (array))
   (elements.push
     (./h ".device-header" (array

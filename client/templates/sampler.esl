@@ -1,12 +1,15 @@
 (lambda (data)
 
+  (var alive (&& data.proc data.proc.pid (! data.proc.killed)))
+  (var pid   (?: alive data.proc.pid null))
+
   (var info (array
-    (array "text"   "Type"  "Sampler"                       )
-    (array "text"   "ID"    data.id                         )
-    (array "text"   "PID"   (?: data.proc data.proc.id null))
-    (array "text"   "JACK"  data.jack-client                )
-    (array "text"   "OSC1"  data.local-port                 )
-    (array "text"   "OSC2"  data.remote-port                )))
+    (array "text"   "Type"  "Sampler"        )
+    (array "text"   "ID"    data.id          )
+    (array "text"   "PID"   pid              )
+    (array "text"   "JACK"  data.jack-client )
+    (array "text"   "OSC1"  data.local-port  )
+    (array "text"   "OSC2"  data.remote-port )))
 
   (var elements (array))
 
@@ -14,8 +17,10 @@
     (./h ".device-header" (array
       (./device-label data.label "Sampler")
       (./h ".device-buttons" (array
-        (./h ".device-power" (object "onclick" (./emit "sampler.spawn" data.id))
-          "off")
+        (./h (+ ".device-power" (?: alive ".active" ""))
+          (object "onclick" (./emit
+            (?: alive "sampler.kill" "sampler.spawn") data.id))
+          (?: alive "on" "off"))
         (new ./device-info info))))))
 
   (data.clips.map (lambda (clip i)

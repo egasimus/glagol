@@ -4,4 +4,4 @@
       (var samplers (../../state/samplers))
       (= (get samplers data.id) (../../models/sampler data))
       (../../state/samplers/set samplers))
-    (../../lib/error "error adding sampler")))
+    (../../lib/error "could not add sampler")))

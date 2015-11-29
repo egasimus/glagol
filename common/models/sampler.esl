@@ -3,8 +3,7 @@
   (var observ ../lib/observ)
   (return        (observ.Obj
     "id"         (observ.Var (|| data.id ((. (require "shortid") generate))))
-    "alive"      (observ.Var (Boolean data.alive))
-    "proc"       (observ.Var null)
+    "proc"       (observ.Var (|| null data.proc))
     "osc"        (observ.Var null)
     "localPort"  (observ.Var data.local-port)
     "remotePort" (observ.Var data.remote-port)

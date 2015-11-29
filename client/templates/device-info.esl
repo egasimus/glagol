@@ -8,7 +8,7 @@
   (model refresh)
 
   (function render (state) (return (./h "label.device-info" (array
-    (./h ".device-info-icon"
+    (./h "a.device-info-icon"
       (object "onclick" (lambda (e)
         (e.stop-propagation)
         (model.visible.set (! state.visible)))) "ℹ")

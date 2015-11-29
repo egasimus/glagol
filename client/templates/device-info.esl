@@ -1,7 +1,8 @@
 ((lambda ()
 
   (function DeviceInfoWidget (options)
-    (= this.options options))
+    (= this.options options)
+    (= this.visible false))
 
   (= DeviceInfoWidget.prototype.type "Widget")
 
@@ -10,8 +11,11 @@
     (var self this)
     (return (../lib/vdom/create (./h "label.device-info" (array
       (./h ".device-info-icon"
-        (object "onclick" (lambda ()
-          (console.warn "urgh!") (= self.visible (! self.visible)))) "ℹ")
+        (object "onclick" (lambda (e)
+          (e.stop-propagation)
+          (console.warn "urgh!" self.visible)
+          (console.log self)
+          (= self.visible (! self.visible)))) "ℹ")
       (./h ".device-info-dropdown"
         (object "style" (object "display" "none"))
         (this.options.map (lambda render-option (o)
@@ -25,9 +29,29 @@
           (return (./h ".device-info-dropdown-option" elements)))))))))))
 
   (= DeviceInfoWidget.prototype.update (lambda (prev elem)
-    (console.log "||| UPDATE" this prev elem)
-    (= (.-style.display (get elem.children 1)) (?: prev.visible "block" "none"))))
+    ;(= this.visible prev.visible)
+    (console.log "||| UPDATE" prev.visible this.visible)
+    (= (.-style.display (get elem.children 1)) (?: this.visible "block" "none"))))
 
-  (return DeviceInfoWidget)
+  (return (./widget (lambda (options)
+    (var el (../lib/vdom/create (./h "label.device-info" (array
+      (./h ".device-info-icon"
+        (object "onclick" (lambda (e)
+          (e.stop-propagation)
+          (console.warn "urgh!" self.visible)
+          (console.log self)
+          (= self.visible (! self.visible)))) "ℹ")
+      (./h ".device-info-dropdown"
+        (object "style" (object "display" "none"))
+        (this.options.map (lambda render-option (o)
+          (var type  (get o 0))
+          (var label (get o 1))
+          (var value (get o 2))
+          (var event (get o 3))
+          (return (./h ".device-info-dropdown-option" (array
+            (./h ".device-info-dropdown-option-label" (String label))
+            (./h ".device-info-dropdown-option-value" (String value))))))))))))
+    (return (object
+      "element" el)))))
 
 ))

@@ -2,7 +2,7 @@
   box-sizing border-box
   position   relative
 
-body, input, button
+body, input, button, table
   font-family Open Sans
   font-size 11px
 
@@ -388,8 +388,10 @@ body
 /// DEVICE: SAMPLER
 
 .sampler
-  &-clip, &-clip-add
-    line-height 14px
+  &-clips
+    width 100%
+
+  &-clip > td
     padding 5px 0
 
   &-clip-add
@@ -397,6 +399,10 @@ body
     cursor pointer
     &:hover
       background rgba(255,255,255,0.1)
+
+  &-clip, &-clip-add
+    line-height 14px
+    padding 5px 0
 
 //////////////////////////////////////
 

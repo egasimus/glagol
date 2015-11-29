@@ -23,8 +23,12 @@
           (?: alive "on" "off"))
         (new ./device-info info))))))
 
-  (data.clips.map (lambda (clip i)
-    (elements.push (./h ".sampler-clip" (+ i ": " clip.id)))))
+  (elements.push (./h "table.sampler-clips"
+    (data.clips.map (lambda (clip i)
+      (return (./h "tr.sampler-clip" (array
+        (./h "td.sampler-clip-number" (String i))
+        (./h "td.sampler-clip-id"     clip.id)
+        (./h "td.sampler-clip-path"   "lol"))))))))
   (elements.push (./h "a.sampler-clip-add"
     (object "onclick" (./emit "sampler.clip.add" data.id))
     "Add clip..."))

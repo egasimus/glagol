@@ -1,5 +1,4 @@
 (lambda (tempo pulse)
-  (console.log "PULSED" tempo pulse)
   (var pulse (* 4 (- pulse 1)))
   (.map (Object.keys (./state)) (lambda (key)
     (var sequencer (get ./state key))

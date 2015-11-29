@@ -15,7 +15,7 @@
 
   (elements.push
     (./h ".device-header" (array
-      (./device-label data.label "Sampler")
+      (./device-label data.label (+ "Sampler " data.id))
       (./h ".device-buttons" (array
         (./h (+ ".device-power" (?: alive ".active" ""))
           (object "onclick" (./emit
@@ -28,7 +28,7 @@
       (return (./h "tr.sampler-clip" (array
         (./h "td.sampler-clip-number" (String i))
         (./h "td.sampler-clip-id"     clip.id)
-        (./h "td.sampler-clip-path"   "lol"))))))))
+        (./h "td.sampler-clip-path"   (|| clip.path "load")))))))))
   (elements.push (./h "a.sampler-clip-add"
     (object "onclick" (./emit "sampler.clip.add" data.id))
     "Add clip..."))

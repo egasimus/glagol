@@ -22,4 +22,7 @@
     "set" (lambda (id step value)
       (.seq.put (get ./state id) step value))
 
+    "control" (lambda (sequencer-id sampler-id)
+      (console.log sequencer-id "controls" sampler-id))
+
   )))

@@ -8,14 +8,26 @@
   (model refresh)
 
   (function render (state)
+    (var samplers (../state/samplers))
     (return (./h "label.device-info" (array
-    (./h "a.device-info-icon"
-      (object "onclick" (lambda (e)
-        (e.stop-propagation)
-        (model.visible.set (! state.visible)))) "⌖")
-    (?: state.visible (./h ".device-info-dropdown"
-      (.map (Object.keys (../state/samplers)) (lambda render-option (id)
-        (return (./h ".device-info-dropdown-option" (String id)))))) null)))))
+      (./h "a.device-info-icon"
+        (object "onclick" (lambda (e)
+          (e.stop-propagation)
+          (model.visible.set (! state.visible)))) "⌖")
+      (?: state.visible
+        (./h ".device-info-dropdown" (.map (Object.keys samplers) menu-sampler))
+        null)))))
+
+  (function menu-sampler (id)
+    (console.log (../state/samplers) (get (../state/samplers) id))
+    (var sampler (get (../state/samplers) id))
+    (return (./h ".device-info-dropdown-option-group"
+      (.concat
+        (array (./h ".device-info-dropdown-option-group-label" (String id)))
+        (sampler.clips.map (lambda (clip i)
+          (return (./h ".device-info-dropdown-option" (array
+            (./h ".device-info-dropdown-option-label" (String i))
+            (./h ".device-info-dropdown-option-value" (String clip.id)))))))))))
 
   (function refresh (state)
     (var next-vtree (render state))

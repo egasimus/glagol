@@ -7,7 +7,7 @@
 
   (return (./h ".device.sequencer" (array
     (./h ".device-header" (array
-      (./device-label data.label "Sequencer")
+      (./device-label data.label (+ "Sequencer " data.id))
       (./h ".device-buttons" (array
         (new ./sequencer-connect data.id)
         (new ./device-info info)))))

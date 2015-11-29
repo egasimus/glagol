@@ -3,5 +3,5 @@
   (var observ ../lib/observ)
   (return  (observ.Obj
     "id"   (observ.Var (|| data.id ((. (require "shortid") generate))))
-    "path" (observ.Var data.pathA
-    "cues" (observ.Arr)))))
+    "path" (observ.Var data.path)
+    "cues" (observ.Arr))))

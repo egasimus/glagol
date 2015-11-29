@@ -7,4 +7,4 @@
     "osc"        (observ.Var null)
     "localPort"  (observ.Var data.local-port)
     "remotePort" (observ.Var data.remote-port)
-    "clips"      (observ.Var (|| data.clips (array))))))
+    "clips"      (observ.Arr.from (|| data.clips (array))))))

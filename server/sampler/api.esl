@@ -67,7 +67,10 @@
     "clip" (object
 
       "add" (lambda (sampler-id)
-        (.clips.push (get ./state sampler-id) (../models/clip)))
+        (console.log "add clip to" sampler-id)
+        (var clip (../models/clip))
+        (.clips.push (get ./state sampler-id) clip)
+        (return (clip.id)))
 
       "load" (lambda (sampler-id clip-no path)
         (console.log "load clip" path "in slot" clip-no "of" sampler-id)

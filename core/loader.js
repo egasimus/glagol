@@ -58,7 +58,7 @@ function Loader () {
                 ? this._cache.source
                 : this._cache.source = fs.readFileSync(this._sourcePath, 'utf8');
               }
-          , set: function () {
+          , set: function (v) {
               this._cache.compiled = undefined;
               this._cache.evaluated = false;
               return this._cache.source = v;
@@ -103,11 +103,11 @@ function Loader () {
   }
 
   function removed (f, s) {
-    if (nodes[f]) {
-      _opts.logger("removed", f);
-      delete nodes[f].parent.nodes[nodes[f].name];
-      delete nodes[f];
-    }
+    //if (nodes[f]) {
+    //  _opts.logger("removed", f);
+    //  delete nodes[f].parent.nodes[nodes[f].name];
+    //  delete nodes[f];
+    //}
   }
 
 }

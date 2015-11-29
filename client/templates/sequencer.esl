@@ -1,17 +1,17 @@
 (lambda (data)
-  (var steps (data.seq.map (lambda (val i)
-    (return (./h
+
+  (var info (array
+    (array "text" "Type"  "Sequencer")
+    (array "text" "ID"    data.id)
+    (array "step" "Step"  (+ data.step "/" data.seq.length))))
+
+  (return (./h ".device.sequencer" (array
+    (./h ".device-header" (array
+      (./device-label data.label "Sequencer")
+      (./h ".device-buttons"
+        (new ./device-info info))))
+    (./h ".sequencer-steps" (data.seq.map (lambda (val i) (return (./h
       (+ ".sequencer-step"
         (?: (> val 0)         ".active"  "")
         (?: (=== i data.step) ".current" ""))
-      (object "onclick" (./emit "sequencer.click" data.id i)))))))
-  (var elements (array))
-  (elements.push
-    (./h ".device-header" (array
-      (./device-label data.label "Sequencer")
-      (./device-info (array
-        (array "text" "Type"  "Sequencer")
-        (array "text" "ID"    data.id)
-        (array "step" "Step"  (+ data.step "/" data.seq.length)))))))
-  (elements.push (./h ".sequencer-steps" steps))
-  (return (./h ".device.sequencer" elements)))
+      (object "onclick" (./emit "sequencer.click" data.id i)))))))))))

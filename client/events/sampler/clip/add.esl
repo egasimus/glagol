@@ -1,0 +1,4 @@
+(lambda (id)
+  (.done (../../../api "invoke" "sampler/clip/add" id)
+    (lambda (data) (console.log data))
+    (../../../lib/error (+ "could not add clip to sampler " id))))

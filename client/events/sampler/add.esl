@@ -1,5 +1,5 @@
 (lambda ()
-  (.then (../../api "invoke" "sampler/add")
+  (.done (../../api "invoke" "sampler/add")
     (lambda (data)
       (var samplers (../../state/samplers))
       (= (get samplers data.id) (../../models/sampler data))

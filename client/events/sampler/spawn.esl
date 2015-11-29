@@ -1,5 +1,4 @@
 (lambda (id)
-  (.then (../../api "invoke" "sampler/spawn" id)
-    (lambda (state)
-      (console.log "spawned" id state))
+  (.done (../../api "invoke" "sampler/spawn" id)
+    (lambda (state) (console.log "spawned sampler" id state))
     (../../lib/error (+ "could not spawn sampler " id))))

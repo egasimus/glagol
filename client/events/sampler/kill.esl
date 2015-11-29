@@ -1,5 +1,4 @@
 (lambda (id)
-  (.then (../../api "invoke" "sampler/kill" id)
-    (lambda (state)
-      (console.log "killing" id state))
+  (.done (../../api "invoke" "sampler/kill" id)
+    (lambda (state) (console.log "killed sampler" id state))
     (../../lib/error (+ "could not kill sampler " id))))

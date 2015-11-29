@@ -1,4 +1,5 @@
 (lambda (results)
+  (console.log "samplers" results)
   (if (=== "string" (typeof results)) (= results (JSON.parse results)))
   (var samplers (../../state/samplers))
   (.map (Object.keys results) (lambda (id)

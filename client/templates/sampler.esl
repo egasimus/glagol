@@ -25,8 +25,8 @@
 
   (data.clips.map (lambda (clip i)
     (elements.push (./h ".sampler-clip" (+ i ": " (clip.id))))))
-  (elements.push (./h ".sampler-clip-add"
-    (object "onclick" (./emit "sampler.clipAdd" data.id))
+  (elements.push (./h "a.sampler-clip-add"
+    (object "onclick" (./emit "sampler.clip.add" data.id))
     "Add clip..."))
 
   (return (./h ".device.sampler" elements)))

@@ -387,9 +387,16 @@ body
 
 /// DEVICE: SAMPLER
 
-.sampler-clip, .sampler-clip-add
-  line-height 14px
-  padding 5px 0
+.sampler
+  &-clip, &-clip-add
+    line-height 14px
+    padding 5px 0
+
+  &-clip-add
+    display inline-block
+    cursor pointer
+    &:hover
+      background rgba(255,255,255,0.1)
 
 //////////////////////////////////////
 

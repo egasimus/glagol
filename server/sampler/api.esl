@@ -64,11 +64,19 @@
         (win "sampler killed")))
       (sampler.proc.kill)))))
 
-    "set-clip" (lambda (sampler-id clip-no path)
-      (return (./set-clip ((get (./state) sampler-id)) clip-no path)))
+    "clip" (object
 
-    "set-cue" (lambda (sampler-id clip-no cue-no position)
-      (return (./set-cue ((get (./state) sampler-id)) clip-no cue-no position)))
+      "add" (lambda (sampler-id)
+        (.clips.push (get ./state sampler-id) (../models/clip)))
+
+      "load" (lambda (sampler-id clip-no path)
+        (console.log "load clip" path "in slot" clip-no "of" sampler-id)
+        (return (./set-clip ((get (./state) sampler-id)) clip-no path)))
+
+      "cue" (lambda (sampler-id clip-no cue-no position)
+        (return (./set-cue ((get (./state) sampler-id)) clip-no cue-no position)))
+
+    )
 
   ))
 

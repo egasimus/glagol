@@ -1,6 +1,0 @@
-(lambda (id)
-  (var samplers (../../state/samplers))
-  (var sampler (get samplers id))
-  (sampler.clips.push (../../models/clip))
-  (= (get samplers id) sampler)
-  (../../state/samplers/set samplers))

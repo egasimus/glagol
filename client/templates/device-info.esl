@@ -26,8 +26,8 @@
             (var value (get o 2))
             (var event (get o 3))
             (var elements (array))
-            (elements.push (./h ".device-info-dropdown-option-label" label))
-            (elements.push (./h ".device-info-dropdown-option-value" value))
+            (elements.push (./h ".device-info-dropdown-option-label" (String label)))
+            (elements.push (./h ".device-info-dropdown-option-value" (String value)))
             (return (./h ".device-info-dropdown-option" elements)))))))))))
 
   (return DeviceInfoWidget)

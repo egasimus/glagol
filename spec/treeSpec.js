@@ -8,7 +8,7 @@ var core      = require('..')
 
 var ROOT = './spec/sample';
 
-describe('a value tree', function () {
+xdescribe('a value tree', function () {
 
   var d;
 

@@ -1,34 +1,32 @@
 ((lambda ()
 
   (function DeviceInfoWidget (options)
-    (console.log "DeviceInfoWidget" options)
-    (= this.options options)
-    (= this.visible false))
+    (= this.options options))
 
   (= DeviceInfoWidget.prototype.type "Widget")
 
   (= DeviceInfoWidget.prototype.init (lambda ()
-    (return (this.render))))
+    (console.log "||| INIT")
+    (var self this)
+    (return (../lib/vdom/create (./h "label.device-info" (array
+      (./h ".device-info-icon"
+        (object "onclick" (lambda ()
+          (console.warn "urgh!") (= self.visible (! self.visible)))) "ℹ")
+      (./h ".device-info-dropdown"
+        (object "style" (object "display" "none"))
+        (this.options.map (lambda render-option (o)
+          (var type  (get o 0))
+          (var label (get o 1))
+          (var value (get o 2))
+          (var event (get o 3))
+          (var elements (array))
+          (elements.push (./h ".device-info-dropdown-option-label" (String label)))
+          (elements.push (./h ".device-info-dropdown-option-value" (String value)))
+          (return (./h ".device-info-dropdown-option" elements)))))))))))
 
   (= DeviceInfoWidget.prototype.update (lambda (prev elem)
-    (return (this.render))))
-
-  (= DeviceInfoWidget.prototype.destroy (lambda (elem)))
-
-  (= DeviceInfoWidget.prototype.render (lambda () (return
-    (../lib/vdom/create
-      (./h "label.device-info" (array
-        (./h ".device-info-icon" "ℹ")
-        (./h ".device-info-dropdown" (this.options.map
-          (lambda render-option (o)
-            (var type  (get o 0))
-            (var label (get o 1))
-            (var value (get o 2))
-            (var event (get o 3))
-            (var elements (array))
-            (elements.push (./h ".device-info-dropdown-option-label" (String label)))
-            (elements.push (./h ".device-info-dropdown-option-value" (String value)))
-            (return (./h ".device-info-dropdown-option" elements)))))))))))
+    (console.log "||| UPDATE" this prev elem)
+    (= (.-style.display (get elem.children 1)) (?: prev.visible "block" "none"))))
 
   (return DeviceInfoWidget)
 

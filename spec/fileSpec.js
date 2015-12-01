@@ -1,7 +1,7 @@
 var core = require('..')
   , fs   = require('fs');
 
-describe('a glagol.File', function () {
+xdescribe('a glagol.File', function () {
 
   it('knows its type', function () {
     var n1 = core.File();

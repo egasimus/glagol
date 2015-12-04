@@ -1,27 +1,12 @@
 ((lambda ()
-
   (var throttle     null)
   (var last-query   "")
   (var empty-search (object "query" "" "results" (array)))
-
   (return (lambda search (q)
-
     (= q (q.trim))
-
     (if throttle (clear-timeout throttle))
-
     (if (!== q last-query) (block
       (= last-query q)
       (if (== q "")
-        (result empty-search)
-        (= throttle (set-timeout do-search 400)))))
-
-    (function result (data) (./controller/emit "search.results" data))
-
-    (function do-search ()
-      (result (object "query" q "results" (array)))
-      (.done (../../api "invoke" "library/search" q)
-        (lambda (results)
-          (result (object "query" q "results" results)))
-        (lambda (error)
-          (console.log "search error" error error.stack))))))))
+        (./results empty-search)
+        (= throttle (set-timeout (.bind ./search null q) 400)))))))))

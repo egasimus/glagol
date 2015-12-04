@@ -1,4 +1,0 @@
-(lambda ()
-  (../../search
-    (. (document.get-element-by-id "prompt") value)))
-

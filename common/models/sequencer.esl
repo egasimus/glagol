@@ -2,17 +2,19 @@
 
   (if (|| (=== false (Boolean data)) (=== "string" (typeof data)))
     (return (sequencer (object
-      "id"    ((. (require "shortid") generate))
-      "label" data
-      "seq"   (array 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
-      "step"  0))))
+      "id"      ((. (require "shortid") generate))
+      "label"   data
+      "seq"     (array 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+      "step"    0
+      "targets" (array)))))
 
   (var observ ../lib/observ)
 
-  (return   (observ.Obj
-    "id"    (observ.Var      data.id)
-    "label" (observ.Var      data.label)
-    "seq"   (observ.Arr.from data.seq)
-    "step"  (observ.Var      data.step)))
+  (return     (observ.Obj
+    "id"      (observ.Var      data.id)
+    "label"   (observ.Var      data.label)
+    "seq"     (observ.Arr.from data.seq)
+    "step"    (observ.Var      data.step)
+    "targets" (observ.Arr.from data.targets)))
 
 )

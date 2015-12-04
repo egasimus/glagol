@@ -1,0 +1,6 @@
+(lambda (state)
+  (if (< 0 (get state.seq state.step)) (block
+    (state.targets.map (lambda (t)
+      (var sampler (get ../sampler/state (get t 0)))
+      (var clip    (get sampler.clips (get t 1)))
+      (console.log (sampler) clip))))))

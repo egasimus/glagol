@@ -18,16 +18,17 @@
         (./h ".device-info-dropdown" (.map (Object.keys samplers) menu-sampler))
         null)))))
 
-  (function menu-sampler (id)
-    (console.log (../state/samplers) (get (../state/samplers) id))
-    (var sampler (get (../state/samplers) id))
+  (function menu-sampler (sampler-id)
+    (var sampler (get (../state/samplers) sampler-id))
     (return (./h ".device-info-dropdown-option-group"
       (.concat
         (array (./h ".device-info-dropdown-option-group-label" (String id)))
         (sampler.clips.map (lambda (clip i)
-          (return (./h ".device-info-dropdown-option" (array
-            (./h ".device-info-dropdown-option-label" (String i))
-            (./h ".device-info-dropdown-option-value" (String clip.id)))))))))))
+          (return (./h ".device-info-dropdown-option"
+            (object "onclick" (./emit "sequencer.connect" id sampler-id clip.id))
+            (array
+              (./h ".device-info-dropdown-option-label" (String i))
+              (./h ".device-info-dropdown-option-value" (String clip.id)))))))))))
 
   (function refresh (state)
     (var next-vtree (render state))

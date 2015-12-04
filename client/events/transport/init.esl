@@ -2,7 +2,6 @@
 
   (../../api "invoke" "jack/control/IsStarted"
     (lambda (e status)
-      (console.log "JACK status" e status)
       (if e (../../lib/error e))
       (../../state/jack/started/set status)))
 

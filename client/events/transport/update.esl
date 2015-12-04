@@ -1,6 +1,6 @@
 (lambda (results)
   (if (=== "string" (typeof results)) (= results (JSON.parse results)))
-  (console.log "transport" results)
+  ;(console.log "transport" results)
   (var state (../../state))
   (= state.transport results)
   (../../state/set state))

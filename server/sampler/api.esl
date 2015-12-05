@@ -1,13 +1,14 @@
 (lambda ()
 
   (var freeport (require "freeport"))
+  (var path     (require "path"))
 
   ;(var samplers (((require "observ-struct") (./state)))) ; dang!
 
   (function stringify (state)
     (return (JSON.stringify state (lambda (key val)
       (if (instanceof val (.-ChildProcess (require "child_process")))
-        (return (object "killed" val.killed "pid" val.pid)))
+        (return (object "killed" val.killed "pid" val.pid "exitCode" val.exit-code)))
       (if (instanceof val (.-UDPPort (require "osc")))
         (return true))
       (return val)))))
@@ -40,6 +41,8 @@
           (var opts (object "stdio" "inherit"))
           (= sampler.proc ((. (require "child_process") spawn)
             ./options/sampler-path args opts))
+          (sampler.proc.on "exit" (lambda (code sig)
+            (console.log "sampler" sampler-id "died")))
           (.set (get ./state sampler-id) sampler)
           (patchbay.on "ClientAppeared" (lambda client-appeared (ver id name)
             (patchbay.GetClientPID id (lambda (e pid)
@@ -57,8 +60,10 @@
 
     "kill" (lambda (sampler-id) (return (../lib/q/Promise (lambda (win fail)
       (var sampler ((get ./state sampler-id)))
-      (if (! sampler.proc)    (return (fail "sampler not running")))
-      (if sampler.proc.killed (return (fail "sampler already killed")))
+      (if (! sampler.proc)
+        (return (fail (+ "sampler " sampler-id " not started"))))
+      (if (!== sampler.proc.exit-code null)
+        (return (fail (+ "sampler " sampler-id " already exited"))))
       (sampler.proc.once "close" (lambda (code signal)
         (.proc.set (get ./state sampler-id) sampler.proc)
         (win "sampler killed")))
@@ -72,10 +77,15 @@
         (.clips.push (get ./state sampler-id) clip)
         (return (clip.id)))
 
-      "load" (lambda (sampler-id clip-no path)
-        (console.log "load clip" path "in slot" clip-no "of" sampler-id)
-        (.path.set (.get (get ./state sampler-id "clips") clip-no) path)
-        (return (./set-clip ((get (./state) sampler-id)) clip-no path)))
+      "load" (lambda (sampler-id clip-no sample)
+        (console.log "load clip" sample "in slot" clip-no "of" sampler-id)
+        (var sampler (get ./state sampler-id))
+        (.path.set (sampler.clips.get clip-no) sample)
+        (if (sampler.proc)
+          (.send (sampler.osc) (object
+            "address"   "/load"
+            "args"      (array clip-no (path.join ../library/options/dir sample)))
+            "localhost" (.-options.remote-port (sampler.osc)))))
 
       "cue" (lambda (sampler-id clip-no cue-no position)
         (return (./set-cue ((get (./state) sampler-id)) clip-no cue-no position)))

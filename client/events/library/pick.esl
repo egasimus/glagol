@@ -2,4 +2,4 @@
   (var slot (../../state/library))
   (.done (../../api "invoke" "sampler/clip/load" slot.0 slot.1 path)
     (lambda () (console.log "loaded" path "into" slot))
-    (lambda () (../../lib/error "error loading" path "into" slot))))
+    (../../lib/error "error loading" path "into" slot)))

@@ -1,6 +1,6 @@
 (lambda (data)
 
-  (var alive (&& data.proc data.proc.pid (! data.proc.killed)))
+  (var alive (&& data.proc data.proc.pid (=== null data.proc.exit-code)))
   (var pid   (?: alive data.proc.pid null))
 
   (var info (array

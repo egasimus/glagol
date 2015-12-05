@@ -90,6 +90,16 @@
       "cue" (lambda (sampler-id clip-no cue-no position)
         (return (./set-cue ((get (./state) sampler-id)) clip-no cue-no position)))
 
+      "play" (lambda (sampler-id clip-no cue-no)
+        (console.log "play" sampler-id clip-no cue-no)
+        (var sampler (get ./state sampler-id))
+        (console.log (sampler.proc))
+        (if (sampler.proc)
+          (.send (sampler.osc) (object
+            "address"   "/play"
+            "args"      (array (|| clip-no 0) (|| cue-no 0)))
+            "localhost" (.-options.remote-port (sampler.osc)))))
+
     )
 
   ))

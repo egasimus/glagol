@@ -74,6 +74,7 @@
 
       "load" (lambda (sampler-id clip-no path)
         (console.log "load clip" path "in slot" clip-no "of" sampler-id)
+        (.path.set (.get (get ./state sampler-id "clips") clip-no) path)
         (return (./set-clip ((get (./state) sampler-id)) clip-no path)))
 
       "cue" (lambda (sampler-id clip-no cue-no position)

@@ -5,7 +5,9 @@
   (return 
     (?: s.library
       (./h ".overlay.library" (array
-        (+ "picking sample for " (s.library.join "::"))
+        (./h "div" (array
+          "picking sample for "
+          (./h "strong" (s.library.join "/"))))
         (./h "input" (object "oninput" (lambda (evt)
           ((./emit "library.input" evt)))))
         (./h ".results" (.map (Object.keys results) render-group))))

@@ -1,4 +1,5 @@
-(lambda error (msg)
+(lambda error ()
+  (var msg (Array.prototype.join.call arguments " "))
   (return (lambda (e)
     (console.error msg)
     (console.log e.message)

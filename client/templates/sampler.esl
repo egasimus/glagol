@@ -29,7 +29,7 @@
         (./h "td.sampler-clip-number" (String i))
         (./h "td.sampler-clip-id"     clip.id)
         (./h "td.sampler-clip-path"
-          (./h "a" (object "onclick" (./emit "sampler.clip.browse" data.id clip.id))
+          (./h "a" (object "onclick" (./emit "sampler.clip.browse" data.id i))
             (|| clip.path "load..."))
           )))))))
 

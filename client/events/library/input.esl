@@ -2,7 +2,8 @@
   (var throttle     null)
   (var last-query   "")
   (var empty-search (object "query" "" "results" (array)))
-  (return (lambda search (q)
+  (return (lambda search (evt)
+    (var q evt.target.value)
     (= q (q.trim))
     (if throttle (clear-timeout throttle))
     (if (!== q last-query) (block

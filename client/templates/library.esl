@@ -1,13 +1,14 @@
 (lambda (s)
-
   (var path (require "path"))
-
   (var results (s.results.reduce group (object)))
 
-  (return
-    (?: s.results.length
-      (./h ".results"
-        ((. (Object.keys results) map) render-group))
+  (return 
+    (?: s.library
+      (./h ".overlay.library" (array
+        (+ "picking sample for " (s.library.join "::"))
+        (./h "input" (object "oninput" (lambda (evt)
+          ((./emit "library.input" evt)))))
+        (./h ".results" (.map (Object.keys results) render-group))))
       null))
 
   (function render-group (dir)
@@ -17,7 +18,7 @@
       (./h "ul.result-group-items"
         (items.map (lambda (result) (return
           (./h "li.result"
-            (object "onclick" (./emit "track.add" (path.join dir result)))
+            (object "onclick" (./emit "library.pick" (path.join dir result)))
             (./h ".result-title" (path.basename result)))))))))))
 
   (function group (groups fullpath)

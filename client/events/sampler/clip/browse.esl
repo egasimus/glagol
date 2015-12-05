@@ -1,0 +1,3 @@
+(lambda (sampler-id clip-id)
+  (console.log "browsing sampler for" sampler-id clip-id)
+  (../../../state/library/set (array sampler-id clip-id)))

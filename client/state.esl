@@ -11,6 +11,7 @@
     "x"          (./lib/observ/Var null)
     "y"          (./lib/observ/Var null))
 
+  "library"      (./lib/observ/Var null)
   "results"      (./lib/observ/Arr)
 
   "sequencers"   (./lib/observ/Obj)

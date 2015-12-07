@@ -1,4 +1,4 @@
-var path = require('path')
+var path = require('path');
 
 var Directory = module.exports = function Directory () {
 
@@ -19,19 +19,18 @@ var Directory = module.exports = function Directory () {
   this.options = options;
   this.parent  = options.parent || null;
 
-  // hidden metadata for duck typing when instanceof fails
   Object.defineProperties(this,
-    { path:
-      { configurable: false
-      , enumerable:   false
+    { path:    // path of node relative to app root
+      { configurable: true
+      , enumerable:   true
       , get: getPath.bind(this) }
-    , _glagol:
+    , _glagol: // hidden metadata for duck typing when instanceof fails
       { configurable: false
       , enumerable:   false
       , value: { version: require('../package.json').version
                , type:    "Directory" } } });
 
-}
+};
 
 function getPath () {
   if (this.parent) {

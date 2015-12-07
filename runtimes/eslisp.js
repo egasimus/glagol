@@ -35,6 +35,17 @@ function glagolify (token) {
     return token;
   }
 
+  if (token.type === "atom" && token.value.indexOf('/') === 0) {
+    return {
+      type:     'list',
+      location: token.location,
+      values: [
+        { type: 'atom', value: '.' },
+        { type: 'atom', value: '$' },
+      ].concat(token.value.split('/').slice(1).map(atomize))
+    }
+  }
+
   if (token.type === "atom" && token.value.indexOf('./') === 0) {
     return {
       type:     'list',

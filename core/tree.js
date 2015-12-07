@@ -14,21 +14,30 @@ var getTree = module.exports = function getTree (node) {
   } else if (Directory.is(node)) {
 
     var tree = {};
-    tree._ = tree;
+
     Object.keys(node.nodes).map(function (name) {
       Object.defineProperty(tree, translate(name), {
         configurable: true,
-        enumerable: true,
+        enumerable:   true,
         get: getter.bind(null, node.nodes[name]),
         set: setter.bind(null, node.nodes[name])
       });
     });
-    if (node.parent) tree.__ = getTree(node.parent);
+
+    addHiddenProperty(tree, '_',  tree);
+    addHiddenProperty(tree, '__', node.parent ? getTree(node.parent) : null);
+    addHiddenProperty(tree, '$',  getRoot(tree));
+
     return tree;
 
   } else throw ERR_UNKNOWN_TYPE(node);
 
 };
+
+function getRoot (tree) {
+  while (tree.__) tree = tree.__;
+  return tree;
+}
 
 function getter (node) {
   return File.is(node)
@@ -48,6 +57,14 @@ function translate (name) {
   name = name.replace(/-(.)/g, function (g) { return g[1].toUpperCase() });
 
   return name;
+}
+
+function addHiddenProperty (obj, id, val) {
+  Object.defineProperty(obj, id, {
+    configurable: true,
+    enumerable:   false,
+    value:        val
+  });
 }
 
 function ERR_NO_PARENT (node) {

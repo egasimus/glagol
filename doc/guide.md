@@ -176,12 +176,14 @@ Is transformed into this:
 
 ```
 tree =
-  { _:  [points to self]
-    __: null
+  { $:  [hidden; points to root, i.e. self]
+    _:  [hidden; points to self]
+    __: [hidden; null]
     alice: [Getter]
   , madTeaParty: {
-      _:  [points to self]
-      __: [points to parent]
+      $:  [hidden; points to root, i.e. parent]
+      _:  [hidden; points to self]
+      __: [hidden; points to parent]
       dormouse:  [Getter]
       madHatter: [Getter]
       marchHare: [Getter]}}
@@ -189,16 +191,21 @@ tree =
 
 Attentive readers will notice a few things:
 
-* The `_` and `__` keys suggest, and indeed correspond to, the familiar
-  `.` and `..` entries that point to the current and parent directories of a
-  filesystem.
+* The `$`, `_`, and `__` keys suggest, and indeed correspond to, the familiar
+  `/`, `.` and `..` entries that point to the root, current, and parent
+  directories of a filesystem.
 * File extensions are removed and hyphens are replaced with camel case.
   This constraint is imposed in order to facilitate syntax in the form of
   `app.tree().madTeaParty.madHatter`.
 
-Now here's the rub: when evaluating a `File`, the results of calling `tree()`
-on its parent `Directory`, and then on its parent's parent too, are exposed
-as global objects called `_` and `__`.
+Now here's the rub: when evaluating a `File`, you have those same `$`, `_`,
+and `__` available as global objects, letting you get at the values of every
+other file in the application.
+
+*__NOTE__: The identifiers `$`, `_`, and `__`, are chosen because of JavaScript
+identifier naming specifics. If you need to use a library that uses any of these
+as its own global handle (such as jQuery, Underscore/Lodash, or GNU gettext)
+you might have to resort to some trickery.*
 
 So, in `alice.js`, `_.madTeaParty.madHatter` would surely enough give you the
 value of `mad-tea-party/mad-hatter.js`; and, conversely, in `mad-hatter.js`,

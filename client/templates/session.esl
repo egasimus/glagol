@@ -2,6 +2,8 @@
 
   (var options  (object))
   (var elements (array))
+    
+  (elements.push (./bar-top s))
 
   ((. (Object.keys s.sequencers) map)
     (lambda (id) (elements.push (./sequencer (get s.sequencers id)))))

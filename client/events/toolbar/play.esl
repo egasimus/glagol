@@ -1,2 +1,2 @@
 (lambda ()
-  (.done (../../api "invoke" "transport/start")))
+  (.done (/api "invoke" "transport/start")))

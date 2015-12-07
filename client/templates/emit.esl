@@ -2,4 +2,4 @@
   (var args (Array.prototype.slice.call arguments 1))
   (args.unshift event-name)
   (return (lambda ()
-    (../controller/emit/apply ../controller args))))
+    (/controller/emit/apply /controller args))))

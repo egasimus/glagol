@@ -1,4 +1,4 @@
 (lambda ()
-  (if (../../state/jack/started)
-    (../../api "invoke" "jack/control/StopServer")
-    (../../api "invoke" "jack/control/StartServer")))
+  (if (/state/jack/started)
+    (/api "invoke" "jack/control/StopServer")
+    (/api "invoke" "jack/control/StartServer")))

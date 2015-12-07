@@ -1,2 +1,2 @@
 (lambda (results)
-  (../../state/results/set results.results))
+  (/state/results/set results.results))

@@ -1,2 +1,2 @@
 (lambda ()
-  (../../api "invoke" "transport/stop"))
+  (/api "invoke" "transport/stop"))

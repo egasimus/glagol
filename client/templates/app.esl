@@ -1,7 +1,7 @@
 (lambda (s)
   (var options (object
     "attributes"    (object "tabindex" 1)
-    "hook"          ../lib/vdom/focus-me
+    "hook"          /lib/vdom/focus-me
     "onclick"       (./emit "app.click")
     "oncontextmenu" (./emit "app.contextMenu")))
   (var elements (array
@@ -15,7 +15,7 @@
   ))
   (return (./h ".app" options elements)))
 
-;(./h ".app" (object "attributes" (object "tabindex" 1) "hook" ../vdom/focus-me)
+;(./h ".app" (object "attributes" (object "tabindex" 1) "hook" /vdom/focus-me)
 ;  (array (./toolbar s) (./library s))))
 
 ;:onkeydown

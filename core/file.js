@@ -146,6 +146,7 @@ File.prototype.makeContext = function () {
     var tree = require('./tree.js')(this);
     ctx._  = tree;
     ctx.__ = tree.__;
+    ctx.$  = tree.$;
   }
 
   return vm.createContext(ctx);

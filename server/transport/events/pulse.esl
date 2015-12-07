@@ -1,2 +1,2 @@
 (lambda (ntp utc frm p-ntp p-utc p-frm pulse)
-  (../../sequencer/pulse (../state/bpm) pulse))
+  (/sequencer/pulse (/state/bpm) pulse))

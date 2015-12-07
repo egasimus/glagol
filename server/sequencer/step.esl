@@ -3,5 +3,5 @@
   (if (< 0 (get state.seq state.step)) (block
     (console.log state.step)
     (state.targets.map (lambda (t)
-      (.clip.play (../sampler/api) t.0 t.1)
+      (.clip.play (/sampler/api) t.0 t.1)
       (console.log t))))))

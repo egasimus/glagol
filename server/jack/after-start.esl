@@ -3,7 +3,7 @@
   (var started)
 
   (function reset ()
-    (= started (../lib/q/Promise (lambda (resolve reject)
+    (= started (/lib/q/Promise (lambda (resolve reject)
       (./control/done (lambda (control)
         (control.IsStarted (lambda (e is-it)
           (if e (reject e))

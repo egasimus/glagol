@@ -1,26 +1,26 @@
-(../lib/observ/Obj
+(/lib/observ/Obj
 
-  "daemons" (../lib/observ/Obj
+  "daemons" (/lib/observ/Obj
     "klick"
-      (../lib/observ/Obj
-        "port" (../lib/observ/Var null)
-        "proc" (../lib/observ/Var null))
+      (/lib/observ/Obj
+        "port" (/lib/observ/Var null)
+        "proc" (/lib/observ/Var null))
     "jackOsc"
-      (../lib/observ/Obj
-        "port" (../lib/observ/Var null)
-        "proc" (../lib/observ/Var null)))
+      (/lib/observ/Obj
+        "port" (/lib/observ/Var null)
+        "proc" (/lib/observ/Var null)))
 
-  "oscClient"   (../lib/observ/Var null)
+  "oscClient"   (/lib/observ/Var null)
 
-  "rolling"     (../lib/observ/Var false)
-  "bpm"         (../lib/observ/Var 140)
-  "meterTop"    (../lib/observ/Var 4)
-  "meterBottom" (../lib/observ/Var 4)
-  "frames"      (../lib/observ/Var null)
-  "fps"         (../lib/observ/Var null)
-  "seconds"     (../lib/observ/Var null)
-  "beats"       (../lib/observ/Var null)
-  "bars"        (../lib/observ/Var null))
+  "rolling"     (/lib/observ/Var false)
+  "bpm"         (/lib/observ/Var 140)
+  "meterTop"    (/lib/observ/Var 4)
+  "meterBottom" (/lib/observ/Var 4)
+  "frames"      (/lib/observ/Var null)
+  "fps"         (/lib/observ/Var null)
+  "seconds"     (/lib/observ/Var null)
+  "beats"       (/lib/observ/Var null)
+  "bars"        (/lib/observ/Var null))
 
   
 

@@ -21,20 +21,20 @@
 
     "add" (lambda ()
       (var samplers (./state))
-      (var sampler  (../models/sampler))
+      (var sampler  (/models/sampler))
       (var id (. (sampler) id))
       (= (get samplers id) sampler)
       (./state/set samplers)
       (return (sampler)))
 
-    "spawn" (lambda (sampler-id) (return (../lib/q/Promise (lambda (win fail)
-      (.done (.spread (../lib/q/all (array
-        (../lib/q/nfcall freeport) (../lib/q/nfcall freeport)
-        ../jack/control ../jack/patchbay)) do-spawn))
+    "spawn" (lambda (sampler-id) (return (/lib/q/Promise (lambda (win fail)
+      (.done (.spread (/lib/q/all (array
+        (/lib/q/nfcall freeport) (/lib/q/nfcall freeport)
+        /jack/control /jack/patchbay)) do-spawn))
 
       (function do-spawn (local-p remote-p control patchbay)
         (var sampler ((get ./state sampler-id)))
-        (../jack/after-start/done (lambda ()
+        (/jack/after-start/done (lambda ()
           (= sampler.local-port  local-p)
           (= sampler.remote-port remote-p)
           (var args (array "-n" sampler.id "-p" remote-p "-c" "system:playback_1"))
@@ -58,7 +58,7 @@
                 (.set (get ./state sampler-id) sampler)
                 (win sampler))))))))))))))
 
-    "kill" (lambda (sampler-id) (return (../lib/q/Promise (lambda (win fail)
+    "kill" (lambda (sampler-id) (return (/lib/q/Promise (lambda (win fail)
       (var sampler ((get ./state sampler-id)))
       (if (! sampler.proc)
         (return (fail (+ "sampler " sampler-id " not started"))))
@@ -73,7 +73,7 @@
 
       "add" (lambda (sampler-id)
         (console.log "add clip to" sampler-id)
-        (var clip (../models/clip))
+        (var clip (/models/clip))
         (.clips.push (get ./state sampler-id) clip)
         (return (clip.id)))
 
@@ -84,7 +84,7 @@
         (if (sampler.proc)
           (.send (sampler.osc) (object
             "address"   "/load"
-            "args"      (array clip-no (path.join ../library/options/dir sample)))
+            "args"      (array clip-no (path.join /library/options/dir sample)))
             "localhost" (.-options.remote-port (sampler.osc)))))
 
       "cue" (lambda (sampler-id clip-no cue-no position)

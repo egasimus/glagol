@@ -12,7 +12,7 @@
 
     "add" (lambda ()
       (var sequencers (./state))
-      (var sequencer  (../models/sequencer))
+      (var sequencer  (/models/sequencer))
       (var id (. (sequencer) id))
       (sequencer.step (lambda () (./step (sequencer))))
       (= (get sequencers id) sequencer)
@@ -24,10 +24,10 @@
 
     "connect" (lambda (sequencer-id sampler-id clip-no)
       (var sequencer (get ./state sequencer-id))
-      (var sampler ((get ../sampler/state sampler-id)))
+      (var sampler ((get /sampler/state sampler-id)))
       (sequencer.targets.push (array sampler-id clip-no))
       ;(sequencer.targets.push ((get
-      ;  ../sampler/state sampler-id "clips" clip-no)))
+      ;  /sampler/state sampler-id "clips" clip-no)))
       (console.log (sequencer))
       (console.log sequencer-id "controls" sampler-id clip-no))
 

@@ -1,5 +1,5 @@
 (lambda ()
   (var socket (new WebSocket (+ "ws://" window.location.host)))
-  (= socket.onclose (lambda () (./state/server/set false)))
-  (= socket.onopen  (lambda () (./state/server/set true)))
-  (./state/connection/set ((require "q-connection") socket)))
+  (= socket.onclose (lambda () (/state/server/set false)))
+  (= socket.onopen  (lambda () (/state/server/set true)))
+  (/state/connection/set ((require "q-connection") socket)))

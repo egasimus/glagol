@@ -8,7 +8,7 @@
   (model refresh)
 
   (function render (state)
-    (var samplers (/state/samplers))
+    (var samplers (/state/devices/sampler))
     (return (./h "label.device-info" (array
       (./h "a.device-info-icon"
         (object "onclick" (lambda (e)

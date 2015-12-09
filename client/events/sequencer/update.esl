@@ -1,6 +1,0 @@
-(lambda (results)
-  (if (=== "string" (typeof results)) (= results (JSON.parse results)))
-  (var sequencers (/state/sequencers))
-  (.map (Object.keys results) (lambda (id)
-    (= (get sequencers id) (/models/sequencer (get results id)))))
-  (/state/sequencers/set sequencers))

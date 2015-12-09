@@ -5,16 +5,17 @@
     
   (elements.push (./bar-top s))
 
-  (.map (Object.keys s.sequencers)
-    (lambda (id) (elements.push (./sequencer (get s.sequencers id)))))
+  ;(elements.push (./h "pre" (JSON.stringify s)))
 
-  (.map (Object.keys s.samplers)
-    (lambda (id) (elements.push (./sampler   (get s.samplers   id)))))
+  (.map (Object.keys s.devices) (lambda (device)
+    (var devices (get s.devices device))
+    (.map (Object.keys devices) (lambda (id)
+      (elements.push ((get /templates device) (get devices id)))))))
 
-  (s.libraries.map
-    (lambda (id) (elements.push (./library id))))
-
-  (.map (Object.keys s.viewers)
-    (lambda (id) (elements.push (./viewer    (get s.viewer     id)))))
+  ;(s.libraries.map
+  ;  (lambda (id) (elements.push (./library id))))
+;
+;  (.map (Object.keys s.viewers)
+;    (lambda (id) (elements.push (./viewer    (get s.viewer     id)))))
 
   (return (./h ".session" options elements)))

@@ -1,4 +1,0 @@
-(lambda ()
-  (/state/samplers/set (object))
-  (.done (/api "invoke" "sampler/list" ./update)
-    ./update (/lib/error "could not subscribe to sampler list")))

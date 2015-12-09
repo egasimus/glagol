@@ -1,4 +1,0 @@
-(lambda ()
-  (/state/sequencers/set (object))
-  (.done (/api "invoke" "sequencer/list" ./update)
-    ./update (/lib/error "error subscribing to sequencer list")))

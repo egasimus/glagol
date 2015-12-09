@@ -11,7 +11,9 @@
     (var event (?: (=== (typeof this.event) "string")
       (this.event.split ".")
       (this.event)))
-    (console.log "dispatch" event)
+    (if (< 0 arguments.length)
+      (console.log "dispatch" event arguments)
+      (console.log "dispatch" event))
     (= event (event.reduce resolve-event ./events))
     (event.apply null arguments))
 

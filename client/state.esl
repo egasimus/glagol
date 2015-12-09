@@ -1,20 +1,17 @@
 (./lib/observ/Obj
 
-  "connection"   (./lib/observ/Var)
+  "connection"   (/lib/observ/Var)
 
-  "server"       (./lib/observ/Var false)
+  "server"       (/lib/observ/Var false)
 
-  "jack"         (./lib/observ/Obj
-    "started"    (./lib/observ/Var false))
+  "jack"         (/lib/observ/Obj
+    "started"    (/lib/observ/Var false))
 
-  "contextMenu"  (./lib/observ/Obj
-    "x"          (./lib/observ/Var null)
-    "y"          (./lib/observ/Var null))
+  "contextMenu"  (/lib/observ/Obj
+    "x"          (/lib/observ/Var null)
+    "y"          (/lib/observ/Var null))
 
-  "sequencers"   (./lib/observ/Obj)
-  "samplers"     (./lib/observ/Obj)
-  "libraries"    (./lib/observ/Arr)
-  "viewers"      (./lib/observ/Obj)
-  "transport"    (./lib/observ/Obj)
+  "devices"      (/lib/observ/Obj)
+  "transport"    (/lib/observ/Obj)
 
 )

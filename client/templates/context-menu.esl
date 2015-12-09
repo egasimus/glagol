@@ -3,8 +3,12 @@
     (var style (+ "position:fixed;left:" s.x "px;top:" s.y "px;"))
     (var options (object "attributes" (object "style" style)))
     (var elements (array
-      (item "sequencer.add" "Sequencer")
-      (item "sampler.add"   "Sampler")))
+      (item "console"   "Console")
+      (item "transport" "Transport")
+      (item "sequencer" "Sequencer")
+      (item "sampler"   "Sampler")
+      (item "library"   "Library")
+      (item "editor"    "Editor")))
     (return (./h ".context-menu" options elements))))
     
   (function item (evt text)
@@ -12,4 +16,4 @@
     
   (function cb (evt) (return (lambda ()
     ((./emit "contextMenu.close"))
-    ((./emit evt))))))
+    ((./emit "device.add" evt))))))

@@ -1,8 +1,8 @@
 (lambda ()
 
-  (./sampler/init)
+  (./device/init "sampler")
 
-  (./sequencer/init)
+  (./device/init "sequencer")
 
   (./transport/init)
 

@@ -9,7 +9,7 @@
     ; (./launcher     s)
     ; (./piano)
     (./session      s)
-    (./library      s)
+    ; (./library      s)
     (./context-menu s.context-menu)
   ))
   (return (./h ".app" options elements)))

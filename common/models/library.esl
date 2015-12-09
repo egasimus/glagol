@@ -1,0 +1,7 @@
+(lambda (data)
+  (= data (|| data (object)))
+  (var observ ../lib/observ)
+  (return  (observ.Obj
+    "id"      (observ.Var (|| data.id ((. (require "shortid") generate))))
+    "target"  (observ.Var data.target)
+    "results" (observ.Arr))))

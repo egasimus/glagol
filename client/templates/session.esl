@@ -5,10 +5,16 @@
     
   (elements.push (./bar-top s))
 
-  ((. (Object.keys s.sequencers) map)
+  (.map (Object.keys s.sequencers)
     (lambda (id) (elements.push (./sequencer (get s.sequencers id)))))
 
-  ((. (Object.keys s.samplers) map)
+  (.map (Object.keys s.samplers)
     (lambda (id) (elements.push (./sampler   (get s.samplers   id)))))
+
+  (s.libraries.map
+    (lambda (id) (elements.push (./library id))))
+
+  (.map (Object.keys s.viewers)
+    (lambda (id) (elements.push (./viewer    (get s.viewer     id)))))
 
   (return (./h ".session" options elements)))

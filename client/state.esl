@@ -11,11 +11,10 @@
     "x"          (./lib/observ/Var null)
     "y"          (./lib/observ/Var null))
 
-  "library"      (./lib/observ/Var null)
-  "results"      (./lib/observ/Arr)
-
   "sequencers"   (./lib/observ/Obj)
   "samplers"     (./lib/observ/Obj)
+  "libraries"    (./lib/observ/Arr)
+  "viewers"      (./lib/observ/Obj)
   "transport"    (./lib/observ/Obj)
 
 )

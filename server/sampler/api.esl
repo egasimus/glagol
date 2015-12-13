@@ -1,4 +1,4 @@
-(lambda ()
+((lambda ()
 
   (var freeport (require "freeport"))
   (var path     (require "path"))
@@ -104,4 +104,4 @@
 
   ))
 
-)
+))

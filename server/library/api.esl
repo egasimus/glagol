@@ -1,4 +1,4 @@
-(lambda ()
+((lambda ()
 
   (var Q (require "q"))
 
@@ -18,4 +18,4 @@
         (console.log "details for" path (JSON.stringify details))
         (return details))))
 
-)
+))

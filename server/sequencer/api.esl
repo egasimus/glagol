@@ -1,4 +1,4 @@
-(lambda ()
+((lambda ()
 
   (function stringify (state)
     (return (JSON.stringify state (lambda (key val)
@@ -31,4 +31,4 @@
       (console.log (sequencer))
       (console.log sequencer-id "controls" sampler-id clip-no))
 
-  )))
+  ))))

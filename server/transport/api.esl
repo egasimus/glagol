@@ -1,4 +1,4 @@
-(lambda ()
+((lambda ()
 
   (function stringify (state)
     (return (JSON.stringify state (lambda (key val)
@@ -35,4 +35,4 @@
         "args"      (array pos))
         "localhost" (./state/daemons/jack-osc/port)))
 
-  )))
+  ))))

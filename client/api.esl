@@ -1,9 +1,11 @@
 (lambda api-call (path)
   (var args (Array.prototype.slice.call arguments 1))
   (console.log "api-call" path args)
-  (return (call (path.split "/") (.invoke (./state/connection))))
+  (return (.fcall (./state/connection) path args))
+  (return (call (path.split "/") (.fcall (./state/connection) arguments)))
 
   (function call (p q)
+    (console.log "call" p q)
     (if (> 1 p.length)
       (throw (Error "api: say path"))
       (return (?: (< 1 p.length)

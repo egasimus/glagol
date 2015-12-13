@@ -1,5 +1,5 @@
-((lambda () (return (object
+(object
   "control"  ./control
   "patchbay" ./patchbay
   "client" (object
-    "add" ./client-add)))))
+    "add" ./client-add))

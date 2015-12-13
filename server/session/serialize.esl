@@ -1,4 +1,4 @@
-(function serialize (state)
+(lambda serialize (state)
   (return (JSON.stringify state (lambda (key val)
     (if (instanceof val (.-ChildProcess (require "child_process")))
       (return (object "killed" val.killed "pid" val.pid "exitCode" val.exit-code)))

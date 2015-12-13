@@ -1,2 +1,16 @@
-(lambda (session-state)
-  (console.log "Update" session-state))
+(lambda (new-state)
+  (= new-state (JSON.parse new-state))
+
+  (var state (/state/session))
+  (.map (Object.keys new-state) (lambda (device-type)
+    (if (! (get /state/session device-type))
+      (= (get state device-type) (/lib/observ/Obj)))))
+  (/state/session/set state)
+
+  (.map (Object.keys new-state) (lambda (device-type)
+    (var devices (get new-state device-type))
+    (var state ((get /state/session device-type)))
+    (.map (Object.keys devices) (lambda (device-id)
+      (var device ((get /models device-type) (get devices device-id)))
+      (= (get state device-id) device)))
+    (.set (get /state/session device-type) state))))

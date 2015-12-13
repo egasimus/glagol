@@ -14,6 +14,6 @@
   (./lib/vdom/insert-css ./style)
 
   ; load data from server
-  (./controller/emit "init")
+  (./controller/emit "session.init")
 
   (return mainloop))

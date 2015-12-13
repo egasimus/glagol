@@ -3,8 +3,8 @@
   (var options  (object))
   (var elements (array))
 
-  (.map (Object.keys s.devices) (lambda (device)
-    (var devices (get s.devices device))
+  (.map (Object.keys s.session) (lambda (device)
+    (var devices (get s.session device))
     (.map (Object.keys devices) (lambda (id)
       (elements.push ((get /templates device) (get devices id)))))))
 

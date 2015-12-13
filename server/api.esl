@@ -1,4 +1,5 @@
 (object
+  "session"   ./session/api
   "library"   ./library/api
   "sequencer" ./sequencer/api
   "sampler"   ./sampler/api

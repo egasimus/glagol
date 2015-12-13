@@ -1,0 +1,2 @@
+(lambda (session-state)
+  (console.log "Update" session-state))

@@ -1,0 +1,8 @@
+(object
+  "list" (lambda (cb)
+    (if cb (./state (lambda (val) (cb (./serialize val)))))
+    (return (./serialize (./state))))
+  "add" (lambda (device args)
+    (var xtra (object))
+    (= (get object (device.id)) device)
+    (./state/set ((require "xtend") (./state) xtra))))

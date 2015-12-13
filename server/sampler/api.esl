@@ -3,29 +3,10 @@
   (var freeport (require "freeport"))
   (var path     (require "path"))
 
-  ;(var samplers (((require "observ-struct") (./state)))) ; dang!
-
-  (function stringify (state)
-    (return (JSON.stringify state (lambda (key val)
-      (if (instanceof val (.-ChildProcess (require "child_process")))
-        (return (object "killed" val.killed "pid" val.pid "exitCode" val.exit-code)))
-      (if (instanceof val (.-UDPPort (require "osc")))
-        (return true))
-      (return val)))))
-
   (return (object
 
-    "list" (lambda (cb)
-      (if cb (./state (lambda (val) (cb (stringify val)))))
-      (return (stringify (./state))))
-
-    "add" (lambda ()
-      (var samplers (./state))
-      (var sampler  (/models/sampler))
-      (var id (. (sampler) id))
-      (= (get samplers id) sampler)
-      (./state/set samplers)
-      (return (sampler)))
+    "create" (lambda ()
+      (return (/models/sampler)))
 
     "spawn" (lambda (sampler-id) (return (/lib/q/Promise (lambda (win fail)
       (.done (.spread (/lib/q/all (array

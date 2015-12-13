@@ -21,7 +21,3 @@
   "seconds"     (/lib/observ/Var null)
   "beats"       (/lib/observ/Var null)
   "bars"        (/lib/observ/Var null))
-
-  
-
-

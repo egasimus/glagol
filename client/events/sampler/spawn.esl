@@ -1,4 +1,4 @@
 (lambda (id)
-  (.done (/api "invoke" "sampler/spawn" id)
+  (.done (/api "sampler/spawn" id)
     (lambda (state) (console.log "spawned sampler" id state))
     (/lib/error (+ "could not spawn sampler " id))))

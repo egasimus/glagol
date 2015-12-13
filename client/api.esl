@@ -1,6 +1,6 @@
-(lambda api-call (op path)
-  (console.log "api-call" op path)
-  (var args (Array.prototype.slice.call arguments 2))
+(lambda api-call (path)
+  (var args (Array.prototype.slice.call arguments 1))
+  (console.log "api-call" path args)
   (return (call (path.split "/") (.invoke (./state/connection))))
 
   (function call (p q)
@@ -8,4 +8,4 @@
       (throw (Error "api: say path"))
       (return (?: (< 1 p.length)
         (call (p.slice 1) (q.get (. p 0)))
-        (.apply (get q op) q (p.concat args)))))))
+        (q.invoke.apply q (p.concat args)))))))

@@ -1,4 +1,4 @@
 (lambda (sequencer-id sampler-id clip-id)
   (console.log "seq bind" sequencer-id sampler-id clip-id)
-  (.done (/api "invoke"
+  (.done (/api
     "sequencer/connect" sequencer-id sampler-id clip-id)))

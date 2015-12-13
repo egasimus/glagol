@@ -1,17 +1,17 @@
 (lambda ()
 
-  (/api "invoke" "jack/control/IsStarted"
+  (/api "jack/control/IsStarted"
     (lambda (e status)
       (if e (/lib/error e))
       (/state/jack/started/set status)))
 
-  (/api "invoke" "jack/control/on" "ServerStarted"
+  (/api "jack/control/on" "ServerStarted"
     (lambda ()
       (/state/jack/started/set true)))
 
-  (/api "invoke" "jack/control/on" "ServerStopped"
+  (/api "jack/control/on" "ServerStopped"
     (lambda ()
       (/state/jack/started/set false)))
 
-  (.done (/api "invoke" "transport/init" ./update)
+  (.done (/api "transport/init" ./update)
     ./update (/lib/error "error subscribing to transport")))

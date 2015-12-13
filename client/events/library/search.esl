@@ -1,6 +1,6 @@
 (lambda (q)
   (./results (object "query" q "results" (array)))
-  (return (.then (/api "invoke" "library/search" q)
+  (return (.then (/api "library/search" q)
     (lambda (results)
       (./results (object "query" q "results" results)))
     (lambda (error)

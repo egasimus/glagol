@@ -11,9 +11,7 @@
       (item "editor"    "Editor")))
     (return (./h ".context-menu" options elements))))
     
-  (function item (evt text)
-    (return (./h "a" (object "onclick" (cb evt)) text)))
-    
-  (function cb (evt) (return (lambda ()
-    ((./emit "contextMenu.close"))
-    ((./emit "device.add" evt))))))
+  (function item (device text)
+    (return (./h "a" (object "onclick" (lambda ()
+      ((./emit "contextMenu.close"))
+      ((./emit "session.add" device)))) text))))

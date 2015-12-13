@@ -1,0 +1,4 @@
+(lambda (device data)
+  (.done (/api "session/add" device data)
+    (lambda (result) (console.log "added" device))
+    (/lib/error (+ "could not add " device))))

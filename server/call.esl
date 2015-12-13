@@ -1,7 +1,8 @@
 (lambda (path args)
+  (var api (./api))
   (return (/lib/q/Promise (lambda (win fail)
     (try
-      (call1 (path.split "/") ./api)
+      (call1 (path.split "/") api)
       (catch e (fail (+ "api: error calling " path ": " e.message))))
     (function call1 (path-step api-branch)
       (if (> 1 path-step.length)

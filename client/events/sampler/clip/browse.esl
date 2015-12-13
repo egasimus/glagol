@@ -1,3 +1,5 @@
 (lambda (sampler-id clip-id)
-  (console.log "browsing sampler for" sampler-id clip-id)
-  (/state/libraries/push (array sampler-id clip-id)))
+  (var arg (array sampler-id clip-id))
+  (.done (/api "library/add" arg)
+    (lambda (data) (console.log data))
+    (/lib/error (+ "could not open library for " arg))))

@@ -1,9 +1,4 @@
 (lambda ()
-
-  (./device/init "sampler")
-
-  (./device/init "sequencer")
-
-  (./transport/init)
-
-)
+  (.map (array "sampler" "sequencer" "transport")
+    (lambda (device)
+      (./device/init device))))

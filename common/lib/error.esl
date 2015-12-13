@@ -1,10 +1,9 @@
 (lambda error ()
   (var msg (Array.prototype.join.call arguments " "))
   (return (lambda (e)
-    (console.log e)
     (if (instanceof e Error)
       (block
         (console.error msg)
         (console.log e.message)
         (console.log e.stack))
-      (console.error "server-side error; TODO: get info" e)))))
+      (console.error e)))))

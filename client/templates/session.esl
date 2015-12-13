@@ -2,20 +2,10 @@
 
   (var options  (object))
   (var elements (array))
-    
-  (elements.push (./bar-top s))
-
-  ;(elements.push (./h "pre" (JSON.stringify s)))
 
   (.map (Object.keys s.devices) (lambda (device)
     (var devices (get s.devices device))
     (.map (Object.keys devices) (lambda (id)
       (elements.push ((get /templates device) (get devices id)))))))
-
-  ;(s.libraries.map
-  ;  (lambda (id) (elements.push (./library id))))
-;
-;  (.map (Object.keys s.viewers)
-;    (lambda (id) (elements.push (./viewer    (get s.viewer     id)))))
 
   (return (./h ".session" options elements)))

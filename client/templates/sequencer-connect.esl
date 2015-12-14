@@ -8,7 +8,7 @@
   (model refresh)
 
   (function render (state)
-    (var samplers (/state/devices/sampler))
+    (var samplers (/state/session/sampler))
     (return (./h "label.device-info" (array
       (./h "a.device-info-icon"
         (object "onclick" (lambda (e)
@@ -19,7 +19,7 @@
         null)))))
 
   (function menu-sampler (sampler-id)
-    (var sampler (get (/state/samplers) sampler-id))
+    (var sampler (get (/state/session/sampler) sampler-id))
     (return (./h ".device-info-dropdown-option-group"
       (.concat
         (array (./h ".device-info-dropdown-option-group-label" (String id)))

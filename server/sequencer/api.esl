@@ -4,13 +4,11 @@
     (return (/models/sequencer)))
 
   "set" (lambda (id step value)
-    (.seq.put (get ./state id) step value))
+    (.seq.put (get /session/state/sequencer id) step value))
 
   "connect" (lambda (sequencer-id sampler-id clip-no)
-    (var sequencer (get ./state sequencer-id))
-    (var sampler ((get /sampler/state sampler-id)))
+    (var sequencer (get /session/state/sequencer sequencer-id))
+    (var sampler ((get /session/state/sampler sampler-id)))
     (sequencer.targets.push (array sampler-id clip-no))
-    ;(sequencer.targets.push ((get
-    ;  /sampler/state sampler-id "clips" clip-no)))
     (console.log (sequencer))
     (console.log sequencer-id "controls" sampler-id clip-no)))

@@ -9,8 +9,8 @@
     (./h ".device-header" (array
       (./device-label data.label (+ "Sequencer " data.id))
       (./h ".device-buttons" (array
-        (new ./sequencer-connect data.id)
-        (new ./device-info info)))))
+        (?: /state/session/sampler (./sequencer-connect data.id) null)
+        (./device-info info)))))
     (./h ".sequencer-steps" (data.seq.map (lambda (val i) (return (./h
       (+ ".sequencer-step"
         (?: (> val 0)         ".active"  "")

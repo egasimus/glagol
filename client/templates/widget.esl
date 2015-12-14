@@ -1,5 +1,7 @@
 (lambda widget (closure)
-  (var Widget (lambda (options) (= this.options options)))
+  (var Widget (lambda (options)
+    (if (! (instanceof this Widget)) (return (new Widget options)))
+    (= this.options options)))
   (= Widget.prototype.type "Widget")
   (= Widget.prototype.init (lambda ()
     (= this.state (closure this.options))

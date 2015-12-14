@@ -10,6 +10,9 @@
 
   (return (object
 
+    "create" (lambda ()
+      (return (/models/transport)))
+
     "init" (lambda (cb)
       (if cb (./state (lambda (val) (cb (stringify val)))))
       (return (stringify (./state))))

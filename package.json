@@ -10,8 +10,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Adam Avramov <fallenblood@example.com> (http://github.com/egasimus)",
+  "license": "GPL-3.0",
   "dependencies": {
     "browserify": "^11.2.0",
     "dbus-native": "^0.2.0",

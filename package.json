@@ -1,0 +1,11 @@
+{
+  "name": "glagol-web",
+  "version": "0.0.0",
+  "description": "Client-side loader and web server to use with [Glagol](https://github.com/egasimus/glagol).",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Adam Avramov <fallenblood@example.com> (http://github.com/egasimus)",
+  "license": "ISC"
+}

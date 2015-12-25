@@ -23,6 +23,7 @@
     "eventemitter2": "^0.4.14",
     "freeport": "^1.0.5",
     "glagol": "git://github.com/egasimus/glagol.git",
+    "glagol-web": "git://github.com/egasimus/glagol-web.git",
     "glob": "^5.0.15",
     "insert-css": "^0.2.0",
     "main-loop": "^3.2.0",

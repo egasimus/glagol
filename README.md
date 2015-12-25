@@ -1,4 +1,3 @@
 # etude-demo
 
-Playground for development of [Etude](https://github.com/egasimus/etude-engine)
-engine and app suite.
+Scriptable UI for media manipulation using [Glagol](https://github.com/egasimus/glagol).

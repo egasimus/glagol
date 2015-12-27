@@ -11,16 +11,31 @@ function Loader () {
 
   if (this instanceof Loader) return Loader();
 
-  var watcher = new chokidar.FSWatcher({ persistent: false, depth: 0 })
-    , nodes   = {}
-    , _opts   = { logger: console.log.bind(console)
-                , eager:  true };
+  var nodes = {}
+    , _opts = { logger: defaultLogger
+              , filter: defaultFilter
+              , eager:  true };
 
-  watcher.on('add',       added)
-  watcher.on('addDir',    added)
-  watcher.on('change',    changed)
-  watcher.on('unlink',    removed)
-  watcher.on('unlinkDir', removed)
+  function defaultLogger (args) {
+    console.log.apply(console, args);
+  }
+
+  function defaultFilter (f) {
+    return -1 === f.indexOf('node_modules') && -1 === f.indexOf('.git');
+  }
+
+  function log () {
+    if (_opts.logger) {
+      _opts.logger(arguments);
+    }
+  }
+
+  var watcher = new chokidar.FSWatcher({ persistent: false, depth: 0 })
+  watcher.on('add',       added);
+  watcher.on('addDir',    added);
+  watcher.on('change',    changed);
+  watcher.on('unlink',    removed);
+  watcher.on('unlinkDir', removed);
 
   return load;
 
@@ -31,8 +46,10 @@ function Loader () {
     return _load(basepath);
 
     function _load (location) {
+
       location = path.resolve(location);
       if (!fs.existsSync(location)) throw ERR_FILE_NOT_FOUND(path);
+
       var stat = fs.statSync(location);
       if (stat.isFile()) {
         var node = _loadFile(location);
@@ -41,12 +58,16 @@ function Loader () {
       } else {
         throw ERR_UNSUPPORTED(location);
       }
+
       watcher.add(node._sourcePath = location);
       return nodes[location] = node;
+
     }
 
     function _loadFile (location) {
+
       var node = File(path.basename(location), options);
+
       if (_opts.eager) {
         node.source = fs.readFileSync(location, 'utf8');
       } else {
@@ -64,22 +85,26 @@ function Loader () {
               return this._cache.source = v;
             } });
       }
+
       return node;
+
     }
 
     function _loadDirectory (location) {
+
       var node = Directory(
         path.basename(path.relative(basepath, location) || "/"),
         options);
+
       require('glob').sync(path.join(location, "*"))
-        .filter(function (f) {
-          return -1 === f.indexOf('node_modules')
-        }).map(function (f) {
+        .filter(_opts.filter).map(function (f) {
           var node2 = _load(f, options)
           node2.parent = node;
           node.nodes[node2.name] = node2;
         })
+
       return node;
+
     }
 
   };
@@ -87,15 +112,15 @@ function Loader () {
   load.options = _opts;
 
   function added (f, s) {
-    if (!nodes[f]) {
-      _opts.logger("added", f);
+    if (_opts.filter(f) && !nodes[f]) {
+      log("added", f);
       nodes[f] = load(f);
     }
   }
 
   function changed (f, s) {
-    if (nodes[f]) {
-      _opts.logger("changed", f);
+    if (_opts.filter(f) && nodes[f]) {
+      log("changed", f);
       if (_opts.eager && File.is(nodes[f])) {
         nodes[f].source = fs.readFileSync(f, 'utf8');
       }

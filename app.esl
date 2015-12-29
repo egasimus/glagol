@@ -2,7 +2,10 @@
 
   (var path (require "path"))
 
-  (try
+  (function glagol (source-path)
+    (return ((require "glagol") source-path glagol-opts)))
+
+;  (try
     ; create a server-side glagol instance to keep track of the client code
     (var client (glagol (path.resolve __dirname client-path)))
 
@@ -12,12 +15,15 @@
       (.map (array "error" "observ" "q") (lambda (name)
         (= (get client.nodes.lib.nodes (+ name ".esl"))
           (get common.nodes.lib.nodes (+ name ".esl")))))
-      (= (get client.nodes "models") (get common.nodes "models")))
+      (= (get client.nodes "models") (get common.nodes "models"))))
 
     ; return a route handler bound to this client instance
     (return (handler.bind null client))
 
-    (catch e (return (err e "Error initializing client:")))))
+;    (catch e
+;      (console.error "Error initializing client:")
+;      (console.log e.stack)
+;      (return)))
 
   (function handler (client req res)
 
@@ -29,7 +35,7 @@
       (var app (object
         "ice"  (./freeze client)
         "deps" (./deps client)))
-      (catch e (return (err e "Error creating initial client snapshot:"))))
+      (catch e (return (error e "Error creating initial client snapshot:"))))
 
     (try
       ; instantiate browserify and add common glagol dependencies
@@ -52,7 +58,7 @@
           (object "body" ((?: embed just wrap-html) (wrap-js data))
                   "headers" (object "Content-Type" ctype)))))
 
-      (catch e (err "Error bundling client code:")))
+      (catch e (return (error e "Error bundling client code:"))))
 
     ; ok that was it, route no further
 
@@ -60,19 +66,16 @@
 
     ; helper functions
 
-    (function glagol (source-path) (return
-      ((require "glagol") source-path glagol-opts)))
-
-    (function err (e msg)
+    (function error (e msg)
       (console.error msg)
       (console.log e.stack)
       (if (&& req req.headers req.headers.accept req.headers.accept.index-of
               (< -1 (req.headers.accept.index-of "text/html")))
         ((require "send-data/html") req res
-          (object "statusCode" 500 "body" (err-to-html e)))
+          (object "statusCode" 500 "body" (error-to-html e)))
         ((require "send-data/error") req res (object "body" e))))
 
-    (function err-to-html (e) (return (+
+    (function error-to-html (e) (return (+
       "<head><meta charset=\"utf-8\"></head>"
       "<body><pre><strong>" e.message "</strong>\n\n" e.stack "</pre></body>")))
 

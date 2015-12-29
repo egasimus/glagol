@@ -1,6 +1,6 @@
-(lambda (req res)
-  (var found (.some (Object.keys ./routes) (lambda (name)
-    (var route (get ./routes name))
+(lambda (routes req res)
+  (var found (.some (Object.keys routes) (lambda (name)
+    (var route (get routes name))
     (if (== "function" (typeof route))
       (return (route req res))))))
   (if found

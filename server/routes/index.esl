@@ -1,7 +1,7 @@
-(/lib/web/app
+(/web/app
   (object "eslisp" (object "transform" (array
     (require "eslisp-dotify")
     (require "eslisp-camelify")
     (require "eslisp-propertify"))))
-  (path.resolve __dirname "../../client")
-  (path.resolve __dirname "../../common"))
+  (.resolve (require "path") __dirname "../../client")
+  (.resolve (require "path") __dirname "../../common"))

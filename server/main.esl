@@ -1,6 +1,4 @@
 (lambda main (app)
-  (var host "0.0.0.0")
-  (var port 1620)
-  (var server-http (./web/server host port))
+  (var server-http (./web/server "0.0.0.0" 1620 ./routes))
   (var server-ws (new (. (require "ws") Server) (object "server" server-http)))
   (server-ws.on "connection" (lambda (socket) (./connect socket))))

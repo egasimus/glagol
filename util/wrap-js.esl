@@ -2,6 +2,6 @@
   ";(function(deps, ice){"
   "var " x ";"
   "require(\"glagol\").require.install(deps, require);"
-  "var app = require(\"__glagol_thaw\")(ice);console.log(app);"
+  "var app = require(\"__glagol_thaw\")(ice);"
   "app.tree().main(app)"
   "})(" (JSON.stringify app.deps.deps) "," (JSON.stringify app.ice) ")")))

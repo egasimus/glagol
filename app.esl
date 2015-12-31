@@ -54,9 +54,9 @@
       (br.bundle (lambda (err data)
         (if err (throw err))
         (= data (String data))
-        ((require "send-data") req res
-          (object "body" ((?: embed just wrap-html) (wrap-js data))
-                  "headers" (object "Content-Type" ctype)))))
+        ((require "send-data") req res (object
+          "body" ((?: embed just ./util/wrap-html) (./util/wrap-js data app))
+          "headers" (object "Content-Type" ctype)))))
 
       (catch e (return (error e "Error bundling client code:"))))
 
@@ -80,17 +80,6 @@
       "<body><pre><strong>" e.message "</strong>\n\n" e.stack "</pre></body>")))
 
     (function just (x) (return x))
-
-    (function wrap-html (x) (return (+
-      "<head><meta charset=\"utf-8\"></head><body><script>" x "</script>")))
-
-    (function wrap-js (x) (return (+
-      ";(function(deps, ice){"
-      "var " x ";"
-      "require(\"glagol\").require.install(deps, require);"
-      "var app = require(\"__glagol_thaw\")(ice);"
-      "app.tree().main(app)"
-      "})(" (JSON.stringify app.deps.deps) "," (JSON.stringify app.ice) ")")))
 
     (function shim (b p q)
       (b.require (path.join __dirname p) (object "expose" q)))))

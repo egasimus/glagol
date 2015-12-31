@@ -1,2 +1,3 @@
 module.exports =
-  { '.esl': require('glagol/runtimes/javascript.js') };
+  { '.js':  require('glagol/runtimes/javascript.js')
+  , '.esl': require('glagol/runtimes/javascript.js') };

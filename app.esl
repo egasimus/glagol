@@ -1,34 +1,24 @@
 (lambda (glagol-opts client-path common-path)
 
-  (var path (require "path"))
+  (var glagol (./util/glagol/bind null glagol-opts))
 
-  (function glagol (source-path)
-    (return ((require "glagol") source-path glagol-opts)))
+  ; create a server-side glagol instance to keep track of the client code
+  (var client (glagol (.resolve (require "path") __dirname client-path)))
 
-;  (try
-    ; create a server-side glagol instance to keep track of the client code
-    (var client (glagol (path.resolve __dirname client-path)))
+  ; make one for shared client/server code too, and overlay it on top
+  (if common-path (block
+    (var common (glagol (.resolve (require "path") __dirname common-path)))
+    (.map (array "error" "observ" "q") (lambda (name)
+      (= (get client.nodes.lib.nodes (+ name ".esl"))
+        (get common.nodes.lib.nodes (+ name ".esl")))))
+    (= (get client.nodes "models") (get common.nodes "models"))))
 
-    ; make one for shared client/server code too, and overlay it on top
-    (if common-path (block
-      (var common (glagol (path.resolve __dirname common-path)))
-      (.map (array "error" "observ" "q") (lambda (name)
-        (= (get client.nodes.lib.nodes (+ name ".esl"))
-          (get common.nodes.lib.nodes (+ name ".esl")))))
-      (= (get client.nodes "models") (get common.nodes "models"))))
+  ; return a route handler bound to this client instance
+  (return (lambda handler (req res)
 
-    ; return a route handler bound to this client instance
-    (return (handler.bind null client))
+    (if (!== req.url "/") (return false)) ; not the handler you're looking for?
 
-;    (catch e
-;      (console.error "Error initializing client:")
-;      (console.log e.stack)
-;      (return)))
-
-  (function handler (client req res)
-
-    ; not the handler you're looking for?
-    (if (!== req.url "/") (return false))
+    (var error (./util/error/bind null req res))
 
     (try
       ; bundle the client code into a snapshot and get dependency map
@@ -41,8 +31,8 @@
       ; instantiate browserify and add common glagol dependencies
       (var br ((require "browserify")))
       (br.require "glagol" (object "expose" "glagol"))
-      (shim br "./client/runtimes.js" "../runtimes/index.js")
-      (shim br "./client/thaw.js"     "__glagol_thaw")
+      (./util/shim br "./client/runtimes.js" "../runtimes/index.js")
+      (./util/shim br "./client/thaw.js"     "__glagol_thaw")
 
       ; add client-specific dependencies, dependency map, and client source
       (.map (Object.keys app.deps.ids) (lambda (module)
@@ -53,33 +43,14 @@
       (var ctype (+ "text/" (?: embed "javascript" "html") "; charset=utf-8"))
       (br.bundle (lambda (err data)
         (if err (throw err))
-        (= data (String data))
+        (= data (./util/wrap-js (String data) app))
         ((require "send-data") req res (object
-          "body" ((?: embed just ./util/wrap-html) (./util/wrap-js data app))
+          "body" (?: embed data (./util/wrap-html data))
           "headers" (object "Content-Type" ctype)))))
 
       (catch e (return (error e "Error bundling client code:"))))
 
     ; ok that was it, route no further
+    (return true)))
 
-    (return true)
-
-    ; helper functions
-
-    (function error (e msg)
-      (console.error msg)
-      (console.log e.stack)
-      (if (&& req req.headers req.headers.accept req.headers.accept.index-of
-              (< -1 (req.headers.accept.index-of "text/html")))
-        ((require "send-data/html") req res
-          (object "statusCode" 500 "body" (error-to-html e)))
-        ((require "send-data/error") req res (object "body" e))))
-
-    (function error-to-html (e) (return (+
-      "<head><meta charset=\"utf-8\"></head>"
-      "<body><pre><strong>" e.message "</strong>\n\n" e.stack "</pre></body>")))
-
-    (function just (x) (return x))
-
-    (function shim (b p q)
-      (b.require (path.join __dirname p) (object "expose" q)))))
+)

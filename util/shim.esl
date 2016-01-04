@@ -1,0 +1,2 @@
+(lambda shim (b p q)
+  (b.require (.resolve (require "path") __dirname ".." p) (object "expose" q)))

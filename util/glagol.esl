@@ -1,0 +1,3 @@
+(lambda glagol (glagol-opts source-path)
+  (return ((require "glagol") source-path glagol-opts)))
+

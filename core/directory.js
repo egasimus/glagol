@@ -73,23 +73,24 @@ Directory.prototype.get = function (relPath) {
 
 Directory.prototype.add = function (node) {
   if (this.nodes[node.name]) {
-    this.remove(node.name)
+    this.remove(node.name);
   }
   this.nodes[node.name] = node;
 }
 
 Directory.prototype.remove = function (nodeOrName) {
   if (typeof nodeOrName === "string") {
-    delete this.nodes[nodeOrName]
+    delete this.nodes[nodeOrName];
   } else {
-    delete this.nodes[node.name]
+    delete this.nodes[node.name];
   }
 }
 
 Directory.prototype.mount = function (dir) { // TODO multiarg
   Object.keys(dir.nodes).forEach(function (name) {
-    this.add(dir.nodes[name])
-  }.bind(this))
+    this.add(dir.nodes[name]);
+    dir.nodes[name].parent = this;
+  }, this)
 }
 
 function ERR_BROKEN_PATH(step, path) {

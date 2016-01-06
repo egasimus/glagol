@@ -3,15 +3,10 @@
   (var glagol (./util/glagol/bind null glagol-opts))
 
   ; create a server-side glagol instance to keep track of the client code
-  (var client (glagol (.resolve (require "path") __dirname client-path)))
-
   ; make one for shared client/server code too, and overlay it on top
-  (if common-path (block
-    (var common (glagol (.resolve (require "path") __dirname common-path)))
-    (.map (array "error" "observ" "q") (lambda (name)
-      (= (get client.nodes.lib.nodes (+ name ".esl"))
-        (get common.nodes.lib.nodes (+ name ".esl")))))
-    (= (get client.nodes "models") (get common.nodes "models"))))
+  (var client (glagol (.resolve (require "path") __dirname client-path)))
+  (if common-path (client.mount
+    (glagol (.resolve (require "path") __dirname common-path))))
 
   ; return a route handler bound to this client instance
   (return (lambda handler (req res)

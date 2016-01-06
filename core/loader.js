@@ -16,14 +16,6 @@ function Loader () {
               , filter: defaultFilter
               , eager:  true };
 
-  function defaultLogger (args) {
-    console.log.apply(console, args);
-  }
-
-  function defaultFilter (f) {
-    return -1 === f.indexOf('node_modules') && -1 === f.indexOf('.git');
-  }
-
   function log () {
     if (_opts.logger) {
       _opts.logger(arguments);
@@ -139,4 +131,20 @@ function Loader () {
 
 function ERR_FILE_NOT_FOUND (location) {
   return Error("file not found: " + location);
+}
+
+Loader.defaultLogger = defaultLogger;
+function defaultLogger (args) {
+  console.log.apply(console, args);
+}
+
+Loader.defaultFilter = defaultFilter;
+function defaultFilter (f) {
+  var conditions =
+    [ f.indexOf('node_modules') === -1
+    , f.indexOf('.git')         === -1
+    , f.lastIndexOf('.swp')      <  f.length - 4
+    , f.lastIndexOf('.swo')      <  f.length - 4
+    , path.basename(f)[0]       !== '.' ]
+  return !conditions.some(function (x) { return !x })
 }

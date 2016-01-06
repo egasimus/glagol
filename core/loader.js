@@ -11,15 +11,13 @@ function Loader () {
 
   if (this instanceof Loader) return Loader();
 
-  var nodes = {}
+  var nodes = load._nodes = {}
     , _opts = { logger: defaultLogger
               , filter: defaultFilter
               , eager:  true };
 
   function log () {
-    if (_opts.logger) {
-      _opts.logger(arguments);
-    }
+    if (_opts.logger) _opts.logger(arguments);
   }
 
   var watcher = new chokidar.FSWatcher({ persistent: false, depth: 0 })
@@ -92,7 +90,7 @@ function Loader () {
         .filter(_opts.filter).map(function (f) {
           var node2 = _load(f, options)
           node2.parent = node;
-          node.nodes[node2.name] = node2;
+          node.add(node2);
         })
 
       return node;

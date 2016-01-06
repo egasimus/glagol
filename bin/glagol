@@ -28,7 +28,7 @@ if (!arg1) {
   process.argv = process.argv.slice(3);
 
   var root = glagol(path.dirname(arg1))
-    , main = root.descend(path.basename(arg1))
+    , main = root.get(path.basename(arg1))
     , val  = main.value;
 
   return (typeof val === "function") ? val(root) : val;

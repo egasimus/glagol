@@ -17,22 +17,26 @@ var Link = module.exports = function Link () {
   if (!(this instanceof Link)) return new Link(target, options);
 
   // basic properties
-  this._target = target; // cache for getter/setter
-  this.name    = target ? target.name || null;
+  Object.defineProperty(this, 'target',
+    { configurable: true
+    , enumerable:   true
+    , get:          getTarget.bind(this)
+    , set:          setTarget.bind(this) })
+  this.target  = target;
+
   this.options = options;
   this.parent  = options.parent || null;
 
   // magic properties
   Object.defineProperties(this,
-    { target:
+    { path:
       { configurable: true
       , enumerable:   true
-      , get:          getTarget.bind(this)
-      , set:          setTarget.bind(this) }
-    , path:
+      , get: getPath.bind(null, this) }
+    , events:
       { configurable: true
       , enumerable:   true
-      , get: getPath.bind(this) }
+      , get: getEvents.bind(null, this) }
     , _glagol:
       { configurable: false
       , enumerable:   false
@@ -40,16 +44,21 @@ var Link = module.exports = function Link () {
         { version: require('../package.json').version
         , type:    "File" } } });
 
-  defineTargetProperties(this)
 
 }
 
-function defineTargetProperties(link) {
+function getPath (link) {
+  return link.target ? link.target.path : null;
+}
 
-  delete link.source;
-  delete link.compiled;
-  delete link.value;
-  delete link.nodes;
+function getEvents (link) {
+  return link.target ? link.target.events : null;
+}
+
+function defineTargetProperties (link) {
+
+  ['source', 'compiled', 'value', 'nodes'].forEach(
+    function (key) { delete link[key] })
 
   if (File.is(link.target)) {
     ['source', 'compiled', 'value'].forEach(installTargetProperty.bind(null, this))
@@ -63,8 +72,11 @@ function getTarget () {
   return this._target;
 }
 
-function setTarget (newTarget) {
-  return this._target = newTarget; // what else?
+function setTarget (target) {
+  this.name   = target ? target.name  || null;
+  this.events = target ? target.evens || null;
+  defineTargetProperties(this)
+  return this._target = target;
 }
 
 function installTargetProperty (link, property) {

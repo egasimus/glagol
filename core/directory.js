@@ -18,6 +18,7 @@ var Directory = module.exports = function Directory () {
   this.nodes   = {};
   this.options = options;
   this.parent  = options.parent || null;
+  this.events  = new (require('eventemitter3'))()
 
   Object.defineProperties(this,
     { path:    // path of node relative to app root
@@ -46,7 +47,7 @@ Directory.prototype.tree = function () {
   return require('./tree.js')(this);
 }
 
-Directory.prototype.descend = function (relPath) {
+Directory.prototype.get = function (relPath) {
 
   var node  = this,
       steps = relPath.split("/");
@@ -68,6 +69,14 @@ Directory.prototype.descend = function (relPath) {
 
   return node;
 
+}
+
+Directory.prototype.add = function (node) {
+  this.nodes[node.name] = node;
+}
+
+Directory.prototype.remove = function (node) {
+  delete this.nodes[node.name]
 }
 
 function ERR_BROKEN_PATH(step, path) {

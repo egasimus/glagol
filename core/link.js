@@ -18,7 +18,7 @@ var Link = module.exports = function Link () {
 
   // basic properties
   this._target = target; // cache for getter/setter
-  this.name    = target.name;
+  this.name    = target ? target.name || null;
   this.options = options;
   this.parent  = options.parent || null;
 
@@ -52,20 +52,9 @@ function defineTargetProperties(link) {
   delete link.nodes;
 
   if (File.is(link.target)) {
-    var props = ['source', 'compiled', 'value']
-    for (var i in props) {
-      Object.defineProperty(this, props[i],
-        { configurable: true
-        , enumerable:   true
-        , get:          getFromTarget.bind(this, props[i])
-        , set:          setOntoTarget.bind(this, props[i]) })
-    }
+    ['source', 'compiled', 'value'].forEach(installTargetProperty.bind(null, this))
   } else {
-    Object.defineProperties(this,
-      { nodes:
-        { configurable: true
-        , enumerable:   true
-        , get:          } })
+    installTargetProperty(this, 'nodes');
   }
 
 }
@@ -76,6 +65,14 @@ function getTarget () {
 
 function setTarget (newTarget) {
   return this._target = newTarget; // what else?
+}
+
+function installTargetProperty (link, property) {
+  Object.defineProperty(link, property,
+    { configurable: true
+    , enumerable:   true
+    , get:          getFromTarget.bind(link, property)
+    , set:          setOntoTarget.bind(link, property) })
 }
 
 function getFromTarget (property) {

@@ -1,3 +1,5 @@
-(lambda glagol (glagol-opts source-path)
-  (return ((require "glagol") source-path glagol-opts)))
+; we need a separate persistent loader to keep track of
+; updates to client-side code; which are then propagated
+; to the browser via socket
 
+(.Loader (require "glagol"))

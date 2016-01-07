@@ -2,26 +2,21 @@
 
   ; create a server-side glagol instance to keep track of the client code
   ; make one for shared client/server code too, and overlay it on top
-  (var client (glagol client-path))
-  (if common-path (client.mount (glagol common-path)))
-
-  (function glagol (root-path)
-    (return (./util/glagol glagol-opts
-      (.resolve (require "path") __dirname root-path))))
+  (var client (./util/glagol client-path glagol-opts))
+  (if common-path (client.mount (./util-glagol common-path glagol-opts)))
 
   ; return a route handler bound to this client instance
   (return (lambda handler (req res)
 
     (if (!== req.url "/") (return false)) ; not the handler you're looking for?
 
-    (var error (./util/error/bind null req res))
-
     (try
       ; bundle the client code into a snapshot and get dependency map
       (var app (object
         "ice"  (./freeze client)
         "deps" (./deps client)))
-      (catch e (return (error e "Error creating initial client snapshot:"))))
+      (catch e (return (./util/error req res e
+        "Error creating initial client snapshot:"))))
 
     (try
       ; instantiate browserify and add common glagol dependencies
@@ -44,7 +39,8 @@
           "body" (?: embed data (./util/wrap-html data))
           "headers" (object "Content-Type" ctype)))))
 
-      (catch e (return (error e "Error bundling client code:"))))
+      (catch e (return (./util/error req res e
+        "Error bundling client code:"))))
 
     ; ok that was it, route no further
     (return true)))

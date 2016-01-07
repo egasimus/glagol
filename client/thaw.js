@@ -1,33 +1,29 @@
 var File      = require('glagol').File
   , Directory = require('glagol').Directory;
 
-module.exports = function thaw (ice, parent, id) {
+module.exports = function thaw (ice, parent, name) {
 
   if (parent && !(Directory.is(parent)))
     throw ERR_WRONG_PARENT(parent, ice)
 
+  var node;
+
   if (ice.nodes) {
-    var node = Directory(ice.name)
-    Object.keys(ice.nodes).map(install);
-    function install (i) { node.add(thaw(ice.nodes[i], node, i)); }
+    node = Directory(ice.name)
+    Object.keys(ice.nodes).map(function (name) {
+      node.add(thaw(ice.nodes[name], node, name)); });
   } else if (ice.code) {
     var node = File(ice.name, ice.code);
   } else {
-    throw ERR_FOREIGN_BODY(ice, parent, id);
+    throw ERR_FOREIGN_BODY(ice, parent, name);
   }
-
-  node.parent = parent;
 
   return node;
 
 }
 
-function ERR_WRONG_PARENT (parent, ice) {
-  return Error('parent must be instance of Directory')
-}
-
-function ERR_FOREIGN_BODY (ice, parent, id) {
+function ERR_FOREIGN_BODY (ice, parent, name) {
   return Error(
-    "can't thaw unknown instance " + id +
+    "can't thaw unknown instance " + name +
     " in frozen glagol tree of " + parent.path + ": " + JSON.stringify(ice))
 }

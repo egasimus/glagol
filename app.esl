@@ -1,12 +1,13 @@
 (lambda (glagol-opts client-path common-path)
 
-  (var glagol (./util/glagol/bind null glagol-opts))
-
   ; create a server-side glagol instance to keep track of the client code
   ; make one for shared client/server code too, and overlay it on top
-  (var client (glagol (.resolve (require "path") __dirname client-path)))
-  (if common-path (client.mount
-    (glagol (.resolve (require "path") __dirname common-path))))
+  (var client (glagol client-path))
+  (if common-path (client.mount (glagol common-path)))
+
+  (function glagol (root-path)
+    (return (./util/glagol glagol-opts
+      (.resolve (require "path") __dirname root-path))))
 
   ; return a route handler bound to this client instance
   (return (lambda handler (req res)

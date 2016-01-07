@@ -86,12 +86,8 @@ function Loader () {
         path.basename(path.relative(basepath, location) || "/"),
         options);
 
-      require('glob').sync(path.join(location, "*"))
-        .filter(_opts.filter).map(function (f) {
-          var node2 = _load(f, options)
-          node2.parent = node;
-          node.add(node2);
-        })
+      require('glob').sync(path.join(location, "*")).filter(_opts.filter)
+        .forEach(function (f) { node.add(_load(f, options)); });
 
       return node;
 

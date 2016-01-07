@@ -33,10 +33,6 @@ var Link = module.exports = function Link () {
       { configurable: true
       , enumerable:   true
       , get: getPath.bind(null, this) }
-    , events:
-      { configurable: true
-      , enumerable:   true
-      , get: getEvents.bind(null, this) }
     , _glagol:
       { configurable: false
       , enumerable:   false
@@ -49,10 +45,6 @@ var Link = module.exports = function Link () {
 
 function getPath (link) {
   return link.target ? link.target.path : null;
-}
-
-function getEvents (link) {
-  return link.target ? link.target.events : null;
 }
 
 function defineTargetProperties (link) {

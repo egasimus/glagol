@@ -20,7 +20,10 @@ function Loader () {
     if (_opts.logger) _opts.logger(arguments);
   }
 
-  var watcher = new chokidar.FSWatcher({ persistent: false, depth: 0 })
+  var events = load.events =
+    new (require('eventemitter3'))();
+  var watcher = load._watcher =
+    new chokidar.FSWatcher({ persistent: false, depth: 0 });
   watcher.on('add',       added);
   watcher.on('addDir',    added);
   watcher.on('change',    changed);
@@ -93,7 +96,7 @@ function Loader () {
 
     }
 
-  };
+  }
 
   load.options = _opts;
 
@@ -101,6 +104,7 @@ function Loader () {
     if (_opts.filter(f) && !nodes[f]) {
       log("added", f);
       nodes[f] = load(f);
+      events.emit('added', nodes[f]);
     }
   }
 
@@ -110,6 +114,7 @@ function Loader () {
       if (_opts.eager && File.is(nodes[f])) {
         nodes[f].source = fs.readFileSync(f, 'utf8');
       }
+      events.emit('changed', nodes[f]);
     }
   }
 

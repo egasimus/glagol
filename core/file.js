@@ -23,7 +23,6 @@ var File = module.exports = function File () {
   this.name    = name;
   this.options = options;
   this.parent  = options.parent || null;
-  this.events  = new (require('eventemitter3'))()
   this.runtime =
     options.runtime ||
     require('../runtimes/index.js')[path.extname(this.name)] ||
@@ -81,11 +80,6 @@ function getSource () {
 function setSource (v) {
   this._cache.compiled = undefined;
   this._cache.evaluated = false;
-  if (this._cache.source !== v) {
-    this._cache.source = v;
-    this.events.emit('changed', this);
-  }
-  return v;
   return this._cache.source = v;
 };
 

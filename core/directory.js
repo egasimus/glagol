@@ -18,7 +18,6 @@ var Directory = module.exports = function Directory () {
   this.nodes   = {};
   this.options = options;
   this.parent  = options.parent || null;
-  this.events  = new (require('eventemitter3'))()
 
   Object.defineProperties(this,
     { path:    // path of node relative to app root

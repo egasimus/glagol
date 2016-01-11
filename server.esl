@@ -3,4 +3,5 @@
   (http-server.on "request" (lambda (req res) (./router routes req res)))
   (http-server.listen port)
   (var socket-server (new (. (require "ws") Server) (object "server" http-server)))
+  (socket-server.on "connection" (lambda (socket) (./util/connected socket)))
   (return (object "http" http-server "socket" socket-server)))

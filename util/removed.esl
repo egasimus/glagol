@@ -1,0 +1,2 @@
+(lambda (socket node)
+  (console.log "REMOVED" node.path))

@@ -1,0 +1,22 @@
+(lambda connected (socket)
+
+  (var socket-id (.generate (require "shortid")))
+  (console.log "socket" socket-id "connected")
+
+  (= socket.onclose (lambda ()
+    (console.log "socket" socket-id "closed")
+    (remove-listeners)))
+
+  (var events ./glagol/events)
+  (events.on "added"   on-added)
+  (events.on "changed" on-changed)
+  (events.on "removed" on-removed)
+
+  (function remove-listeners ()
+    (events.remove-listener "added"   on-added)
+    (events.remove-listener "changed" on-changed)
+    (events.remove-listener "removed" on-removed))
+
+  (function on-added   (node) (./added   socket node))
+  (function on-changed (node) (./changed socket node))
+  (function on-removed (node) (./removed socket node)))

@@ -1,6 +1,6 @@
 {
   "name": "glagol-web",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Client-side loader and web server to use with [Glagol](https://github.com/egasimus/glagol).",
   "main": "index.js",
   "scripts": {

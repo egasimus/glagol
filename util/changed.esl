@@ -1,5 +1,5 @@
 (lambda (socket node)
-  (socket.send (object
+  (socket.send (JSON.stringify (object
     event  "glagol.changed"
     path   node.path
-    value  node.compiled)))
+    value  node.compiled))))

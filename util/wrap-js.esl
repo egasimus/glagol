@@ -1,7 +1,11 @@
-(lambda wrap-js (x app) (return (+
-  ";(function(deps, ice){"
-  "var " x ";"
-  "require(\"glagol\").require.install(deps, require);"
-  "var app = require(\"__glagol_thaw\")(ice);"
-  "app.tree().main(app)"
-  "})(" (JSON.stringify app.deps.deps) "," (JSON.stringify app.ice) ")")))
+(lambda wrap-js (bundle app cb)
+  (.read-file (require "fs")
+    (.resolve (require "path") __dirname ".." "client" "boot.js")
+    "utf-8"
+    (lambda (err code)
+      (if err (throw err))
+      (console.log bundle)
+      (= code (code.replace "%REQUIRE%" (./just bundle)))
+      (= code (code.replace "%DEPS%"    (./just (JSON.stringify app.deps.deps))))
+      (= code (code.replace "%ICE%"     (./just (JSON.stringify app.ice))))
+      (cb code))))

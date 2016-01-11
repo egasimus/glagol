@@ -34,10 +34,10 @@
       (var ctype (+ "text/" (?: embed "javascript" "html") "; charset=utf-8"))
       (br.bundle (lambda (err data)
         (if err (throw err))
-        (= data (./util/wrap-js (String data) app))
-        ((require "send-data") req res (object
-          "body" (?: embed data (./util/wrap-html data))
-          "headers" (object "Content-Type" ctype)))))
+        (./util/wrap-js (String data) app (lambda (wrapped)
+          ((require "send-data") req res (object
+            "body" (?: embed wrapped (./util/wrap-html wrapped))
+            "headers" (object "Content-Type" ctype)))))))
 
       (catch e (return (./util/error req res e
         "Error bundling client code:"))))

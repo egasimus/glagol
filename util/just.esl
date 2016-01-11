@@ -1,0 +1,3 @@
+(lambda (val)
+  (return (lambda ()
+    (return val))))

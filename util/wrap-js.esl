@@ -4,7 +4,6 @@
     "utf-8"
     (lambda (err code)
       (if err (throw err))
-      (console.log bundle)
       (= code (code.replace "%REQUIRE%" (./just bundle)))
       (= code (code.replace "%DEPS%"    (./just (JSON.stringify app.deps.deps))))
       (= code (code.replace "%ICE%"     (./just (JSON.stringify app.ice))))

@@ -68,6 +68,7 @@ Directory.prototype.get = function (relPath) {
       steps = relPath.split("/");
   for (var i = 0; i < steps.length; i++) {
     var step = steps[i];
+    if (step === '') continue; // ignore initial and/or multiple slashes
     if (-1 === Object.keys(node.nodes).indexOf(step)) {
       throw Error("Missing step " + step + " in path " + relPath);
     }

@@ -5,44 +5,46 @@
   (var client (./util/glagol client-path glagol-opts))
   (if common-path (client.mount (./util/glagol common-path glagol-opts)))
 
-  ; return a route handler bound to this client instance
-  (return (lambda handler (req res)
+  (return (object
+    "node"
+      client
+    "route"
+      (lambda (match)
+        ; returns a route handler bound to this client instance
+        (return (lambda handler (req res)
+          (if (!== req.url match) (return false))
 
-    (if (!== req.url "/") (return false)) ; not the handler you're looking for?
+          (try
+            ; bundle the client code into a snapshot and get dependency map
+            (var app (object
+              "ice"  (./freeze client)
+              "deps" (./deps client)))
+            (catch e (return (./util/error req res e
+              "Error creating initial client snapshot:"))))
 
-    (try
-      ; bundle the client code into a snapshot and get dependency map
-      (var app (object
-        "ice"  (./freeze client)
-        "deps" (./deps client)))
-      (catch e (return (./util/error req res e
-        "Error creating initial client snapshot:"))))
+          (try
+            ; instantiate browserify and add common glagol dependencies
+            (var br ((require "browserify")))
+            (br.require "glagol" (object "expose" "glagol"))
+            (./util/shim br "./client/runtimes.js" "../runtimes/index.js")
+            (./util/shim br "./client/thaw.js"     "__glagol_thaw")
 
-    (try
-      ; instantiate browserify and add common glagol dependencies
-      (var br ((require "browserify")))
-      (br.require "glagol" (object "expose" "glagol"))
-      (./util/shim br "./client/runtimes.js" "../runtimes/index.js")
-      (./util/shim br "./client/thaw.js"     "__glagol_thaw")
+            ; add client-specific dependencies, dependency map, and client source
+            (.map (Object.keys app.deps.ids) (lambda (module)
+              (br.require module (object "expose" (get app.deps.ids module)))))
 
-      ; add client-specific dependencies, dependency map, and client source
-      (.map (Object.keys app.deps.ids) (lambda (module)
-        (br.require module (object "expose" (get app.deps.ids module)))))
+            ; roll it all into a big bundle
+            (var embed (. (.parse (require "url") req.url true) query embed))
+            (var ctype (+ "text/" (?: embed "javascript" "html") "; charset=utf-8"))
+            (br.bundle (lambda (err data)
+              (if err (throw err))
+              (./util/wrap-js (String data) app (lambda (wrapped)
+                ((require "send-data") req res (object
+                  "body" (?: embed wrapped (./util/wrap-html wrapped))
+                  "headers" (object "Content-Type" ctype)))))))
 
-      ; roll it all into a big bundle
-      (var embed (. (.parse (require "url") req.url true) query embed))
-      (var ctype (+ "text/" (?: embed "javascript" "html") "; charset=utf-8"))
-      (br.bundle (lambda (err data)
-        (if err (throw err))
-        (./util/wrap-js (String data) app (lambda (wrapped)
-          ((require "send-data") req res (object
-            "body" (?: embed wrapped (./util/wrap-html wrapped))
-            "headers" (object "Content-Type" ctype)))))))
+            (catch e (return (./util/error req res e
+              "Error bundling client code:"))))
 
-      (catch e (return (./util/error req res e
-        "Error bundling client code:"))))
-
-    ; ok that was it, route no further
-    (return true)))
-
-)
+          ; ok that was it, route no further
+          (return true)))))))

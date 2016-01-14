@@ -99,14 +99,17 @@ A `Directory` instance has the following non-magic attributes:
 * `dir.parent` is either `null` or points to the parent `Directory`
 * `dir.nodes` is an object containing child `File` and `Directory` instances,
   mapped by name.
+* `dir.tree` is a value tree - see "Tree" below.
 
 The following methods are available:
-* `dir.tree`
-* `dir.descend`
+* `dir.add`
+* `dir.remove`
+* `dir.mount`
+* `dir.get`
 
 The following non-magic attributes are part of the private API:
 * `dir._glagol`
-* `dir._sourcePath` is set by the loader and contains the absolute path to the
+* `dir._sourcePath`, if set by the loader, contains the absolute path to the
   source directory.
 
 ## Options

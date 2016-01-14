@@ -27,6 +27,7 @@ var File = module.exports = function File () {
     options.runtime ||
     require('../runtimes/index.js')[path.extname(this.name)] ||
     null;
+  this.events  = new (require('hap').EventEmitter)()
 
   // stores actual values of source, compiled and value properties
   this._cache =

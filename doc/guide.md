@@ -98,7 +98,7 @@ app.nodes['alice.js'].value;
 Or, equivalently:
 
 ```
-app.tree().alice;
+app.tree.alice;
 ```
 
 This is made possible thanks to the magic of JavaScript's [property getters](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get#Description).

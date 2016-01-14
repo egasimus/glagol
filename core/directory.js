@@ -18,12 +18,17 @@ var Directory = module.exports = function Directory () {
   this.nodes   = {};
   this.options = options;
   this.parent  = options.parent || null;
+  this.events  = new (require('hap').EventEmitter)()
 
   Object.defineProperties(this,
     { path:    // path of node relative to app root
       { configurable: true
       , enumerable:   true
       , get: getPath.bind(this) }
+    , tree:    // just nested value objects, no metadata
+      { configurable: true
+      , enumerable:   true
+      , get: getTree.bind(this) }
     , _glagol: // hidden metadata for duck typing when instanceof fails
       { configurable: false
       , enumerable:   false
@@ -42,13 +47,14 @@ function getPath () {
   }
 }
 
-Directory.prototype.tree = function () {
+function getTree () {
   return require('./tree.js')(this);
 }
 
 Directory.prototype.add = function (node) {
   if (this.nodes[node.name]) this.remove(node.name);
   node.parent = this;
+  node.events.setParent(this.events)
   this.nodes[node.name] = node;
 }
 

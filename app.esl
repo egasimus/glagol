@@ -3,7 +3,7 @@
   ; create a server-side glagol instance to keep track of the client code
   ; make one for shared client/server code too, and overlay it on top
   (var client (./util/glagol client-path glagol-opts))
-  (if common-path (client.mount (./util-glagol common-path glagol-opts)))
+  (if common-path (client.mount (./util/glagol common-path glagol-opts)))
 
   ; return a route handler bound to this client instance
   (return (lambda handler (req res)

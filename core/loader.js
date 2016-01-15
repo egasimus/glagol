@@ -41,7 +41,7 @@ function Loader () {
     function _load (location) {
 
       location = path.resolve(location);
-      if (!fs.existsSync(location)) throw ERR_FILE_NOT_FOUND(path);
+      if (!fs.existsSync(location)) throw ERR_FILE_NOT_FOUND(location);
 
       var stat = fs.statSync(location);
       if (stat.isFile()) {

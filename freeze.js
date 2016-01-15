@@ -25,7 +25,7 @@
     var ice =
       { name: file.name
       , time: String(Date.now())
-      , code: file.compiled };
+      , code: file.compiled || "" };
 
     return ice;
 

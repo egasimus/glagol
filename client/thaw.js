@@ -12,7 +12,7 @@ module.exports = function thaw (ice, parent, name) {
     node = Directory(ice.name)
     Object.keys(ice.nodes).map(function (name) {
       node.add(thaw(ice.nodes[name], node, name)); });
-  } else if (ice.code) {
+  } else if (ice.hasOwnProperty('code')) { // even if code is empty
     var node = File(ice.name, ice.code);
   } else {
     throw ERR_FOREIGN_BODY(ice, parent, name);

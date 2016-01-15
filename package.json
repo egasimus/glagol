@@ -13,9 +13,7 @@
   "author": "Adam Avramov <fallenblood@example.com> (http://github.com/egasimus)",
   "license": "GPL-3.0",
   "dependencies": {
-    "browserify": "^11.2.0",
     "dbus-native": "^0.2.0",
-    "detective": "^4.3.1",
     "eslisp": "^0.7.0",
     "eslisp-camelify": "^0.2.0",
     "eslisp-dotify": "^0.1.2",
@@ -24,7 +22,7 @@
     "freeport": "^1.0.5",
     "glagol": "git://github.com/egasimus/glagol.git",
     "glagol-web": "git://github.com/egasimus/glagol-web.git",
-    "glob": "^5.0.15",
+    "glob": "^6.0.0",
     "insert-css": "^0.2.0",
     "main-loop": "^3.2.0",
     "nanotimer": "^0.3.12",
@@ -36,11 +34,11 @@
     "q": "^1.4.1",
     "q-connection": "^0.6.1",
     "resolve": "^1.1.6",
-    "send-data": "^7.0.0",
+    "send-data": "^8.0.0",
     "shortid": "^2.2.4",
-    "stylus": "^0.52.4",
+    "stylus": "^0.53.4",
     "virtual-dom": "^2.1.1",
-    "ws": "^0.8.0",
+    "ws": "^1.0.0",
     "xtend": "^4.0.1"
   },
   "devDependencies": {

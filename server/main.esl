@@ -1,9 +1,13 @@
 (lambda main (app)
+
   (var host "0.0.0.0")
   (var port 1620)
-  (var server-http (./web/server host port ./routes))
-  (server-http.on "listening" (lambda ()
+
+  (var server (./web/server host port ./routes))
+
+  (server.http.on "listening" (lambda ()
     (console.log "opening" (+ host ":" port) "in default browser")
     ((require "opener") (+ "http://" host ":" port))))
-  (var server-ws (new (. (require "ws") Server) (object "server" server-http)))
-  (server-ws.on "connection" (lambda (socket) (./connect socket))))
+
+  (server.socket.on "connection" (lambda (socket)
+    (./connect socket))))

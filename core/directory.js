@@ -56,17 +56,34 @@ Directory.prototype.add = function (node) {
   node.parent = this;
   node.events.setParent(this.events)
   this.nodes[node.name] = node;
+
+  return this;
 }
 
 Directory.prototype.remove = function (nodeOrName) {
   var name = (typeof nodeOrName === 'string') ? nodeOrName : nodeOrName.name;
   this.nodes[name].parent = null;
   delete this.nodes[name];
+
+  return this;
 }
 
-Directory.prototype.mount = function (dir) { // TODO multiarg
-  Object.keys(dir.nodes).forEach(
-    function (name) { this.add(dir.nodes[name]); }, this);
+Directory.prototype.mount = function () {
+  var args = Array.prototype.slice.call(arguments);
+  var nest = (args[0] === true || args[0] === false) ? args.shift() : false;
+
+  args.forEach((nest ? mountInto : mountOver).bind(this))
+
+  function mountInto (node) {
+    this.add(node)
+  }
+
+  function mountOver (node) {
+    Object.keys(node.nodes).forEach(_mountOne, this);
+    function _mountOne (name) { this.add(node.nodes[name]); }
+  }
+
+  return this;
 }
 
 Directory.prototype.get = function (relPath) {

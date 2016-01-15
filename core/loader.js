@@ -85,9 +85,7 @@ function Loader () {
 
     function _loadDirectory (location) {
 
-      var node = Directory(
-        path.basename(path.relative(basepath, location) || "/"),
-        options);
+      var node = Directory(path.basename(location),  options);
 
       require('glob').sync(path.join(location, "*")).filter(_opts.filter)
         .forEach(function (f) { node.add(_load(f, options)); });

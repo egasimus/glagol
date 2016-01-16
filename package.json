@@ -1,0 +1,11 @@
+{
+  "name": "glagol-inspector",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Adam Avramov <fallenblood@example.com> (http://github.com/egasimus)",
+  "license": "GPL-3.0"
+}

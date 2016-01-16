@@ -5,7 +5,7 @@
 
   ; start vdom main loop
   (= document.body.innerHTML "")
-  (var mainloop (./lib/vdom/mainloop render (./state)))
+  (var mainloop (/lib/vdom/mainloop render (./state)))
   (document.body.append-child mainloop.target)
   (function render (state) (return (./templates/app state)))
   (./state (lambda (state) (mainloop.update state)))

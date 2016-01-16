@@ -1,0 +1,15 @@
+(lambda (data state)
+
+  (console.log "->" state.jack)
+
+  (var info (array
+    (array "text" "Type"  "Controller")
+    (array "text" "ID"    data.id)))
+
+  (return (./h ".device.controller" (array
+    (./h ".device-header" (array
+      (./device-label data.label (+ "Controller " data.id))))
+    (./h "label" (array "Input"  (./h "select")))
+    (./h "label" (array "Output" (./h "select")))
+    (./h "label" (array "Script" (./h "select")))))))
+

@@ -1,15 +1,19 @@
 (object
-  "list" (lambda (cb)
-    (if cb (./state (lambda (val) (cb (./serialize val)))))
-    (return (./serialize (./state))))
-  "add" (lambda (device-type args)
-    (.done (/call (+ device-type "/create") args)
-      (lambda (device)
-        (var state (./state))
-        (if (! (get state device-type))
-          (= (get state device-type) (/lib/observ/Obj)))
-        (./state/set state)
-        (var state ((get ./state device-type)))
-        (= (get state (device.id)) device)
-        (.set (get ./state device-type) state))
-      (/lib/error (+ "error adding " device-type " to session")))))
+
+  "list"
+    (lambda (cb)
+      (if cb (./state (lambda (val) (cb (./serialize val)))))
+      (return (./serialize (./state))))
+
+  "add"
+    (lambda (device-type args)
+      (.done (/call (+ device-type "/create") args)
+        (lambda (device)
+          (var state (./state))
+          (if (! (get state device-type))
+            (= (get state device-type) (/lib/observ/Obj)))
+          (./state/set state)
+          (var state ((get ./state device-type)))
+          (= (get state (device.id)) device)
+          (.set (get ./state device-type) state))
+        (/lib/error (+ "error adding " device-type " to session")))))

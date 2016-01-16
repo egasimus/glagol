@@ -1,5 +1,17 @@
 (object
-  "control"  ./control
-  "patchbay" ./patchbay
-  "client" (object
-    "add" ./client-add))
+
+  "control"
+    ./control
+
+  "patchbay"
+    ./patchbay
+  
+  "clients"
+    (lambda (cb)
+      (if cb (./state/clients (lambda (val) (cb (JSON.stringify val)))))
+      (return (JSON.stringify (./state/clients))))
+  
+  "connections"
+    (lambda (cb)
+      (if cb (./state/connections (lambda (val) (cb (JSON.stringify val)))))
+      (return (JSON.stringify (./state/connections)))))

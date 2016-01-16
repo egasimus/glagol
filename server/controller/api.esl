@@ -1,0 +1,4 @@
+(object
+
+  "create" (lambda ()
+    (return (/models/controller))))

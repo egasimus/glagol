@@ -1,0 +1,20 @@
+(lambda controller (data)
+
+  (if (|| (=== false (Boolean data)) (=== "string" (typeof data)))
+    (return (controller (object
+      "id"      ((. (require "shortid") generate))
+      "label"   data
+      "input"   null
+      "output"  null
+      "script"  null))))
+
+  (var observ ../lib/observ)
+
+  (return     (observ.Obj
+    "id"      (observ.Var data.id)
+    "label"   (observ.Var data.label)
+    "input"   (observ.Var data.input)
+    "output"  (observ.Var data.output)
+    "script"  (observ.Var data.script)))
+
+)

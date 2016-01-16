@@ -1,16 +1,18 @@
 (./lib/observ/Obj
 
-  "connection"   (/lib/observ/Var)
+  "connection"    (/lib/observ/Var)
 
-  "server"       (/lib/observ/Var false)
+  "server"        (/lib/observ/Var false)
 
-  "jack"         (/lib/observ/Obj
-    "started"    (/lib/observ/Var false))
+  "jack"          (/lib/observ/Obj
+    "started"     (/lib/observ/Var false)
+    "clients"     (/lib/observ/Arr)
+    "connections" (/lib/observ/Arr))
 
-  "contextMenu"  (/lib/observ/Obj
-    "x"          (/lib/observ/Var null)
-    "y"          (/lib/observ/Var null))
+  "contextMenu"   (/lib/observ/Obj
+    "x"           (/lib/observ/Var null)
+    "y"           (/lib/observ/Var null))
 
-  "session"      (/lib/observ/Obj)
+  "session"       (/lib/observ/Obj)
 
 )

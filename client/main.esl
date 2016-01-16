@@ -1,19 +1,20 @@
 (lambda start-main-loop (app)
 
   ; establish connection with api
-  (./connect)
+  (/connect)
 
   ; start vdom main loop
   (= document.body.innerHTML "")
-  (var mainloop (/lib/vdom/mainloop render (./state)))
+  (var mainloop (/lib/vdom/mainloop render (/state)))
   (document.body.append-child mainloop.target)
-  (function render (state) (return (./templates/app state)))
-  (./state (lambda (state) (mainloop.update state)))
+  (function render (state) (return (/templates/app state)))
+  (/state (lambda (state) (mainloop.update state)))
 
   ; preprocess and insert css
-  (./lib/vdom/insert-css ./style)
+  (/lib/vdom/insert-css ./style)
 
   ; load data from server
-  (./controller/emit "session.init")
+  (/controller/emit "session.init")
+  (/controller/emit "jack.init")
 
   (return mainloop))

@@ -59,7 +59,7 @@ function Loader () {
 
     function _loadFile (location) {
 
-      var node = File(path.basename(location), options);
+      var node = nodes[location] || File(path.basename(location), options);
 
       if (_opts.eager) {
         node.source = fs.readFileSync(location, 'utf8');

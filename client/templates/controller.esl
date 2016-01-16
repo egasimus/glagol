@@ -22,6 +22,6 @@
   (return (./h ".device.controller" (array
     (./h ".device-header" (array
       (./device-label data.label (+ "Controller " data.id))))
+    (./h "div" (./h "label" (array "Script " (./h "select"))))
     (./h "div" (./h "label" (array "Input "  (./h "select" (midi-ins.map  option)))))
-    (./h "div" (./h "label" (array "Output " (./h "select" (midi-outs.map option)))))
-    (./h "div" (./h "label" (array "Script " (./h "select"))))))))
+    (./h "div" (./h "label" (array "Output " (./h "select" (midi-outs.map option)))))))))

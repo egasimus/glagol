@@ -18,4 +18,4 @@ var resolve =
 app.nodes.lib    = common.nodes.lib;
 app.nodes.models = common.nodes.models;
 
-app.tree().main(app);
+app.tree.main(app);

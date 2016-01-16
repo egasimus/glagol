@@ -3,7 +3,7 @@
   (var host "0.0.0.0")
   (var port 1620)
 
-  (var server (./web/server host port ./routes))
+  (var server (/web/server host port /routes))
 
   (server.http.on "listening" (lambda ()
     (console.log "opening" (+ host ":" port) "in default browser")

@@ -68,21 +68,18 @@ Directory.prototype.remove = function (nodeOrName) {
   return this;
 }
 
+Directory.prototype.bind = function () { // TODO nested?
+  Array.prototype.forEach.call(arguments, function (node) {
+    Object.keys(node.nodes).forEach(function (name) {
+      this.add(node.nodes[name]);
+    }, this);
+  }, this);
+
+  return this;
+}
+
 Directory.prototype.mount = function () {
-  var args = Array.prototype.slice.call(arguments);
-  var nest = (args[0] === true || args[0] === false) ? args.shift() : false;
-
-  args.forEach((nest ? mountInto : mountOver).bind(this))
-
-  function mountInto (node) {
-    this.add(node)
-  }
-
-  function mountOver (node) {
-    Object.keys(node.nodes).forEach(_mountOne, this);
-    function _mountOne (name) { this.add(node.nodes[name]); }
-  }
-
+  Array.prototype.forEach.call(arguments, this.add.bind(this));
   return this;
 }
 

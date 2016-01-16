@@ -80,6 +80,7 @@ Directory.prototype.bind = function () { // TODO nested?
 
 Directory.prototype.mount = function () {
   Array.prototype.forEach.call(arguments, this.add.bind(this));
+
   return this;
 }
 
@@ -97,6 +98,7 @@ Directory.prototype.get = function (relPath) {
       throw Error("Step " + step + " in path " + relPath + " is a file");
     }
   }
+
   return node;
 }
 

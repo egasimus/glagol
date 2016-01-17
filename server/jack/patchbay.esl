@@ -1,6 +1,10 @@
 (.Promise (require "q") (lambda (resolve reject)
   (./dbus "org.jackaudio.JackPatchbay" (lambda (err p)
     (if err (throw err))
+
     (console.log "connected to jack patchbay")
-    (resolve p)
-    (./update)))))
+
+    (./update)
+    (p.on "GraphChanged" ./update)
+
+    (resolve p)))))

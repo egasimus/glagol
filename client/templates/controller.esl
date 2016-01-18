@@ -14,18 +14,22 @@
   (function add-midi-port (port)
     (if (=== 22 (get port 2)) (midi-ins.push port))
     (if (=== 21 (get port 2)) (midi-outs.push port)))
-  (function option-port (port)
-    (return (./h "option" (object "value" (get port 0)) (get port 1))))
-  (function option-script (script i)
-    (return (./h "option" (object "value" i) script)))
 
   (var info (array
     (array "text" "Type"  "Controller")
     (array "text" "ID"    data.id)))
 
+  (function select (label options)
+    (return (./h "div" (./h "label" (array label " " (./h "select"
+      (.concat (array (./h "option" "(none)")) options)))))))
+  (function option-port (port)
+    (return (./h "option" (object "value" (get port 0)) (get port 1))))
+  (function option-script (script i)
+    (return (./h "option" (object "value" i) script)))
+
   (return (./h ".device.controller" (array
     (./h ".device-header" (array
       (./device-label data.label (+ "Controller " data.id))))
-    (./h "div" (./h "label" (array "Script " (./h "select" (state.controller-scripts.map   option-script)))))
-    (./h "div" (./h "label" (array "Input "  (./h "select" (midi-ins.map  option-port)))))
-    (./h "div" (./h "label" (array "Output " (./h "select" (midi-outs.map option-port)))))))))
+    (select "Script" (state.controller-scripts.map option-script))
+    (select "Input"  (midi-ins.map                 option-port))
+    (select "Output" (midi-outs.map                option-port))))))

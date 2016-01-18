@@ -16,5 +16,6 @@
   ; load data from server
   (/controller/emit "session.init")
   (/controller/emit "jack.init")
+  (/controller/emit "controller.init")
 
   (return mainloop))

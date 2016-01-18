@@ -1,4 +1,8 @@
 (object
 
   "create" (lambda ()
-    (return (/models/controller))))
+    (return (/models/controller)))
+    
+  "scripts" (lambda () ; (cb)
+    ;; (if cb (./state/clients (lambda (val) (cb (JSON.stringify val)))))
+    (return (JSON.stringify (Object.keys ./scripts)))))

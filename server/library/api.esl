@@ -1,4 +1,7 @@
 (object
+  "create"
+    (lambda ()
+      (return (/models/library)))
   "search"
     (lambda (query)
       (console.log "searching for" query)

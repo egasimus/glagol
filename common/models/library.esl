@@ -4,4 +4,5 @@
   (return  (observ.Obj
     "id"      (observ.Var (|| data.id ((. (require "shortid") generate))))
     "target"  (observ.Var data.target)
+    "query"   (observ.Var data.query)
     "results" (observ.Arr))))

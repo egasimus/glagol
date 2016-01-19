@@ -55,7 +55,7 @@
       "add" (lambda (sampler-id)
         (console.log "add clip to" sampler-id)
         (var clip (/models/clip))
-        (.clips.push (get ./state sampler-id) clip)
+        (.clips.push (get /session/state/sampler sampler-id) clip)
         (return (clip.id)))
 
       "load" (lambda (sampler-id clip-no sample)

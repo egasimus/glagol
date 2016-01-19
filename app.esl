@@ -17,8 +17,8 @@
           (try
             ; bundle the client code into a snapshot and get dependency map
             (var app (object
-              "ice"  (./freeze client)
-              "deps" (./deps client)))
+              "ice"  (./util/freeze client)
+              "deps" (./util/deps client)))
             (catch e (return (./util/error req res e
               "Error creating initial client snapshot:"))))
 
@@ -31,6 +31,7 @@
 
             ; add client-specific dependencies, dependency map, and client source
             (.map (Object.keys app.deps.ids) (lambda (module)
+              (console.log (get app.deps.ids module) module)
               (br.require module (object "expose" (get app.deps.ids module)))))
 
             ; roll it all into a big bundle

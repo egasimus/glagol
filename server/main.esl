@@ -6,8 +6,8 @@
   (var server (/web/server host port /routes))
 
   (server.http.on "listening" (lambda ()
-    (console.log "opening" (+ host ":" port) "in default browser")
-    ((require "opener") (+ "http://" host ":" port))))
+    (console.log "open" (+ host ":" port) "in your browser")))
+;    ((require "opener") (+ "http://" host ":" port))))
 
   (server.socket.on "connection" (lambda (socket)
     (./connect socket))))

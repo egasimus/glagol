@@ -1,6 +1,6 @@
 (lambda wrap-js (bundle app cb)
   (.read-file (require "fs")
-    (.resolve (require "path") __dirname ".." "client" "boot.js")
+    (.resolve (require "path") __dirname ".." "browser" "boot.js")
     "utf-8"
     (lambda (err code)
       (if err (throw err))

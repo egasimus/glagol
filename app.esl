@@ -26,8 +26,8 @@
             ; instantiate browserify and add common glagol dependencies
             (var br ((require "browserify")))
             (br.require "glagol" (object "expose" "glagol"))
-            (./util/shim br "./client/runtimes.js" "../runtimes/index.js")
-            (./util/shim br "./client/thaw.js"     "__glagol_thaw")
+            (./util/shim br "./browser/index.js"  "glagol-web")
+            (./util/shim br "./browser/runtimes.js" "../runtimes/index.js")
 
             ; add client-specific dependencies, dependency map, and client source
             (.map (Object.keys app.deps.ids) (lambda (module)

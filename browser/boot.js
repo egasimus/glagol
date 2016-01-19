@@ -1,7 +1,7 @@
 ;(function(deps, ice){
   var %REQUIRE%;
   require("glagol").require.install(deps, require);
-  var app = window._glagol = require("__glagol_thaw")(ice);
+  var app = window._glagol = require("glagol-web").thaw(ice);
   app.tree.main(app);
   var socket = new WebSocket("ws://" + window.location.host)
   socket.onmessage = function (msg) {

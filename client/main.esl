@@ -7,7 +7,7 @@
   (/lib/vdom/insert-css ./style)
 
   ; start vdom main loop
-  (var view (.view (require "glagol-web") /state /templates/app))
+  (var view (/lib/riko/V /state /templates/app))
   (= document.body.innerHTML "")
   (document.body.append-child view.target)
 

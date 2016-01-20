@@ -1,5 +1,5 @@
-(lambda ()
-  (if (=== this.event.target.class-name "app") (block
-    (this.event.prevent-default)
-    (/state/context-menu/x/set this.event.client-x)
-    (/state/context-menu/y/set this.event.client-y))))
+(lambda (event)
+  (event.prevent-default)
+  (if (=== event.target.class-name "app") (block
+    (/state/context-menu/x/set event.client-x)
+    (/state/context-menu/y/set event.client-y))))

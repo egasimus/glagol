@@ -3,10 +3,11 @@
   (var results (s.results.reduce group (object)))
 
   (return (./h ".device.library" (array
-    (./h "div" (array "picking sample for " (./h "strong" s.target)))
-    (./h "input" (object "oninput" (lambda (evt)
-      ((./emit "library.input" evt)))))
+    (?: s.target (./h "div" (array "picking sample for " (./h "strong" s.target))) null)
+    (./h "input" (object "oninput" oninput))
     (./h ".results" (.map (Object.keys results) render-group)))))
+
+  (function oninput (evt) ((./emit "library.input" evt)))
 
   (function render-group (dir)
     (var items (get results dir))

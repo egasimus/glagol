@@ -1,8 +1,8 @@
-(lambda () (return (object
+((require "q-api/server") (lambda () (return (object
   "session"    ./session/api
   "library"    ./library/api
   "sequencer"  ./sequencer/api
   "sampler"    ./sampler/api
   "transport"  ./transport/api
   "jack"       ./jack/api
-  "controller" ./controller/api)))
+  "controller" ./controller/api))))

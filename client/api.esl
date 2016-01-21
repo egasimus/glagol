@@ -1,4 +1,2 @@
-(lambda api-call (path)
-  (var args (Array.prototype.slice.call arguments 1))
-  (console.log "api-call" path args)
-  (return (.fcall (./state/connection) path args)))
+((require "q-api/client") (lambda ()
+  (return (/state/connection))))

@@ -1,5 +1,5 @@
 (lambda (device data)
-  (.done (/api (+ device "/add"))
+  (Q.done (/api (+ device "/add"))
     (lambda (data)
       (var state ((get /state/devices device)))
       (= (get state data.id) ((get /models device) data))

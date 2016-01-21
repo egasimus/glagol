@@ -10,25 +10,25 @@
       } catch (e) {
         fail("api: error calling " + path + ": " + e.message)
       }
-    })
 
-    function call (pathSteps, apiBranch) {
-      if (pathSteps.length < 1) {
-        fail("api: no path specified")
-      } else if (pathSteps.length > 1) {
-        if (Object.keys(apiBranch).indexOf(pathSteps[0]) > -1) {
-          return call(pathSteps.slice(1), apiBranch[pathSteps[0]])
+      function call (pathSteps, apiBranch) {
+        if (pathSteps.length < 1) {
+          fail("api: no path specified")
+        } else if (pathSteps.length > 1) {
+          if (Object.keys(apiBranch).indexOf(pathSteps[0]) > -1) {
+            return call(pathSteps.slice(1), apiBranch[pathSteps[0]])
+          } else {
+            fail("api: " + path + " is not in the api")
+          }
         } else {
-          fail("api: " + path + " is not in the api")
-        }
-      } else {
-        if (apiBranch[pathSteps[0]] instanceof Function) {
-          win(apiBranch[pathSteps[0]].apply(apiBranch, args))
-        } else {
-          fail("api: " + path + " is not in the api")
+          if (apiBranch[pathSteps[0]] instanceof Function) {
+            win(apiBranch[pathSteps[0]].apply(apiBranch, args))
+          } else {
+            fail("api: " + path + " is not in the api")
+          }
         }
       }
-    }
+    })
 
   }
 

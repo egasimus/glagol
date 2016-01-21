@@ -12,8 +12,8 @@
   (document.body.append-child view.target)
 
   ; load data from server
-  (/controller/emit "session.init")
-  (/controller/emit "jack.init")
-  (/controller/emit "controller.init")
+  (/control "session.init")
+  (/control "jack.init")
+  (/control "controller.init")
 
   (return view))

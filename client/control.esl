@@ -1,0 +1,4 @@
+((lambda ()
+  (var c (/lib/riko/C /events))
+  (= c.separator ".")
+  (return c)))

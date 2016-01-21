@@ -1,4 +1,4 @@
-(function (getApi)
+module.exports = function apiServer (getApi) {
 
   function apiCall (path, args) {
 
@@ -37,4 +37,4 @@
 
   return apiCall;
 
-)
+}

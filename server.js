@@ -21,7 +21,7 @@ module.exports = function apiServer (getApi) {
             fail("api: " + path + " is not in the api")
           }
         } else {
-          if (apiBranch[pathSteps[0]] instanceof Function) {
+          if (typeof apiBranch[pathSteps[0]] === "function") {
             win(apiBranch[pathSteps[0]].apply(apiBranch, args))
           } else {
             fail("api: " + path + " is not in the api")

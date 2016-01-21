@@ -6,7 +6,8 @@
 
   function detect (rootNode) {
 
-    var ids = {}, deps = {};
+    var ids = {}
+      , deps = {};
 
     _detect(rootNode);
 
@@ -26,17 +27,9 @@
           , myDeps = deps[node.path] = {};
 
         require('detective')(node.compiled).forEach(function (d) {
-
-          if (d === 'glagol-web') {
-            // special case since we're already including ourselves for thawing
-            myDeps[d] = d;
-            return;
-          }
-
           var resolved = require('browser-resolve').sync(d, opts);
           ids[resolved] = ids[resolved] || require('shortid').generate();
           myDeps[d] = ids[resolved];
-
         })
 
       }

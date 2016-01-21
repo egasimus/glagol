@@ -1,0 +1,34 @@
+(lambda (client req res)
+
+  (try
+    ; bundle the client code into a snapshot and get dependency map
+    (var app (object
+      "ice"  (/util/freeze client)
+      "deps" (/util/deps client)))
+    (catch e (return (/util/error req res e
+      "Error creating initial client snapshot:"))))
+
+  (try
+    ; instantiate browserify and add common glagol dependencies
+    (var br ((require "browserify")))
+    (br.require "glagol" (object "expose" "glagol"))
+    (/util/shim br "./browser/index.js"  "glagol-web")
+    (/util/shim br "./browser/runtimes.js" "../runtimes/index.js")
+
+    ; add client-specific dependencies, dependency map, and client source
+    (.map (Object.keys app.deps.ids) (lambda (module)
+      (console.log (get app.deps.ids module) module)
+      (br.require module (object "expose" (get app.deps.ids module)))))
+
+    ; roll it all into a big bundle
+    (var embed (. (.parse (require "url") req.url true) query embed))
+    (var ctype (+ "text/" (?: embed "javascript" "html") "; charset=utf-8"))
+    (br.bundle (lambda (err data)
+      (if err (throw err))
+      (/util/wrap-js (String data) app (lambda (wrapped)
+        ((require "send-data") req res (object
+          "body"    (?: embed wrapped (/util/wrap-html wrapped))
+          "headers" (object "Content-Type" ctype)))))))
+
+    (catch e (return (/util/error req res e
+      "Error bundling client code:")))))

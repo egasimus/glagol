@@ -6,7 +6,7 @@
 
     return new Promise(function (win, fail) {
       try {
-        call(path.split('/'), api)
+        call(path.split(apiCall.delimiter), api)
       } catch (e) {
         fail("api: error calling " + path + ": " + e.message)
       }
@@ -33,6 +33,7 @@
   }
 
   apiCall.getApi = getApi;
+  apiCall.delimiter = '/';
 
   return apiCall;
 

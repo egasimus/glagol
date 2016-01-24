@@ -1,20 +1,24 @@
-(./lib/observ/Obj
+(/lib/riko/M (object
 
-  "connection"    (/lib/observ/Var)
+  "connection"
+    null
 
-  "server"        (/lib/observ/Var false)
+  "server"
+    null
 
-  "jack"          (/lib/observ/Obj
-    "started"     (/lib/observ/Var false)
-    "clients"     (/lib/observ/Arr)
-    "connections" (/lib/observ/Arr))
+  "jack"
+    (object
+      "started" false
+      "clients" (array)
+      "connections" (array))
 
-  "contextMenu"   (/lib/observ/Obj
-    "x"           (/lib/observ/Var null)
-    "y"           (/lib/observ/Var null))
+  "contextMenu"
+    (object "x" null "y" null)
 
-  "session"       (/lib/observ/Obj)
+  "session"
+    (object)
 
-  "controllerScripts" (/lib/observ/Arr)
+  "controllerScripts"
+    (array)
 
-)
+))

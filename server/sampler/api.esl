@@ -6,7 +6,13 @@
   (return (object
 
     "create" (lambda ()
-      (return (/models/sampler)))
+      (return (object
+        "id"         ((. (require "shortid") generate))
+        "proc"       null
+        "osc"        null
+        "localPort"  null
+        "remotePort" null
+        "clips"      (array))))
 
     "spawn" (lambda (sampler-id) (return (/lib/q/Promise (lambda (win fail)
       (.done (.spread (/lib/q/all (array

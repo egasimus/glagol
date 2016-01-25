@@ -3,8 +3,6 @@
   (var midi-ins  (array))
   (var midi-outs (array))
 
-  (console.log (/state))
-
   (state.jack.clients.for-each get-midi-ports)
   (function get-midi-ports (client)
     (var ports (get client 2))

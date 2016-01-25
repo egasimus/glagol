@@ -5,7 +5,6 @@
 
   (.map (Object.keys s.session) (lambda (device)
     (var devices (get s.session device))
-    (console.log "->" device devices)
     (.map (Object.keys devices) (lambda (id)
       (elements.push ((get /templates device) (get devices id) s))))))
 

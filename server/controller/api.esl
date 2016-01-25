@@ -1,7 +1,12 @@
 (object
 
   "create" (lambda ()
-    (return (/models/controller)))
+    (return (object
+      "id"     ((. (require "shortid") generate))
+      "label"  null
+      "input"  null
+      "output" null
+      "script" null)))
     
   "scripts" (lambda () ; (cb)
     ;; (if cb (./state/clients (lambda (val) (cb (JSON.stringify val)))))

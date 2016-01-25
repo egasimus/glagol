@@ -1,5 +1,7 @@
 (lambda controller (data)
 
+  (return data)
+
   (if (|| (=== false (Boolean data)) (=== "string" (typeof data)))
     (return (controller (object
       "id"      ((. (require "shortid") generate))

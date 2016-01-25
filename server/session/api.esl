@@ -12,5 +12,5 @@
           ;(var state (./state))
           (console.log "session/add" device-type args); state (get state device-type) (! (get state device-type)))
           (if (! (./state/get device-type)) (./state/put device-type (object)))
-          (.put (./state/get device-type) (device.id) device))
+          (.put (./state/get device-type) device.id device))
         (/lib/error (+ "error adding " device-type " to session")))))

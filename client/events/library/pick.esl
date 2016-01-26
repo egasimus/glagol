@@ -1,4 +1,4 @@
-(lambda (path)
+(lambda (id path)
   (var slot (/state/library))
   (.done (/api "sampler/clip/load" slot.0 slot.1 path)
     (lambda () (console.log "loaded" path "into" slot))

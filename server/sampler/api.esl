@@ -59,9 +59,9 @@
 
       "add" (lambda (sampler-id)
         (console.log "add clip to" sampler-id)
-        (var clip (/models/clip))
+        (var clip (object "id" (/lib/shortid) "path" null "cues" (array)))
         (.clips.push (get /session/state/sampler sampler-id) clip)
-        (return (clip.id)))
+        (return clip.id))
 
       "load" (lambda (sampler-id clip-no sample)
         (console.log "load clip" sample "in slot" clip-no "of" sampler-id)

@@ -1,7 +1,11 @@
 (object
 
-  "create" (lambda ()
-    (return (/models/sequencer)))
+  "create" (lambda () (return (object
+    "id"     (/lib/shortid)
+    "label"  null
+    "seq"    (array 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+    "step"   0
+    "target" (array))))
 
   "set" (lambda (id step value)
     (.seq.put (get /session/state/sequencer id) step value))

@@ -1,7 +1,11 @@
 (object
   "create"
-    (lambda ()
-      (return (/models/library)))
+    (lambda () (return (object
+      "id"     (/lib/shortid)
+      "label"  null
+      "input"  null
+      "output" null
+      "script" null)))
   "search"
     (lambda (query)
       (console.log "searching for" query)

@@ -23,8 +23,6 @@
     "glagol": "git://github.com/egasimus/glagol.git",
     "glagol-web": "git://github.com/egasimus/glagol-web.git",
     "glob": "^6.0.0",
-    "insert-css": "^0.2.0",
-    "main-loop": "^3.2.0",
     "nanotimer": "^0.3.12",
     "observ": "^0.2.0",
     "observ-array": "^3.2.1",
@@ -40,8 +38,7 @@
     "shortid": "^2.2.4",
     "stylus": "^0.53.0",
     "virtual-dom": "^2.1.1",
-    "ws": "^1.0.1",
-    "xtend": "^4.0.1"
+    "ws": "^1.0.1"
   },
   "devDependencies": {
     "sleep": "^3.0.0"

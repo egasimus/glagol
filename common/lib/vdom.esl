@@ -3,15 +3,12 @@
   (var create    (require "virtual-dom/create-element"))
   (var diff      (require "virtual-dom/diff"))
   (var patch     (require "virtual-dom/patch"))
-  (var main-loop (require "main-loop"))
 
   (return (object
     "create"    create
     "diff"      diff
     "h"         (require "virtual-dom/h")
-    "insertCss" (require "insert-css")
     "patch"     patch
-    "mainLoop"  main-loop
 
     "focusMe"   (require "virtual-dom/virtual-hyperscript/hooks/focus-hook.js")
 
@@ -36,8 +33,4 @@
         (lambda (el)
           (if (not focused) (block (el.focus) (= focused true)))
           (el.class-list.remove "focus-me")))
-      (return view))
-
-    "mainloop" (lambda (template state)
-      (return (main-loop state template (object
-        "create" create "diff" diff "patch" patch))))))))
+      (return view))))))

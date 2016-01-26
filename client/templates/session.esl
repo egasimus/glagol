@@ -3,9 +3,9 @@
   (var options  (object))
   (var elements (array))
 
-  (.map (Object.keys s.session) (lambda (device)
-    (var devices (get s.session device))
+  (.map (Object.keys s.session) (lambda (device-type)
+    (var devices (get s.session device-type))
     (.map (Object.keys devices) (lambda (id)
-      (elements.push ((get /templates device) (get devices id) s))))))
+      (elements.push ((get /templates device-type) (get devices id) s))))))
 
   (return (./h ".session" options elements)))

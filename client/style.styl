@@ -22,12 +22,15 @@ body
   -ms-user-select: none;
   user-select: none;
 
-select
+select, input
   padding 0 3px
   background #111
   color #ddd
+  border 1px solid #000
   border-radius 2px
-  border-color #000
+  &:focus
+    outline none
+    border-color #aaa
 
 label
   font-weight bold

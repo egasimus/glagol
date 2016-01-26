@@ -7,7 +7,8 @@
     (./h "input" (object "oninput" oninput))
     (./h ".results" (.map (Object.keys results) render-group)))))
 
-  (function oninput (evt) ((./emit "library.input" evt)))
+  (function oninput (evt) ;; WTF ?!
+    ((./emit "library.input" s.id) evt))
 
   (function render-group (dir)
     (var items (get results dir))

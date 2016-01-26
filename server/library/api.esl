@@ -1,11 +1,10 @@
 (object
   "create"
     (lambda () (return (object
-      "id"     (/lib/shortid)
-      "label"  null
-      "input"  null
-      "output" null
-      "script" null)))
+      "id"      (/lib/shortid)
+      "target"  null
+      "query"   null
+      "results" (array))))
   "search"
     (lambda (query)
       (console.log "searching for" query)

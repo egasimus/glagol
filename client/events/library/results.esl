@@ -1,2 +1,4 @@
-(lambda (results)
-  (/state/results/set results.results))
+(lambda (id results)
+  (console.log "results" id results)
+  (var library (get /state/session/library id))
+  (library.results.set results.results))

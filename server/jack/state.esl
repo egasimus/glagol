@@ -1,4 +1,4 @@
-(/lib/observ/Obj
-  "started"     (/lib/observ/Var)
-  "clients"     (/lib/observ/Arr)
-  "connections" (/lib/observ/Arr))
+(/lib/riko/M (object
+  "started"     null
+  "clients"     (array)
+  "connections" (array)))

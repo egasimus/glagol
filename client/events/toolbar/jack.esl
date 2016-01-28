@@ -1,4 +1,4 @@
 (lambda ()
   (if (/state/jack/started)
-    (/api "jack/control/StopServer")
-    (/api "jack/control/StartServer")))
+    (.done (/api "jack/control/StopServer"))
+    (.done (/api "jack/control/StartServer"))))

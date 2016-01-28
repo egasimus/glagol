@@ -6,6 +6,7 @@
 
     (c.IsStarted (lambda (err s)
       (if err (reject err))
+      (console.log "is jack started?" s)
       (./state/started/set s)))
 
     (c.on "ServerStarted" (lambda ()

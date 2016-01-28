@@ -1,10 +1,10 @@
 (object
 
   "control"
-    ./control
+    (lambda () (return ./control))
 
   "patchbay"
-    ./patchbay
+    (lambda () (return ./patchbay))
   
   "clients"
     (lambda (cb)

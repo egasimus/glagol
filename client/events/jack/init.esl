@@ -1,10 +1,8 @@
 (lambda ()
 
-  (.done (/api "jack/clients" update-clients) update-clients
-    (/lib/error (+ "could not subscribe to jack client list")))
-  (function update-clients (val) (/state/jack/clients/set (JSON.parse val)))
+  (.done (/api "jack/subscribe" update) update
+    (/lib/error (+ "could not subscribe to jack state")))
 
-  (.done (/api "jack/connections" update-connections) update-connections
-    (/lib/error (+ "could not subscribe to jack connection list")))
-  (function update-connections (val) (/state/jack/connections/set (JSON.parse val))))
+  (function update (state) (/state/jack/set (JSON.parse state)))
 
+)

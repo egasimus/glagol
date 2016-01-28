@@ -7,10 +7,7 @@
     null
 
   "jack"
-    (object
-      "started" false
-      "clients" (array)
-      "connections" (array))
+    (object "started" null "clients" (array) "connections" (array))
 
   "contextMenu"
     (object "x" null "y" null)

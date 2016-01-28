@@ -5,13 +5,8 @@
 
   "patchbay"
     (lambda () (return ./patchbay))
-  
-  "clients"
+
+  "subscribe"
     (lambda (cb)
-      (if cb (./state/clients (lambda (val) (cb (JSON.stringify val)))))
-      (return (JSON.stringify (./state/clients))))
-  
-  "connections"
-    (lambda (cb)
-      (if cb (./state/connections (lambda (val) (cb (JSON.stringify val)))))
-      (return (JSON.stringify (./state/connections)))))
+      (if cb (./state (lambda (val) (cb (JSON.stringify val)))))
+      (return (JSON.stringify (./state)))))

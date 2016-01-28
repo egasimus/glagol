@@ -2,32 +2,68 @@ module.exports = function apiServer (getApi) {
 
   function apiCall (path, args) {
 
-    var api = apiCall.getApi();
-
     return new Promise(function (win, fail) {
+
       try {
-        call(path.split(apiCall.delimiter), api)
+        var api = apiCall.getApi();
       } catch (e) {
-        fail("api: error calling " + path + ": " + e.message)
+        fail("api: error getting api: " + e.message)
       }
 
-      function call (pathSteps, apiBranch) {
-        if (pathSteps.length < 1) {
+      try {
+        var split = (isFunction(apiCall.delimiter)
+          ? apiCall.delimiter(path)
+          : path.split(apiCall.delimiter))
+      } catch (e) {
+        fail("api: error parsing path " + path + ": " + e.message)
+      }
+
+      resolve(api, split);
+
+      function resolve (branch, steps) {
+        if (steps.length < 1) {
           fail("api: no path specified")
-        } else if (pathSteps.length > 1) {
-          if (Object.keys(apiBranch).indexOf(pathSteps[0]) > -1) {
-            return call(pathSteps.slice(1), apiBranch[pathSteps[0]])
-          } else {
-            fail("api: " + path + " is not in the api")
-          }
+          return;
+        }
+
+        if (steps.length > 1) {
+          descend(branch, steps)
+          return;
+        }
+
+        var method = branch[steps[0]];
+        if (isFunction(method)) {
+          win(method.apply(branch, args))
+        } else if (args.length === 0) {
+          win(method)
         } else {
-          if (typeof apiBranch[pathSteps[0]] === "function") {
-            win(apiBranch[pathSteps[0]].apply(apiBranch, args))
+          fail("api: " + args.length + " arguments passed, but " +
+            path + " is not a function")
+        }
+      }
+
+      function descend (branch, steps) {
+        if (!exists(branch, steps[0])) {
+          fail("api: " + path + " is not in the api" +
+            " (starting from '" + steps[0] + "')")
+          return;
+        }
+
+        var next = branch[steps[0]];
+        if (!isFunction(next)) {
+          resolve(next, steps.slice(1))
+        } else {
+          next = next();
+          if (!isPromise(next)) {
+            resolve(next, steps.slice(1))
           } else {
-            fail("api: " + path + " is not in the api")
+            next.then(function (val) {
+              resolve(val, steps.slice(1))
+            })
           }
         }
       }
+
     })
 
   }
@@ -37,4 +73,20 @@ module.exports = function apiServer (getApi) {
 
   return apiCall;
 
+}
+
+function exists (branch, name) {
+  return Object.keys(branch).indexOf(name) > -1
+}
+
+function isFunction (x) {
+  return typeof x === "function"
+}
+
+function isObject(x) {
+    return x === Object(x)
+}
+
+function isPromise(x) {
+    return isObject(x) && isFunction(x.then)
 }

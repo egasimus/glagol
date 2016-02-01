@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "browserify": "^12.0.1",
+    "browserify-incremental-plugin": "https://github.com/egasimus/browserify-incremental-plugin",
     "detective": "^4.3.1",
     "eslisp": "^0.7.2",
     "eslisp-camelify": "^0.2.0",

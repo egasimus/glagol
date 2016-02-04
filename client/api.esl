@@ -1,2 +1,2 @@
-((require "q-api/client") (lambda ()
+((require "riko-api/client") (lambda ()
   (return (/state/connection))))

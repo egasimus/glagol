@@ -1,4 +1,4 @@
-((require "q-api/server") (lambda () (return (object
+((require "riko-api/server") (lambda () (return (object
   "session"    ./session/api
   "library"    ./library/api
   "sequencer"  ./sequencer/api

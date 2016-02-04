@@ -23,6 +23,7 @@
     "hap": "^2.1.0",
     "jasmine": "^2.3.2",
     "require-like": "^0.1.2",
+    "segfault-handler": "^1.0.0",
     "source-map-support": "^0.4.0"
   }
 }

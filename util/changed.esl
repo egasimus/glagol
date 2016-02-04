@@ -2,4 +2,4 @@
   (socket.send (JSON.stringify (object
     event  "glagol.changed"
     path   node.path
-    value  node.compiled))))
+    value  (|| node.compiled null)))))

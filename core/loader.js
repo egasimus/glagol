@@ -104,8 +104,8 @@ function Loader () {
       var node   = nodes[f] = load(f)
         , parent = nodes[path.dirname(f)];
       nodes[path.dirname(f)].add(node);
-      log("+ added".green, node.constructor.name, node.name.bold,
-        "into", parent.path.bold);
+      log("+ added".green, node.constructor.name.toLowerCase().green,
+        path.join(parent.path, node.name).bold);
       events.emit('added', node);
     }
   }
@@ -125,8 +125,8 @@ function Loader () {
     if (nodes[f]) {
       var node   = nodes[f]
         , parent = nodes[path.dirname(f)];
-      log("- removed".red, node.name.bold,
-        parent ? "from " + parent.path.bold : "");
+      log("- removed".red, path.join(parent ? parent.path : "", node.name).bold);
+      events.emit('removed', node, parent);
       delete node.parent.nodes[node.name];
       delete node;
     }

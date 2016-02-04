@@ -100,8 +100,10 @@ function Loader () {
 
   function added (f, s) {
     if (_opts.filter(f) && !nodes[f]) {
-      log("added", f);
-      nodes[f] = load(f);
+      var node   = nodes[f] = load(f)
+        , parent = nodes[path.dirname(f)];
+      nodes[path.dirname(f)].add(nodes[f]);
+      log("added", node.constructor.name, node.name, "into", parent.path);
       events.emit('added', nodes[f]);
     }
   }

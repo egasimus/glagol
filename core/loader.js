@@ -2,6 +2,7 @@ var fs        = require('fs')
   , path      = require('path')
   , chokidar  = require('chokidar')
   , glob      = require('glob')
+  , colors    = require('colors')
   , File      = require('./file.js')
   , Directory = require('./directory.js');
 
@@ -102,28 +103,33 @@ function Loader () {
     if (_opts.filter(f) && !nodes[f]) {
       var node   = nodes[f] = load(f)
         , parent = nodes[path.dirname(f)];
-      nodes[path.dirname(f)].add(nodes[f]);
-      log("added", node.constructor.name, node.name, "into", parent.path);
-      events.emit('added', nodes[f]);
+      nodes[path.dirname(f)].add(node);
+      log("+".green, node.constructor.name, node.name.bold,
+        "into", parent.path.bold);
+      events.emit('added', node);
     }
   }
 
   function changed (f, s) {
-    if (_opts.filter(f) && nodes[f]) {
-      log("changed", f);
-      if (_opts.eager && File.is(nodes[f])) {
-        nodes[f].source = fs.readFileSync(f, 'utf8');
+    var node = nodes[f];
+    if (_opts.filter(f) && node) {
+      log("*".yellow, node.path.bold);
+      if (_opts.eager && File.is(node)) {
+        node.source = fs.readFileSync(f, 'utf8');
       }
-      events.emit('changed', nodes[f]);
+      events.emit('changed', node);
     }
   }
 
   function removed (f, s) {
-    //if (nodes[f]) {
-    //  _opts.logger("removed", f);
-    //  delete nodes[f].parent.nodes[nodes[f].name];
-    //  delete nodes[f];
-    //}
+    if (nodes[f]) {
+      var node   = nodes[f]
+        , parent = nodes[path.dirname(f)];
+      log("-".red, node.name.bold,
+        parent ? "from " + parent.path.bold : "");
+      delete node.parent.nodes[node.name];
+      delete node;
+    }
   }
 
 }

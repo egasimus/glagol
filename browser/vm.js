@@ -15,5 +15,6 @@ module.exports =
       try {
         return eval(code + srcurl);
       } catch (e) {
+        if (options.filename) e.message += " in " + options.filename;
         console.error(e);
       } } };

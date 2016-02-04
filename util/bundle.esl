@@ -18,7 +18,6 @@
 
     ; add client-specific dependencies, dependency map, and client source
     (.map (Object.keys app.deps.ids) (lambda (module)
-      (console.log (get app.deps.ids module) module)
       (br.require module (object "expose" (get app.deps.ids module)))))
 
     ; roll it all into a big bundle

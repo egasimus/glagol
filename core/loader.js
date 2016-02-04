@@ -104,7 +104,7 @@ function Loader () {
       var node   = nodes[f] = load(f)
         , parent = nodes[path.dirname(f)];
       nodes[path.dirname(f)].add(node);
-      log("+".green, node.constructor.name, node.name.bold,
+      log("+ added".green, node.constructor.name, node.name.bold,
         "into", parent.path.bold);
       events.emit('added', node);
     }
@@ -113,7 +113,7 @@ function Loader () {
   function changed (f, s) {
     var node = nodes[f];
     if (_opts.filter(f) && node) {
-      log("*".yellow, node.path.bold);
+      log("* changed".yellow, node.path.bold);
       if (_opts.eager && File.is(node)) {
         node.source = fs.readFileSync(f, 'utf8');
       }
@@ -125,7 +125,7 @@ function Loader () {
     if (nodes[f]) {
       var node   = nodes[f]
         , parent = nodes[path.dirname(f)];
-      log("-".red, node.name.bold,
+      log("- removed".red, node.name.bold,
         parent ? "from " + parent.path.bold : "");
       delete node.parent.nodes[node.name];
       delete node;

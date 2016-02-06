@@ -128,7 +128,7 @@ function Loader () {
       log("- removed".red, path.join(parent ? parent.path : "", node.name).bold);
       events.emit('removed', node, parent);
       delete node.parent.nodes[node.name];
-      delete node;
+      delete nodes[f];
     }
   }
 

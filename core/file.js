@@ -117,7 +117,7 @@ function evaluate () {
   if (this.runtime) {
 
     var context = this.makeContext()
-      , src     = this.compiled
+      , src     = "(function(){return " + this.compiled + "})()"
       , result  = vm.runInContext(src, context,
           { filename: this._sourcePath || this.path });
 

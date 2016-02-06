@@ -18,7 +18,6 @@ var Directory = module.exports = function Directory () {
   this.nodes   = {};
   this.options = options;
   this.parent  = options.parent || null;
-  this.events  = new (require('hap').EventEmitter)()
 
   Object.defineProperties(this,
     { path:    // path of node relative to app root
@@ -54,7 +53,6 @@ function getTree () {
 Directory.prototype.add = function (node) {
   if (this.nodes[node.name]) this.remove(node.name);
   node.parent = this;
-  node.events.setParent(this.events)
   this.nodes[node.name] = node;
 
   return this;

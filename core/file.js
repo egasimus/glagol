@@ -27,7 +27,6 @@ var File = module.exports = function File () {
     options.runtime ||
     require('../runtimes/index.js')[path.extname(this.name)] ||
     null;
-  this.events  = new (require('hap').EventEmitter)()
 
   // stores actual values of source, compiled and value properties
   this._cache =
@@ -82,7 +81,6 @@ function setSource (v) {
   this._cache.compiled = undefined;
   this._cache.evaluated = false;
   this._cache.source = v;
-  this.events.fire('edited', this, v)
   return v;
 };
 

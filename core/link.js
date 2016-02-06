@@ -66,7 +66,6 @@ function getTarget () {
 
 function setTarget (target) {
   this.name   = target ? target.name  || null;
-  this.events = target ? target.evens || null;
   defineTargetProperties(this)
   return this._target = target;
 }

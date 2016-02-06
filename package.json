@@ -21,7 +21,6 @@
     "colors": "^1.1.2",
     "eventemitter3": "^1.1.1",
     "glob": "^6.0.0",
-    "hap": "^2.1.0",
     "jasmine": "^2.3.2",
     "require-like": "^0.1.2",
     "segfault-handler": "^1.0.0",

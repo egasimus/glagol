@@ -24,7 +24,7 @@ function Loader () {
   var events = load.events =
     new (require('eventemitter3'))();
   var watcher = load._watcher =
-    new chokidar.FSWatcher({ persistent: false, atomic: true, depth: 0 });
+    new chokidar.FSWatcher({ persistent: false, atomic: 400, depth: 0 });
   watcher.on('add',       added);
   watcher.on('addDir',    added);
   watcher.on('change',    changed);

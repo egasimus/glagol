@@ -26,7 +26,11 @@
     }
 
     if (data.event === "glagol.removed") {
-      var parent = app.get(data.parent);
+      try {
+        var parent = app.get(data.parent);
+      } catch (e) {
+        return;
+      }
       parent.remove(data.name);
       console.log("%cremoved", tag("darkred"),
         (parent ? parent.path + '/' : '') + data.name);

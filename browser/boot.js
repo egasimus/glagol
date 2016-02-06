@@ -13,21 +13,23 @@
 
     if (data.event === "glagol.added") {
       data.path.split('/').reduce(installNode, app);
-      console.log("added", data.path);
+      console.log("%cadded", tag("green"), data.path);
     }
 
     if (data.event === "glagol.changed") {
-      if (app.get(data.path)) {
+      try {
         app.get(data.path).source = data.value;
-      } else {
+      } catch (e) {
         data.path.split('/').reduce(installNode, app);
       }
-      console.log("changed", data.path);
+      console.log("%cchanged", tag("orange"), data.path);
     }
 
     if (data.event === "glagol.removed") {
-      app.get(data.parent).remove(data.name);
-      console.log("removed", data.name, "from", data.parent);
+      var parent = app.get(data.parent);
+      parent.remove(data.name);
+      console.log("%cremoved", tag("darkred"),
+        (parent ? parent.path + '/' : '') + data.name);
     }
 
     function installNode (dir, next, i, steps) {
@@ -48,5 +50,9 @@
       return dir;
     }
   };
+
+  function tag (color) {
+    return "background:"+color+";color:white;font-weight:bold;padding:2px 6px"
+  }
 
 })(%DEPS%, %ICE%)

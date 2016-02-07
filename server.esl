@@ -1,7 +1,14 @@
 (lambda server (host port routes)
+
   (var http-server (new (. (require "http") Server)))
-  (http-server.on "request" (lambda (req res) (./util/router routes req res)))
+  (http-server.on "request" (lambda (req res)
+    (./util/router (?: (instanceof routes Function) (routes) routes)
+      req res)))
   (http-server.listen port)
+
   (var socket-server (new (. (require "ws") Server) (object "server" http-server)))
   (socket-server.on "connection" (lambda (socket) (./util/connected socket)))
-  (return (object "http" http-server "socket" socket-server)))
+
+  (return (object
+    "http"   http-server
+    "socket" socket-server)))

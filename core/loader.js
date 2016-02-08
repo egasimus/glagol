@@ -159,13 +159,17 @@ function defaultFilter (fullpath, basepath) {
   var relpath  = path.relative(basepath, fullpath)
     , basename = path.basename(fullpath);
 
-  console.log("filter", fullpath, basepath, relpath, basename)
-
   var conditions =
     [ relpath.indexOf('node_modules') === -1
     , basename.indexOf('.git') !==0
-    , basename.lastIndexOf('.swp') !== basename.length - 4
-    , basename.lastIndexOf('.swo') !== basename.length - 4
+    , !endsWith(basename, '.swp')
+    , !endsWith(basename, '.swo')
     , basename[0] !== '.' ]
+
   return !conditions.some(function (x) { return !x })
+}
+
+function endsWith (x, y) {
+  if (x.lastIndexOf(y) < 0) return false;
+  return x.lastIndexOf(y) === x.length - y.length;
 }

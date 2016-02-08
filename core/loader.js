@@ -37,28 +37,44 @@ function Loader () {
 
     options = options || {};
 
-    return _load(basepath);
+    return loadNode(basepath);
 
-    function _load (location) {
+    function loadNode (location) {
 
       location = path.resolve(location);
       if (!fs.existsSync(location)) throw ERR_FILE_NOT_FOUND(location);
+      if (!_opts.filter(location, basepath)) return null;
 
       var stat = fs.statSync(location);
       if (stat.isFile()) {
-        var node = _loadFile(location);
+        var node = loadFile(location);
       } else if (stat.isDirectory()) {
-        var node = _loadDirectory(location);
+        var node = loadDirectory(location);
+        watcher.add(location);
       } else {
         throw ERR_UNSUPPORTED(location);
       }
 
-      watcher.add(node._sourcePath = location);
-      return nodes[location] = node;
+      node._sourcePath = location;
+      nodes[location] = node;
+      return node;
 
     }
 
-    function _loadFile (location) {
+    function loadDirectory (location) {
+
+      var dirNode = Directory(path.basename(location), options);
+
+      require('glob').sync(path.join(location, "*")).forEach(function (f) {
+        var newNode = loadNode(f, options);
+        if (newNode) dirNode.add(newNode);
+      });
+
+      return dirNode;
+
+    }
+
+    function loadFile (location) {
 
       var node = nodes[location] || File(path.basename(location), options);
 
@@ -84,52 +100,47 @@ function Loader () {
 
     }
 
-    function _loadDirectory (location) {
-
-      var node = Directory(path.basename(location),  options);
-
-      require('glob').sync(path.join(location, "*")).filter(_opts.filter)
-        .forEach(function (f) { node.add(_load(f, options)); });
-
-      return node;
-
-    }
-
   }
 
   load.options = _opts;
 
   function added (f, s) {
-    if (_opts.filter(f) && !nodes[f]) {
-      var node   = nodes[f] = load(f)
-        , parent = nodes[path.dirname(f)];
-      nodes[path.dirname(f)].add(node);
-      log("+ added".green, node.constructor.name.toLowerCase().green,
-        path.join(parent.path, node.name).bold);
-      events.emit('added', node);
-    }
+    if (nodes[f]) return changed(f, s);
+
+    var node = load(f);
+    if (!node) return;
+
+    var parent = nodes[path.dirname(f)];
+    if (parent) parent.add(node);
+
+    log("+ added".green, node.constructor.name.toLowerCase().green,
+      path.join(parent.path, node.name).bold);
+    events.emit('added', node);
   }
 
   function changed (f, s) {
     var node = nodes[f];
-    if (_opts.filter(f) && node) {
-      log("* changed".yellow, node.path.bold);
-      if (_opts.eager && File.is(node)) {
-        node.source = fs.readFileSync(f, 'utf8');
-      }
-      events.emit('changed', node);
+    if (!node) return added(f, s);
+
+    if (_opts.eager && File.is(node)) {
+      node.source = fs.readFileSync(f, 'utf8');
     }
+
+    log("* changed".yellow, node.path.bold);
+    events.emit('changed', node);
   }
 
   function removed (f, s) {
-    if (nodes[f]) {
-      var node   = nodes[f]
-        , parent = nodes[path.dirname(f)];
-      log("- removed".red, path.join(parent ? parent.path : "", node.name).bold);
-      events.emit('removed', node, parent);
-      delete node.parent.nodes[node.name];
-      delete nodes[f];
-    }
+    var node = nodes[f];
+    if (!node) return;
+
+    var parent = nodes[path.dirname(f)];
+    if (parent) parent.remove(node);
+
+    delete nodes[f];
+
+    log("- removed".red, path.join(parent ? parent.path : "", node.name).bold);
+    events.emit('removed', node, parent);
   }
 
 }
@@ -144,12 +155,17 @@ function defaultLogger (args) {
 }
 
 Loader.defaultFilter = defaultFilter;
-function defaultFilter (f) {
+function defaultFilter (fullpath, basepath) {
+  var relpath  = path.relative(basepath, fullpath)
+    , basename = path.basename(fullpath);
+
+  console.log("filter", fullpath, basepath, relpath, basename)
+
   var conditions =
-    [ f.indexOf('node_modules') === -1
-    , f.indexOf('.git')         === -1
-    , f.lastIndexOf('.swp')      <  f.length - 4
-    , f.lastIndexOf('.swo')      <  f.length - 4
-    , path.basename(f)[0]       !== '.' ]
+    [ relpath.indexOf('node_modules') === -1
+    , basename.indexOf('.git') !==0
+    , basename.lastIndexOf('.swp') !== basename.length - 4
+    , basename.lastIndexOf('.swo') !== basename.length - 4
+    , basename[0] !== '.' ]
   return !conditions.some(function (x) { return !x })
 }

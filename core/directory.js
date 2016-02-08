@@ -97,15 +97,10 @@ Directory.prototype.get = function (relPath) {
   for (var i = 0; i < steps.length; i++) {
     var step = steps[i];
     if (step === '') continue; // ignore initial and/or multiple slashes
-    if (-1 === Object.keys(node.nodes).indexOf(step)) {
-      throw Error("Missing step " + step + " in path " + relPath);
-    }
+    if (-1 === Object.keys(node.nodes).indexOf(step)) return null;
     node = node.nodes[step];
-    if (i < steps.length - 1 && !Directory.is(node)) {
-      throw Error("Step " + step + " in path " + relPath + " is a file");
-    }
+    if (i < steps.length - 1 && !Directory.is(node)) return null;
   }
-
   return node;
 }
 

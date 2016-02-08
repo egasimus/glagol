@@ -40,10 +40,6 @@ function Loader () {
 
   function load (rootpath, options) {
 
-    console.log("load1", rootpath);
-    console.log(Object.keys(nodes));
-    console.log(nodes[rootpath]);
-
     // use absolute path of requested starting location
     rootpath = path.resolve(rootpath);
 
@@ -67,10 +63,9 @@ function Loader () {
     // if it's a directory, its contents are recursively loaded.
     // having passed the deduplication check above, we can assume
     // that this node is so far completely unknown to this loader.
-    console.log("load", rootpath)
     return loadNode(rootpath);
 
-    function loadNode (location, first) {
+    function loadNode (location) {
       // use absolute path of this node
       location = path.resolve(location);
 
@@ -180,7 +175,8 @@ function Loader () {
       if (parent) parent.add(node);
 
       log("+ added".green, node.constructor.name.toLowerCase().green,
-        path.join(parent ? parent.path : "", node.name).bold);
+        path.basename(node._rootPath).bold + node.path.bold,
+        node._sourcePath.black)
       events.emit('added', node);
     }
 
@@ -202,7 +198,8 @@ function Loader () {
       if (node._justLoaded) {
         delete node._justLoaded;
         log("+ added".green, node.constructor.name.toLowerCase().green,
-          node.path.bold)
+          path.basename(node._rootPath).bold + node.path.bold,
+          node._sourcePath.black)
         events.emit('added', node);
       } else {
         log("* changed".yellow, node.path.bold);
@@ -292,8 +289,6 @@ function defaultFilter (fullpath, rootpath) {
     , !endsWith(basename, '.swp')
     , !endsWith(basename, '.swo')
     , basename[0] !== '.' ]
-
-  //console.log(" ", fullpath, conditions);
 
   return !conditions.some(function (x) { return !x })
 }

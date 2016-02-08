@@ -56,7 +56,7 @@ function Loader () {
     watcher.on('unlink',    removed);
     watcher.on('unlinkDir', removed);
 
-    // load node at rootpath.
+    // load node at `rootpath`.
     // if it's a directory, its contents are recursively loaded.
     // having passed the deduplication check above, we can assume
     // that this node is so far completely unknown to this loader.

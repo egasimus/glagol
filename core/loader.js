@@ -17,9 +17,9 @@ function Loader () {
   // global loader options
   load.logger = defaultLogger;
   load.filter = defaultFilter;
-  load.eager = true; // TODO
+  load.eager  = true;
 
-  // log if there's a logger set; assumes it's callable
+  // if there's a logger set, use it! assumes it's callable, duh.
   function log () {
     if (load.logger) load.logger(arguments);
   }
@@ -27,18 +27,14 @@ function Loader () {
   // event emitter; TODO
   var events = load.events = new (require('eventemitter3'))();
 
-  // loaded files, directories, etc (henceforth: nodes) are stored here
-  var nodes = {}
+  // glagol objects corresponding to loaded filesystem nodes
+  // (files, directories, etc.; henceforth: nodes) are stored here
+  var nodes = {};
 
-  // a single watcher keeps track of all nodes. its `depth` options is
-  // set to 0 since directories are manually added to it during loading.
+  // a single watcher keeps track of all loadded nodes. its `depth` option
+  // is set to 0, since directories are manually added to it during loading.
   var watcher = load._watcher =
     new chokidar.FSWatcher({ persistent: false, atomic: 400, depth: 0 });
-  watcher.on('add',       added);
-  watcher.on('addDir',    added);
-  watcher.on('change',    changed);
-  watcher.on('unlink',    removed);
-  watcher.on('unlinkDir', removed);
 
   return load;
 
@@ -49,17 +45,25 @@ function Loader () {
 
     // deduplicate: if this path has already been loaded
     // (as a result of having loaded some parent directory)
-    // return the already loaded object
+    // return the object that corresponds to it
     if (nodes[rootpath]) return nodes[rootpath];
 
     // no defaults to extend
     options = options || {};
 
+    // bind watcher callbacks for this root path
+    // these keep track of changes to the actual files
+    watcher.on('add',       added);
+    watcher.on('addDir',    added);
+    watcher.on('change',    changed);
+    watcher.on('unlink',    removed);
+    watcher.on('unlinkDir', removed);
+
     // load node at rootpath.
     // if it's a directory, its contents are recursively loaded.
     // having passed the deduplication check above, we can assume
     // that this node is so far completely unknown to this loader.
-    console.log("load", rootpath)
+    //console.log("load", rootpath)
     return loadNode(rootpath);
 
     function loadNode (location, first) {
@@ -68,7 +72,7 @@ function Loader () {
 
       // missing nodes throw an error, ignored ones just return null
       if (!fs.existsSync(location)) throw ERR_FILE_NOT_FOUND(location);
-      if (!_opts.filter(location, rootpath)) return null;
+      if (!load.filter(location, rootpath)) return null;
 
       // get info about the filesystem node
       var stat = fs.statSync(location);
@@ -90,9 +94,8 @@ function Loader () {
       // is made aware of the filesystem path that corresponds to it, and is
       // stored into the loader's node cache.
       node._sourcePath = location;
+      node._rootPath = rootpath;
       nodes[location] = node;
-
-      // and we're done.
       return node;
     }
 
@@ -110,18 +113,20 @@ function Loader () {
     }
 
     function loadFile (location) {
-
       // load a file if not already loaded
       var node = nodes[location] || File(path.basename(location), options);
 
-      if (_opts.eager) {
+      if (load.eager) {
 
-        // synchronously read original file contents from filesystem
+        // in eager mode, file contents are synchronously read from
+        // the filesystem as soon as the File node is created (i.e. now:)
         node.source = fs.readFileSync(location, 'utf8');
 
       } else {
 
-        // TODO review code for lazy/eager modes
+        // in non-eager mode, the node's `source` property is redefined
+        // to read the file's contents the first time it is accessed, and
+        // store them in the File object's local cache.
         Object.defineProperty(node, "source",
           { enumerable:   true
           , configurable: true
@@ -141,25 +146,44 @@ function Loader () {
       return node;
     }
 
+    // watcher callbacks
+    // since they are added once for each `load` call that does not return
+    // an already loaded object, the `isChildOf` function is used to filter
+    // out all the irrelevant events and run only the right one.
+
     function added (f, s) {
+      if (!isChildOf(rootpath, f)) return;
+
+      // normalize possible flukes: if an object already exists in memory
+      // for this path, then this should be a change event
       if (nodes[f]) return changed(f, s);
 
+      // load newly created node into glagol -- unless it's filtered out.
       var node = loadNode(f);
       if (!node) return;
 
+      // if the node's parent directory is already known to this loader,
+      // add the child node to its parent.
       var parent = nodes[path.dirname(f)];
       if (parent) parent.add(node);
 
       log("+ added".green, node.constructor.name.toLowerCase().green,
-        path.join(parent.path, node.name).bold);
+        path.join(parent ? parent.path : "", node.name).bold);
       events.emit('added', node);
     }
 
     function changed (f, s) {
+      if (!isChildOf(rootpath, f)) return;
+
       var node = nodes[f];
+
+      // normalize possible flukes: if no object exists in memory for this
+      // path, then this should be an add event
       if (!node) return added(f, s);
 
-      if (_opts.eager && File.is(node)) {
+      // in non-eager mode, source is only reloaded on demand
+      // and there's nothing we need to do right now
+      if (load.eager && File.is(node)) {
         node.source = fs.readFileSync(f, 'utf8');
       }
 
@@ -168,19 +192,46 @@ function Loader () {
     }
 
     function removed (f, s) {
+      if (!isChildOf(rootpath, f)) return;
+
       var node = nodes[f];
+
+      // normalize possible flukes: if an object is already missing from memory,
+      // then all is ok really, no need to do anything else to delete it.
       if (!node) return;
 
+      // if parent object exists, renounce deleted child
       var parent = nodes[path.dirname(f)];
       if (parent) parent.remove(node);
 
+      // remove reference to object from this file
       delete nodes[f];
 
       log("- removed".red, path.join(parent ? parent.path : "", node.name).bold);
       events.emit('removed', node, parent);
     }
 
-    function isChildOf (root, location) {
+    function isChildOf (currentRoot, location) {
+      if (path.parse(currentRoot).root !== path.parse(location).root) {
+        // root component of path can be different on windows systems
+        // where there is one filesystem per drive; in that case, `location`
+        // is certainly not a child of `currentRoot`.
+        return false;
+      }
+      if (path.parse(path.relative(currentRoot, location)).dir[0] === '.') {
+        // if the relative path from the node's location to the root under test
+        // starts with a dot, then the node is above the root; therefore, it
+        // is certainly not a child of that root.
+        return false;
+      } else {
+        // if the node's location is under the `currentRoot` after all, there
+        // is still the chance that it has not been loaded from that root
+        // because of filters, e.g. (assuming default filter): if there's a
+        // `foo/node_modules/bar` in `nodes`, then it's a separate root from
+        // `foo`, since anything under `node_modules` is ignored by default
+        // and can't have been loaded with the same loader call as `foo`.
+        return load.filter(location, currentRoot);
+      }
     }
 
   }
@@ -198,15 +249,32 @@ function defaultLogger (args) {
 
 Loader.defaultFilter = defaultFilter;
 function defaultFilter (fullpath, rootpath) {
+  // by default, Glagol's loader ignores a filesystem node if its path matches
+  // any of these conditions:
+  //   * if its path (relative to loader root) contains `node_modules`
+  //     (so that the potentially thousands of files belonging to libraries
+  //     installed there are not watched; use `require('...')` to load them;
+  //     check uses relative path so that any Glagol-aware libraries in
+  //     `node_modules` can use the same loader without their files being
+  //     ignored)
+  //   * filename starts with `.git`; the contents of Git's history dir and
+  //     `.gitignore`/`.gitkeep` files have little relevance to the workings
+  //     of the program managed by Glagol.
+  //   * filename ends with `.swp` or `.swo`, a.k.a. Vim tempfiles
+  //   * also, any other dotfiles (making the `.git`/`.swp`/`.swo` checks
+  //     a bit redundant)
+
   var relpath  = path.relative(rootpath, fullpath)
     , basename = path.basename(fullpath);
 
   var conditions =
-    [ relpath.indexOf('node_modules') === -1
-    , basename.indexOf('.git') !==0
+    [ relpath.indexOf('node_modules') < 0
+    , basename.indexOf('.git') !== 0
     , !endsWith(basename, '.swp')
     , !endsWith(basename, '.swo')
     , basename[0] !== '.' ]
+
+  //console.log(" ", fullpath, conditions);
 
   return !conditions.some(function (x) { return !x })
 }

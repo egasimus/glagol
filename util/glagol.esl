@@ -2,4 +2,5 @@
 ; updates to client-side code; which are then propagated
 ; to the browser via socket
 
-(.Loader (require "glagol"))
+(require "glagol")
+;(.Loader (require "glagol"))

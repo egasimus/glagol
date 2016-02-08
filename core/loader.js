@@ -40,6 +40,10 @@ function Loader () {
 
   function load (rootpath, options) {
 
+    console.log("load1", rootpath);
+    console.log(Object.keys(nodes));
+    console.log(nodes[rootpath]);
+
     // use absolute path of requested starting location
     rootpath = path.resolve(rootpath);
 
@@ -63,7 +67,7 @@ function Loader () {
     // if it's a directory, its contents are recursively loaded.
     // having passed the deduplication check above, we can assume
     // that this node is so far completely unknown to this loader.
-    //console.log("load", rootpath)
+    console.log("load", rootpath)
     return loadNode(rootpath);
 
     function loadNode (location, first) {
@@ -96,6 +100,14 @@ function Loader () {
       node._sourcePath = location;
       node._rootPath = rootpath;
       nodes[location] = node;
+
+      // the `_justLoaded` attribute is used once then deleted immediately
+      // afterwards. it makes sure that the first `added` event emitted by
+      // the watcher, having found the node already loaded, and thus having
+      // turned into a `changed` event (see below), displays as an add event
+      // nonetheless.
+      node._justLoaded = true;
+
       return node;
     }
 
@@ -187,8 +199,15 @@ function Loader () {
         node.source = fs.readFileSync(f, 'utf8');
       }
 
-      log("* changed".yellow, node.path.bold);
-      events.emit('changed', node);
+      if (node._justLoaded) {
+        delete node._justLoaded;
+        log("+ added".green, node.constructor.name.toLowerCase().green,
+          node.path.bold)
+        events.emit('added', node);
+      } else {
+        log("* changed".yellow, node.path.bold);
+        events.emit('changed', node);
+      }
     }
 
     function removed (f, s) {

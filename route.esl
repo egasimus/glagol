@@ -5,7 +5,11 @@
     (= matcher (lambda (req) (return (=== req.url _matcher))))))
   ; TODO (if (instanceof matcher RegExp))
 
-  (return (lambda (req res)
+  (function route-handler (req res)
     (if (matcher req)
       (block (handler req res) (return true))
-      (return false)))))
+      (return false)))
+
+  (= route-handler.tracked handler.tracked)
+
+  (return route-handler))

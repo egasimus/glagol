@@ -7,8 +7,8 @@
   (http-server.listen port)
 
   (var socket-server (new (. (require "ws") Server) (object "server" http-server)))
-  (socket-server.on "connection" (lambda (socket) (./util/connected socket)))
+  (socket-server.on "connection" (lambda (socket) (./util/connected routes socket)))
 
   (return (object
-    "http"   http-server
-    "socket" socket-server)))
+    "http"    http-server
+    "sockets" socket-server)))

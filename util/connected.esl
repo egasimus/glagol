@@ -1,8 +1,7 @@
-(lambda connected (socket)
+(lambda connected (routes socket)
 
-  (var socket-id (.generate (require "shortid")))
+  (var socket-id (./shortid))
   (console.log "socket" socket-id "connected")
-
   (= socket.onclose (lambda ()
     (console.log "socket" socket-id "closed")
     (remove-listeners)))
@@ -17,6 +16,17 @@
     (events.remove-listener "changed" on-changed)
     (events.remove-listener "removed" on-removed))
 
-  (function on-added   (node) (./added   socket node))
-  (function on-changed (node) (./changed socket node))
-  (function on-removed (node) (./removed socket node)))
+  (function on-added (node)   (if (is-tracked node) (./added   socket node)))
+  (function on-changed (node) (if (is-tracked node) (./changed socket node)))
+  (function on-removed (node) (if (is-tracked node) (./removed socket node)))
+
+  (var path (require "path"))
+  (function is-tracked (node)
+    (return (routes.some (lambda (route)
+      (if route.tracked
+        (block
+          (if (! node) (return false))
+          (var tracked (route.tracked.get (path.relative route.tracked.path node.path)))
+          (if (! tracked) (return false))
+          (return (=== node._sourcePath tracked._sourcePath)))
+        (return false)))))))

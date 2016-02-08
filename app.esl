@@ -5,6 +5,6 @@
   (var client (./util/glagol client-path glagol-opts))
   (if common-path (client.bind (./util/glagol common-path glagol-opts)))
 
-  (return (object
-    "node"    client
-    "handler" (lambda (req res) ($.util.bundle client req res)))))
+  (function handler (req res) ($.util.bundle client req res))
+  (= handler.tracked client)
+  (return handler))

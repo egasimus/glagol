@@ -15,17 +15,14 @@ function Loader () {
   if (this instanceof Loader) return Loader();
 
   // global loader options
-  load.logger = defaultLogger;
   load.filter = defaultFilter;
   load.eager  = true;
+  load.events = new (require('eventemitter3'))();
 
-  // if there's a logger set, use it! assumes it's callable, duh.
-  function log () {
-    if (load.logger) load.logger(arguments);
-  }
-
-  // event emitter; TODO
-  var events = load.events = new (require('eventemitter3'))();
+  // logging via events, yay!
+  load.events.on('added',   Loader.logAdded);
+  load.events.on('changed', Loader.logChanged);
+  load.events.on('removed', Loader.logRemoved);
 
   // glagol objects corresponding to loaded filesystem nodes
   // (files, directories, etc.; henceforth: nodes) are stored here
@@ -174,10 +171,7 @@ function Loader () {
       var parent = nodes[path.dirname(f)];
       if (parent) parent.add(node);
 
-      log("+ added".green, node.constructor.name.toLowerCase().green,
-        path.basename(node._rootPath).bold + node.path.bold,
-        node._sourcePath.black)
-      events.emit('added', node);
+      load.events.emit('added', node);
     }
 
     function changed (f, s) {
@@ -197,13 +191,9 @@ function Loader () {
 
       if (node._justLoaded) {
         delete node._justLoaded;
-        log("+ added".green, node.constructor.name.toLowerCase().green,
-          path.basename(node._rootPath).bold + node.path.bold,
-          node._sourcePath.black)
-        events.emit('added', node);
+        load.events.emit('added', node);
       } else {
-        log("* changed".yellow, node.path.bold);
-        events.emit('changed', node);
+        load.events.emit('changed', node);
       }
     }
 
@@ -223,8 +213,7 @@ function Loader () {
       // remove reference to object from this file
       delete nodes[f];
 
-      log("- removed".red, path.join(parent ? parent.path : "", node.name).bold);
-      events.emit('removed', node, parent);
+      load.events.emit('removed', node, parent);
     }
 
     function isChildOf (currentRoot, location) {
@@ -258,10 +247,22 @@ function ERR_FILE_NOT_FOUND (location) {
   return Error("file not found: " + location);
 }
 
-Loader.defaultLogger = defaultLogger;
-function defaultLogger (args) {
-  console.log.apply(console, args);
-}
+Loader.logAdded = function (node) {
+  var regexp = new RegExp("^" + require('os').homedir())
+  console.log("+ added".green,
+    node.constructor.name.toLowerCase().green,
+    node._rootPath.replace(regexp, "~").black + node.path.bold)
+};
+
+Loader.logChanged = function (node) {
+  console.log("* changed".yellow,
+    node.path.bold);
+};
+
+Loader.logRemoved = function (node, parent) {
+  console.log("- removed".red,
+    path.join(parent ? parent.path : "", node.name).bold);
+};
 
 Loader.defaultFilter = defaultFilter;
 function defaultFilter (fullpath, rootpath) {

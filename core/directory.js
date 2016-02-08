@@ -51,7 +51,14 @@ function getTree () {
 }
 
 Directory.prototype.add = function (node) {
-  if (this.nodes[node.name]) this.remove(node.name);
+  // if the new child node is identical to the old one, adding it is a no-op
+  // alternatively, the old child is cleanly removed and the new one installed
+
+  if (this.nodes[node.name]) {
+    if (this.nodes[node.name] === node) return;
+    this.remove(node.name);
+  }
+
   node.parent = this;
   this.nodes[node.name] = node;
 
@@ -59,6 +66,8 @@ Directory.prototype.add = function (node) {
 }
 
 Directory.prototype.remove = function (nodeOrName) {
+  // nodes can be removed either by reference or by name
+
   var name = (typeof nodeOrName === 'string') ? nodeOrName : nodeOrName.name;
   this.nodes[name].parent = null;
   delete this.nodes[name];

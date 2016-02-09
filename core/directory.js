@@ -21,7 +21,7 @@ var Directory = module.exports = function Directory () {
   }
 
   // the core of our directory object
-  function directory () { return directory.tree }
+  function directory () { return require('./tree.js')(directory) }
 
   // basic info
   Object.defineProperty(directory, "name", { value: name });
@@ -71,10 +71,6 @@ function getPath () {
   if (this.parent.parent) p += "/"
   p += this.name;
   return p;
-}
-
-function getTree () {
-  return require('./tree.js')(this);
 }
 
 function add (node) {

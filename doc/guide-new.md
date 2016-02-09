@@ -205,18 +205,18 @@ scissors = File("scissors", "Scissors")
 root.add(choices.add(leaf1).add(leaf2).add(leaf3))
 
 delay = File("delay", "1000")
-tick = File("tick.js", "(function () {
-  var choice = Math.floor(Math.random() * Object.keys(_.choices).length);
-  console.log(_.choices[choice]);
+tick = File("tick.js", "(function () {                                    \
+  var choice = Math.floor(Math.random() * Object.keys(_.choices).length); \
+  console.log(_.choices[choice]);                                         \
 })")
-start = File("start.js", "(function () {
-  var x = setTimeout(function tick () {
-    _.tick();
-    x = setTimeout(_.tick, _.delay);
-  });
-  return function stop () {
-    clearTimeout(x)
-  }
+start = File("start.js", "(function () { \
+  var x = setTimeout(function tick () {  \
+    _.tick();                            \
+    x = setTimeout(_.tick, _.delay);     \
+  });                                    \
+  return function stop () {              \
+    clearTimeout(x)                      \
+  }                                      \
 })")
 root.add(start).add(tick).add(delay);
 

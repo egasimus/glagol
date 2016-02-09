@@ -40,11 +40,7 @@ function getRoot (tree) {
 }
 
 function getter (node) {
-  return File.is(node)
-    ? node.value
-    : Directory.is(node)
-      ? getTree(node)
-      : ERR_UNKNOWN_TYPE(node);
+  return node();
 }
 
 function setter (node, value) {

@@ -32,7 +32,7 @@ var Directory = module.exports = function Directory () {
 
   // bind methods
   directory.add = add.bind(directory);
-  directory.remove = add.bind(directory);
+  directory.remove = remove.bind(directory);
   directory.bind = bind.bind(directory);
   directory.mount = mount.bind(directory);
   directory.get = get.bind(directory);
@@ -78,9 +78,12 @@ function getTree () {
 }
 
 function add (node) {
+  if (!node.name) {
+    throw new Error("can't add nameless node to", this.path)
+  }
+
   // if the new child node is identical to the old one, adding it is a no-op
   // alternatively, the old child is cleanly removed and the new one installed
-
   if (this.nodes[node.name]) {
     if (this.nodes[node.name] === node) return;
     this.remove(node.name);

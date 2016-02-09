@@ -40,16 +40,16 @@ var File = module.exports = function File () {
   file.parent = options.parent || null;
   file.runtime = options.runtime || getRuntime(name) || null;
 
+  // bind methods
+  file.reset = reset.bind(file);
+  file.makeContext = makeContext.bind(file);
+
   // actual values returned by getters are stored here
   file._cache =
     { source: options.source
     , compiled: undefined
     , evaluated: false
     , value: undefined };
-
-  // bind methods
-  file.reset = reset.bind(file);
-  file.makeContext = makeContext.bind(file);
 
   // some magic properties
   Object.defineProperties(file,

@@ -26,6 +26,9 @@ and, upon request, synchronously evaluates the current contents of a file and
 exposes the up-to-date value via the global `_` and `__` objects (corresponding
 to your filesystem's `.` and `..`, relative to the current file).
 
+This leaves a lot of space in the nutshell. Head on to the [guide](https://github.com/egasimus/glagol/blob/master/doc/guide.md)
+for a full tutorial.
+
 ## Behind the scenes
 
 The set of globals available in each file's context is artificially reduced.

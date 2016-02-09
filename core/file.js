@@ -3,6 +3,20 @@ var path = require('path')
 
 var File = module.exports = function File () {
 
+  // this looks like a class but is in fact a factory, returning a "callable
+  // object", i.e. a Function with extra properties and bound methods.
+  // if this was a class, the `new` keyword could've been made optional, and
+  // thus its presence or absence effectively ignored. however, since the
+  // return value of a constructor is ignored, this does not work vice-versa.
+  // hence, we throw an exception.
+  if (this instanceof File) {
+    throw new Error("glagol.File is not really a class. Don't use the `new` operator. ")
+  }
+
+  // possible signatures:
+  //   (options)
+  //   (name, options)
+  //   (name, source)
   var name, options;
   if (arguments[0] && typeof arguments[0] === 'object') {
     name = null;
@@ -10,58 +24,62 @@ var File = module.exports = function File () {
   } else {
     name = arguments[0] || '';
     if (typeof arguments[1] === 'string') {
-      options = { source: arguments[1] }
+      options = { source: arguments[1] };
     } else {
       options = arguments[1] || {};
     }
   }
 
-  // enforce usage of `new` keyword even if omitted
-  if (!(this instanceof File)) return new File(name, options);
+  // the core of our file object
+  function file () { return file.value; }
 
   // basic properties
-  this.name    = name;
-  this.options = options;
-  this.parent  = options.parent || null;
-  this.runtime =
-    options.runtime ||
-    require('../runtimes/index.js')[path.extname(this.name)] ||
-    null;
+  file.options = options;
+  file.parent = options.parent || null;
+  file.runtime = options.runtime || getRuntime(name) || null;
 
-  // stores actual values of source, compiled and value properties
-  this._cache =
-    { source:    options.source
-    , compiled:  undefined
+  // actual values returned by getters are stored here
+  file._cache =
+    { source: options.source
+    , compiled: undefined
     , evaluated: false
-    , value:     undefined };
+    , value: undefined };
 
-  // magic properties
-  Object.defineProperties(this,
-    { source:
-      { configurable: true
-      , enumerable:   true
-      , get: getSource.bind(this)
-      , set: setSource.bind(this) }
-    , compiled:
-      { configurable: true
-      , enumerable:   true
-      , get: compile.bind(this) }
-    , value:
-      { configurable: true
-      , enumerable:   true
-      , get: evaluate.bind(this) }
-    , path:
-      { configurable: true
-      , enumerable:   true
-      , get: getPath.bind(this) }
+  // manually inherit from prototype
+  Object.keys(File.prototype).map(function (key) {
+    file[key] = File.prototype[key].bind(file);
+  });
+
+  // set name
+  Object.defineProperty(file, "name", { value: name });
+
+  // some magic properties
+  Object.defineProperties(file,
+    { source: descriptor(getSource, setSource)
+    , compiled: descriptor(compile)
+    , value: descriptor(evaluate)
+    , path: descriptor(getPath)
     , _glagol:
       { configurable: false
       , enumerable:   false
-      , value:
-        { version: require('../package.json').version
-        , type:    "File" } } });
+      , value: { version: require('../package.json').version
+               , type:    "File" } } });
+
+  // helper for shorter magic property descriptors
+  function descriptor (getter, setter) {
+    var d = { configurable: true, enumerable: true };
+    if (getter) d.get = getter.bind(file);
+    if (setter) d.set = setter.bind(file);
+    return d;
+  }
+
+  return file;
 
 };
+
+function getRuntime (name) {
+  return require('../runtimes/index.js')[path.extname(name)];
+}
 
 function getPath () {
   if (this.parent) {
@@ -136,7 +154,7 @@ function evaluate () {
 
 }
 
-File.prototype.refresh = function () {
+File.prototype.refresh = function refresh () {
   this._cache.compiled  = false;
   this._cache.evaluated = false;
 }

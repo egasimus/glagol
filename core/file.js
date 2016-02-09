@@ -10,7 +10,8 @@ var File = module.exports = function File () {
   // return value of a constructor is ignored, this does not work vice-versa.
   // hence, we throw an exception.
   if (this instanceof File) {
-    throw new Error("glagol.File is not really a class. Don't use the `new` operator. ")
+    throw new Error("glagol.File is not really a class. " +
+      " Don't use the `new` operator.")
   }
 
   // possible signatures:
@@ -33,7 +34,8 @@ var File = module.exports = function File () {
   // the core of our file object
   function file () { return file.value; }
 
-  // basic properties
+  // basic info
+  Object.defineProperty(file, "name", { value: name });
   file.options = options;
   file.parent = options.parent || null;
   file.runtime = options.runtime || getRuntime(name) || null;
@@ -45,13 +47,9 @@ var File = module.exports = function File () {
     , evaluated: false
     , value: undefined };
 
-  // manually inherit from prototype
-  Object.keys(File.prototype).map(function (key) {
-    file[key] = File.prototype[key].bind(file);
-  });
-
-  // set name
-  Object.defineProperty(file, "name", { value: name });
+  // bind methods
+  file.refresh = refresh.bind(file);
+  file.makeContext = makeContext.bind(file);
 
   // some magic properties
   Object.defineProperties(file,
@@ -77,9 +75,9 @@ var File = module.exports = function File () {
 
 };
 
-function getRuntime (name) {
-  return require('../runtimes/index.js')[path.extname(name)];
-}
+File.is = function (node) {
+  return node._glagol instanceof Object && node._glagol.type === 'File';
+};
 
 function getPath () {
   if (this.parent) {
@@ -142,11 +140,10 @@ function evaluate () {
     if (context.error) throw context.error;
 
     this._cache.evaluated = true;
-    if (context.hasOwnProperty('exports')) {
-      return this._cache.value = context.exports;
-    } else {
-      return this._cache.value = result;
-    }
+    this._cache.value = context.hasOwnProperty('exports')
+      ? context.exports
+      : result;
+    return this._cache.value;
 
   } else {
     return this.compiled;
@@ -154,25 +151,24 @@ function evaluate () {
 
 }
 
-File.prototype.refresh = function refresh () {
+function refresh () {
   this._cache.compiled  = false;
   this._cache.evaluated = false;
 }
 
-File.prototype.makeContext = function () {
-  var ctx  = this.runtime.makeContext.call(this);
+function getRuntime (name) {
+  return require('../runtimes/index.js')[path.extname(name)];
+}
+
+function makeContext () {
+  var context = this.runtime.makeContext.call(this);
 
   if (this.parent) {
     var tree = require('./tree.js')(this);
-    ctx._  = tree;
-    ctx.__ = tree.__;
-    ctx.$  = tree.$;
+    context._  = tree;
+    context.__ = tree.__;
+    context.$  = tree.$;
   }
 
-  return vm.createContext(ctx);
-}
-
-File.is = function (node) {
-  return (node instanceof File ||
-    (node._glagol instanceof Object && node._glagol.type === 'File'));
+  return vm.createContext(context);
 }

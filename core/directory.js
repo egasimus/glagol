@@ -40,7 +40,6 @@ var Directory = module.exports = function Directory () {
   // magic properties
   Object.defineProperties(directory,
     { path: descriptor(getPath) // path of node relative to app root
-    , tree: descriptor(getTree) // just nested value objects, no metadata
     , _glagol: // hidden metadata for duck typing
       { configurable: false
       , enumerable:   false

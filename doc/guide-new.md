@@ -202,7 +202,7 @@ choices = Directory("choices")
 rock = File("rock", "Rock")
 paper = File("paper", "Paper")
 scissors = File("scissors", "Scissors")
-root.add(choices.add(leaf1).add(leaf2).add(leaf3))
+root.add(choices.add(rock).add(paper).add(scissors))
 
 delay = File("delay", "1000")
 tick = File("tick.js", "(function () {                                    \

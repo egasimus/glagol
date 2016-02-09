@@ -48,7 +48,7 @@ var File = module.exports = function File () {
     , value: undefined };
 
   // bind methods
-  file.refresh = refresh.bind(file);
+  file.reset = reset.bind(file);
   file.makeContext = makeContext.bind(file);
 
   // some magic properties
@@ -151,9 +151,11 @@ function evaluate () {
 
 }
 
-function refresh () {
+function reset () {
   this._cache.compiled  = false;
   this._cache.evaluated = false;
+  this._cache.value = undefined;
+  return this;
 }
 
 function getRuntime (name) {

@@ -1,6 +1,7 @@
 module.exports =
-  { compile: compile
-  , globals: globals };
+  { compile:  compile
+  , evaluate: require('./plaintext.js').evaluate
+  , globals:  globals };
 
 function compile () {
   var _path = this._sourcePath || this.path;

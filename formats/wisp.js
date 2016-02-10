@@ -1,6 +1,7 @@
 module.exports =
-  { compile: compile
-  , globals: globals };
+  { compile:  compile
+  , evaluate: require('./javascript.js').evaluate
+  , globals:  globals };
 
 var fs   = require('fs')
   , path = require('path');

@@ -5,7 +5,7 @@
   "main": "index.js",
   "browser": {
     "index.js": "./browser/index.js",
-    "formats/index.js": "./browser/formats.js",
+    "./formats/index.js": "./formats/index_browser.js",
     "require-like": "./browser/require.js",
     "vm": "./browser/vm.js"
   },

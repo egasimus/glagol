@@ -11,7 +11,7 @@
     return app;
   }
 
-  app.tree.main();
+  app().main();
 
   var socket = new WebSocket("ws://" + window.location.host);
   socket.onmessage = function (msg) {

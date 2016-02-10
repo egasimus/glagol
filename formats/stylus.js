@@ -1,10 +1,10 @@
 module.exports =
-  { compileSource: compileSource
-  , makeContext:   makeContext };
+  { compile: compile
+  , globals: globals };
 
-function compileSource () {
+function compile () {
   var _path = this._sourcePath || this.path;
   return require('require-like')(_path)('stylus').render(this.source);
 }
 
-function makeContext () {}
+function globals () {}

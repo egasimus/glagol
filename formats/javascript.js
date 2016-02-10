@@ -1,15 +1,15 @@
 module.exports =
-  { compileSource: compileSource
-  , makeContext:   makeContext };
+  { compile: compile
+  , globals: globals };
 
-function compileSource () {
+function compile () {
   return this.source;
 }
 
 var fs   = require('fs')
   , path = require('path');
 
-function makeContext () {
+function globals () {
 
   var myPath    = this._sourcePath || this.path
     , myRequire = require('require-like')(myPath);

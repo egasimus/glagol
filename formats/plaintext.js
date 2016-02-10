@@ -1,9 +1,10 @@
 module.exports =
-  { compileSource: compileSource
-  , makeContext:   makeContext };
+  { compile: compile
+  , globals: globals };
 
-function compileSource () {
+function compile () {
+  // strip trailing newline
   return this.source.replace(/\n$/, "");
 }
 
-function makeContext () {}
+function globals () {}

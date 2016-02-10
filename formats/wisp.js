@@ -1,11 +1,11 @@
 module.exports =
-  { compileSource: compileSource
-  , makeContext:   makeContext };
+  { compile: compile
+  , globals: globals };
 
 var fs   = require('fs')
   , path = require('path');
 
-function compileSource () {
+function compile () {
 
   // find wisp relative to project directory rather than glagol install path
   var _path = this._sourcePath || this.path;
@@ -35,7 +35,7 @@ function ERR_COMPILER (filename, error) {
   return Error("Wisp compiler error in " + filename + ": " + error);
 }
 
-function makeContext () {
+function globals () {
 
   var _path = this._sourcePath || this.path;
   var wisp = patchWisp(findWisp(_path));
@@ -44,7 +44,7 @@ function makeContext () {
     , isElectron   = Boolean(process.versions.electron)
     , isBrowser    = isBrowserify || isElectron;
 
-  var context = require('./javascript.js').makeContext(this);
+  var context = require('./javascript.js').globals(this);
 
   [ wisp.ast
   , wisp.sequence

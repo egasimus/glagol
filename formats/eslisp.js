@@ -1,8 +1,8 @@
 module.exports =
-  { compileSource: compileSource
-  , makeContext:   require('./javascript.js').makeContext };
+  { compile: compile
+  , globals: require('./javascript.js').globals };
 
-function compileSource () {
+function compile () {
 
   var extraTransformMacros =
     (this.options.eslisp && this.options.eslisp.transform)

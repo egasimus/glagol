@@ -1,5 +1,6 @@
-var path = require('path')
-  , vm   = require('vm');
+var path    = require('path')
+  , vm      = require('vm')
+  , formats = require('../formats/index.js');
 
 var File = module.exports = function File () {
 
@@ -42,7 +43,7 @@ var File = module.exports = function File () {
 
   // bind methods
   file.reset = reset.bind(file);
-  file.makeContext = makeContext.bind(file);
+  file.globals = globals.bind(file);
 
   // actual values returned by getters are stored here
   file._cache =
@@ -109,7 +110,7 @@ function compile () {
   if (!this.source) return this._cache.compiled = undefined;
 
   try {
-    return this._cache.compiled = this.format.compileSource.call(this);
+    return this._cache.compiled = this.format.compile.call(this);
   } catch (e) {
     console.error("Error compiling " + this.path + ":");
     console.log(e.message);
@@ -124,7 +125,7 @@ function evaluate () {
 
   if (this.format) {
 
-    var context = this.makeContext()
+    var context = this.globals()
       , src     = "(function(){return " + this.compiled + "})()"
       , result  = vm.runInContext(src, context,
           { filename: this._sourcePath || this.path });
@@ -151,11 +152,11 @@ function reset () {
 }
 
 function getFormat (name) {
-  return require('../formats/index.js')[path.extname(name)];
+  return formats[path.extname(name)] || formats[null];
 }
 
-function makeContext () {
-  var context = this.format.makeContext.call(this);
+function globals () {
+  var context = this.format.globals.call(this) || {};
 
   if (this.parent) {
     var tree = require('./tree.js')(this);

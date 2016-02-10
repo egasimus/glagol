@@ -295,7 +295,7 @@ Loader.defaults =
           function logAddition (node) {
             var regexp = new RegExp("^" + require('os').homedir());
             console.log("+ added".green,
-              node.constructor.name.toLowerCase().green,
+              node._glagol.type.toLowerCase().green,
               node._rootPath.replace(regexp, "~").black + node.path.bold); }
 
       , changed:

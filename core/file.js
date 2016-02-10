@@ -104,24 +104,16 @@ function compile () {
 
   if (this._cache.compiled) return this._cache.compiled;
 
-  if (this.runtime) {
+  if (!this.runtime) return this._cache.compiled = this.source;
 
-    if (this.source) {
+  if (!this.source) return this._cache.compiled = undefined;
 
-      try {
-        return this.compiled = this.runtime.compileSource.call(this);
-      } catch (e) {
-        console.error("Error compiling " + this.path + ":");
-        console.log(e.message);
-        console.log(e.stack);
-      }
-
-    } else {
-      return this._cache.compiled = undefined;
-    }
-
-  } else {
-    return this._cache.compiled = this.source;
+  try {
+    return this.compiled = this.runtime.compileSource.call(this);
+  } catch (e) {
+    console.error("Error compiling " + this.path + ":");
+    console.log(e.message);
+    console.log(e.stack);
   }
 
 }

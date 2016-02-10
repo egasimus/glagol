@@ -1,9 +1,12 @@
 # Glagol 2.0.0-WIP
 
-Glagol is a JavaScript metaframework. It enables you to build programs that can
-be edited during runtime, using libraries and preprocessors of your choosing.
+Glagol is a JavaScript metaframework, designed from the ground up for enabling
+you to build programs that can be edited during runtime, using libraries and
+preprocessors of your choosing.
+
 Glagol reloads and processes source files on demand, so you don't need to
-set up a complicated build pipeline for compiling your stuff in advance.
+set up a complicated build pipeline for compiling your stuff in advance, or
+restart your project to see your changes.
 
 [![NPM](https://img.shields.io/npm/v/glagol.svg)](https://www.npmjs.com/package/glagol)
 [![David](https://img.shields.io/david/egasimus/glagol.svg)](https://david-dm.org/egasimus/glagol)
@@ -12,31 +15,18 @@ set up a complicated build pipeline for compiling your stuff in advance.
 ## In a nutshell
 
 ```
-sudo npm install -g glagol
-mkdir x
-echo 'I am plain text, edit me!' > x/a
-echo '100 * 10 // Evaluated as JavaScript' > x/b.js
-echo '(function r () { console.log(_.a, _.b); setTimeout(r, _.b) })()' > x/c.js
-glagol x/c.js
+git clone https://github.com/egasimus/glagol-example
+cd glagol-example
+npm install
+./example
 ```
 
-Now go ahead and edit the files `a` and `b`, and watch as the output of `c`
-changes. Behind the scenes, Glagol keeps track of changes to the source code,
-and, upon request, synchronously evaluates the current contents of a file and
-exposes the up-to-date value via the global `_` and `__` objects (corresponding
-to your filesystem's `.` and `..`, relative to the current file).
+Now fire up your text editor and edit any file (besides `example` or `start.js`);
+try adding new files in `choices/`, too. See how the program reflects your
+changes immediately? That's what Glagol is all about.
 
-This leaves a lot of space in the nutshell. Head on to the [guide](https://github.com/egasimus/glagol/blob/master/doc/guide.md)
-for a full tutorial.
-
-## Behind the scenes
-
-The set of globals available in each file's context is artificially reduced.
-APIs for specifying those globals, for using other
-sandboxing libraries, such as [contextify](https://github.com/brianmcd/contextify),
-[localify](https://github.com/edge/localify), or [sandboxed-module](https://github.com/felixge/node-sandboxed-module),
-and for applying arbitrary pre-and post-processing at the source and AST levels,
-will be made available in due time.
+This leaves a lot of room in the nutshell. Just enough to fit an overview and
+perhaps a quick tour of Glagol's inner workings, a.k.a. [The Guide](https://github.com/egasimus/glagol/blob/master/doc/guide.md).
 
 ## Documentation
 

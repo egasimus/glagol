@@ -10,14 +10,14 @@ with the basics.
 
 Glagol works by creating an in-memory model of a directory tree, made out of
 simple `File` and `Directory` models; which you can create manually in your
-code, or you can use a `Loader` to instantiate a whole lot of them in one
-go out of an actual directory on your filesystem.
+code, or you can use a `Loader` to instantiate a whole lot of them out of an
+actual directory on your filesystem, in one go.
 
-  * The `Loader` reads the contents of an actual directory on your filesystem,
-    and creates `File` and `Directory` objects that correspond to its contents.
-    - The `Loader` watches the filesystem for changes, and keeps your `File`
-      and `Directory` objects always up to date as you edit the source files in
-      your text editor.
+  * The `Loader` recursively _reads_ the contents of a directory, and creates 
+    `File` and `Directory` objects that correspond to its contents.
+    - The `Loader` then _watches_ the filesystem for changes, and keeps your
+      `File` and `Directory` objects always up to date as you edit the source
+      files in your text editor.
   * A `File` can _contain_ either static data, or code in any language that can
     be run in a JavaScript VM.
     - A `File` is capable of _compiling_ its contents. Compilation takes a
@@ -31,11 +31,11 @@ go out of an actual directory on your filesystem.
       explicitly _reset_ the file). Until then, you keep getting the same value,
       and you can even mutate it; any side effects involved in producing that
       value are executed only once.
-  * A `Directory` is a collection of other `File` and `Directory` instances.
-    - A `Directory` has a value which is a collection of the values of all its
+  * A `Directory` is a _collection_ of other `File` and `Directory` instances.
+    - A `Directory` has a _value_ which is a collection of the values of all its
       contents.
     - A `File` that is inside a `Directory` exposes the `$`, `_`, and `__`
-      globals to its source code when compiling. These are shorthands for
+      globals to its source code when compiling. These are _shorthands_ for
       requesting the up-to-date value of any neighboring `File` or `Directory`,
       and correspond to the path fragments `/`, `./`, and `../`.
 
@@ -60,7 +60,7 @@ change.
 
 #### Creating
 
-Having installed Glagol with `npm install glagol`, then `node` and type:
+Having installed Glagol with `npm install glagol`, run `node` and type:
 
 ```js
 > File = require('glagol').File
@@ -70,9 +70,10 @@ Having installed Glagol with `npm install glagol`, then `node` and type:
 ```
 
 Having called upon the `File` _factory function_, you now have a `hello`
-variable containing a `File` object. It's thinks its name is `hello-world.js`,
-and contains a bit of unevaluated JavaScript source code - the text of the
-timeless classic "Hello, world!": `'console.log("Hello world!")'`.
+variable containing a `File` object. It thinks it's a function named
+`hello-world.js` (good luck naming a function like that!), and contains a bit
+of unevaluated JavaScript source code - the text of that timeless classic,
+_"Hello, world!"_: `'console.log("Hello world!")'`.
 
 #### Evaluating
 
@@ -147,20 +148,22 @@ Hi again!
 Note that the new `hello.source` is wrapped in an [IIFE (immediately-invoked function expression)](https://en.wikipedia.org/wiki/Immediately-invoked_function_expression)
 so that the side effects are now completely separate from the returned value.
 
-#### Objects as first-class functions
+#### A note on the usage of Function-based objects
 
 Again, how come `File` objects think they're functions? Because they are. But
-isn't that a weird thing to do? Well, one nice thing that JavaScript actually
-lets you do is augment a `Function` object with custom properties, just like
-you would do with any other `Object`. The converse, however, seems impossible:
-you can't make a callable object unless you start out with a `Function`. (Or I
+isn't that kind of weird? Maybe. One nice thing that JavaScript actually lets
+you do is augment a `Function` object with custom properties, just like you
+would treat any other `Object`. The converse, however, seems impossible: you
+can't make a callable object unless you start out with a `Function`. (Or I
 haven't been able to, anyway.)
 
-When you go down that road, though, you have to give up on JavaScript's
-prototypal inheritance: your function-like objects are forever stuck with the
-prototype of a `Function`, otherwise they're not callable any more. This is why
-`File` itself is actually a _factory_ rather than a _constructor_: `new File()`
+When you go down that road, though, you have to give up JavaScript's prototypal
+inheritance: your function-like objects are forever stuck with the prototype of
+a `Function`, otherwise they're not callable any more. This is why `File` itself
+is actually a _factory_ rather than a _constructor_: `new File()`
 throws an error message; and `hello instanceof File` returns `false`.
+
+The same holds true for the rest of Glagol's facilities.
 
 #### Type checking
 
@@ -170,8 +173,6 @@ So if you need to check whether some object is a `File`, use `File.is`:
 > File.is(hello)
 true
 ```
-
-The same principles holds true for the rest of Glagol's facilities.
 
 ### Directories
 

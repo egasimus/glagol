@@ -43,7 +43,6 @@ var File = module.exports = function File () {
 
   // bind methods
   file.reset = reset.bind(file);
-  file.globals = globals.bind(file);
 
   // actual values returned by getters are stored here
   file._cache =
@@ -104,13 +103,11 @@ function setSource (v) {
 function compile () {
 
   if (this._cache.compiled) return this._cache.compiled;
-
   if (!this.format) return this._cache.compiled = this.source;
-
   if (!this.source) return this._cache.compiled = undefined;
 
   try {
-    return this._cache.compiled = this.format.compile.call(this);
+    return this._cache.compiled = this.format.compile(this);
   } catch (e) {
     console.error("Error compiling " + this.path + ":");
     console.log(e.message);
@@ -122,25 +119,11 @@ function compile () {
 function evaluate () {
 
   if (this._cache.evaluated) return this._cache.value;
+  if (!this.format) return this.compiled;
 
-  if (this.format) {
-
-    var context = this.globals()
-      , src     = "(function(){return " + this.compiled + "})()"
-      , result  = vm.runInContext(src, context,
-          { filename: this._sourcePath || this.path });
-
-    if (context.error) throw context.error;
-
-    this._cache.evaluated = true;
-    this._cache.value = context.hasOwnProperty('exports')
-      ? context.exports
-      : result;
-    return this._cache.value;
-
-  } else {
-    return this.compiled;
-  }
+  var result = this.format.evaluate(this);
+  this._cache.evaluated = true;
+  return result;
 
 }
 
@@ -153,17 +136,4 @@ function reset () {
 
 function getFormat (name) {
   return formats[path.extname(name)] || formats[null];
-}
-
-function globals () {
-  var context = this.format.globals.call(this) || {};
-
-  if (this.parent) {
-    var tree = require('./tree.js')(this);
-    context._  = tree;
-    context.__ = tree.__;
-    context.$  = tree.$;
-  }
-
-  return vm.createContext(context);
 }

@@ -1,17 +1,29 @@
 module.exports =
-  { compile: compile
-  , globals: globals };
-
-function compile () {
-  return this.source;
-}
+  { compile:  compile
+  , evaluate: evaluate
+  , globals:  globals };
 
 var fs   = require('fs')
-  , path = require('path');
+  , path = require('path')
+  , vm   = require('vm');
 
-function globals () {
+function compile (file) {
+  return file.source;
+}
 
-  var myPath    = this._sourcePath || this.path
+function evaluate (file, context) {
+  var context = context || this.globals(file)
+    , source  = "(function(){return " + file.compiled + "})()"
+    , options = { filename: file._sourcePath || file.path }
+    , result  = vm.runInContext(source, context, options);
+  if (context.error) throw context.error;
+  if (context.hasOwnProperty('exports')) return context.exports;
+  return result;
+}
+
+function globals (file) {
+
+  var myPath    = file._sourcePath || file.path
     , myRequire = require('require-like')(myPath);
 
   var context =
@@ -41,6 +53,13 @@ function globals () {
         myRequire
     };
 
-  return context;
+  if (file.parent) {
+    var tree = require('../core/tree.js')(file);
+    context._  = tree;
+    context.__ = tree.__;
+    context.$  = tree.$;
+  }
+
+  return vm.createContext(context);
 
 }

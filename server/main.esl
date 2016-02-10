@@ -9,5 +9,5 @@
     (console.log "open" (+ host ":" port) "in your browser")))
 ;    ((require "opener") (+ "http://" host ":" port))))
 
-  (server.socket.on "connection" (lambda (socket)
+  (server.sockets.on "connection" (lambda (socket)
     (./connect socket))))

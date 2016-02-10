@@ -5,9 +5,6 @@
 
   ; insert css first to prevent fouc
   (var css (/lib/insert-css ./style))
-  (.events.on (get app.nodes "style.styl") "edited" (lambda ()
-    (css.parent-element.remove-child css)
-    (= css (/lib/insert-css ./style))))
 
   ; start vdom main loop
   (var view (/lib/riko/V /state /templates/app))
@@ -18,5 +15,15 @@
   (/control "session.init")
   (/control "jack.init")
   (/control "controller.init")
+
+  ; auto-update
+  (Glagol.events.on "changed" (lambda (node)
+    (if (=== node.path "/main.esl")
+      (window.location.reload))
+    (if (=== node.path "/style.styl") (block
+      (css.parent-element.remove-child css)
+      (= css (/lib/insert-css ./style))))
+    (if (=== 0 (node-path.index-of "/templates"))
+      (view.update (/state)))))
 
   (return view))

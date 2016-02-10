@@ -3,6 +3,7 @@ var fs        = require('fs')
   , chokidar  = require('chokidar')
   , glob      = require('glob')
   , colors    = require('colors')
+  , xtend     = require('xtend')
   , File      = require('./file.js')
   , Directory = require('./directory.js');
 
@@ -13,26 +14,28 @@ function Loader (baseOptions) {
   // this is a factory (see file.js)
   if (this instanceof Loader) {
     throw new Error("glagol.Loader is not a constructor. " +
-      "Don't use the `new` operator. ")
+      "Don't use the `new` operator. ");
   }
 
   // global loader options
-  load.filter = defaultFilter;
-  load.eager  = true;
-  load.events = new (require('eventemitter3'))();
+  load.options = xtend(
+    { filter: Loader.defaults.filter
+    , reader: Loader.defaults.reader
+    , eager:  true }, baseOptions);
 
-  // logging via events, yay!
-  load.events.on('added',   Loader.logAdded);
-  load.events.on('changed', Loader.logChanged);
-  load.events.on('removed', Loader.logRemoved);
+  // events and logging
+  load.events = new (require('eventemitter3'))();
+  load.events.on('added',   Loader.defaults.log.added);
+  load.events.on('changed', Loader.defaults.log.changed);
+  load.events.on('removed', Loader.defaults.log.removed);
 
   // glagol objects corresponding to loaded filesystem nodes
   // (files, directories, etc.; henceforth: nodes) are stored here
   var nodes = {};
 
-  // a single watcher keeps track of all loadded nodes. its `depth` option
+  // a single watcher keeps track of all loaded nodes. its `depth` option
   // is set to 0, since directories are manually added to it during loading.
-  var watcher = load._watcher =
+  var watcher = load.watcher =
     new chokidar.FSWatcher({ persistent: false, atomic: 400, depth: 0 });
 
   return load;
@@ -47,8 +50,8 @@ function Loader (baseOptions) {
     // return the object that corresponds to it
     if (nodes[rootpath]) return nodes[rootpath];
 
-    // no defaults to extend
-    options = require('xtend')(baseOptions, options);
+    // extend loader defaults with any user overrides for this load operation
+    options = require('xtend')(load.options, options);
 
     // bind watcher callbacks for this root path
     // these keep track of changes to the actual files
@@ -70,7 +73,7 @@ function Loader (baseOptions) {
 
       // missing nodes throw an error, ignored ones just return null
       if (!fs.existsSync(location)) throw ERR_FILE_NOT_FOUND(location);
-      if (!load.filter(location, rootpath)) return null;
+      if (!options.filter(location, rootpath)) return null;
 
       // get info about the filesystem node
       var stat = fs.statSync(location);
@@ -122,11 +125,11 @@ function Loader (baseOptions) {
       // load a file if not already loaded
       var node = nodes[location] || File(path.basename(location), options);
 
-      if (load.eager) {
+      if (options.eager) {
 
         // in eager mode, file contents are synchronously read from
         // the filesystem as soon as the File node is created (i.e. now:)
-        node.source = fs.readFileSync(location, 'utf8');
+        node.source = options.reader(location);
 
       } else {
 
@@ -139,7 +142,7 @@ function Loader (baseOptions) {
           , get: function () {
               return this.cache.source
                 ? this._cache.source
-                : this._cache.source = fs.readFileSync(this._sourcePath, 'utf8');
+                : this._cache.source = options.reader(location);
               }.bind(node)
           , set: function (v) {
               this._cache.compiled = undefined;
@@ -187,8 +190,8 @@ function Loader (baseOptions) {
 
       // in non-eager mode, source is only reloaded on demand
       // and there's nothing we need to do right now
-      if (load.eager && File.is(node)) {
-        node.source = fs.readFileSync(f, 'utf8');
+      if (options.eager && File.is(node)) {
+        node.source = options.reader(f);
       }
 
       if (node._justLoaded) {
@@ -237,7 +240,7 @@ function Loader (baseOptions) {
         // `foo/node_modules/bar` in `nodes`, then it's a separate root from
         // `foo`, since anything under `node_modules` is ignored by default
         // and can't have been loaded with the same loader call as `foo`.
-        return load.filter(location, currentRoot);
+        return options.filter(location, currentRoot);
       }
     }
 
@@ -249,54 +252,58 @@ function ERR_FILE_NOT_FOUND (location) {
   return Error("file not found: " + location);
 }
 
-Loader.logAdded = function (node) {
-  var regexp = new RegExp("^" + require('os').homedir())
-  console.log("+ added".green,
-    node.constructor.name.toLowerCase().green,
-    node._rootPath.replace(regexp, "~").black + node.path.bold)
-};
+Loader.defaults =
+  { filter:
+      function defaultFilter (fullpath, rootpath) {
+        // by default, Glagol's loader ignores a filesystem node if its path matches
+        // any of these conditions:
+        //   * if its path (relative to loader root) contains `node_modules`
+        //     (so that the potentially thousands of files belonging to libraries
+        //     installed there are not watched; use `require('...')` to load them;
+        //     check uses relative path so that any Glagol-aware libraries in
+        //     `node_modules` can use the same loader without their files being
+        //     ignored)
+        //   * filename starts with `.git`; the contents of Git's history dir and
+        //     `.gitignore`/`.gitkeep` files have little relevance to the workings
+        //     of the program managed by Glagol.
+        //   * filename ends with `.swp` or `.swo`, a.k.a. Vim tempfiles
+        //   * also, any other dotfiles (making the `.git` check a bit redundant
 
-Loader.logChanged = function (node) {
-  console.log("* changed".yellow,
-    node.path.bold);
-};
+        var relpath  = path.relative(rootpath, fullpath)
+          , basename = path.basename(fullpath);
 
-Loader.logRemoved = function (node, parent) {
-  console.log("- removed".red,
-    path.join(parent ? parent.path : "", node.name).bold);
-};
+        var conditions =
+          [ relpath.indexOf('node_modules') < 0
+          , basename.indexOf('.git') !== 0
+          , !endsWith(basename, '.swp')
+          , !endsWith(basename, '.swo')
+          , basename[0] !== '.' ];
 
-Loader.defaultFilter = defaultFilter;
-function defaultFilter (fullpath, rootpath) {
-  // by default, Glagol's loader ignores a filesystem node if its path matches
-  // any of these conditions:
-  //   * if its path (relative to loader root) contains `node_modules`
-  //     (so that the potentially thousands of files belonging to libraries
-  //     installed there are not watched; use `require('...')` to load them;
-  //     check uses relative path so that any Glagol-aware libraries in
-  //     `node_modules` can use the same loader without their files being
-  //     ignored)
-  //   * filename starts with `.git`; the contents of Git's history dir and
-  //     `.gitignore`/`.gitkeep` files have little relevance to the workings
-  //     of the program managed by Glagol.
-  //   * filename ends with `.swp` or `.swo`, a.k.a. Vim tempfiles
-  //   * also, any other dotfiles (making the `.git`/`.swp`/`.swo` checks
-  //     a bit redundant)
+        function endsWith (x, y) {
+          if (x.lastIndexOf(y) < 0) return false;
+          return x.lastIndexOf(y) === x.length - y.length;
+        }
 
-  var relpath  = path.relative(rootpath, fullpath)
-    , basename = path.basename(fullpath);
+        return !conditions.some(function (x) { return !x; }); }
 
-  var conditions =
-    [ relpath.indexOf('node_modules') < 0
-    , basename.indexOf('.git') !== 0
-    , !endsWith(basename, '.swp')
-    , !endsWith(basename, '.swo')
-    , basename[0] !== '.' ]
+  , reader:
+      function defaultReader (location) {
+        return fs.readFileSync(location, 'utf8'); }
 
-  return !conditions.some(function (x) { return !x })
-}
+  , log:
+      { added:
+          function logAddition (node) {
+            var regexp = new RegExp("^" + require('os').homedir());
+            console.log("+ added".green,
+              node.constructor.name.toLowerCase().green,
+              node._rootPath.replace(regexp, "~").black + node.path.bold); }
 
-function endsWith (x, y) {
-  if (x.lastIndexOf(y) < 0) return false;
-  return x.lastIndexOf(y) === x.length - y.length;
-}
+      , changed:
+          function logChange (node) {
+            console.log("* changed".yellow,
+              node.path.bold); }
+
+      , removed:
+          function logRemoval (node, parent) {
+            console.log("- removed".red,
+              path.join(parent ? parent.path : "", node.name).bold); } } };

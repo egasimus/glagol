@@ -121,9 +121,9 @@ function evaluate () {
   if (this._cache.evaluated) return this._cache.value;
   if (!this.format) return this.compiled;
 
-  var result = this.format.evaluate(this);
+  this._cache.value = this.format.evaluate(this);
   this._cache.evaluated = true;
-  return result;
+  return this._cache.value;
 
 }
 

@@ -18,10 +18,13 @@ function Loader (baseOptions) {
   }
 
   // global loader options
+  baseOptions = baseOptions || {};
   load.options = xtend(
-    { filter: Loader.defaults.filter
-    , reader: Loader.defaults.reader
-    , eager:  true }, baseOptions);
+    { filter:  Loader.defaults.filter
+    , reader:  Loader.defaults.reader
+    , eager:   true }, baseOptions);
+  load.options.formats = xtend(
+    require('../formats/index.js'), baseOptions.formats);
 
   // events and logging
   load.events = new (require('eventemitter3'))();

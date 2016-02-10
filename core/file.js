@@ -1,6 +1,6 @@
 var path    = require('path')
   , vm      = require('vm')
-  , formats = require('../formats/index.js');
+  , xtend   = require('xtend')
 
 var File = module.exports = function File () {
 
@@ -12,7 +12,7 @@ var File = module.exports = function File () {
   // hence, we throw an exception.
   if (this instanceof File) {
     throw new Error("glagol.File is not a constructor. " +
-      " Don't use the `new` operator.")
+      " Don't use the `new` operator.");
   }
 
   // possible signatures:
@@ -39,7 +39,7 @@ var File = module.exports = function File () {
   Object.defineProperty(file, "name", { value: name });
   file.options = options;
   file.parent = options.parent || null;
-  file.format = options.format || getFormat(name) || null;
+  file.format = options.format || getFormat(options.formats, name) || null;
 
   // bind methods
   file.reset = reset.bind(file);
@@ -134,6 +134,6 @@ function reset () {
   return this;
 }
 
-function getFormat (name) {
+function getFormat (formats, name) {
   return formats[path.extname(name)] || formats[null];
 }

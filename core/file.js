@@ -10,7 +10,7 @@ var File = module.exports = function File () {
   // return value of a constructor is ignored, this does not work vice-versa.
   // hence, we throw an exception.
   if (this instanceof File) {
-    throw new Error("glagol.File is not really a class. " +
+    throw new Error("glagol.File is not a constructor. " +
       " Don't use the `new` operator.")
   }
 

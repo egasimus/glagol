@@ -4,7 +4,7 @@ var Directory = module.exports = function Directory () {
 
   // this is a factory (see file.js)
   if (this instanceof Directory) {
-    throw new Error("glagol.Directory is not really a class. " +
+    throw new Error("glagol.Directory is not a constructor. " +
       "Don't use the `new` operator. ")
   }
 

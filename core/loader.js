@@ -10,9 +10,11 @@ module.exports = Loader;
 
 function Loader (baseOptions) {
 
-  // the Loader is styled like a class even though it really isn't.
-  // let's ignore the `new` keyword for consistency with other primitives.
-  if (this instanceof Loader) return Loader();
+  // this is a factory (see file.js)
+  if (this instanceof Loader) {
+    throw new Error("glagol.Loader is not a constructor. " +
+      "Don't use the `new` operator. ")
+  }
 
   // global loader options
   load.filter = defaultFilter;

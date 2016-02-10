@@ -1,28 +1,26 @@
-module.exports =
-  { compile:  compile
-  , evaluate: require('./javascript.js').evaluate
-  , globals:  globals };
+module.exports = require('xtend')(require('./javascript'),
+  { compile: compile, globals: globals });
 
 var fs   = require('fs')
   , path = require('path');
 
-function compile () {
+function compile (file) {
 
   // find wisp relative to project directory rather than glagol install path
-  var _path = this._sourcePath || this.path;
+  var _path = file._sourcePath || file.path;
   var wisp = patchWisp(findWisp(_path));
 
-  var forms = wisp.compiler.readForms(this.source, this.name).forms;
+  var forms = wisp.compiler.readForms(file.source, file.name).forms;
 
   var processed = wisp.compiler.analyzeForms(forms)
-  if (processed.error) throw ERR_ANALYZER(this.name, processed.error)
+  if (processed.error) throw ERR_ANALYZER(file.name, processed.error)
 
   var options =
-        { 'source-uri': this.name || "<???>"
-        , 'source':     this.source }
+        { 'source-uri': file.name || "<???>"
+        , 'source':     file.source }
     , output  =
         wisp.compiler.generate.bind(null, options).apply(null, processed.ast);
-  if (output.error) throw ERR_COMPILER(this.name, output.error)
+  if (output.error) throw ERR_COMPILER(file.name, output.error)
 
   return output.code;
 
@@ -36,16 +34,16 @@ function ERR_COMPILER (filename, error) {
   return Error("Wisp compiler error in " + filename + ": " + error);
 }
 
-function globals () {
+function globals (file) {
 
-  var _path = this._sourcePath || this.path;
+  var _path = file._sourcePath || file.path;
   var wisp = patchWisp(findWisp(_path));
 
   var isBrowserify = process.browser
     , isElectron   = Boolean(process.versions.electron)
     , isBrowser    = isBrowserify || isElectron;
 
-  var context = require('./javascript.js').globals(this);
+  var context = require('./javascript.js').globals(file);
 
   [ wisp.ast
   , wisp.sequence

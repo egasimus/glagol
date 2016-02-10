@@ -1,19 +1,16 @@
-module.exports =
-  { compile:  compile
-  , evaluate: require('./javascript.js').evaluate
-  , globals:  require('./javascript.js').globals };
+module.exports = require('xtend')(require('./javascript'), { compile: compile });
 
-function compile () {
+function compile (file) {
 
   var extraTransformMacros =
-    (this.options.eslisp && this.options.eslisp.transform)
-      ? this.options.eslisp.transform
+    (file.options.eslisp && file.options.eslisp.transform)
+      ? file.options.eslisp.transform
       : [];
 
   try {
 
-    var _path = this._sourcePath || this.path;
-    return require('require-like')(_path)('eslisp')(this.source,
+    var _path = file._sourcePath || file.path;
+    return require('require-like')(_path)('eslisp')(file.source,
       { transformMacros: [ glagolify ].concat(extraTransformMacros)});
 
   } catch (e) {

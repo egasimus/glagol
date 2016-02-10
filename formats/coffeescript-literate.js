@@ -1,10 +1,7 @@
-module.exports =
-  { compile:  compile
-  , evaluate: require('./javascript.js').evaluate
-  , globals:  require('./javascript.js').globals };
+module.exports = require('xtend')(require('./javascript'), { compile: compile });
 
-function compile () {
-  var _path = this._sourcePath || this.path;
+function compile (file) {
+  var _path = file._sourcePath || file.path;
   return require('require-like')(_path)('coffee-script').compile(
-    this.source, { literate: true });
+    file.source, { literate: true });
 }

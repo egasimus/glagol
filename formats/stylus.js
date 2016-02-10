@@ -1,11 +1,6 @@
-module.exports =
-  { compile:  compile
-  , evaluate: require('./plaintext.js').evaluate
-  , globals:  globals };
+module.exports = require('xtend')(require('./plaintext'), { compile: compile });
 
-function compile () {
-  var _path = this._sourcePath || this.path;
-  return require('require-like')(_path)('stylus').render(this.source);
+function compile (file) {
+  var _path = file._sourcePath || file.path;
+  return require('require-like')(_path)('stylus').render(file.source);
 }
-
-function globals () {}

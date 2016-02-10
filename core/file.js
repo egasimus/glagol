@@ -38,7 +38,7 @@ var File = module.exports = function File () {
   Object.defineProperty(file, "name", { value: name });
   file.options = options;
   file.parent = options.parent || null;
-  file.runtime = options.runtime || getRuntime(name) || null;
+  file.format = options.format || getFormat(name) || null;
 
   // bind methods
   file.reset = reset.bind(file);
@@ -104,12 +104,12 @@ function compile () {
 
   if (this._cache.compiled) return this._cache.compiled;
 
-  if (!this.runtime) return this._cache.compiled = this.source;
+  if (!this.format) return this._cache.compiled = this.source;
 
   if (!this.source) return this._cache.compiled = undefined;
 
   try {
-    return this._cache.compiled = this.runtime.compileSource.call(this);
+    return this._cache.compiled = this.format.compileSource.call(this);
   } catch (e) {
     console.error("Error compiling " + this.path + ":");
     console.log(e.message);
@@ -122,7 +122,7 @@ function evaluate () {
 
   if (this._cache.evaluated) return this._cache.value;
 
-  if (this.runtime) {
+  if (this.format) {
 
     var context = this.makeContext()
       , src     = "(function(){return " + this.compiled + "})()"
@@ -150,12 +150,12 @@ function reset () {
   return this;
 }
 
-function getRuntime (name) {
-  return require('../runtimes/index.js')[path.extname(name)];
+function getFormat (name) {
+  return require('../formats/index.js')[path.extname(name)];
 }
 
 function makeContext () {
-  var context = this.runtime.makeContext.call(this);
+  var context = this.format.makeContext.call(this);
 
   if (this.parent) {
     var tree = require('./tree.js')(this);

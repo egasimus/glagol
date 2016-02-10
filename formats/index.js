@@ -1,7 +1,8 @@
 module.exports =
-  { '.js':        require('./javascript.js')
-  , '.wisp':      require('./wisp.js')
+  { null:         require('./plaintext.js')
+  , '.js':        require('./javascript.js')
   , '.esl':       require('./eslisp.js')
+  , '.wisp':      require('./wisp.js')
   , '.coffee':    require('./coffeescript.js')
   , '.litcoffee': require('./coffeescript-literate.js')
   , '.styl':      require('./stylus.js') };

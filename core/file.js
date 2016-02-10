@@ -109,7 +109,7 @@ function compile () {
   if (!this.source) return this._cache.compiled = undefined;
 
   try {
-    return this.compiled = this.runtime.compileSource.call(this);
+    return this._cache.compiled = this.runtime.compileSource.call(this);
   } catch (e) {
     console.error("Error compiling " + this.path + ":");
     console.log(e.message);

@@ -8,7 +8,7 @@ var fs        = require('fs')
 
 module.exports = Loader;
 
-function Loader () {
+function Loader (baseOptions) {
 
   // the Loader is styled like a class even though it really isn't.
   // let's ignore the `new` keyword for consistency with other primitives.
@@ -46,7 +46,7 @@ function Loader () {
     if (nodes[rootpath]) return nodes[rootpath];
 
     // no defaults to extend
-    options = options || {};
+    options = require('xtend')(baseOptions, options);
 
     // bind watcher callbacks for this root path
     // these keep track of changes to the actual files
@@ -138,12 +138,12 @@ function Loader () {
               return this.cache.source
                 ? this._cache.source
                 : this._cache.source = fs.readFileSync(this._sourcePath, 'utf8');
-              }
+              }.bind(node)
           , set: function (v) {
               this._cache.compiled = undefined;
               this._cache.evaluated = false;
               return this._cache.source = v;
-            } });
+            }.bind(node) });
 
       }
 

@@ -2,13 +2,65 @@
 
 This guide assumes that you have a general familiarity with JavaScript
 programming concepts, access to a command shell with Node.js and NPM installed,
-and a little patience because we're starting with the basics.
+and a little patience because in order to get a good grasp of how Glagol is
+different from your grandma's JavaScript frameworks, we're gonna have to start
+with the basics.
 
-## Files
+## Overview
 
-### Creating
+Glagol works by creating an in-memory model of a directory tree, made out of
+simple `File` and `Directory` models; which you can create manually in your
+code, or you can use a `Loader` to instantiate a whole lot of them in one
+go out of an actual directory on your filesystem.
 
-Having installed Glagol with `npm install glagol`, then start `node` and type:
+  * The `Loader` reads the contents of an actual directory on your filesystem,
+    and creates `File` and `Directory` objects that correspond to its contents.
+    - The `Loader` watches the filesystem for changes, and keeps your `File`
+      and `Directory` objects always up to date as you edit the source files in
+      your text editor.
+  * A `File` can _contain_ either static data, or code in any language that can
+    be run in a JavaScript VM.
+    - A `File` is capable of _compiling_ its contents. Compilation takes a
+      string of source code, optionally applies preprocessing, and returns the
+      regular JavaScript value that is returned by evaluating that code.
+    - Compiling is done _on-demand_: the actual _value_ of a `File` is not
+      calculated until you explicitly ask for it (by referencing it in other
+      code).
+    - Compiling is _idempotent_: after you've gotten the value of a `File`,
+      evaluation is not repeated until you _modify_ the source code (or
+      explicitly _reset_ the file). Until then, you keep getting the same value,
+      and you can even mutate it; any side effects involved in producing that
+      value are executed only once.
+  * A `Directory` is a collection of other `File` and `Directory` instances.
+    - A `Directory` has a value which is a collection of the values of all its
+      contents.
+    - A `File` that is inside a `Directory` exposes the `$`, `_`, and `__`
+      globals to its source code when compiling. These are shorthands for
+      requesting the up-to-date value of any neighboring `File` or `Directory`,
+      and correspond to the path fragments `/`, `./`, and `../`.
+
+All together now: when a `File` that is inside a `Directory` is evaluated, it
+always has access to the latest value of every other `File` that are part of
+the same `Directory` tree, because they are all kept up to date by the `Loader`.
+
+Thus, you have a program that you can seamlessly edit during runtime, without
+needing to reload it to see your changes. This is great for quickly putting
+together Web apps, building static sites with HTML/CSS preprocessors, or
+incrementally developing complex batch scripts.
+
+You can extend Glagol, making it aware of other file types, and use it to
+facilitate any task that involves processing data in a directory tree. Examples
+include retrieving up-to-date metadata from a library of media files, or
+automatically restarting system services whenever their configuration files
+change.
+
+## Exploring Glagol
+
+### Files
+
+#### Creating
+
+Having installed Glagol with `npm install glagol`, then `node` and type:
 
 ```js
 > File = require('glagol').File
@@ -22,7 +74,7 @@ variable containing a `File` object. It's thinks its name is `hello-world.js`,
 and contains a bit of unevaluated JavaScript source code - the text of the
 timeless classic "Hello, world!": `'console.log("Hello world!")'`.
 
-### Evaluating
+#### Evaluating
 
 Let's explore some of its properties:
 
@@ -65,7 +117,7 @@ Hello world!
 undefined 
 ```
 
-### Mutating
+#### Mutating
 
 The `value` property of a `File` is immutable: if you try to set `hello.value`
 to something else, it won't change. _Its value_, however, can be mutable,
@@ -95,7 +147,7 @@ Hi again!
 Note that the new `hello.source` is wrapped in an [IIFE (immediately-invoked function expression)](https://en.wikipedia.org/wiki/Immediately-invoked_function_expression)
 so that the side effects are now completely separate from the returned value.
 
-# Objects as first-class functions
+#### Objects as first-class functions
 
 Again, how come `File` objects think they're functions? Because they are. But
 isn't that a weird thing to do? Well, one nice thing that JavaScript actually
@@ -110,7 +162,7 @@ prototype of a `Function`, otherwise they're not callable any more. This is why
 `File` itself is actually a _factory_ rather than a _constructor_: `new File()`
 throws an error message; and `hello instanceof File` returns `false`.
 
-# Type checking
+#### Type checking
 
 So if you need to check whether some object is a `File`, use `File.is`:
 
@@ -121,7 +173,7 @@ true
 
 The same principles holds true for the rest of Glagol's facilities.
 
-## Directories
+### Directories
 
 We've seen how Glagol implements a container for executing JavaScript in an
 idempotent way. But to get anywhere you'll need to bring several of these
@@ -137,7 +189,7 @@ together, and to do that you use a `Directory`:
 "/"
 ```
 
-### Populating
+#### Populating
 
 Let's populate it with our friend `hello`.
 
@@ -157,7 +209,7 @@ true
 { "hello-world.js": { [Function: hello-world.js] ...} }
 ```
 
-### Evaluating
+#### Evaluating
 
 Just like Files, Directories are callable. Invoking a `Directory` returns a
 map of names to value getters. Here, `root().hello` is equivalent to `hello()`;
@@ -177,7 +229,7 @@ extension and replaces hyphenated-names with camelCasedOnes, letting you
 traverse directories with dot notation. Behavior for files with the same name
 and different extensions is currently undefined, so try and avoid that.
 
-### Deleting
+#### Deleting
 
 To remove a `File` from a `Directory`, pass it or its name to `delete`:
 

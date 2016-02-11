@@ -39,7 +39,8 @@ var Directory = module.exports = function Directory () {
 
   // magic properties
   Object.defineProperties(directory,
-    { path: descriptor(getPath) // path of node relative to app root
+    { path: descriptor(getPath)
+    , root: descriptor(getRoot)
     , _glagol: // hidden metadata for duck typing
       { configurable: false
       , enumerable:   false
@@ -64,18 +65,28 @@ Directory.is = function (node) {
 }
 
 function getPath () {
+  // path of node relative to app root
   if (!this.parent) return "/";
 
   var p = this.parent.path;
-  if (this.parent.parent) p += "/"
+  if (this.parent.parent) p += "/";
   p += this.name;
   return p;
 }
 
+function getRoot () {
+  // find app root
+  var root = this;
+  while (root.parent) root = root.parent;
+  return root;
+}
+
 function add (node) {
   if (!node.name) {
-    throw new Error("can't add nameless node to", this.path)
+    throw new Error("can't add nameless node to", this.path);
   }
+
+  // TODO check for strange loop
 
   // if the new child node is identical to the old one, adding it is a no-op
   // alternatively, the old child is cleanly removed and the new one installed

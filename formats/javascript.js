@@ -3,9 +3,10 @@ module.exports =
   , evaluate: evaluate
   , globals:  globals };
 
-var fs   = require('fs')
-  , path = require('path')
-  , vm   = require('vm');
+var fs    = require('fs')
+  , path  = require('path')
+  , vm    = require('vm')
+  , xtend = require('xtend');
 
 function compile (file) {
   return file.source;
@@ -58,6 +59,9 @@ function globals (file) {
     context._  = tree;
     context.__ = tree.__;
     context.$  = tree.$;
+    context.Glagol = file.parent.root;
+  } else {
+    context.Glagol = file;
   }
 
   return vm.createContext(context);

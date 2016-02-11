@@ -86,7 +86,7 @@ or, more concisely:
 
 ```js
 #!/usr/bin/env node
-require('glagol')(require('path').resolve(__dirname, 'src'))().main()
+require('glagol')(require('path').resolve(__dirname	, 'src'))().main()
 ```
 
 or, if you don't mind Glagol picking up files in your project's root directory
@@ -128,7 +128,11 @@ Astute readers might find a correspondence between `$` `_` `__` and the familiar
 (and originally in [Wisp](https://github.com/Gozala/wisp), where Glagol's roots
 are, though that implementation went nowhere) they are accessible as just that;
 an example fragment from the code of [Etude](https://github.com/egasimus/etude)
-goes: `(/sequencer/pulse (../state/bpm) pulse)`.
+(which is written in Eslisp) goes:
+
+```
+(/sequencer/pulse (../state/bpm) pulse)
+```
 
 ## Exploring Glagol
 

@@ -86,7 +86,7 @@ or, more concisely:
 
 ```js
 #!/usr/bin/env node
-require('glagol')(require('path').resolve(__dirname	, 'src'))().main()
+require('glagol')(require('path').resolve(__dirname, 'src'))().main()
 ```
 
 or, if you don't mind Glagol picking up files in your project's root directory
@@ -97,19 +97,21 @@ or, if you don't mind Glagol picking up files in your project's root directory
 require('glagol')(__dirname).main()
 ```
 
-or you can even combine:
+or you can even have your launcher and your main function in one file:
 
 ```js
 #!/usr/bin/env node
-!Glagol
-  ? require('glagol')(__dirname).nodes[__filename]()
-  : (function () { /* your app starts here */ })()
+!global.Glagol
+  ? require('glagol')(__dirname).nodes[require('path').basename(__filename)]()()
+  : (function () { /* your app starts here */ })
 ```
+
+It even fits in 80 characters!
 
 ### Globals
 
-When a piece of JavaScript code is evaluated by Glagol, it can access the following
-global variables:
+When a piece of JavaScript code is evaluated by Glagol, it is given access to
+the following global variables:
 
 * `Glagol`: the root `Directory` (or `File`) object of the current Glagol instance
     (i.e. the value of `app` in the first bootstrapping example above)
@@ -136,6 +138,11 @@ an example fragment from the code of [Etude](https://github.com/egasimus/etude)
 
 ## Exploring Glagol
 
+The following examples are helpful if you want to extend Glagol, or just develop
+a good intuition about how it works. They assume you've started a Node.js REPL
+(interactive interpreter) in a location where `require('glagol')` will be able
+to find Glagol.
+
 ### Loader
 
 For the majority of use cases, a `Loader` serves as the entry point to Glagol.
@@ -146,13 +153,37 @@ then automatically kept up to date.
 
 Calling `require('glagol')` returns a `Loader` instance, a.k.a. `[Function: load]`.
 You can call pass it a path on your filesystem, and it will return a `Directory`
-or `File` object.
+or `File` object. It also takes a second argument - an options object which
+can be used to temporarily override the `Loader` defaults.
 
-It has three extra properties that will not be present on any subsequent
-`Loader` instances that you may create: these are references to the `File`,
-`Directory`, and `Loader` _factories_.
+```js
+> glagol = require('glagol')
+{ [Function: load]
+  /* ... */
+  File: { [Function: File] ... }
+  Directory: { [Function: Directory] ... }
+  Loader: { [Function: Loader] ... } }
+> glagol('.')
+{ [Function: <name of your current working directory> ]
+  /* ... */ }
+```
 
-### A quick note on the usage of Function-based objects
+Since `require('glagol')` is the entry point to the Glagol library, it provides
+three extra properties that will not be present on any subsequent `Loader` instances
+that you may create: these are references to the `File`, `Directory`, and `Loader`
+_factories_.
+
+If you need to create a new `Loader` instance that is separate from the default one
+(perhaps you want to monitor something other than your program code with Glagol, and
+need a different set of options) you can do that by calling the `Loader` factory:
+
+```js
+> loadData = glagol.Loader({ /* options */})
+{ [Function: load]
+  /* no File, Directory, or Loader reference */ }
+```
+
+#### A quick note on factories and Function-based objects
 
 One nice thing that JavaScript actually lets you do is augment a `Function`
 object with custom properties, and treat it just like you would treat any other
@@ -216,7 +247,7 @@ inspecting its `value`, and is in fact the preferred convention.
 ```js
 > hello()
 undefined
-> // ...what?!
+> // ...wait, no "Hello world!" this time?
 ```
 
 No `Hello world!` this time? What happened? Since evaluating code is costly and
@@ -229,32 +260,35 @@ Let's reset our `File` to make it forget having ever been evaluated.
 { [Function: hello-world.js] ... } // .reset() is chainable!
 > hello()
 Hello world!
-undefined 
+undefined
+> hello()
+undefined // now it's cached again
+> hello.reset()()
+Hello world!
+undefined
 ```
 
 #### Mutating
 
 The `value` property of a `File` is immutable: if you try to set `hello.value`
-to something else, it won't change. _Its value_, however, can be mutable,
+to something else, it simply won't change. _Its value_, however, can be mutable,
 letting you create stateful objects that can be mutated during their lifetime,
 and then re-initialized when you change the source code or call `reset`.
 
 ```js
-> hello.source = "(function () { console.log("Hi again!"); return {} })()"
+> hello.source = '(function () { console.log("Hi again!"); return {} })()'
 > hello()
 Hi again!
 {}
 > hello.value = 42
-> hello()
-{}
-> hello()
-{}
-> hello().answer = 42
+42 // did this work?
+> hello.value
+{} // nope
+> hello.value.answer = 42
 42
-> hello()
+> hello.value
 { answer: 42 }
-> hello.reset()
-> hello()
+> hello.reset()()
 Hi again!
 {}
 ```
@@ -275,7 +309,7 @@ true
 
 We've seen how Glagol implements a container for executing JavaScript in an
 idempotent way. But to get anywhere you'll need to bring several of these
-together, and to do that you use a `Directory`:
+together, which is the purpose of a `Directory`:
 
 ```js
 > Directory = require('glagol').Directory
@@ -285,6 +319,8 @@ together, and to do that you use a `Directory`:
   ... }
 > root.path
 "/"
+> root.root === root
+true
 ```
 
 #### Populating
@@ -310,7 +346,7 @@ true
 #### Evaluating
 
 Just like Files, Directories are callable. Invoking a `Directory` returns a
-map of names to value getters. Here, `root().hello` is equivalent to `hello()`;
+map of names to value getters. Here, `root().helloWorld` is equivalent to `hello()`;
 again, the code is not evaluated until explicitly asked for.
 
 ```js
@@ -329,12 +365,13 @@ and different extensions is currently undefined, so try and avoid that.
 
 #### Deleting
 
-To remove a `File` from a `Directory`, pass it or its name to `delete`:
+To remove a `File` or `Directory` from a parent `Directory`, pass a reference to
+the deleted object, or its `name`, to `remove`:
 
 ```js
-> root.delete("hello-world.js")
+> root.remove(hello)
 ```
 -or-
-```
-> root.delete(hello)
+```js
+> root.remove("hello-world.js")
 ```

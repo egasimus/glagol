@@ -13,8 +13,6 @@
     (var br ((require "browserify") (object "cache" (object))))
     ((require "browserify-incremental-plugin") br)
     (br.require "glagol" (object "expose" "glagol"))
-    (/util/shim br "./browser/thaw.js"  "__glagol-thaw__")
-    (/util/shim br "./browser/runtimes.js" "../runtimes/index.js")
 
     ; add client-specific dependencies, dependency map, and client source
     (.map (Object.keys app.deps.ids) (lambda (module)

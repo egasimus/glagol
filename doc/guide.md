@@ -14,7 +14,7 @@ code, or you can use the provided `Loader` to instantiate a whole lot of them
 in one go, populate them from some directory on your filesystem, and update
 them as you edit the source files. And, by using [Glagol-Web](https://github.com/egasimus/glagol-web),
 you can quickly set up a server that delivers pre-compiled Glagol bundles with [browserified](https://github.com/substack/node-browserify)
-dependencies to the browser, retaining the live updating behavior!
+dependencies to the client side, retaining the live updating behavior!
 
   * The `Loader` recursively _reads_ the contents of a directory, and creates 
     `File` and `Directory` objects that correspond to its contents.
@@ -64,7 +64,7 @@ detailed the latter may try to be. Here's a couple of apps you can take for
 a spin to see the magic of Glagol in action:
 
 * The absolute minimum you can mess around with is this [Rock, Paper, Scissors bot](github.com/egasimus/glagol-example).
-  * For a real-world example of a live-editable single-page Web app with
+* For a real-world example of a live-editable single-page Web app, complete with a
     server backend, check out [Bataka, a self-hosted anonymous imageboard](https://github.com/egasimus/bataka)
     that communicates over WebSockets and uploads media to [IPFS, the persistent Interplanetary Filesystem](https://ipfs.io/).
 
@@ -135,6 +135,11 @@ an example fragment from the code of [Etude](https://github.com/egasimus/etude)
 ```
 (/sequencer/pulse (../state/bpm) pulse)
 ```
+
+Using Eslisp with Glagol gives you the elegance of Lisp with the convenience of
+shell scripts. You might want to give it a try - Eslisp's basic syntax maps 1-to-1 to
+JavaScript, but there's also an elegant macro system for making the language just
+how you want it to be.
 
 ## Exploring Glagol
 

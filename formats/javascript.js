@@ -9,7 +9,12 @@ var fs    = require('fs')
   , xtend = require('xtend');
 
 function compile (file) {
-  return file.source;
+  var source = file.source;
+
+  // strip hashbang line
+  if (source[0] === "#") source = source.substring(source.indexOf("\n") + 1);
+
+  return source;
 }
 
 function evaluate (file, context) {
@@ -53,6 +58,8 @@ function globals (file) {
     , require:
         myRequire
     };
+
+  context.global = context;
 
   if (file.parent) {
     var tree = require('../core/tree.js')(file);

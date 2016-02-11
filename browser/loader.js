@@ -1,12 +1,18 @@
 var File      = require('../core/file')
   , Directory = require('../core/directory')
-  , path      = require('path');
+  , path      = require('path')
+  , xtend     = require('xtend');
 
 module.exports = Loader;
 
-function Loader () {
+function Loader (baseOptions) {
 
   if (this instanceof Loader) return Loader();
+
+  baseOptions = baseOptions || {};
+  load.options = xtend({}, baseOptions);
+  load.options.formats = xtend(
+    require('../formats/index.js'), baseOptions.formats);
 
   load.nodes  = {};
   load.update = update;
@@ -28,7 +34,7 @@ function Loader () {
     return load.nodes[name];
 
     function loadDirectory (name, source) {
-      var node = Directory(path.basename(name));
+      var node = Directory(path.basename(name), load.options);
       Object.keys(source).map(function (id) {
         node.add(load(path.join(name, id), source[id]));
       });
@@ -36,7 +42,7 @@ function Loader () {
     }
 
     function loadFile (name, source) {
-      return File(path.basename(name), source);
+      return File(path.basename(name), xtend(load.options, { source: source }));
     }
   }
 

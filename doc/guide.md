@@ -9,9 +9,12 @@ with the basics.
 ## Overview
 
 Glagol works by creating an in-memory model of a directory tree, made out of
-simple `File` and `Directory` models; which you can create manually in your
-code, or you can use a `Loader` to instantiate a whole lot of them out of an
-actual directory on your filesystem, in one go.
+simple `File` and `Directory` models. You can create these manually in your
+code, or you can use the provided `Loader` to instantiate a whole lot of them
+in one go, populate them from some directory on your filesystem, and update
+them as you edit the source files. And, by using [Glagol-Web](https://github.com/egasimus/glagol-web),
+you can quickly set up a server that delivers pre-compiled Glagol bundles with [browserified](https://github.com/substack/node-browserify)
+dependencies to the browser, retaining the live updating behavior!
 
   * The `Loader` recursively _reads_ the contents of a directory, and creates 
     `File` and `Directory` objects that correspond to its contents.
@@ -54,7 +57,114 @@ include retrieving up-to-date metadata from a library of media files, or
 automatically restarting system services whenever their configuration files
 change.
 
+## Example applications
+
+A concrete example can often go further than an abstract explanation, however
+detailed the latter may try to be. Here's a couple of apps you can take for
+a spin to see the magic of Glagol in action:
+
+* The absolute minimum you can mess around with is this [Rock, Paper, Scissors bot](github.com/egasimus/glagol-example).
+  * For a real-world example of a live-editable single-page Web app with
+    server backend, check out [Bataka, a self-hosted anonymous imageboard](https://github.com/egasimus/bataka)
+    that communicates over WebSockets and uploads media to [IPFS, the persistent Interplanetary Filesystem](https://ipfs.io/).
+
+## Building your application with Glagol
+
+### Launching
+
+A simple bootstrap script that launches `src/main.js` can look like this:
+
+```js
+#!/usr/bin/env node
+glagol = require('glagol')
+path = require('path')
+app = glagol(path.resolve(__dirname, 'src'))
+app.main()
+```
+
+or, more concisely:
+
+```js
+#!/usr/bin/env node
+require('glagol')(require('path').resolve(__dirname, 'src'))().main()
+```
+
+or, if you don't mind Glagol picking up files in your project's root directory
+(such as `package.json`, or the launcher itself):
+
+```js
+#!/usr/bin/env node
+require('glagol')(__dirname).main()
+```
+
+or you can even combine:
+
+```js
+#!/usr/bin/env node
+!Glagol
+  ? require('glagol')(__dirname).nodes[__filename]()
+  : (function () { /* your app starts here */ })()
+```
+
+### Globals
+
+When a piece of JavaScript code is evaluated by Glagol, it can access the following
+global variables:
+
+* `Glagol`: the root `Directory` (or `File`) object of the current Glagol instance
+    (i.e. the value of `app` in the first bootstrapping example above)
+* `$`: the _value_ of that root `Directory`
+* `_`: the value of the _parent_ `Directory` of the current `File`
+* `__`: the value of the parent's parent.
+
+The value of a `Directory` is a _collection of getters_ named after each item
+contained in that directory. Accessing one of these for the first time evaluates
+the corresponding file and gives you the result; subsequent accesses return the
+same value until the file is _changed_ (or explicitly _reset_), at which point
+it is re-evaluated.
+
+Astute readers might find a correspondence between `$` `_` `__` and the familiar
+`/` `./` `../` path fragments. Indeed, in [Eslisp](https://github.com/anko/eslisp)
+(and originally in [Wisp](https://github.com/Gozala/wisp), where Glagol's roots
+are, though that implementation went nowhere) they are accessible as just that;
+an example fragment from the code of [Etude](https://github.com/egasimus/etude)
+goes: `(/sequencer/pulse (../state/bpm) pulse)`.
+
 ## Exploring Glagol
+
+### Loader
+
+For the majority of use cases, a `Loader` serves as the entry point to Glagol.
+`File` and `Directory`, Glagol's principal building blocks, are not named so
+for lack of imagination. Thanks to the `Loader`, a whole fleet of `File` and
+`Directory` objects can be created from a directory on your hard drive, and
+then automatically kept up to date.
+
+Calling `require('glagol')` returns a `Loader` instance, a.k.a. `[Function: load]`.
+You can call pass it a path on your filesystem, and it will return a `Directory`
+or `File` object.
+
+It has three extra properties that will not be present on any subsequent
+`Loader` instances that you may create: these are references to the `File`,
+`Directory`, and `Loader` _factories_.
+
+### A quick note on the usage of Function-based objects
+
+One nice thing that JavaScript actually lets you do is augment a `Function`
+object with custom properties, and treat it just like you would treat any other
+`Object`. (The converse, however, seems impossible: you can't make a callable
+object unless you start out with a `Function`. Or I haven't been able to,
+anyway.)
+
+Glagol uses this pattern for `File`, `Directory`, and `Loader` objects. Each of
+these has some principal purpose which is triggered by calling it as a function,
+and also has a host of options that describe it and/or change its behavior.
+
+When you go down that road, though, you have to give up JavaScript's prototypal
+inheritance: your function-like objects are forever stuck with the prototype of
+a `Function`, otherwise they're not callable any more. This is why `File` itself
+is actually a _factory_ rather than a _constructor_: i.e. `new File()` throws an
+error message, and `hello instanceof File` returns `false`.
 
 ### Files
 
@@ -69,7 +179,7 @@ Having installed Glagol with `npm install glagol`, run `node` and type:
   /* .. lots of stuff ... */ }
 ```
 
-Having called upon the `File` _factory function_, you now have a `hello`
+Having called upon the `File` factory function, you now have a `hello`
 variable containing a `File` object. It thinks it's a function named
 `hello-world.js` (good luck naming a function like that!), and contains a bit
 of unevaluated JavaScript source code - the text of that timeless classic,
@@ -148,23 +258,6 @@ Hi again!
 Note that the new `hello.source` is wrapped in an [IIFE (immediately-invoked function expression)](https://en.wikipedia.org/wiki/Immediately-invoked_function_expression)
 so that the side effects are now completely separate from the returned value.
 
-#### A note on the usage of Function-based objects
-
-Again, how come `File` objects think they're functions? Because they are. But
-isn't that kind of weird? Maybe. One nice thing that JavaScript actually lets
-you do is augment a `Function` object with custom properties, just like you
-would treat any other `Object`. The converse, however, seems impossible: you
-can't make a callable object unless you start out with a `Function`. (Or I
-haven't been able to, anyway.)
-
-When you go down that road, though, you have to give up JavaScript's prototypal
-inheritance: your function-like objects are forever stuck with the prototype of
-a `Function`, otherwise they're not callable any more. This is why `File` itself
-is actually a _factory_ rather than a _constructor_: `new File()`
-throws an error message; and `hello instanceof File` returns `false`.
-
-The same holds true for the rest of Glagol's facilities.
-
 #### Type checking
 
 So if you need to check whether some object is a `File`, use `File.is`:
@@ -241,49 +334,3 @@ To remove a `File` from a `Directory`, pass it or its name to `delete`:
 ```
 > root.delete(hello)
 ```
-
-## Building an actual program
-
-Having introduced the primitives of Glagol, it is time to look at an example
-program. You could write it as 6 files and 2 directories, and use the `Loader`,
-or you could just paste it into your Node.js session.
-
-```js
-root = Directory()
-
-choices = Directory("choices")
-rock = File("rock", "Rock")
-paper = File("paper", "Paper")
-scissors = File("scissors", "Scissors")
-root.add(choices.add(rock).add(paper).add(scissors))
-
-delay = File("delay", "1000")
-tick = File("tick.js", "(function () {                                    \
-  var choice = Math.floor(Math.random() * Object.keys(_.choices).length); \
-  console.log(_.choices[choice]);                                         \
-})")
-start = File("start.js", "(function () { \
-  var x = setTimeout(function tick () {  \
-    _.tick();                            \
-    x = setTimeout(_.tick, _.delay);     \
-  });                                    \
-  return function stop () {              \
-    clearTimeout(x)                      \
-  }                                      \
-})")
-root.add(start).add(tick).add(delay);
-
-stop = root().start()
-```
-
-Once started, this simple rock-paper-scissors bot will print a random value
-every 1000 milliseconds. At any moment, you can set the `source` of `delay`,
-`tick`, or any of the `choices`, as well as add and remove new choices, and
-see the results as soon as the next `setTimeout` is executed.
-
-## Loader
-
-Files and Directories, Glagol's principal building blocks, are not named so
-for lack of imagination. Thanks to the `Loader`, a whole fleet of `File` and
-`Directory` objects can be created from a directory on your hard drive, and
-then automatically kept up to date.

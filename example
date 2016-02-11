@@ -1,5 +1,0 @@
-#!/usr/bin/env node
-app = require('glagol')(__dirname);
-console.log(app);
-stop = app().start();
-

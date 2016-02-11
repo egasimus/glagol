@@ -1,6 +1,6 @@
 var path    = require('path')
   , vm      = require('vm')
-  , xtend   = require('xtend')
+  , xtend   = require('xtend');
 
 var File = module.exports = function File () {
 
@@ -26,7 +26,7 @@ var File = module.exports = function File () {
   } else {
     name = arguments[0] || '';
     if (typeof arguments[1] === 'string') {
-      options = { source: arguments[1] };
+      options = xtend({ source: arguments[1] }, arguments[2] || {});
     } else {
       options = arguments[1] || {};
     }

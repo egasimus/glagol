@@ -23,7 +23,7 @@
     (if (=== node.path "/style.styl") (block
       (css.parent-element.remove-child css)
       (= css (/lib/insert-css ./style))))
-    (if (=== 0 (node-path.index-of "/templates"))
+    (if (=== 0 (node.path.index-of "/templates"))
       (view.update (/state)))))
 
   (return view))

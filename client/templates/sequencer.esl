@@ -19,26 +19,16 @@
     (var color (?: (=== 2 note.length) ".black" ".white"))
     (keys.push (./h (+ ".sequencer-piano-key" color) note))
     (lanes.push (./h ".sequencer-piano-lane")))
-  (var markers (array
-    (./h ".sequencer-piano-marker-bar")
-    (./h ".sequencer-piano-marker-beat" (object "style" "left:6.25%"))
-    (./h ".sequencer-piano-marker-beat" (object "style" "left:12.5%"))
-    (./h ".sequencer-piano-marker-beat" (object "style" "left:18.75%"))
-    (./h ".sequencer-piano-marker-bar" (object "style" "left:25%"))
-    (./h ".sequencer-piano-marker-beat" (object "style" "left:31.25%"))
-    (./h ".sequencer-piano-marker-beat" (object "style" "left:37.5%"))
-    (./h ".sequencer-piano-marker-beat" (object "style" "left:43.75%"))
-    (./h ".sequencer-piano-marker-bar" (object "style" "left:50%"))
-    (./h ".sequencer-piano-marker-beat" (object "style" "left:56.25%"))
-    (./h ".sequencer-piano-marker-beat" (object "style" "left:62.5%"))
-    (./h ".sequencer-piano-marker-beat" (object "style" "left:68.75%"))
-    (./h ".sequencer-piano-marker-bar" (object "style" "left:75%"))
-    (./h ".sequencer-piano-marker-beat" (object "style" "left:81.25%"))
-    (./h ".sequencer-piano-marker-beat" (object "style" "left:87.5%"))
-    (./h ".sequencer-piano-marker-beat" (object "style" "left:93.75%"))))
+  (var bar-width "25%")
+  (function grid-beat (i) (return (./h ".sequencer-piano-grid-beat"
+    (object "style" (+ "width:25%;left:" (* i 25) "%")))))
+  (function grid-bar (i) (return (./h ".sequencer-piano-grid-bar"
+    (object "style" (+ "width:" bar-width ";left:" (* i 25) "%"))
+    (array (grid-beat 0) (grid-beat 1) (grid-beat 2) (grid-beat 3)))))
+  (var grid (array (grid-bar 0) (grid-bar 1) (grid-bar 2) (grid-bar 3)))
   (var piano-roll (./h ".sequencer-piano" (array
     (./h ".sequencer-piano-keys" keys)
-    (./h ".sequencer-piano-body" (lanes.concat markers)))))
+    (./h ".sequencer-piano-body" (lanes.concat grid)))))
 
   (var steps (./h ".sequencer-steps" (data.seq.map (lambda (val i) (return (./h
     (+ ".sequencer-step"

@@ -4,15 +4,46 @@
     (array "text" "Type"  "Sequencer")
     (array "text" "ID"    data.id)
     (array "step" "Step"  (+ data.step "/" data.seq.length))))
+  (var header (./h ".device-header" (array
+    (./device-label data.label (+ "Sequencer " data.id))
+    (./h ".device-buttons" (array
+      (?: /state/session/sampler (./sequencer-connect data.id) null)
+      (./device-info info))))))
 
-  (return (./h ".device.sequencer" (array
-    (./h ".device-header" (array
-      (./device-label data.label (+ "Sequencer " data.id))
-      (./h ".device-buttons" (array
-        (?: /state/session/sampler (./sequencer-connect data.id) null)
-        (./device-info info)))))
-    (./h ".sequencer-steps" (data.seq.map (lambda (val i) (return (./h
-      (+ ".sequencer-step"
-        (?: (> val 0)         ".active"  "")
-        (?: (=== i data.step) ".current" ""))
-      (object "onclick" (./emit "sequencer.click" data.id i)))))))))))
+  (var notes (array "C" "C#" "D" "D#" "E" "F" "F#" "G" "G#" "A" "A#" "B"))
+
+  (var keys (array))
+  (var lanes (array))
+  (for (var i 0) (< i 12) (++ i)
+    (var note (get notes (% i 12)))
+    (var color (?: (=== 2 note.length) ".black" ".white"))
+    (keys.push (./h (+ ".sequencer-piano-key" color) note))
+    (lanes.push (./h ".sequencer-piano-lane")))
+  (var markers (array
+    (./h ".sequencer-piano-marker-bar")
+    (./h ".sequencer-piano-marker-beat" (object "style" "left:6.25%"))
+    (./h ".sequencer-piano-marker-beat" (object "style" "left:12.5%"))
+    (./h ".sequencer-piano-marker-beat" (object "style" "left:18.75%"))
+    (./h ".sequencer-piano-marker-bar" (object "style" "left:25%"))
+    (./h ".sequencer-piano-marker-beat" (object "style" "left:31.25%"))
+    (./h ".sequencer-piano-marker-beat" (object "style" "left:37.5%"))
+    (./h ".sequencer-piano-marker-beat" (object "style" "left:43.75%"))
+    (./h ".sequencer-piano-marker-bar" (object "style" "left:50%"))
+    (./h ".sequencer-piano-marker-beat" (object "style" "left:56.25%"))
+    (./h ".sequencer-piano-marker-beat" (object "style" "left:62.5%"))
+    (./h ".sequencer-piano-marker-beat" (object "style" "left:68.75%"))
+    (./h ".sequencer-piano-marker-bar" (object "style" "left:75%"))
+    (./h ".sequencer-piano-marker-beat" (object "style" "left:81.25%"))
+    (./h ".sequencer-piano-marker-beat" (object "style" "left:87.5%"))
+    (./h ".sequencer-piano-marker-beat" (object "style" "left:93.75%"))))
+  (var piano-roll (./h ".sequencer-piano" (array
+    (./h ".sequencer-piano-keys" keys)
+    (./h ".sequencer-piano-body" (lanes.concat markers)))))
+
+  (var steps (./h ".sequencer-steps" (data.seq.map (lambda (val i) (return (./h
+    (+ ".sequencer-step"
+      (?: (> val 0)         ".active"  "")
+      (?: (=== i data.step) ".current" ""))
+    (object "onclick" (./emit "sequencer.click" data.id i))))))))
+
+  (return (./h ".device.sequencer" (array header piano-roll steps))))

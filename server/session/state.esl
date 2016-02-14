@@ -1,2 +1,5 @@
-(/lib/riko/M (object))
+(/lib/riko/M (object
+  "title"   "Untitled Session"
+  "version" (.-version (require "../../package.json"))
+  "devices" (array)))
 

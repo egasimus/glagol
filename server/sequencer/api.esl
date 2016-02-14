@@ -2,6 +2,7 @@
 
   "create" (lambda () (return (object
     "id"     (/lib/shortid)
+    "type"   "sequencer"
     "label"  null
     "seq"    (array 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
     "events" (object)

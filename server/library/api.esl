@@ -2,6 +2,7 @@
   "create"
     (lambda () (return (object
       "id"      (/lib/shortid)
+      "type"    "library"
       "target"  null
       "query"   null
       "results" (array))))

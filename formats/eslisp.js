@@ -33,7 +33,7 @@ function glagolify (token) {
     return token;
   }
 
-  if (token.type === "atom" && token.value.indexOf('/') === 0) {
+  if (token.type === "atom" && token.value.indexOf('/') === 0 && token.value.length > 1) {
     return {
       type:     'list',
       location: token.location,

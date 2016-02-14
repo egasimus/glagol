@@ -4,8 +4,15 @@
     "id"     (/lib/shortid)
     "label"  null
     "seq"    (array 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+    "events" (object)
     "step"   0
     "target" (array))))
+
+  "piano" (object
+    "draw" (lambda (id time note)
+      (var sequencer (get /session/state/sequencer id))
+      (var previous (get (sequencer.events) time))
+      (sequencer.events.put time note)))
 
   "set" (lambda (id step value)
     (.seq.put (get /session/state/sequencer id) step value))

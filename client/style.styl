@@ -384,6 +384,12 @@ label > select
   flex-direction row
   overflow-y auto
   border 1px solid black
+  &-note
+    width 6.25%
+    height 10px
+    background orangered
+    background linear-gradient(to bottom, orangered, red)
+    position absolute
   &-keys
     width 30px
     display flex
@@ -428,6 +434,8 @@ label > select
       border-left 1px dotted black
       display flex
       flex-direction column-reverse
+      &:first-child
+        border-left none
     &-lane
       border-top none
       cursor crosshair

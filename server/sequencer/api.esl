@@ -11,8 +11,10 @@
   "piano" (object
     "draw" (lambda (id time note)
       (var sequencer (get /session/state/sequencer id))
-      (var previous (get (sequencer.events) time))
-      (sequencer.events.put time note)))
+      (sequencer.events.put time note))
+    "delete" (lambda (id time note)
+      (var sequencer (get /session/state/sequencer id))
+      (sequencer.events.delete time)))
 
   "set" (lambda (id step value)
     (.seq.put (get /session/state/sequencer id) step value))

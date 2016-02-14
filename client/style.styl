@@ -384,12 +384,20 @@ label > select
   flex-direction row
   overflow-y auto
   border 1px solid black
+  &-body
+    overflow-x auto
+    display flex
+    flex-direction column-reverse
+    flex-grow 1
   &-note
+    position absolute
     width 6.25%
-    height 10px
+    height 12px
     background orangered
     background linear-gradient(to bottom, orangered, red)
-    position absolute
+    cursor pointer
+    z-index 1
+    border-left 2px solid orangered
   &-keys
     width 30px
     display flex
@@ -404,6 +412,7 @@ label > select
     cursor pointer
     font-weight bold
     color #ddd
+    height 12px
     &.white
       background #333
       &:hover
@@ -412,11 +421,6 @@ label > select
       background #080808
       &:hover
         background #181818
-  &-body
-    overflow-x auto
-    display flex
-    flex-direction column-reverse
-    flex-grow 1
   &-lane, &-grid-lane
     width 100%
     height 12px
@@ -431,11 +435,10 @@ label > select
     &-bar
       border-left 1px solid black
     &-beat
-      border-left 1px dotted black
+      border-left 1px solid rgba(0,0,0,0.2)
+      margin-left -1px
       display flex
       flex-direction column-reverse
-      &:first-child
-        border-left none
     &-lane
       border-top none
       cursor crosshair

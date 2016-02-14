@@ -4,32 +4,48 @@
     (array "text" "Type"  "Sequencer")
     (array "text" "ID"    data.id)
     (array "step" "Step"  (+ data.step "/" data.seq.length))))
+
   (var header (/h ".device-header" (array
     (./device/label data.label (+ "Sequencer " data.id))
     (/h ".device-buttons" (array
       (?: /state/session/sampler (./sequencer-connect data.id) null)
       (./device/info info))))))
 
-  (var notes (array "C" "C#" "D" "D#" "E" "F" "F#" "G" "G#" "A" "A#" "B"))
+  (var note-names (array "C" "C#" "D" "D#" "E" "F" "F#" "G" "G#" "A" "A#" "B"))
 
   (var keys (array))
   (var lanes (array))
-  (var lane-notes (array))
-  (.for-each (Object.keys data.events) (lambda (t)
-    (var note (get data.events t))
-    (var notes (= (get lane-notes note) (|| (get lane-notes note) (array))))
-    (var style (+ "left:" (* (/ t 16) 100) "%"))
-    (notes.push (/h ".sequencer-piano-note" (object "style" style)))))
-  (for (var i 0) (< i 12) (++ i)
-    (var note (get notes (% i 12)))
-    (var color (?: (=== 2 note.length) ".black" ".white"))
-    (keys.push (/h (+ ".sequencer-piano-key" color) note))
-    (lanes.push (/h ".sequencer-piano-lane" (get lane-notes i))))
+  (var events (array))
+  (.for-each (Object.keys data.events) add-events)
+  (for (var i 0) (< i 12) (++ i) (add-lane i))
 
   (var bar-width "25%")
 
   (var timeline (array))
   (var grid (array (grid-bar 0) (grid-bar 1) (grid-bar 2) (grid-bar 3)))
+
+  (var piano-roll (/h ".sequencer-piano" (array
+    (/h ".sequencer-piano-timeline" timeline)
+    (/h ".sequencer-piano-keys" keys)
+    (/h ".sequencer-piano-body" (array events grid)))))
+
+  (var steps (/h ".sequencer-steps" (data.seq.map (lambda (val i) (return
+    (/h (+ ".sequencer-step" (?: (> val 0) ".active"  "") (?: (=== i data.step) ".current" ""))
+      (object "onclick" (./emit "sequencer.click" data.id i))))))))
+
+  (return (/h ".device.sequencer" (array header piano-roll)))
+
+  (function add-lane (i)
+    (var note (get note-names (% i 12)))
+    (var color (?: (=== 2 note.length) ".black" ".white"))
+    (keys.push (/h (+ ".sequencer-piano-key" color) note)))
+  (function add-events (t)
+    (var style (+
+      "left:"   (* 100 (/ t 16)) "%;"
+      "bottom:" (* 100 (/ (get data.events t) 12)) "%"))
+    (events.push (/h ".sequencer-piano-note" (object 
+      "style" style
+      "onclick" (./emit "sequencer.piano.delete" data.id t (get data.events t))))))
   (function grid-bar (i) (return (/h ".sequencer-piano-grid-bar"
     (object "style" (+ "width:" bar-width ";left:" (* i 25) "%"))
     (array (grid-beat i 0) (grid-beat i 1) (grid-beat i 2) (grid-beat i 3)))))
@@ -42,17 +58,5 @@
     (beat-lanes.push (/h ".sequencer-piano-grid-lane"
       (object "onclick" (./emit "sequencer.piano.draw" data.id t n)))))
   (function grid-notch (i))
-
-  (var piano-roll (/h ".sequencer-piano" (array
-    (/h ".sequencer-piano-timeline" timeline)
-    (/h ".sequencer-piano-keys" keys)
-    (/h ".sequencer-piano-body" (lanes.concat grid)))))
-
-  (var steps (/h ".sequencer-steps" (data.seq.map (lambda (val i) (return
-    (/h
-      (+ ".sequencer-step"
-        (?: (> val 0)         ".active"  "")
-        (?: (=== i data.step) ".current" ""))
-      (object "onclick" (./emit "sequencer.click" data.id i))))))))
-
-  (return (/h ".device.sequencer" (array header piano-roll))))
+  
+  )

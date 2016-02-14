@@ -51,15 +51,25 @@ label > select
   height 100%
   display flex
   flex-direction column
-  &-device
+  &-device, &-device-add
     line-height 12px
     padding 3px 6px
     text-shadow 0 1px 0 black
     cursor pointer
+  &-device
     &-label
       font-weight bold
     &:hover
       background rgba(0,0,0,0.25)
+  &-device-add
+    font-weight bold
+    border 1px solid rgba(0,0,0,0.3)
+    margin 12px 6px 6px
+    color #ddd
+    &:hover
+      border-color rgba(0,0,0,0.5)
+      background rgba(0,0,0,0.1)
+      color #fff
 
 .main
   flex-grow 1
@@ -95,12 +105,14 @@ label > select
 
 .btngroup
   display flex
-  border 1px solid black
   min-height 30px
 
 .btn
   display inline-block
   padding 2px 5px
+
+  border 1px solid #111
+  margin 6px 0 0 6px
 
   font-weight bold
   color rgba(255,255,255,0.9)
@@ -113,18 +125,11 @@ label > select
   text-shadow 0 1px 0 black
   cursor pointer
 
-  background #202020
+  background transparent
   &.green
     background #009b2a
   &:disabled
     background #303030
-
-  border-top 1px solid rgba(255,255,255,0.1)
-  border-left 1px solid rgba(255,255,255,0.1)
-  border-right 1px solid #111
-  border-bottom none
-  &:last-child
-    border-right none
 
 .prompt
   height  36px
@@ -224,17 +229,9 @@ label > select
 
 .toolbar
   z-index 1
-  padding 6px
+  padding 0
   display flex
   flex-direction column
-
-  &.top
-    & .btngroup
-      background rgba(33,33,33,0.5)
-      width 100%
-      display flex
-      & .btn
-        flex-grow 1
 
   &.bottom
     position fixed

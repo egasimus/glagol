@@ -10,7 +10,7 @@
     (if disabled (= attrs.disabled "disabled"))
     (return (./h selector attrs text)))
 
-  (return (./h ".device.toolbar.top" (array
+  (return (./h ".toolbar" (array
 
     (group
       (btn "rewind"
@@ -26,7 +26,9 @@
       (btn "jack"
         "JACK"   s.jack.started (! s.server))
       (btn "fps"
-        (+ (|| transport.fps "?????") " Hz") false (! s.server))
+        (+ (|| transport.fps "?????") " Hz") false (! s.server)))
+
+    (group
       (btn "bpm"
         (+ (|| transport.bpm "???") " BPM"))
       (btn "meter"

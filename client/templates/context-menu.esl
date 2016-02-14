@@ -6,7 +6,7 @@
       (item (./emit "session.new") "New session")
       (separator)
       (item-device "console"    "Console")
-      (item-device "transport"  "Transport")
+;      (item-device "transport"  "Transport")
       (item-device "sequencer"  "Sequencer")
       (item-device "sampler"    "Sampler")
       (item-device "library"    "Library")

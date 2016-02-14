@@ -287,6 +287,7 @@ label > select
 
   opacity 0.8
   transition 0.2s all
+  z-index 1
   &:hover
     opacity 1
 
@@ -359,17 +360,39 @@ label > select
     &-info
       font-size      16px
 
+      &-icon
+        display block
+
       &-dropdown
         cursor default
         font-size 11px
-        z-index 1
+        z-index 2
         padding 6px 9px
         position absolute
-        right 0
+        right -9px
         background #333
         box-shadow 0 3px 3px black
         display flex
         flex-direction column
+        margin-top 7px
+        border 1px solid black
+        border-radius 3px
+
+        &:before, &:after
+          content ''
+          position absolute
+          bottom 100%
+          right 8px
+          height 9px
+          width 0
+          border-left 9px solid transparent
+          border-right 9px solid transparent
+          pointer-events none
+        &:before
+          border-bottom 9px solid black
+          margin-bottom 1px
+        &:after
+          border-bottom 9px solid #333
 
         &-option
           width 100%

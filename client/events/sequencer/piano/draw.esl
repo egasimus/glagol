@@ -1,0 +1,2 @@
+(lambda (id time note event)
+  (console.log id time note event))

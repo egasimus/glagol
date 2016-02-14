@@ -22,20 +22,23 @@
 
   (var bar-width "25%")
 
-  (function grid-beat (i)
-    (var beat-lanes (array))
-    (for (var j 0) (< j 12) (++ j)
-      (beat-lanes.push (./h ".sequencer-piano-grid-lane")))
-    (return (./h ".sequencer-piano-grid-beat"
-      (object "style" (+ "width:25%;left:" (* i 25) "%")) beat-lanes)))
-
+  (var timeline (array))
+  (var grid (array (grid-bar 0) (grid-bar 1) (grid-bar 2) (grid-bar 3)))
   (function grid-bar (i) (return (./h ".sequencer-piano-grid-bar"
     (object "style" (+ "width:" bar-width ";left:" (* i 25) "%"))
-    (array (grid-beat 0) (grid-beat 1) (grid-beat 2) (grid-beat 3)))))
-
-  (var grid (array (grid-bar 0) (grid-bar 1) (grid-bar 2) (grid-bar 3)))
+    (array (grid-beat i 0) (grid-beat i 1) (grid-beat i 2) (grid-beat i 3)))))
+  (function grid-beat (i j)
+    (var beat-lanes (array))
+    (for (var k 0) (< k 12) (++ k) (grid-beat-lane beat-lanes (+ (* i 4) j) k))
+    (return (./h ".sequencer-piano-grid-beat"
+      (object "style" (+ "width:25%;left:" (* j 25) "%")) beat-lanes)))
+  (function grid-beat-lane (beat-lanes t n)
+    (beat-lanes.push (./h ".sequencer-piano-grid-lane"
+      (object "onclick" (./emit "sequencer.piano.draw" data.id t n)))))
+  (function grid-notch (i))
 
   (var piano-roll (./h ".sequencer-piano" (array
+    (./h ".sequencer-piano-timeline" timeline)
     (./h ".sequencer-piano-keys" keys)
     (./h ".sequencer-piano-body" (lanes.concat grid)))))
 

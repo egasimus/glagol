@@ -1,23 +1,10 @@
-(lambda (s)
-  (var options (object
-    "attributes"    (object "tabindex" 1)
-    "hook"          /lib/vdom/focus-me
-    "onclick"       (./emit "app.click")
-    "oncontextmenu" (./emit "app.contextMenu")))
-  (var elements (array
-    ; (./bar-bottom   s)
-    ; (./launcher     s)
-    ; (./piano)
-    (./session      s)
-    ; (./library      s)
-    (./context-menu s.context-menu)
-  ))
-  (return (./h ".app" options elements)))
-
-;(./h ".app" (object "attributes" (object "tabindex" 1) "hook" /vdom/focus-me)
-;  (array (./toolbar s) (./library s))))
-
-;:onkeydown
-  ;(fn [evt] (log "keydown" evt)
-    ;(Array.prototype.map.call (container.get-elements-by-class-name "sampler")
-      ;(fn [el] (if (= el.dataset.key (String.from-char-code evt.key-code)) (el.click)))))
+(lambda (state)
+  (return (./h ".app" 
+    (object
+      "attributes"    (object "tabindex" 1)
+      "hook"          /lib/vdom/focus-me
+      "onclick"       (./emit "app.click"))
+    (array
+      (./sidebar/sidebar state)
+      (./session state)
+      (./context-menu state.context-menu)))))

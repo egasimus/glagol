@@ -1,0 +1,11 @@
+(lambda (state)
+  (var elements (array))
+
+  (elements.push (../transport (object) state))
+  (.for-each (Object.keys state.session) add-device-to-sidebar)
+
+  (return (/h ".sidebar" elements))
+  
+  (function add-device-to-sidebar (type)
+    (.for-each (Object.keys (get state.session type)) (lambda (id)
+      (elements.push (./device type (get state.session type id)))))))

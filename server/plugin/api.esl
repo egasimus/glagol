@@ -1,0 +1,6 @@
+(object
+  "create" (lambda () (return (object)
+    "id"     (/liv/shortid)
+    "type"   "plugin"
+    "format" null))
+  "list" (lambda (format)))

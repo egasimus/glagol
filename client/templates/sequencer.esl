@@ -23,9 +23,10 @@
 
   (var timeline (array))
   (var grid (array (grid-bar 0) (grid-bar 1) (grid-bar 2) (grid-bar 3)))
+  (for (var i 0) (< i 16) (++ i) (add-notch i))
 
   (var piano-roll (/h ".sequencer-piano" (array
-    (/h ".sequencer-piano-timeline" timeline)
+    ;(/h ".sequencer-piano-timeline" timeline)
     (/h ".sequencer-piano-keys" keys)
     (/h ".sequencer-piano-body" (array events grid)))))
 
@@ -46,6 +47,8 @@
     (events.push (/h ".sequencer-piano-note" (object 
       "style" style
       "onclick" (./emit "sequencer.piano.delete" data.id t (get data.events t))))))
+  (function add-notch (i)
+    (timeline.push (/h ".sequencer-piano-notch" (String i))))
   (function grid-bar (i) (return (/h ".sequencer-piano-grid-bar"
     (object "style" (+ "width:" bar-width ";left:" (* i 25) "%"))
     (array (grid-beat i 0) (grid-beat i 1) (grid-beat i 2) (grid-beat i 3)))))
@@ -57,6 +60,5 @@
   (function grid-beat-lane (beat-lanes t n)
     (beat-lanes.push (/h ".sequencer-piano-grid-lane"
       (object "onclick" (./emit "sequencer.piano.draw" data.id t n)))))
-  (function grid-notch (i))
   
-  )
+)

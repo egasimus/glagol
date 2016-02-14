@@ -1,5 +1,6 @@
-(lambda (data state)
+(lambda (data)
 
+  (var state     (/state))
   (var midi-ins  (array))
   (var midi-outs (array))
 
@@ -18,16 +19,16 @@
     (array "text" "ID"    data.id)))
 
   (function select (label options)
-    (return (./h "div" (./h "label" (array label " " (./h "select"
-      (.concat (array (./h "option" "(none)")) options)))))))
+    (return (/h "div" (/h "label" (array label " " (/h "select"
+      (.concat (array (/h "option" "(none)")) options)))))))
   (function option-port (port)
-    (return (./h "option" (object "value" (get port 0)) (get port 1))))
+    (return (/h "option" (object "value" (get port 0)) (get port 1))))
   (function option-script (script i)
-    (return (./h "option" (object "value" i) script)))
+    (return (/h "option" (object "value" i) script)))
 
-  (return (./h ".device.controller" (array
-    (./h ".device-header" (array
-      (./device-label data.label (+ "Controller " data.id))))
+  (return (/h ".device.controller" (array
+    (/h ".device-header" (array
+      (./device/label data.label (+ "Controller " data.id))))
     (select "Script" (state.controller-scripts.map option-script))
     (select "Input"  (midi-ins.map                 option-port))
     (select "Output" (midi-outs.map                option-port))))))

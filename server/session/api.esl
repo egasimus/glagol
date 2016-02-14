@@ -9,6 +9,6 @@
     (lambda (device-type args)
       (/lib/q/done (/api (+ device-type "/create") args)
         (lambda (device)
-          (console.log "session/add" device-type args)
-          (./state/devices/push device))
+          (console.log "session/add" device.id device-type args)
+          (./state/devices/put device.id device))
         (/lib/error (+ "error adding " device-type " to session")))))

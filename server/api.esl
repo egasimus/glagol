@@ -5,4 +5,5 @@
   "sampler"    ./sampler/api
   "transport"  ./transport/api
   "jack"       ./jack/api
-  "controller" ./controller/api))))
+  "controller" ./controller/api
+  "port"       ./port/api))))

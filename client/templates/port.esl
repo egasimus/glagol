@@ -1,0 +1,15 @@
+(lambda (data)
+  (return (/h ".device.port" (array
+    (/h ".device-header" (array
+      (./device/label data.label (+ "Port " data.id))
+      (/h ".device-buttons"
+        (/h (+ ".device-power" (?: data.alive ".active" ""))
+          (object
+            "onclick" (./emit (?: data.alive "port.kill" "port.spawn") data.id))
+          (?: data.alive "on" "off")))))
+    (/h "div" (/h "label" (array "Direction " (/h "select" (array
+      (/h "option" "Input")
+      (/h "option" "Output"))))))
+    (/h "div" (/h "label" (array "Protocol " (/h "select" (array
+      (/h "option" "JACK MIDI")
+      (/h "option" "JACK Audio"))))))))))

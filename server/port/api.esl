@@ -1,0 +1,7 @@
+(object
+  "create" (lambda () (return (object
+    "id"        (/lib/shortid)
+    "type"      "port"
+    "alive"     false
+    "protocol"  null
+    "direction" null))))

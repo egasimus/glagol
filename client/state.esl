@@ -13,7 +13,7 @@
     (object "x" null "y" null)
 
   "session"
-    (object)
+    (object "devices" (object))
 
   "controllerScripts"
     (array)

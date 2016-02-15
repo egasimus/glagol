@@ -1,4 +1,4 @@
 (lambda (id results)
   (console.log "results" id results)
-  (var library (get /state/session/library id))
+  (var library (get /state/session/devices id))
   (library.results.set results.results))

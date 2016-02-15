@@ -1,9 +1,9 @@
 (object
   "create"
-    (lambda () (return (object
+    (lambda (target) (return (object
       "id"      (/lib/shortid)
       "type"    "library"
-      "target"  null
+      "target"  target
       "query"   null
       "results" (array))))
   "search"

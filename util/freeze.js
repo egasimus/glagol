@@ -2,6 +2,7 @@
 
   var File      = require('glagol/core/file')
     , Directory = require('glagol/core/directory')
+    , error     = require('glagol/core/error')
 
   return function freeze (node) {
 
@@ -14,7 +15,7 @@
       })
       return ice;
     } else {
-      throw Error("can't freeze unknown instance in glagol tree");
+      throw error.FOREIGN_BODY(node);
     }
 
   }

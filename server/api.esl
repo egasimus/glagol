@@ -1,9 +1,7 @@
 ((require "riko-api/server") (lambda () (return (object
-  "session"    ./session/api
-  "library"    ./library/api
-  "sequencer"  ./sequencer/api
-  "sampler"    ./sampler/api
-  "transport"  ./transport/api
-  "jack"       ./jack/api
-  "controller" ./controller/api
-  "port"       ./port/api))))
+  "session" ./session/api
+  "modules" (.reduce (Object.keys /modules)
+    (lambda (api module-name)
+      (= (get api module-name) (get /modules module-name "api"))
+      (return api))
+    (object))))))

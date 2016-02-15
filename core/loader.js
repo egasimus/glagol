@@ -88,7 +88,7 @@ function Loader (baseOptions) {
         var node = loadDirectory(location);
         watcher.add(location);
       } else {
-        throw ERR_UNSUPPORTED(location);
+        throw error.LOADER_UNSUPPORTED(location);
       }
 
       // the JS object that we just created to represent a filesystem node

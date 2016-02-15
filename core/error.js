@@ -20,6 +20,14 @@ defineError("FILE_NOT_FOUND",
     return Error("file not found: " + location)
   })
 
+defineError("LOADER_UNSUPPORTED",
+  "The loader has come across a filesystem object that is neither a file nor" +
+  " a directory",
+  function (location) {
+    return Error(
+      "can't load " + location + " because it's not a file or directory")
+  })
+
 defineError("TREE_NO_PARENT",
   "A Directory tree snapshot is being requested for a File which is not" +
   " added to a Directory.",

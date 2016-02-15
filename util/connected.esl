@@ -22,7 +22,8 @@
 
   (var path (require "path"))
   (function is-tracked (node)
-    (return (routes.some (lambda (route)
+    (return (.some (Object.keys routes) (lambda (id)
+      (var route (get routes id))
       (if route.tracked
         (block
           (if (! node) (return false))

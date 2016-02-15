@@ -65,7 +65,7 @@ function Loader (baseOptions) {
 }
 
 Loader.logAdded = function (node) {
-  var type = node.constructor.name.toLowerCase();
+  var type = node._glagol.type.toLowerCase();
   console.log("%cadded " + type, consoleTag("green"), node.name);
 };
 

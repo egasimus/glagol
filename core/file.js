@@ -1,19 +1,11 @@
-var path    = require('path')
-  , vm      = require('vm')
-  , xtend   = require('xtend');
+var path  = require('path')
+  , vm    = require('vm')
+  , xtend = require('xtend')
+  , error = require('./error');
 
 var File = module.exports = function File () {
 
-  // this looks like a class but is in fact a factory, returning a "callable
-  // object", i.e. a Function with extra properties and bound methods.
-  // if this was a class, the `new` keyword could've been made optional, and
-  // thus its presence or absence effectively ignored. however, since the
-  // return value of a constructor is ignored, this does not work vice-versa.
-  // hence, we throw an exception.
-  if (this instanceof File) {
-    throw new Error("glagol.File is not a constructor. " +
-      " Don't use the `new` operator.");
-  }
+  if (this instanceof File) throw error.NOT_A_CONSTRUCTOR("glagol.File");
 
   // possible signatures:
   //   (options)

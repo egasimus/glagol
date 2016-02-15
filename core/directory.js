@@ -1,12 +1,10 @@
-var path = require('path');
+var path  = require('path')
+  , error = require('./error')
 
 var Directory = module.exports = function Directory () {
 
   // this is a factory (see file.js)
-  if (this instanceof Directory) {
-    throw new Error("glagol.Directory is not a constructor. " +
-      "Don't use the `new` operator. ")
-  }
+  if (this instanceof Directory) throw error.NOT_A_CONSTRUCTOR("glagol.Directory");
 
   // possible signatures:
   //   (options)
@@ -82,9 +80,7 @@ function getRoot () {
 }
 
 function add (node) {
-  if (!node.name) {
-    throw new Error("can't add nameless node to", this.path);
-  }
+  if (!node.name) throw error.ADD_NAMELESS_NODE(this.path);
 
   // TODO check for strange loop
 

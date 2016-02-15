@@ -4,18 +4,15 @@ var fs        = require('fs')
   , glob      = require('glob')
   , colors    = require('colors')
   , xtend     = require('xtend')
-  , File      = require('./file.js')
-  , Directory = require('./directory.js');
+  , File      = require('./file')
+  , Directory = require('./directory')
+  , error     = require('./error');
 
 module.exports = Loader;
 
 function Loader (baseOptions) {
 
-  // this is a factory (see file.js)
-  if (this instanceof Loader) {
-    throw new Error("glagol.Loader is not a constructor. " +
-      "Don't use the `new` operator. ");
-  }
+  if (this instanceof Loader) throw err.NOT_A_CONSTRUCTOR('glagol.Loader');
 
   // global loader options
   baseOptions = baseOptions || {};
@@ -75,7 +72,7 @@ function Loader (baseOptions) {
       location = path.resolve(location);
 
       // missing nodes throw an error, ignored ones just return null
-      if (!fs.existsSync(location)) throw ERR_FILE_NOT_FOUND(location);
+      if (!fs.existsSync(location)) throw error.FILE_NOT_FOUND(location);
       if (!options.filter(location, rootpath)) return null;
 
       // get info about the filesystem node
@@ -249,10 +246,6 @@ function Loader (baseOptions) {
 
   }
 
-}
-
-function ERR_FILE_NOT_FOUND (location) {
-  return Error("file not found: " + location);
 }
 
 Loader.defaults =

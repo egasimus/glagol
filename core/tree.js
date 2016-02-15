@@ -1,5 +1,6 @@
 var File      = require('./file.js')
-  , Directory = require('./directory.js');
+  , Directory = require('./directory.js')
+  , error     = require('./error.js');
 
 var getTree = module.exports = function getTree (node) {
 
@@ -8,7 +9,7 @@ var getTree = module.exports = function getTree (node) {
 
   if (File.is(node)) {
 
-    if (!node.parent) ERR_NO_PARENT(node);
+    if (!node.parent) throw error.TREE_NO_PARENT(node.name);
     return getTree(node.parent);
 
   } else if (Directory.is(node)) {
@@ -30,7 +31,7 @@ var getTree = module.exports = function getTree (node) {
 
     return tree;
 
-  } else throw ERR_UNKNOWN_TYPE(node);
+  } else throw error.TREE_FOREIGN_BODY(node);
 
 };
 
@@ -44,7 +45,7 @@ function getter (node) {
 }
 
 function setter (node, value) {
-  ERR_CANT_SET();
+  throw error.TREE_CAN_NOT_SET(this.path, node);
 }
 
 function translate (name) {
@@ -61,16 +62,4 @@ function addHiddenProperty (obj, id, val) {
     enumerable:   false,
     value:        val
   });
-}
-
-function ERR_NO_PARENT (node) {
-  throw Error("node " + node.name + " is not connected to a tree");
-}
-
-function ERR_UNKNOWN_TYPE (node) {
-  throw Error("foreign body in glagol tree: " + JSON.stringify(node));
-}
-
-function ERR_CANT_SET () {
-  throw Error("setting values of tree nodes is not implemented yet")
 }

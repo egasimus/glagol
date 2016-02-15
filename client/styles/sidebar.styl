@@ -1,0 +1,27 @@
+.sidebar
+  width 240px
+  flex-shrink 0
+  background rgba(0,0,0,0.5)
+  height 100%
+  display flex
+  flex-direction column
+  &-device, &-device-add
+    line-height 12px
+    padding 3px 6px
+    text-shadow 0 1px 0 black
+    cursor pointer
+  &-device
+    &-label
+      font-weight bold
+    &:hover
+      background rgba(0,0,0,0.25)
+  &-device-add
+    font-weight bold
+    border 1px solid rgba(0,0,0,0.3)
+    margin 12px 6px 6px
+    color #ddd
+    &:hover
+      border-color rgba(0,0,0,0.5)
+      background rgba(0,0,0,0.1)
+      color #fff
+

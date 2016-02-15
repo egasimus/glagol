@@ -1,7 +1,7 @@
 (lambda start-main-loop (app)
 
   ; establish connection with api
-  (/connect)
+  (/control "app.connect")
 
   ; insert css first to prevent fouc
   (var css (/lib/insert-css ./style))

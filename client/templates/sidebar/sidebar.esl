@@ -1,7 +1,7 @@
 (lambda (state)
   (var elements (array))
 
-  (elements.push (../transport (object) state))
+  (elements.push (/modules/transport/template (object) state))
   (elements.push (/h "a.sidebar-device-add" "+ add device"))
   (console.log state.session)
   (.for-each (Object.keys state.session.devices) add-device-to-sidebar)

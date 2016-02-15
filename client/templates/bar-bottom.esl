@@ -1,6 +1,0 @@
-(lambda () (return
-  (./h ".toolbar.bottom"
-    (./h "input.prompt#prompt"
-      (object
-        "placeholder" "search ( ͡° ͜ʖ ͡°)"
-        "oninput"     (./emit "search.query"))))))

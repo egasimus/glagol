@@ -1,0 +1,71 @@
+.knob
+  width  24px
+  height 24px
+  border-radius 12px
+  box-shadow 0 3px 3px rgba(0,0,0,0.5)
+  background linear-gradient(to bottom, #333 0%, #222 100%);
+  border-top    1px solid rgba(255,255,255,0.2)
+  border-bottom 1px solid black
+  border-left   none
+  border-right  none
+  position relative
+  &:after
+    content    ''
+    position   absolute
+    top        -1px
+    bottom     70%
+    left       50%
+    width      1px
+    background rgba(255,255,255,0.8)
+
+.btngroup
+  display flex
+  min-height 30px
+
+.btn
+  display inline-block
+  padding 2px 5px
+
+  border 1px solid #111
+  margin 6px 0 0 6px
+
+  font-weight bold
+  color rgba(255,255,255,0.9)
+  &:hover
+    color rgba(255,255,255,1)
+  &:disabled
+    color rgba(180,180,180,0.9)
+    &:hover
+      color rgba(180,180,180,0.9)
+  text-shadow 0 1px 0 black
+  cursor pointer
+
+  background transparent
+  &.green
+    background #009b2a
+  &:disabled
+    background #303030
+
+.prompt
+  height  36px
+  border none
+  background #202020
+  //background rgba(21,22,23,0.6)
+  color white
+
+  font-size 14px
+  border-bottom 2px solid rgba(255,255,255,0.5);
+  outline none
+  text-align center
+
+.overlay
+  z-index 2
+  position absolute
+  top 0
+  left 0
+  right 0
+  bottom 0
+  background rgba(21,22,23,0.8)
+  overflow auto
+
+

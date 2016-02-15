@@ -1,0 +1,65 @@
+* 
+  box-sizing border-box
+  position   relative
+
+body, input, button, table, select
+  font-family Open Sans
+  font-size 11px
+
+body
+  //background url('http://distortedarts.com/wp-content/uploads/2013/03/the-city-rises-1911.jpg')
+  background-color #151617
+  background-image url('/thangka')
+  background-size cover
+  background-position center center
+  color #eee
+  margin 0
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+select, input
+  padding 0 3px
+  background #111
+  color #ddd
+  border 1px solid #000
+  border-radius 2px
+  &:focus
+    outline none
+    border-color #aaa
+
+label
+  font-weight bold
+
+label > select
+  font-weight normal
+
+.main
+  flex-grow 1
+
+.flex
+  display flex
+  &.col
+    flex-direction column
+  &.row
+    flex-direction row
+
+shadowed()
+  box-shadow 0 3px 6px rgba(0,0,0,0.5);
+
+red-button()
+  transition      box-shadow 0.4s
+  padding         6px 12px
+  color           rgba(0,0,0,0.8)
+  cursor          pointer
+  text-align      center
+  display         flex
+  flex-direction  column
+  justify-content space-between
+  background      linear-gradient(to bottom, orangered, red)
+  border-radius   2px
+  border-top      1px solid rgba(255,255,255,0.5)

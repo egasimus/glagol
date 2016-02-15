@@ -28,18 +28,18 @@ defineError("LOADER_UNSUPPORTED",
       "can't load " + location + " because it's not a file or directory")
   })
 
+defineError("FOREIGN_BODY",
+  "An unknown object (i.e. not File or Directory) has been encountered in a" +
+  " Directory tree.",
+  function (node) {
+    return Error("foreign body in tree: " + JSON.stringify(node))
+  })
+
 defineError("TREE_NO_PARENT",
   "A Directory tree snapshot is being requested for a File which is not" +
   " added to a Directory.",
   function (name) {
     return Error("node " + name + " has no parent Directory.")
-  })
-
-defineError("TREE_FOREIGN_BODY",
-  "An unknown object (i.e. not File or Directory) has been added to a" +
-  " Directory tree",
-  function (node) {
-    return Error("foreign body in tree: " + JSON.stringify(node))
   })
 
 defineError("TREE_CAN_NOT_SET",

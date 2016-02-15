@@ -31,7 +31,7 @@ var getTree = module.exports = function getTree (node) {
 
     return tree;
 
-  } else throw error.TREE_FOREIGN_BODY(node);
+  } else throw error.FOREIGN_BODY(node);
 
 };
 

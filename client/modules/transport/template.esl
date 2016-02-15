@@ -1,16 +1,16 @@
 (lambda (transport s)
 
   (function group () (return
-    (./h ".btngroup" (Array.prototype.slice.call arguments))))
+    (/h ".btngroup" (Array.prototype.slice.call arguments))))
 
   (function btn (name text highlighted disabled)
     (var selector (+ "button.btn." name))
     (if (&& highlighted (! disabled)) (+= selector ".green"))
-    (var attrs (object "onclick" (./emit (+ "toolbar." name))))
+    (var attrs (object "onclick" (/emit (+ "toolbar." name))))
     (if disabled (= attrs.disabled "disabled"))
-    (return (./h selector attrs text)))
+    (return (/h selector attrs text)))
 
-  (return (./h ".toolbar" (array
+  (return (/h ".toolbar" (array
 
     (group
       (btn "rewind"
@@ -39,11 +39,11 @@
 
   ))))
 
-;      (./h ".btngroup" (array
-;        (./h ".btn.osc"   "OSC")
-;        (./h ".btn.midi"  "MIDI")
-;        (./h ".btn.kbd"   "KBD")))
-;      (./h ".btngroup" (array
-;        (./h ".btn.cpu"   "CPU")
-;        (./h ".btn.mem"   "RAM")
-;        (./h ".btn.audio" "Audio")))))))
+;      (/h ".btngroup" (array
+;        (/h ".btn.osc"   "OSC")
+;        (/h ".btn.midi"  "MIDI")
+;        (/h ".btn.kbd"   "KBD")))
+;      (/h ".btngroup" (array
+;        (/h ".btn.cpu"   "CPU")
+;        (/h ".btn.mem"   "RAM")
+;        (/h ".btn.audio" "Audio")))))))

@@ -1,6 +1,6 @@
 (lambda (s)
 
-  (var options  (object "oncontextmenu" (./emit "app.contextMenu")))
+  (var options  (object "oncontextmenu" (/emit "app.contextMenu")))
   (var elements (array))
 
   (.map (Object.keys s.session.devices) add-device)
@@ -12,4 +12,4 @@
     ;(.map (Object.keys devices) (lambda (id)
       ;(elements.push ((get /templates device-type) (get devices id) s))))))
 
-  (return (./h ".session" options elements)))
+  (return (/h ".session" options elements)))

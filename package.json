@@ -1,0 +1,19 @@
+{
+  "name": "glagol-eslisp",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Adam Avramov <fallenblood@example.com> (http://github.com/egasimus)",
+  "license": "ISC",
+  "peerDependencies": {
+    "eslisp": "^0.7.0",
+    "glagol": "git://github.com/egasimus/glagol.git"
+  },
+  "dependencies": {
+    "parent-require": "^1.0.0",
+    "xtend": "^4.0.1"
+  }
+}

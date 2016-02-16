@@ -30,36 +30,13 @@ function evaluate (file, context) {
 function globals (file) {
 
   var myPath    = file._sourcePath || file.path
-    , myRequire = require('require-like')(myPath);
-
-  var context =
-    { __dirname:
-        require('path').dirname(myPath)
-    , __filename:
-        myPath
-    , console:
-        console
-    , process:
-        { cwd:      process.cwd
-        , stdin:    process.stdin
-        , stdout:   process.stdout
-        , stderr:   process.stderr
-        , exit:     process.exit
-        , argv:     process.argv
-        , versions: process.versions}
-    , setTimeout:
-        setTimeout
-    , clearTimeout:
-        clearTimeout
-    , setInterval:
-        setInterval
-    , clearInterval:
-        clearInterval
-    , require:
-        myRequire
-    };
+    , myRequire = require('require-like')(myPath)
+    , context   = vm.createContext(global);
 
   context.global = context;
+  context.__filename = myPath;
+  context.__dirname = path.dirname(myPath);
+  context.require = myRequire;
 
   if (file.parent) {
     var tree = require('../core/tree.js')(file);

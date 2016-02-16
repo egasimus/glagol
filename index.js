@@ -2,10 +2,9 @@ module.exports = GlagolEslisp;
 
 function GlagolEslisp (options) {
 
-  var xtend         = require('xtend')
-    , parentRequire = require('parent-require')
-    , javascript    = parentRequire('glagol/formats/javascript')
-    , eslisp        = parentRequire('eslisp');
+  var xtend      = require('xtend')
+    , javascript = require('glagol/formats/javascript')
+    , eslisp     = require('eslisp');
 
   return xtend(javascript, { compile: compile });
 

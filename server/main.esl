@@ -3,11 +3,9 @@
   (var host "0.0.0.0")
   (var port 1620)
 
-  (var server (/web/server host port /routes))
+  (var server (/util/web/server host port /routes))
 
   (server.http.on "listening" (lambda ()
     (console.log "open" (+ host ":" port) "in your browser")))
-;    ((require "opener") (+ "http://" host ":" port))))
 
-  (server.sockets.on "connection" (lambda (socket)
-    (./connect socket))))
+  (server.sockets.on "connection" (lambda (socket) (/util/connect socket))))

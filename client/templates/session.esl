@@ -3,13 +3,8 @@
   (var options  (object "oncontextmenu" (/emit "app.contextMenu")))
   (var elements (array))
 
-  (.map (Object.keys s.session.devices) add-device)
-  
-  (function add-device (id)
+  (.map (Object.keys s.session.devices) (lambda (id)
     (var device (get s.session.devices id))
-    (elements.push ((get /templates device.type) device)))
-    ;(var devices (get s.session device-type))
-    ;(.map (Object.keys devices) (lambda (id)
-      ;(elements.push ((get /templates device-type) (get devices id) s))))))
+    (elements.push ((get /modules device.type "template") device))))
 
   (return (/h ".session" options elements)))

@@ -5,11 +5,7 @@ var resolve =
   , glagol =
       require('glagol')
   , options =
-      { eslisp:
-        { transform:
-          [ require('eslisp-dotify')
-          , require('eslisp-camelify')
-          , require('eslisp-propertify') ] } }
+      { formats: { '.esl': require('../server/util/eslisp.js') } }
   , app =
       glagol(resolve(__dirname, '../server'), options)
   , common =

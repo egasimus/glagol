@@ -1,22 +1,6 @@
 (lambda start-main-loop (app)
 
-  ; establish connection with api
-  (/control "app.connect")
-
-  ; insert css first to prevent fouc
-  (var css (/lib/insert-css ./style))
-
-  ; start vdom main loop
-  (var view (/lib/riko/V /state /templates/app))
-  (= document.body.innerHTML "")
-  (document.body.append-child view.target)
-
-  ; load data from server
-  (/control "session.init")
-  (/control "jack.init")
-  (/control "controller.init")
-
-  ; auto-update
+  ; set up automatic updates
   (Glagol.events.on "changed" (lambda (node)
     (if (=== node.path "/main.esl")
       (window.location.reload))
@@ -25,5 +9,21 @@
       (= css (/lib/insert-css ./style))))
     (if (=== 0 (node.path.index-of "/templates"))
       (view.update (/state)))))
+
+  ; establish connection with api
+  (/control "app.connect")
+
+  ; insert css first to prevent fouc
+  (var css (/lib/insert-css ./styles/style))
+
+  ; start vdom main loop
+  (var view (/lib/riko/V /state /templates/app))
+  (= document.body.innerHTML "")
+  (document.body.append-child view.target)
+
+  ; load data from server
+  (/control "session.init")
+  ;(/control "jack.init")
+  ;(/control "controller.init")
 
   (return view))

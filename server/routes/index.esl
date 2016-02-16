@@ -1,7 +1,4 @@
-(/web/route "/" (/web/app
-  (object "eslisp" (object "transform" (array
-    (require "eslisp-dotify")
-    (require "eslisp-camelify")
-    (require "eslisp-propertify"))))
+(/util/web/route "/" (/util/web/app
+  (object "formats" (object ".esl" /util/eslisp))
   (.resolve (require "path") __dirname "../../client")
   (.resolve (require "path") __dirname "../../common")))

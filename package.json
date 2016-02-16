@@ -21,7 +21,7 @@
     "chokidar": "^1.4.2",
     "colors": "^1.1.2",
     "eventemitter3": "^1.1.1",
-    "glob": "^6.0.0",
+    "glob": "^7.0.0",
     "require-like": "^0.1.2",
     "segfault-handler": "^1.0.0",
     "source-map-support": "^0.4.0",

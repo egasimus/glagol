@@ -1,7 +1,8 @@
 module.exports =
   { compile:  compile
   , evaluate: evaluate
-  , globals:  globals };
+  , globals:  globals
+  , target:   "javascript" };
 
 var fs    = require('fs')
   , path  = require('path')
@@ -48,6 +49,6 @@ function globals (file) {
     context.Glagol = file;
   }
 
-  return vm.createContext(context);
+  return context;
 
 }

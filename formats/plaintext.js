@@ -1,9 +1,9 @@
 module.exports =
   { compile: function compile (file) {
-      // strip trailing newline
-      return file.source.replace(/\n$/, "");
+      return file.source.replace(/\n$/, ""); // strip trailing newline
     }
   , evaluate: function evaluate (file) {
       return file.compiled;
     }
-  , globals: function globals (file) {} };
+  , globals: function globals (file) {}
+  , target: "plaintext" };

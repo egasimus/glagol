@@ -32,7 +32,7 @@ function globals (file) {
 
   var myPath    = file._sourcePath || file.path
     , myRequire = require('require-like')(myPath)
-    , context   = vm.createContext(global);
+    , context   = vm.createContext(xtend(global));
 
   context.global = context;
   context.__filename = myPath;

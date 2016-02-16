@@ -3,8 +3,10 @@
   (try
     ; bundle the client code into a snapshot and get dependency map
     (var app (object
-      "ice"  (/util/freeze client)
-      "deps" (/util/deps client)))
+      "ice"     (/util/freeze client)
+      "deps"    (/util/deps client)
+      "formats" client.options.formats))
+
     (catch e (return (/util/error req res e
       "Error creating initial client snapshot:"))))
 

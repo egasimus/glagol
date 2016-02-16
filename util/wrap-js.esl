@@ -4,7 +4,9 @@
     "utf-8"
     (lambda (err code)
       (if err (throw err))
-      (= code (code.replace "%REQUIRE%" (./just bundle)))
-      (= code (code.replace "%DEPS%"    (./just (JSON.stringify app.deps.deps))))
-      (= code (code.replace "%ICE%"     (./just (JSON.stringify app.ice))))
-      (cb code))))
+      (replace "%REQUIRE%" bundle)
+      (replace "%DEPS%" (JSON.stringify app.deps.deps))
+      (replace "%ICE%" (JSON.stringify app.ice))
+      (replace "%FORMATS%" (./formats app.formats))
+      (cb code)
+      (function replace (key val) (= code (code.replace key (./just val)))))))

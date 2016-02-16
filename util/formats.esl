@@ -1,0 +1,6 @@
+(lambda (formats)
+  (var new-formats
+    (.map (Object.keys formats) (lambda (extension)
+      (var target (.-target (get formats extension)))
+      (return (+ (JSON.stringify extension) ":require('glagol/formats/" target ".js')")))))
+  (return (+ "{" (new-formats.join ",") "}")))

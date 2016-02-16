@@ -1,3 +1,3 @@
 module.exports =
-  { null:         require('./plaintext.js')
-  , '.js':        require('./javascript.js') };
+  { null:  require('../formats/plaintext.js')
+  , '.js': require('../formats/javascript.js') };

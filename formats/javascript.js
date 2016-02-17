@@ -32,9 +32,9 @@ function globals (file) {
 
   var myPath    = file._sourcePath || file.path
     , myRequire = require('require-like')(myPath)
-    , context   = xtend(global);
+    , context   = process.browser ? {} : xtend(global);
 
-  context.global = context;
+  context.global = process.browser ? global : context;
   context.__filename = myPath;
   context.__dirname = path.dirname(myPath);
   context.require = myRequire;

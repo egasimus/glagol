@@ -19,7 +19,7 @@ function compile (file) {
 }
 
 function evaluate (file, context) {
-  var context = context || this.globals(file)
+  var context = vm.createContext(context || this.globals(file))
     , source  = "(function(){return " + file.compiled + "})()"
     , options = { filename: file._sourcePath || file.path }
     , result  = vm.runInContext(source, context, options);
@@ -32,7 +32,7 @@ function globals (file) {
 
   var myPath    = file._sourcePath || file.path
     , myRequire = require('require-like')(myPath)
-    , context   = vm.createContext(xtend(global));
+    , context   = xtend(global);
 
   context.global = context;
   context.__filename = myPath;

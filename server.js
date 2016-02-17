@@ -32,14 +32,13 @@ module.exports = function apiServer (getApi) {
         }
 
         var method = branch[steps[0]];
-        if (isFunction(method)) {
-          win(method.apply(branch, args))
-        } else if (args.length === 0) {
-          win(method)
-        } else {
-          fail("api: " + args.length + " arguments passed, but " +
-            path + " is not a function")
+        if (method === undefined) {
+          fail("api: " + path + " not found")
         }
+        if (!isFunction(method)) {
+          fail("api: " + path + " not a function but " + typeof method)
+        }
+        win(method.apply(branch, args));
       }
 
       function descend (branch, steps) {

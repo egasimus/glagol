@@ -1,4 +1,4 @@
 (/util/web/route "/" (/util/web/app
-  (object "formats" (object ".esl" /util/eslisp))
+  (object "formats" (object ".esl" /util/eslisp ".styl" /util/stylus))
   (.resolve (require "path") __dirname "../../client")
   (.resolve (require "path") __dirname "../../common")))

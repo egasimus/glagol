@@ -4,9 +4,9 @@
   (Glagol.events.on "changed" (lambda (node)
     (if (=== node.path "/main.esl")
       (window.location.reload))
-    (if (=== node.path "/style.styl") (block
+    (if (=== (- node.path.length 5) (node.path.lastIndexOf ".styl")) (block
       (css.parent-element.remove-child css)
-      (= css (/lib/insert-css ./style))))
+      (= css (/lib/insert-css ./styles/index))))
     (if (=== 0 (node.path.index-of "/templates"))
       (view.update (/state)))))
 
@@ -14,7 +14,7 @@
   (/control "app.connect")
 
   ; insert css first to prevent fouc
-  (var css (/lib/insert-css ./styles/style))
+  (var css (/lib/insert-css ./styles/index))
 
   ; start vdom main loop
   (var view (/lib/riko/V /state /templates/app))

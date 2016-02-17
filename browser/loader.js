@@ -24,9 +24,12 @@ function Loader (baseOptions) {
 
   return load;
 
-  function load (name, source) {
-    if (name instanceof Object) return load("/", name);
+  function load (name, source, _options) {
+    if (name instanceof Object) return load("/", name, source);
     if (load.nodes[name]) return update(name, source);
+
+    var options = xtend(load.options, _options);
+    options.formats = xtend(load.options.formats, _options.formats);
 
     var type = source instanceof Object ? loadDirectory : loadFile;
     load.nodes[name] = type(name, source);
@@ -34,15 +37,15 @@ function Loader (baseOptions) {
     return load.nodes[name];
 
     function loadDirectory (name, source) {
-      var node = Directory(path.basename(name), load.options);
+      var node = Directory(path.basename(name), options);
       Object.keys(source).map(function (id) {
-        node.add(load(path.join(name, id), source[id]));
+        node.add(load(path.join(name, id), source[id], options));
       });
       return node;
     }
 
     function loadFile (name, source) {
-      return File(path.basename(name), xtend(load.options, { source: source }));
+      return File(path.basename(name), xtend(options, { source: source }));
     }
   }
 

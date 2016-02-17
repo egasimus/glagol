@@ -1,0 +1,16 @@
+{
+  "name": "glagol-stylus",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Adam Avramov <fallenblood@example.com> (http://github.com/egasimus)",
+  "license": "ISC",
+  "dependencies": {
+    "glagol": "git://github.com/egasimus/glagol.git",
+    "stylus": "^0.53.0",
+    "xtend": "^4.0.1"
+  }
+}

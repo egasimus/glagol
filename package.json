@@ -14,13 +14,14 @@
   "license": "GPL-3.0",
   "dependencies": {
     "dbus-native": "^0.2.0",
-    "eslisp": "^0.7.0",
     "eslisp-camelify": "^0.2.0",
     "eslisp-dotify": "^0.1.2",
     "eslisp-propertify": "^0.2.0",
     "eventemitter2": "^0.4.14",
     "freeport": "^1.0.5",
     "glagol": "git://github.com/egasimus/glagol.git",
+    "glagol-eslisp": "git://github.com/egasimus/glagol-eslisp.git",
+    "glagol-stylus": "git://github.com/egasimus/glagol-stylus.git",
     "glagol-web": "git://github.com/egasimus/glagol-web.git",
     "glob": "^6.0.0",
     "nanotimer": "^0.3.12",
@@ -35,7 +36,6 @@
     "riko-api": "git://github.com/egasimus/riko-api.git",
     "send-data": "^8.0.0",
     "shortid": "^2.2.4",
-    "stylus": "^0.53.0",
     "virtual-dom": "^2.1.1",
     "ws": "^1.0.1"
   },

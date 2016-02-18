@@ -1,6 +1,6 @@
 (lambda (s)
 
-  (var options  (object "oncontextmenu" (/emit /events/app/context-menu)))
+  (var options  (object "oncontextmenu" (/emit /events/context-menu/show)))
   (var elements (array))
 
   (.map (Object.keys s.session.devices) (lambda (id)

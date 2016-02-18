@@ -1,8 +1,14 @@
 (lambda emit (event)
+
+  (if (! (instanceof event Function)) (block
+    (console.error "won't be able to emit" event "(not a function)")
+    (return (lambda ()
+      (console.error "can't emit" event "(not a function)")))))
+
   (var args1 (Array.prototype.slice.call arguments 1))
   (if event.name (Object.define-property emit-event
     "name" (object "name" event.name)))
   (return emit-event)
   (function emit-event ()
     (var args2 (Array.prototype.slice.call arguments 0))
-    (event.apply (args1.concat args2))))
+    (event.apply null (args1.concat args2))))

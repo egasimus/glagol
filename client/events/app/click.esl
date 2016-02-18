@@ -1,2 +1,2 @@
 (lambda ()
-  (../context-menu/close))
+  (../context-menu/hide))

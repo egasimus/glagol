@@ -20,8 +20,10 @@
     
   (function item (command text)
     (return (/h "a"
-      (object "onclick" (lambda () ((/emit "contextMenu.close")) (command)))
+      (object "onclick" (lambda ()
+        ((/emit /events/context-menu/hide))
+        (command)))
       text)))
 
   (function item-device (device text)
-    (return (item (/emit "session.add" device) text))))
+    (return (item (/emit /events/session/add device) text))))

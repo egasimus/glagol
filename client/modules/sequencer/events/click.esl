@@ -1,3 +1,3 @@
 (lambda (sequencer-id step-n)
   (var value (get (/state/session/sequencer) sequencer-id "seq" step-n))
-  (.done (/api "sequencer/set" sequencer-id step-n (- 127 value))))
+  (.done (/api "modules/sequencer/set" sequencer-id step-n (- 127 value))))

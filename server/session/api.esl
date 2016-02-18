@@ -7,7 +7,7 @@
 
   "add"
     (lambda (device-type args)
-      (/lib/q/done (/api (+ device-type "/create") args)
+      (/lib/q/done (/api (+ "modules/" device-type "/create") args)
         (lambda (device)
           (console.log "session/add" device.id device-type args)
           (./state/devices/put device.id device))

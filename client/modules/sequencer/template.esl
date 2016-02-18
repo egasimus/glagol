@@ -6,10 +6,10 @@
     (array "step" "Step"  (+ data.step "/" data.seq.length))))
 
   (var header (/h ".device-header" (array
-    (./device/label data.label (+ "Sequencer " data.id))
+    (/templates/module/label data.label (+ "Sequencer " data.id))
     (/h ".device-buttons" (array
       (?: /state/session/sampler (./sequencer-connect data.id) null)
-      (./device/info info))))))
+      (/templates/module/info info))))))
 
   (var note-names (array "C" "C#" "D" "D#" "E" "F" "F#" "G" "G#" "A" "A#" "B"))
 
@@ -32,7 +32,7 @@
 
   (var steps (/h ".sequencer-steps" (data.seq.map (lambda (val i) (return
     (/h (+ ".sequencer-step" (?: (> val 0) ".active"  "") (?: (=== i data.step) ".current" ""))
-      (object "onclick" (/emit "sequencer.click" data.id i))))))))
+      (object "onclick" (/emit "modules.sequencer.click" data.id i))))))))
 
   (return (/h ".device.sequencer" (array header piano-roll)))
 
@@ -46,7 +46,7 @@
       "bottom:" (* 100 (/ (get data.events t) 12)) "%"))
     (events.push (/h ".sequencer-piano-note" (object 
       "style" style
-      "onclick" (/emit "sequencer.piano.delete" data.id t (get data.events t))))))
+      "onclick" (/emit "modules.sequencer.piano.delete" data.id t (get data.events t))))))
   (function add-notch (i)
     (timeline.push (/h ".sequencer-piano-notch" (String i))))
   (function grid-bar (i) (return (/h ".sequencer-piano-grid-bar"
@@ -59,6 +59,6 @@
       (object "style" (+ "width:25%;left:" (* j 25) "%")) beat-lanes)))
   (function grid-beat-lane (beat-lanes t n)
     (beat-lanes.push (/h ".sequencer-piano-grid-lane"
-      (object "onclick" (/emit "sequencer.piano.draw" data.id t n)))))
+      (object "onclick" (/emit "modules.sequencer.piano.draw" data.id t n)))))
   
 )

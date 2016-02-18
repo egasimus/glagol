@@ -1,5 +1,5 @@
 var path  = require('path')
-  , error = require('./error')
+  , error = require('./error');
 
 var Directory = module.exports = function Directory () {
 
@@ -19,7 +19,11 @@ var Directory = module.exports = function Directory () {
   }
 
   // the core of our directory object
-  function directory () { return require('./tree.js')(directory) }
+  function directory () {
+    if (!directory._cache) directory._cache =
+      require('./tree.js')(directory);
+    return directory._cache;
+  }
 
   // basic info
   Object.defineProperty(directory, "name", { value: name });
@@ -80,7 +84,10 @@ function getRoot () {
 }
 
 function add (node) {
+
   if (!node.name) throw error.ADD_NAMELESS_NODE(this.path);
+
+  delete this._cache;
 
   // TODO check for strange loop
 
@@ -95,19 +102,26 @@ function add (node) {
   this.nodes[node.name] = node;
 
   return this;
+
 }
 
 function remove (nodeOrName) {
   // nodes can be removed either by reference or by name
+
+  delete this._cache;
 
   var name = (typeof nodeOrName === 'string') ? nodeOrName : nodeOrName.name;
   this.nodes[name].parent = null;
   delete this.nodes[name];
 
   return this;
+
 }
 
 function bind () { // TODO nested?
+
+  delete this._cache;
+
   Array.prototype.forEach.call(arguments, function (node) {
     Object.keys(node.nodes).forEach(function (name) {
       this.add(node.nodes[name]);
@@ -115,12 +129,17 @@ function bind () { // TODO nested?
   }, this);
 
   return this;
+
 }
 
 function mount () {
+
+  delete this._cache;
+
   Array.prototype.forEach.call(arguments, this.add.bind(this));
 
   return this;
+
 }
 
 function get (relPath) {

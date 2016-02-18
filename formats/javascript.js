@@ -18,8 +18,8 @@ function compile (file) {
   return source;
 }
 
-function evaluate (file, context) {
-  var context = vm.createContext(context || this.globals(file))
+function evaluate (file, globals) {
+  var context = vm.createContext(globals || this.globals(file))
     , source  = "(function(){return " + file.compiled + "})()"
     , options = { filename: file._sourcePath || file.path }
     , result  = vm.runInContext(source, context, options);
@@ -30,17 +30,16 @@ function evaluate (file, context) {
 
 function globals (file) {
 
-  var myPath    = file._sourcePath || file.path
-    , myRequire = require('require-like')(myPath)
-    , context   = process.browser ? {} : xtend(global);
+  var myPath  = file._sourcePath || file.path
+    , context = process.browser ? {} : xtend(global);
 
-  context.global = process.browser ? global : context;
+  context.global     = process.browser ? global : context;
   context.__filename = myPath;
-  context.__dirname = path.dirname(myPath);
-  context.require = myRequire;
+  context.__dirname  = path.dirname(myPath);
+  context.require    = require('require-like')(myPath);
 
   if (file.parent) {
-    var tree = require('../core/tree.js')(file);
+    var tree = file.parent();
     context._  = tree;
     context.__ = tree.__;
     context.$  = tree.$;

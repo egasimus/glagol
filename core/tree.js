@@ -17,13 +17,11 @@ var getTree = module.exports = function getTree (node) {
     var tree = {};
 
     Object.keys(node.nodes).map(function (name) {
-      Object.defineProperty(tree, translate(name), {
-        configurable: true,
-        enumerable:   true,
-        get: getter.bind(null, node.nodes[name]),
-        set: setter.bind(null, node.nodes[name])
-      });
-    });
+      Object.defineProperty(tree, translate(name),
+        { configurable: true
+        , enumerable:   true
+        , get: getter.bind(node, name)
+        , set: setter.bind(node, name) }); });
 
     addHiddenProperty(tree, '_',  tree);
     addHiddenProperty(tree, '__', node.parent ? getTree(node.parent) : null);
@@ -40,18 +38,18 @@ function getRoot (tree) {
   return tree;
 }
 
-function getter (node) {
-  return node();
+function getter (name) {
+  return this.nodes[name]();
 }
 
-function setter (node, value) {
-  throw error.TREE_CAN_NOT_SET(this.path, node);
+function setter (name, value) {
+  throw error.TREE_CAN_NOT_SET(this.path, name);
 }
 
 function translate (name) {
   // strip extension, replace hyphenated-identifiers with camelCasedOnes
-  if (-1 < name.indexOf('.')) name = name.substr(0, name.lastIndexOf('.'))
-  name = name.replace(/-(.)/g, function (g) { return g[1].toUpperCase() });
+  if (-1 < name.indexOf('.')) name = name.substr(0, name.lastIndexOf('.'));
+  name = name.replace(/-(.)/g, function (g) { return g[1].toUpperCase(); });
 
   return name;
 }

@@ -6,7 +6,8 @@
   (function btn (name text highlighted disabled)
     (var selector (+ "button.btn." name))
     (if (&& highlighted (! disabled)) (+= selector ".green"))
-    (var attrs (object "onclick" (/emit (+ "toolbar." name))))
+    (var attrs (object))
+    (if (get ./events name) (= attrs.onclick (/emit (get ./events name))))
     (if disabled (= attrs.disabled "disabled"))
     (return (/h selector attrs text)))
 

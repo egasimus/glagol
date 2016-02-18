@@ -9,7 +9,7 @@ function GlagolStylus (options) {
   return xtend(plaintext, { compile: compile });
 
   function compile (file) {
-    return stylus.render(file.source, { filename: file.path });
+    return stylus.render(file.source, { filename: file._sourcePath });
   }
 
 }

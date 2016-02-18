@@ -11,7 +11,8 @@
       (view.update (/state)))))
 
   ; establish connection with api
-  (/control "app.connect")
+
+  (/events/app/connect)
 
   ; insert css first to prevent fouc
   (var css (/lib/insert-css ./styles/index))
@@ -22,8 +23,6 @@
   (document.body.append-child view.target)
 
   ; load data from server
-  (/control "session.init")
-  ;(/control "jack.init")
-  ;(/control "controller.init")
+  (/events/session/init)
 
   (return view))

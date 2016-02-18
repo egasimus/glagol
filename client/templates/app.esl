@@ -3,7 +3,7 @@
     (object
       "attributes"    (object "tabindex" 1)
       "hook"          /lib/vdom/focus-me
-      "onclick"       (/emit "app.click"))
+      "onclick"       (/emit /events/app/click))
     (array
       (./sidebar/sidebar state)
       (./session state)

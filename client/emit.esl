@@ -1,1 +1,8 @@
-/control/emit
+(lambda emit (event)
+  (var args1 (Array.prototype.slice.call arguments 1))
+  (if event.name (Object.define-property emit-event
+    "name" (object "name" event.name)))
+  (return emit-event)
+  (function emit-event ()
+    (var args2 (Array.prototype.slice.call arguments 0))
+    (event.apply (args1.concat args2))))

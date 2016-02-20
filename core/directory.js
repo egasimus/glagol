@@ -38,6 +38,7 @@ var Directory = module.exports = function Directory () {
   directory.bind = bind.bind(directory);
   directory.mount = mount.bind(directory);
   directory.get = get.bind(directory);
+  directory.reset = reset.bind(directory);
 
   // magic properties
   Object.defineProperties(directory,
@@ -137,6 +138,19 @@ function mount () {
   delete this._cache;
 
   Array.prototype.forEach.call(arguments, this.add.bind(this));
+
+  return this;
+
+}
+
+function reset () {
+
+  delete this._cache;
+
+  var nodes = this.nodes;
+  Object.keys(nodes).forEach(function (id) {
+    nodes[id].reset();
+  });
 
   return this;
 

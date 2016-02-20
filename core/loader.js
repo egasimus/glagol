@@ -51,6 +51,7 @@ function Loader (baseOptions) {
     if (nodes[rootpath]) return nodes[rootpath];
 
     // extend loader defaults with any user overrides for this load operation
+    _options = _options || {};
     var options = require('xtend')(load.options, _options);
     options.formats = require('xtend')(load.options.formats, _options.formats);
 

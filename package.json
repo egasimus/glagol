@@ -1,0 +1,20 @@
+{
+  "name": "glagol-web-client",
+  "version": "0.0.0",
+  "description": "Boilerplate for single-page browser app with Glagol",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/egasimus/glagol-web-client.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Adam Avramov <fallenblood@example.com> (http://github.com/egasimus)",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "q": "^1.4.1",
+    "q-connection": "^0.6.1",
+    "riko-api": "git://github.co/egasimus/riko-api.git",
+    "riko-mvc": "git://github.co/egasimus/riko-mvc.git"
+  }
+}

@@ -1,6 +1,5 @@
-; we need a separate persistent loader to keep track of
-; updates to client-side code; which are then propagated
-; to the browser via socket
+; persistent loader that only keeps track of client-side code;
+; updates to which are propagated to the browser via socket
+; for now, this is library-wide, so only works for single app
 
-(require "glagol")
-;(.Loader (require "glagol"))
+(.Loader (require "glagol"))

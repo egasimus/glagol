@@ -17,9 +17,15 @@
   socket.onmessage = function (msg) {
     var data = JSON.parse(msg.data);
     switch (data.event) {
-      case "glagol.added":   loader(data.path, data.value);        break;
-      case "glagol.changed": loader.update(data.path, data.value); break;
-      case "glagol.removed": loader.remove(data.path);             break;
+      case "glagol.added":
+        loader.add(data.path, data.value);
+        break;
+      case "glagol.changed":
+        loader.update(data.path, data.value);
+        break;
+      case "glagol.removed":
+        loader.remove(data.path);
+        break;
     }
   }
 

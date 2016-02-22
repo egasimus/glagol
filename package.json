@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "browser": {
-    "index.js": "./browser/index.js",
-    "./formats/index.js": "./browser/formats.js",
+    "./core/loader.js": "./browser/loader.js",
     "require-like": "./browser/require.js",
     "vm": "./browser/vm.js"
   },

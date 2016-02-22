@@ -20,8 +20,7 @@ var Directory = module.exports = function Directory () {
 
   // the core of our directory object
   function directory () {
-    if (!directory._cache) directory._cache =
-      require('./tree.js')(directory);
+    if (!directory._cache) directory._cache = require('./tree.js')(directory);
     return directory._cache;
   }
 

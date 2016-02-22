@@ -34,7 +34,7 @@ function glagol () {
 glagol.Loader    = require('./core/loader.js');
 glagol.File      = require('./core/file.js');
 glagol.Directory = require('./core/directory.js');
-glagol.ERROR     = require('./core/error.js');
+glagol.Error     = require('./core/error.js');
 
 if (process.browser) {
   glagol.require = require('./browser/require.js');

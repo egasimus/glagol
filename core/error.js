@@ -1,4 +1,4 @@
-module.exports = { define: defineError }
+module.exports = defineError;
 
 defineError("NOT_A_CONSTRUCTOR",
   "An object factory (e.g. File, Directory, Loader) is being" +
@@ -55,8 +55,9 @@ function defineError (code, description, callback) {
     error.description = errorFactory.description;
     return error;
   }
-  Object.defineProperty(errorFactory, "name", { value: code })
+  Object.defineProperty(errorFactory, "name", { value: code });
   errorFactory.code = code;
   errorFactory.description = description;
   module.exports[code] = errorFactory;
+  return errorFactory;
 }

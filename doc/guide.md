@@ -113,8 +113,8 @@ It even fits in 80 characters!
 When a piece of JavaScript code is evaluated by Glagol, it is given access to
 the following global variables:
 
-* `Glagol`: the root `Directory` (or `File`) object of the current Glagol instance
-    (i.e. the value of `app` in the first bootstrapping example above)
+* `Glagol`: the root `Directory` (or `File`) object of the current Glagol
+  instance (i.e. the value of `app` in the first bootstrapping example above)
 * `$`: the _value_ of that root `Directory`
 * `_`: the value of the _parent_ `Directory` of the current `File`
 * `__`: the value of the parent's parent.
@@ -148,69 +148,112 @@ a good intuition about how it works. They assume you've started a Node.js REPL
 (interactive interpreter) in a location where `require('glagol')` will be able
 to find Glagol.
 
-### Loader
+#### A quick note on callable objects, and factories
 
-For the majority of use cases, a `Loader` serves as the entry point to Glagol.
-`File` and `Directory`, Glagol's principal building blocks, are not named so
-for lack of imagination. Thanks to the `Loader`, a whole fleet of `File` and
-`Directory` objects can be created from a directory on your hard drive, and
-then automatically kept up to date.
+The _callable object_ (a standard JavaScript `Function` augmented with custom
+properties) is a pattern that is used extensively by Glagol. A callable object
+has a principal action that is triggered by calling it as a function; but at
+the same time it contains references to options or related objects.
 
-Calling `require('glagol')` returns a `Loader` instance, a.k.a. `[Function: load]`.
-You can call pass it a path on your filesystem, and it will return a `Directory`
-or `File` object. It also takes a second argument - an options object which
-can be used to temporarily override the `Loader` defaults.
+There's one catch: such an object can not be created by JavaScript's standard
+prototypal inheritance (i.e. constructors, prototypes, and the `new` keyword).
+Instead, it must be created by starting with a `Function` and then adding
+properties to it one by one. That's where _factories_ come in.
+
+A factory is similar to a _constructor_; both return a new object of some kind.
+A factory, however, can not be called with the `new` keyword, and thus:
+
+* can not be used with the `instanceof` operator (always returning `false`)
+* objects created by the factory do not share a common _prototype_.
+
+(To do type checking for `File` and `Directory` objects, the `File.is(...)`
+and `Directory.is(...)` functions are provided.)
+
+Calling `require('glagol')` returns the first such object that you will
+encounter, the humble `[Function: glagol]`. It has the properties `Loader`,
+`File`, `Directory`, and `Error`, which are also callable objects; and
+(unlike their parent object) they also serve as _factories_.
+
+The individual objects returned by the `Loader`, `File`, `Directory`, and
+`Error` factories are also, in turn, callable objects; and these can not be
+created by JavaScript's standard prototypal inheritance facilities (i.e.
+constructors, prototypes, and the `new` keyword), but only in a factory -
+which creates `Function` then adds properties to it like a plain object.
+
+### Root
+
+Calling `require('glagol')` gives you this callable object:
 
 ```js
 > glagol = require('glagol')
 { [Function: load]
-  /* ... */
+  Loader: { [Function: Loader] ... }
   File: { [Function: File] ... }
   Directory: { [Function: Directory] ... }
-  Loader: { [Function: Loader] ... } }
+  Error: { [Function: defineError] } }
+```
+
+`glagol.Loader`, `glagol.File`, `glagol.Directory`, and `glagol.Error` are also
+callable objects. Unlike their parent (which has a special purpose of its own),
+they are also factories: calling them returns another level of callable objects
+that are Glagol's actual building blocks. Care should be made to distinguish
+between a factory, and the _instances_ that it returns:
+
+* calling _the_ `Loader` _factory_ returns _a_ `Loader` _instance_ (a `Loader`)
+* calling _a_ `Loader` loads stuff from disk and returns a `File` or `Directory`
+
+`glagol` is a shorthand function which does one of the above depending on the
+arguments that are passed to it.
+
+* calling `glagol(options:Object)` sets `glagol.defaultLoader` to a new
+  `Loader` instance, and returns that `Loader` for subsequent use. You can use
+  this at the start of your application, when you want to pass a set of options
+  to a global Glagol instance. Subsequent calls to this form of `glagol` just
+  return the value of `glagol.defaultLoader`, ignoring any extra options.
+* calling `glagol(source:String)` or `glagol(source, options:Object)` passes
+  on the arguments to that same `glagol.defaultLoader`, returning the resulting
+  `Directory` or `File`. If the default loader has not been created yet, it is
+  created, and the options are passed to it as global defaults. The value of
+  the `options` arguments in subsequent calls to this form of `glagol` are used
+  as temporary overrides.
+
+### Loader
+
+For the majority of use cases, a `Loader` serves as the entry point to Glagol.
+It is the `Loader` that reads your source code from the filesystem in one fell
+swoop, creates a whole fleet of `File` and `Directory` objects that represent
+your program's structure, and then automatically keeps them up to date as you
+edit the source code.
+
+If you need to create a new `Loader` instance that is separate from the default
+one (usually when you want to monitor something other than your program code
+with Glagol, and need a different set of options) you can get one from the
+`Loader` factory:
+
+```js
+> loadData = glagol.Loader({ /* options */ })
+{ [Function: load]
+  /* .... */ }
+```
+
+The signature of `[Function: load]` is identical to the second form of
+`[Function: glagol]`:
+
+* `source` is a path on your filesystem, which is used as the starting point
+  for the loading operation; if it points to a directory, it is recursively
+  loaded into a tree of `File` and `Directory` objects; if it points to a file,
+  you get a solo `File` object.
+* `options` can be used to pass temporary overrides to the `Loader`'s initial
+  options (which are stored in `load.options`).
+
 > glagol('.')
 { [Function: <name of your current working directory> ]
   /* ... */ }
 ```
 
-Since `require('glagol')` is the entry point to the Glagol library, it provides
-three extra properties that will not be present on any subsequent `Loader` instances
-that you may create: these are references to the `File`, `Directory`, and `Loader`
-_factories_.
-
-If you need to create a new `Loader` instance that is separate from the default one
-(perhaps you want to monitor something other than your program code with Glagol, and
-need a different set of options) you can do that by calling the `Loader` factory:
-
-```js
-> loadData = glagol.Loader({ /* options */})
-{ [Function: load]
-  /* no File, Directory, or Loader reference */ }
-```
-
-#### A quick note on factories and Function-based objects
-
-One nice thing that JavaScript actually lets you do is augment a `Function`
-object with custom properties, and treat it just like you would treat any other
-`Object`. (The converse, however, seems impossible: you can't make a callable
-object unless you start out with a `Function`. Or I haven't been able to,
-anyway.)
-
-Glagol uses this pattern for `File`, `Directory`, and `Loader` objects. Each of
-these has some principal purpose which is triggered by calling it as a function,
-and also has a host of options that describe it and/or change its behavior.
-
-When you go down that road, though, you have to give up JavaScript's prototypal
-inheritance: your function-like objects are forever stuck with the prototype of
-a `Function`, otherwise they're not callable any more. This is why `File` itself
-is actually a _factory_ rather than a _constructor_: i.e. `new File()` throws an
-error message, and `hello instanceof File` returns `false`.
-
 ### Files
 
 #### Creating
-
-Having installed Glagol with `npm install glagol`, run `node` and type:
 
 ```js
 > File = require('glagol').File

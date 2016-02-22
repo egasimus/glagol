@@ -28,18 +28,20 @@ function Loader (baseOptions) {
     if (name instanceof Object) return load("/", name, source);
     if (load.nodes[name]) return update(name, source);
 
+    _options = _options || {};
     var options = xtend(load.options, _options);
     options.formats = xtend(load.options.formats, _options.formats);
 
-    var type = source instanceof Object ? loadDirectory : loadFile;
-    load.nodes[name] = type(name, source);
-    load.events.emit('added', load.nodes[name]);
-    return load.nodes[name];
+    var type = source instanceof Object ? loadDirectory : loadFile
+      , node = type(name, source);
+    load.nodes[name] = node;
+    return node;
 
     function loadDirectory (name, source) {
       var node = Directory(path.basename(name), options);
       Object.keys(source).map(function (id) {
-        node.add(load(path.join(name, id), source[id], options));
+        var newNode = load(path.join(name, id), source[id], options);
+        node.add(newNode);
       });
       return node;
     }
@@ -49,20 +51,28 @@ function Loader (baseOptions) {
     }
   }
 
+  function add (name, source) {
+    var node = load.nodes[name];
+    if (node) return update(name, source);
+    node = load(name, source);
+    load.events.emit('added', node);
+  }
+
   function update (name, source) {
-    if (!load.nodes[name]) return load(name, source);
-    load.nodes[name].source = source;
-    load.events.emit('changed', load.nodes[name]);
+    var node = load.nodes[name];
+    if (!node) return add(name, source);
+    node.source = source;
+    load.events.emit('changed', node);
   }
 
   function remove (name) {
-    var oldNode = load.nodes[name];
-    if (!oldNode) return;
+    var node = load.nodes[name];
+    if (!node) return;
 
-    var parent = oldNode.parent;
-    if (parent) parent.remove(oldNode);
+    var parent = node.parent;
+    if (parent) parent.remove(node);
     delete load.nodes[name];
-    load.events.emit('removed', oldNode, parent);
+    load.events.emit('removed', node, parent);
   }
 
 }

@@ -2,9 +2,9 @@
 
   ; create a server-side glagol instance to keep track of the client code
   ; make one for shared client/server code too, and overlay it on top
-  (var client (./util/glagol client-path glagol-opts))
-  (if common-path (client.bind (./util/glagol common-path glagol-opts)))
+  (var client (/util/glagol client-path glagol-opts))
+  (if common-path (client.bind (/util/glagol common-path glagol-opts)))
 
-  (function handler (req res) ($.util.bundle client req res))
+  (function handler (req res) (/util/bundle client req res))
   (= handler.tracked client)
   (return handler))

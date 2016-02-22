@@ -1,5 +1,9 @@
 (function () {
 
+  // connection info is stored in app state;
+  // reconnect if state is re-initialized
+  Glagol.nodes['state.js'].events.on('changed', $.util.connect);
+
   // connect to server
   var keepAlive
     , socket = new WebSocket("ws://localhost:1618");
@@ -12,18 +16,6 @@
     $.state.server.set(true)
   };
   $.state.connection.set(require('q-connection')(socket));
-
-  // subscribe to server-side persistence store
-  $.util.q.done($.api("subscribe"),
-    function (data) {
-      var tasks = JSON.parse(data);
-      console.log(tasks);
-      $.state.put("tasks", tasks);
-    },
-    $.util.error("could not subscribe to server"));
-  //var update = $.emit("update");
-  //$.util.q.done($.api("subscribe", update), update,
-    //$.util.error("could not subscribe to server"));
 
   return socket;
 

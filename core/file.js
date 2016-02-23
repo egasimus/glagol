@@ -1,6 +1,6 @@
 var path  = require('path')
-  , vm    = require('vm')
   , xtend = require('xtend')
+  , EE2   = require('eventemitter2').EventEmitter2
   , error = require('./error');
 
 var File = module.exports = function File () {
@@ -32,6 +32,7 @@ var File = module.exports = function File () {
   file.options = options;
   file.parent = options.parent || null;
   file.format = options.format || getFormat(options.formats, name) || null;
+  file.events = new EE2({ maxListeners: 0 })
 
   // bind methods
   file.reset = reset.bind(file);

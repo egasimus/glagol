@@ -173,12 +173,13 @@ function Loader (baseOptions) {
       var node = loadNode(f);
       if (!node) return;
 
-      // if the node's parent directory is already known to this loader,
-      // add the child node to its parent.
+      // automatically add the child node to its parent if already known
       var parent = nodes[path.dirname(f)];
       if (parent) parent.add(node);
 
+      // emit events
       load.events.emit('added', node);
+      if (parent) parent.events.emit('added', node);
     }
 
     function changed (f, s) {
@@ -196,12 +197,12 @@ function Loader (baseOptions) {
         node.source = options.reader(f);
       }
 
-      if (node._justLoaded) {
-        delete node._justLoaded;
-        load.events.emit('added', node);
-      } else {
-        load.events.emit('changed', node);
-      }
+      // first 'changed' event for a node converts to 'added'
+      var eventName = node._justLoaded ? 'added' : 'changed';
+      delete node._justLoaded;
+      load.events.emit(eventName, node);
+      if (eventName === 'changed') node.events.emit('changed', node);
+      if (node.parent) node.parent.events.emit(eventName, node);
     }
 
     function removed (f, s) {
@@ -214,13 +215,16 @@ function Loader (baseOptions) {
       if (!node) return;
 
       // if parent object exists, renounce deleted child
-      var parent = nodes[path.dirname(f)];
+      var parent = node.parent;
       if (parent) parent.remove(node);
 
-      // remove reference to object from this file
+      // remove loader's reference to deleted node
       delete nodes[f];
 
+      // emit events
       load.events.emit('removed', node, parent);
+      node.events.emit('removed', node, parent);
+      if (parent) parent.events.emit('removed', node, parent);
     }
 
     function isChildOf (currentRoot, location) {

@@ -1,4 +1,5 @@
 var path  = require('path')
+  , EE2   = require('eventemitter2').EventEmitter2
   , error = require('./error')
   , File  = require('./file');
 
@@ -31,6 +32,7 @@ var Directory = module.exports = function Directory () {
   directory.nodes = {};
   directory.options = options;
   directory.parent = options.parent || null;
+  directory.events = new EE2({ maxListeners: 0 })
 
   // bind methods
   directory.add = add.bind(directory);

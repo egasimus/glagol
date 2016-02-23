@@ -5,8 +5,8 @@
   document.body.appendChild(view.target);
 
   // update view if templates are edited
-  Glagol.nodes['templates'].events.onAny(function () {
-    view.update($.state()) });
+  Glagol.nodes[$.options.glagolWebClient.templateDirectory].events.onAny(
+    function () { view.update($.state()) });
 
   return view;
 

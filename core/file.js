@@ -36,6 +36,7 @@ var File = module.exports = function File () {
 
   // bind methods
   file.reset = reset.bind(file);
+  file.get = get.bind(file);
 
   // actual values returned by getters are stored here
   file._cache =
@@ -127,6 +128,10 @@ function reset () {
   this._cache.evaluated = false;
   this._cache.value = undefined;
   return this;
+}
+
+function get (location) {
+  return this.parent.get(location);
 }
 
 function getFormat (formats, name) {

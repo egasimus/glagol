@@ -10,7 +10,7 @@ function Loader (baseOptions) {
   if (this instanceof Loader) return Loader();
 
   baseOptions = baseOptions || {};
-  load.options = xtend({}, baseOptions);
+  load.options = xtend({ shorthands: true }, baseOptions);
   load.options.formats = xtend(
     require('../formats/index.js'), baseOptions.formats);
 

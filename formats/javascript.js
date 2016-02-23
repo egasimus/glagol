@@ -30,23 +30,39 @@ function evaluate (file, globals) {
 
 function globals (file) {
 
-  var myPath  = file._sourcePath || file.path
-    , context = process.browser ? {} : xtend(global);
+  var context = process.browser ? {} : xtend(global);
+  context.global = process.browser ? global : context;
+  context.Glagol = file;
+  context.__filename = file._sourcePath || file.path;
+  context.__dirname  = path.dirname(context.__filename);
 
-  context.global     = process.browser ? global : context;
-  context.__filename = myPath;
-  context.__dirname  = path.dirname(myPath);
-  context.require    = require('require-like')(myPath);
+  var localRequire = require('require-like')(context.__filename);
 
   if (file.parent) {
-    var tree = file.parent();
-    context._  = tree;
-    context.__ = tree.__;
-    context.$  = tree.$;
-    context.Glagol = file.parent.root;
+
+    context.require = function require (what) {
+      if (what[0] === '.' || what[0] === '/') {
+        var node = file.parent.get(what);
+        if (node) return node();
+      }
+      return localRequire(what);
+    };
+
+    if (file.options.shorthands) {
+      var tree = file.parent();
+      context._ = tree;
+      context.__ = tree.__;
+      context.$ = tree.$;
+    }
+
   } else {
-    context.Glagol = file;
+
+    context.require = localRequire;
+
   }
+
+  var extra = file.options.globals;
+  context = xtend(context, extra instanceof Function ? extra(file) : extra);
 
   return context;
 

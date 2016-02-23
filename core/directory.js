@@ -127,17 +127,27 @@ function overlay () {
   delete this._cache;
 
   var self = this;
+
   Array.prototype.forEach.call(arguments, function (node) {
+
     Object.keys(node.nodes).forEach(function (name) {
-      var oldNode = self.nodes[name]
-        , newNode = node.nodes[name];
+      overlayOne(node.nodes[name]);
+    });
+
+    node.events.on('added', overlayOne);
+
+    function overlayOne (newNode) {
+      var oldNode = self.nodes[newNode.name];
       if (Directory.is(oldNode) && Directory.is(newNode)) {
         oldNode.overlay(newNode);
       } else {
         if (oldNode) self.remove(oldNode);
         self.add(newNode);
       }
-    });
+
+      console.log(Object.keys(self.nodes))
+    }
+
   });
 
   return this;
@@ -167,15 +177,28 @@ function reset () {
 
 }
 
-function get (relPath) {
-  var node  = this,
-      steps = relPath.split("/");
+function get (location) {
+
+  var current = location[0] === '/' ? this.root : this
+    , steps   = location.split('/');
+
   for (var i = 0; i < steps.length; i++) {
+
     var step = steps[i];
-    if (step === '') continue; // ignore initial and/or multiple slashes
-    if (-1 === Object.keys(node.nodes).indexOf(step)) return null;
-    node = node.nodes[step];
-    if (i < steps.length - 1 && !Directory.is(node)) return null;
+
+    if (step === '' || step === '.') continue; // ignore empty steps
+
+    if (step === '..') {
+      if (!current.parent) return null;
+      current = current.parent;
+    } else {
+      if (-1 === Object.keys(current.nodes).indexOf(step)) return null;
+      current = current.nodes[step];
+      if (i < steps.length - 1 && !Directory.is(current)) return null;
+    }
+
   }
-  return node;
+
+  return current;
+
 }

@@ -6,7 +6,7 @@
 
   // update view if templates are edited
   Glagol.nodes['templates'].events.onAny(function () {
-    $.view.update($.state()) });
+    view.update($.state()) });
 
   return view;
 

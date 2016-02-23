@@ -1,5 +1,6 @@
 var path  = require('path')
-  , error = require('./error');
+  , error = require('./error')
+  , File  = require('./file');
 
 var Directory = module.exports = function Directory () {
 
@@ -34,7 +35,7 @@ var Directory = module.exports = function Directory () {
   // bind methods
   directory.add = add.bind(directory);
   directory.remove = remove.bind(directory);
-  directory.bind = bind.bind(directory);
+  directory.overlay = overlay.bind(directory);
   directory.mount = mount.bind(directory);
   directory.get = get.bind(directory);
   directory.reset = reset.bind(directory);
@@ -62,8 +63,9 @@ var Directory = module.exports = function Directory () {
 };
 
 Directory.is = function (node) {
-  return (node instanceof Directory ||
-    (node._glagol instanceof Object && node._glagol.type === 'Directory'));
+  return node &&
+    node._glagol instanceof Object &&
+    node._glagol.type === 'Directory';
 }
 
 function getPath () {
@@ -118,15 +120,23 @@ function remove (nodeOrName) {
 
 }
 
-function bind () { // TODO nested?
+function overlay () {
 
   delete this._cache;
 
+  var self = this;
   Array.prototype.forEach.call(arguments, function (node) {
     Object.keys(node.nodes).forEach(function (name) {
-      this.add(node.nodes[name]);
-    }, this);
-  }, this);
+      var oldNode = self.nodes[name]
+        , newNode = node.nodes[name];
+      if (Directory.is(oldNode) && Directory.is(newNode)) {
+        oldNode.overlay(newNode);
+      } else {
+        if (oldNode) self.remove(oldNode);
+        self.add(newNode);
+      }
+    });
+  });
 
   return this;
 

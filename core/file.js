@@ -68,7 +68,9 @@ var File = module.exports = function File () {
 };
 
 File.is = function (node) {
-  return node._glagol instanceof Object && node._glagol.type === 'File';
+  return node &&
+    node._glagol instanceof Object &&
+    node._glagol.type === 'File';
 };
 
 function getPath () {

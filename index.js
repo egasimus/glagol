@@ -1,34 +1,9 @@
 //require('segfault-handler').registerHandler("glagol-crash.log");
 module.exports = glagol;
 
-function glagol () {
-
-  // a few different signatures are supported:
-  // (source, options) -> Directory
-  // (source)          -> Directory
-  // (options)         -> Loader
-  var source, options;
-  if (arguments[1]) {
-    source  = arguments[0];
-    options = arguments[1];
-  } else {
-    if ("string" === typeof arguments[0]) {
-      source = arguments[0];
-    } else {
-      options = arguments[0];
-    }
-  }
-
-  if (!glagol.defaultLoader) {
-    glagol.defaultLoader = glagol.Loader(options);
-  }
-
-  if (source) {
-    return glagol.defaultLoader(source, options);
-  } else {
-    return glagol.defaultLoader;
-  }
-
+function glagol (source, options) {
+  glagol.defaultLoader = glagol.defaultLoader || glagol.Loader();
+  return glagol.defaultLoader(source, options);
 }
 
 glagol.Loader    = require('./core/loader.js');

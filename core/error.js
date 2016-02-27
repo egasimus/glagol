@@ -31,8 +31,10 @@ defineError("LOADER_UNSUPPORTED",
 defineError("FOREIGN_BODY",
   "An unknown object (i.e. not File or Directory) has been encountered in a" +
   " Directory tree.",
-  function (node) {
-    return Error("foreign body in tree: " + JSON.stringify(node))
+  function (node, parent) {
+    var text = "foreign body in tree: " + JSON.stringify(node);
+    if (parent) text += " parent: " + parent.path;
+    return Error(text);
   })
 
 defineError("TREE_NO_PARENT",

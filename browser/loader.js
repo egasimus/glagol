@@ -17,7 +17,7 @@ function Loader (baseOptions) {
   load.nodes  = {};
   load.update = update;
   load.remove = remove;
-  load.events = new (require('eventemitter3'))();
+  load.events = new (require('eventemitter2'))();
   load.events.on('added',   Loader.logAdded);
   load.events.on('changed', Loader.logChanged);
   load.events.on('removed', Loader.logRemoved);

@@ -25,7 +25,7 @@ function Loader (baseOptions) {
     require('../formats/index.js'), baseOptions.formats);
 
   // events and logging
-  load.events = new (require('eventemitter3'))();
+  load.events = new (require('eventemitter2'))();
   load.events.on('added',   Loader.defaults.log.added);
   load.events.on('changed', Loader.defaults.log.changed);
   load.events.on('removed', Loader.defaults.log.removed);

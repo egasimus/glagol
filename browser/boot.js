@@ -4,7 +4,7 @@
 
   var loader = require('glagol')
     , app = window.Glagol = loader(ice, { formats: %FORMATS% });
-  Glagol.events = loader.events;
+  Glagol.events = loader.defaultLoader.events;
   loader.require.install(deps, require);
   Glagol.noConflict = function noConflict () {
     delete window.Glagol;

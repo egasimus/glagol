@@ -4,18 +4,18 @@
     , Directory = require('glagol/core/directory')
     , error     = require('glagol/core/error')
 
-  return function freeze (node) {
+  return function freeze (node, parent) {
 
     if (File.is(node)) {
       return node.compiled || "";
     } else if (Directory.is(node)) {
       var ice = {};
       Object.keys(node.nodes).forEach(function (name) {
-        ice[name] = freeze(node.nodes[name]);
+        ice[name] = freeze(node.nodes[name], node);
       })
       return ice;
     } else {
-      throw error.FOREIGN_BODY(node);
+      throw error.FOREIGN_BODY(node, parent);
     }
 
   }

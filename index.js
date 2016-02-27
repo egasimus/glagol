@@ -1,4 +1,3 @@
-//require('segfault-handler').registerHandler("glagol-crash.log");
 module.exports = glagol;
 
 function glagol (source, options) {

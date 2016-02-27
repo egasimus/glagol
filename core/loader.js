@@ -4,6 +4,7 @@ var fs        = require('fs')
   , glob      = require('glob')
   , colors    = require('colors')
   , xtend     = require('xtend')
+  , EE2       = require('eventemitter2').EventEmitter2
   , File      = require('./file')
   , Directory = require('./directory')
   , error     = require('./error');
@@ -25,7 +26,7 @@ function Loader (baseOptions) {
     require('../formats/index.js'), baseOptions.formats);
 
   // events and logging
-  load.events = new (require('eventemitter2'))();
+  load.events = new EE2({ maxListeners: 0 });
   load.events.on('added',   Loader.defaults.log.added);
   load.events.on('changed', Loader.defaults.log.changed);
   load.events.on('removed', Loader.defaults.log.removed);

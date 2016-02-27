@@ -1,7 +1,8 @@
 var File      = require('../core/file')
   , Directory = require('../core/directory')
   , path      = require('path')
-  , xtend     = require('xtend');
+  , xtend     = require('xtend')
+  , EE2       = require('eventemitter2').EventEmitter2;
 
 module.exports = Loader;
 
@@ -17,7 +18,7 @@ function Loader (baseOptions) {
   load.nodes  = {};
   load.update = update;
   load.remove = remove;
-  load.events = new (require('eventemitter2'))();
+  load.events = new EE2();
   load.events.on('added',   Loader.logAdded);
   load.events.on('changed', Loader.logChanged);
   load.events.on('removed', Loader.logRemoved);

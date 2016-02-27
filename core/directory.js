@@ -38,7 +38,6 @@ var Directory = module.exports = function Directory () {
   directory.add = add.bind(directory);
   directory.remove = remove.bind(directory);
   directory.overlay = overlay.bind(directory);
-  directory.mount = mount.bind(directory);
   directory.get = get.bind(directory);
   directory.reset = reset.bind(directory);
 
@@ -149,16 +148,6 @@ function overlay () {
     }
 
   });
-
-  return this;
-
-}
-
-function mount () {
-
-  delete this._cache;
-
-  Array.prototype.forEach.call(arguments, this.add.bind(this));
 
   return this;
 

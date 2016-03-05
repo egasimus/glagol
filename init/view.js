@@ -12,8 +12,7 @@
   document.body.appendChild(view.target);
 
   // update view if templates are edited
-  App.templates.events.onAny(
-    function () { view.update(App.state()()) });
+  App.nodes.templates.events.onAny(function () { view.update(App.state()()) });
 
   return view;
 

@@ -1,0 +1,5 @@
+; persistent loader that only keeps track of client-side code;
+; updates to which are propagated to the browser via socket
+; for now, this is library-wide, so only works for single app
+
+(.Loader (require "glagol"))

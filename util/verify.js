@@ -1,14 +1,15 @@
-(function () {
+(function (App) {
 
   var missing = []
     , expected =
       { templateDirectory: 'directory of virtual-dom templates'
       , stateFile: 'observ-struct instance, pre-populated with initial state'
-      , styleFile: 'stylesheet' };
+      , styleFile: 'stylesheet' 
+      , socketUrl: 'url for websocket connection to server'};
 
   Object.keys(expected).forEach(function (check) {
     var name = $.options.glagolWebClient[check];
-    if (!Glagol.nodes[name]) {
+    if (!Glagol.get(name)) {
       missing.push(check);
       if (missing.length === 1) {
         document.body.innerHTML = "";

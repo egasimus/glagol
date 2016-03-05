@@ -1,0 +1,15 @@
+(lambda (matcher handler)
+
+  (if (=== (typeof matcher) "string") (block
+    (var _matcher matcher)
+    (= matcher (lambda (req) (return (=== req.url _matcher))))))
+  ; TODO (if (instanceof matcher RegExp))
+
+  (function route-handler (req res)
+    (if (matcher req)
+      (block (handler req res) (return true))
+      (return false)))
+
+  (= route-handler.tracked handler.tracked)
+
+  (return route-handler))

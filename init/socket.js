@@ -2,8 +2,8 @@
 
   // reconnect if model or socket is reset
 
-  App.socket.events.once('changed', $.util.connect);
-  App.model.events.once('changed', $.util.connect);
+  App.socket.events.once('changed', _.socket);
+  App.model.events.once('changed', _.socket);
 
   // connect to server
 

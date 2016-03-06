@@ -56,8 +56,7 @@ function Loader (baseOptions) {
 
     // extend loader defaults with any user overrides for this load operation
     _options = _options || {};
-    var options = require('xtend')(load.options, _options);
-    options.formats = require('xtend')(load.options.formats, _options.formats);
+    var options = extend(true, {}, load.options, _options);
 
     // bind watcher callbacks for this root path
     // these keep track of changes to the actual files

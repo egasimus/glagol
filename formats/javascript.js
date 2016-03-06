@@ -4,11 +4,11 @@ module.exports =
   , globals:  globals
   , target:   "javascript" };
 
-var fs     = require('fs')
-  , path   = require('path')
-  , Module = require('module')
-  , vm     = require('vm')
-  , xtend  = require('extend');
+var fs      = require('fs')
+  , path    = require('path')
+  , Module  = require('module')
+  , vm      = require('vm')
+  , extend  = require('extend');
 
 function compile (file) {
   var source = file.source;
@@ -31,7 +31,7 @@ function evaluate (file, globals) {
 
 function globals (file) {
 
-  var context = process.browser ? {} : xtend(global);
+  var context = process.browser ? {} : extend({}, global);
   context.global = process.browser ? global : context;
   context.Glagol = file;
   context.__filename = file._sourcePath || file.path;
@@ -67,7 +67,7 @@ function globals (file) {
   }
 
   var extra = file.options.globals;
-  context = xtend(context, extra instanceof Function ? extra(file) : extra);
+  extend(context, extra instanceof Function ? extra(file) : extra);
 
   return context;
 

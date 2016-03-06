@@ -1,40 +1,114 @@
+# Glagol API documentation
 
-The JavaScript code of each script is executed using `vm.createContext` and
-`vm.runInContext`. Alongside the built-in globals that you automatically get
-in a new `vm` context, the following globals are explicitly made available:
-
-* `__filename`, `__dirname` are self-explanatory.
-* `console` is a reference to the global `console` object.
-* `process` is an object exposing the `argv`, `cwd`, `exit`, `stderr`, `stdin`,
-  `stdout`, `stderr` and `versions` properties of the global `process` object.
-* `setTimeout`, `clearTimeout`, `setInterval`, `clearInterval`
-* `require` is an instance of [require-like](https://github.com/felixge/node-require-like)
-  which resolves `require` calls relative to the script's filename.
-
-For details, see `runtimes/javascript.js` as well as the runtime for your
-language of choice.
+Last update 2016-03-06
 
 ## Loader
 
-The loader takes care of all interaction with the filesystem: it constructs
-instances of `File` and `Directory` based on the contents of the given path,
-and then keeps them up to date with any changes to the underlying filesystem
-objects.
+The loader is what takes care of all interaction with the filesystem: it
+constructs instances of `File` and `Directory` based on the contents of the
+given path, and then keeps them up to date with any changes to the underlying
+filesystem objects.
 
-* `glagol(pathToSomeFile)` returns a `File` instance populated with the
+```
+Loader = require("glagol").Loader
+```
+
+Factory for loaders.
+
+* `Loader.defaults` contains default values for some options.
+* `Loader.defaults.filter(fullpath, rootpath)` is the default filter
+  implementation, which says that `node_modules`, Vim's `swp` and `swo`
+  tempfiles, and any dotfiles, are to be ignored and not loaded.
+* `Loader.defaults.reader(location)` reads the full contents of the file at
+  `location` via `fs.readFileSync`.
+* `Loader.defaults.log` contains references to the default logging callbacks,
+  which print colored text to the console.
+* `Loader.defaults.log.added`,
+* `Loader.defaults.log.changed`, and
+* `Loader.defaults.log.removed`, are references to those same logging callbacks.
+  They can be passed to `loader.events.off(event, cb)` to disable logging after
+  the loader has already been created.
+
+Calling `Loader` returns a loader instance.
+
+```
+loader = Loader([baseOptions])
+```
+
+Where `baseOptions` is an optional object that may contain overrides for the
+following options:
+
+* `baseOptions.filter` (default: `Loader.defaults.filter`) allows you to define
+  custom rules about which files will be ignored by this loader.
+* `baseOptions.reader` (default: `Loader.defaults.reader`) allows file reading
+  behavior for this loader to be customized. Overriding this could allow you to
+  process file contents as it first enters the Glagol pipeline; or mayhap to
+  automatically return lazy proxy objects for large on-disk resources of some
+  type.
+* `baseOptions.log` (default: `true`) *does not* override `Loader.defaults.log`.
+  This is currently a simple Boolean switch which determines whether default log
+  handlers are bound or not; thus, setting it to a falsey value disables logging
+  for this loader.
+* `baseOptions.eager` (default: `true`) determines whether files will be re-read
+  as soon as they have changed, vs. as late as they are requested. Can be set
+  to `false` in order to prevent excessive re-reading of files that change often
+  but are not read much.
+* `baseOptions.shorthands` (default: `true`) is passed down to the `File` and
+  `Directory` instances created by this loader, and determines whether the `$`,
+  `_`, and `__` shorthands will be present when evaluating any JavaScript-based
+  code contained therein.
+* `baseOptions.formats` (default: `require('../formats/index.js')`) extends this
+  loader's format index, allowing you to make Glagol aware of file extensions
+  other than `.js`.
+* `baseOptions` may also contain any overrides for the default `File` and
+  `Directory` objects that are to be propagated to any objects created by this
+  loader.
+
+The loader instance has the following properties.
+
+* `loader.options` contains the current configuration of this loader, as
+  overridden by `baseOptions`. Currently, any changes made in `loader.options`
+  during runtime are only propagated to `File` and `Directory` objects loaded
+  after the changes have been made, but not to any previously loaded objects.
+* `loader.options.formats` (default: `require('../formats/index.js')`) contains
+  an index of file extensions and suitable handlers. Currently, this simply
+  compares the last characters of the filename, and by default only recognizes
+  `.js` files, handling any others as plaintext.
+* `loader.events` is an `EventEmitter2` instance. It emits `added`, `changed`,
+  and `removed` events when the changes to the filesystem have been reflected
+  in Glagol's model of the world.
+* `loader.watcher` is a `Chokidar` instance, which watches to changes in the
+  filesystem structure.
+
+Calling `loader` with the path to a file or directory on your filesystem
+returns a corresponding `File` or `Directory` object.
+
+```
+file = loader('/path/to/file', [options])
+dir = loader('/path/to', [options])
+```
+
+* `loader(pathToSomeFile)` returns a `File` instance populated with the
   contents of that file. The instance's `parent` property defaults to `null`.
-* `glagol(pathToSomeDirectory)` returns a `Directory` instance recursively
+* `loader(pathToSomeDirectory)` returns a `Directory` instance, recursively
   populated with `File` and `Directory` instances that correspond to the
-  full contents of that directory. (For now, a hardcoded exception is being
-  made for anything that has `node_modules` in its name; such files and
-  directories are completely)
+  contents of that directory, as filtered by `loader.filter`...
 
-The value of `options` is simply passed down to each instance.
+...or perhaps by `options.filter`, as the optional `options` argument here
+allows for loader options to be overridden in an even finer granularity, i.e.
+for just that loader call; the `options` passed to any `File` or `Directory`
+created by that call to `loader(...)`, are thus a combination of
+`Loader.defaults`, `baseOptions`, and `options`, with keys in the latter
+ones taking precedence.
 
 ## File
 
 ```
-var File = require('glagol').File
+File = require('glagol').File
+file = File(options)
+file = File(name, options)
+file = File(name, source)
+file = require('glagol').Loader([base_options])('/path/to/file', [options])
 ```
 
 * `File.is(obj)` checks whether `obj` is an instance of `File`, i.e.

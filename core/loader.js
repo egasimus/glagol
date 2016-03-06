@@ -100,6 +100,7 @@ function Loader (baseOptions) {
       // stored into the loader's node cache.
       node._sourcePath = location;
       node._rootPath = rootpath;
+      node._loader = load;
       nodes[location] = node;
 
       // the `_justLoaded` attribute is used once then deleted immediately

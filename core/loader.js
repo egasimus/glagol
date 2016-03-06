@@ -20,6 +20,7 @@ function Loader (baseOptions) {
   load.options = xtend(
     { filter:     Loader.defaults.filter
     , reader:     Loader.defaults.reader
+    , log:        true
     , eager:      true
     , shorthands: true }, baseOptions);
   load.options.formats = xtend(
@@ -27,9 +28,11 @@ function Loader (baseOptions) {
 
   // events and logging
   load.events = new EE2({ maxListeners: 0 });
-  load.events.on('added',   Loader.defaults.log.added);
-  load.events.on('changed', Loader.defaults.log.changed);
-  load.events.on('removed', Loader.defaults.log.removed);
+  if (load.options.log) {
+    load.events.on('added',   Loader.defaults.log.added);
+    load.events.on('changed', Loader.defaults.log.changed);
+    load.events.on('removed', Loader.defaults.log.removed);
+  }
 
   // glagol objects corresponding to loaded filesystem nodes
   // (files, directories, etc.; henceforth: nodes) are stored here

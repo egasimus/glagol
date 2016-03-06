@@ -103,51 +103,66 @@ ones taking precedence.
 
 ## File
 
+A `File` is a container for idempotent pre-processing and lazy evaluation of
+some data from the filesystem. It is usually created automatically from its
+filesystem counterpart by a `Loader` instance.
+
+```
+file = require('glagol').Loader()('/path/to/file')
+file = require('glagol').Loader()('/path/to').get('file');
+```
+
+`File` objects can also be manually created, configured, and populated, via the
+`File` factory, which returns a single `File` instance, and can be called with
+one of several signatures:
+
 ```
 File = require('glagol').File
+file = File()
 file = File(options)
 file = File(name, options)
 file = File(name, source)
-file = require('glagol').Loader([base_options])('/path/to/file', [options])
 ```
 
-* `File.is(obj)` checks whether `obj` is an instance of `File`, i.e.
-  either `obj instanceof File` is `true` *or* `obj._glagol.type` is `"File"`.
+* `File.is(obj)` is a static method which checks whether `obj` is an instance
+  of `File`. Since the factory pattern used here breaks `instanceof` behavior,
+  this is done by checking for the following hidden property in `obj`:
+* `file._glagol` is a non-enumerable property of each `File` instance, which
+  contains a `type` property (equal to the string `"File"`) and optional
+  metadata about the Glagol version which has created it.
 
-```
-var file = File()
-var file = File(options)
-var file = File(name, options)
-var file = File(name, source)
-```
+A `File` instance has the following non-magic attributes.
 
-Using the `new` keyword when instantiating a `File` is optional.
+* `file.options` is the value of `options` as passed to the `File` factory. 
+* `file.format` is the format object for this `File`, determining the specifics
+  of its pre-processing and evaluation. Initially, this is set automatically
+  based on the file's extension and `options.formats`.
+* `file.events` is an `EventEmitter2` instance.
+* `file.parent` is a reference to the `File`'s parent `Directory`, or `null`.
 
-A `File` instance has the following non-magic attributes:
+The following non-magic pseudo-private attributes are also available:
 
-* `file.name`
-* `file.options`
-* `file.parent` is either `null` or points to the parent `Directory`.
-* `file.runtime` points to the runtime for this file. By default, this
-  attribute is set automatically, depending on the filename's extension.
+* `file._cache`
+* `file._sourcePath` is the `File`'s absolute filesystem path, when the `File` 
+when the file has been created by the default filesystem loader.
 
-The following magic attributes work through getters and setters:
+A `File` instance has the following magic attributes (implemented via getters
+and setters), which are automatically populated and (except `file.path`) might
+have side effects:
+
 * `file.path`
 * `file.source`
 * `file.compiled`
 * `file.value`
 
-The following methods are available:
-* `file.load`
-* `file.compile`
-* `file.evaluate`
-* `file.makeContext`
+A `File` instance has the following methods:
 
-The following non-magic attributes are part of the private API:
-* `file._cache`
-* `file._glagol`
-* `file._sourcePath` is set by the loader and contains the absolute path to the
-  source file.
+* `file.reset()`
+* `file.get(relativeVirtualPath)` returns a `File` or `Directory`, relative to
+  this `File` (according to Glagol's in-memory tree, and not the filesystem).
+* `file.mount(relativeHardPath)` links a file or directory in this file's place,
+  by absolute path or relative to this `File`'s location in the underlying
+  filesystem. Being a filesystem-dependent method, it doesn't work in the browser.
 
 ## Directory
 

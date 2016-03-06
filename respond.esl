@@ -1,0 +1,3 @@
+(lambda (routes req res)
+  (if (=== "function" (typeof routes)) (= routes (routes)))
+  (./router routes req res))

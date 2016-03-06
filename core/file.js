@@ -1,7 +1,7 @@
-var path  = require('path')
-  , xtend = require('xtend')
-  , EE2   = require('eventemitter2').EventEmitter2
-  , error = require('./error');
+var path   = require('path')
+  , extend = require('extend')
+  , EE2    = require('eventemitter2').EventEmitter2
+  , error  = require('./error');
 
 var File = module.exports = function File () {
 
@@ -18,7 +18,7 @@ var File = module.exports = function File () {
   } else {
     name = arguments[0] || '';
     if (typeof arguments[1] === 'string') {
-      options = xtend({ source: arguments[1] }, arguments[2] || {});
+      options = extend({ source: arguments[1] }, arguments[2] || {});
     } else {
       options = arguments[1] || {};
     }
@@ -29,9 +29,8 @@ var File = module.exports = function File () {
 
   // basic info
   Object.defineProperty(file, "name", { value: name });
-  file.options = options;
+  file._options = options;
   file.parent = options.parent || null;
-  file.format = options.format || getFormat(options.formats, name) || null;
   file.events = new EE2({ maxListeners: 0 });
 
   // bind methods
@@ -52,6 +51,8 @@ var File = module.exports = function File () {
     , compiled: descriptor(compile)
     , value: descriptor(evaluate)
     , path: descriptor(getPath)
+    , format: descriptor(getFormat)
+    , options: descriptor(getOptions, setOptions)
     , _glagol:
       { configurable: false
       , enumerable:   false
@@ -142,6 +143,24 @@ function mount (target) {
   return this._cache.value;
 }
 
-function getFormat (formats, name) {
-  return formats[path.extname(name)] || formats[null];
+function getFormat () {
+  return this.options.format ||
+    this.options.formats[path.extname(this.name)] ||
+    this.options.formats[null] ||
+    null;
+}
+
+function getOptions () {
+
+  var baseOptions = {};
+  if (this.parent) baseOptions = this.parent.options;
+  return extend(true, baseOptions, this._options);
+
+}
+
+function setOptions (v) {
+
+  this._options = extend(true, this._options, v);
+  return this._options;
+
 }

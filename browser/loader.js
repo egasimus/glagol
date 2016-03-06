@@ -1,7 +1,7 @@
 var File      = require('../core/file')
   , Directory = require('../core/directory')
   , path      = require('path')
-  , xtend     = require('xtend')
+  , xtend     = require('extend')
   , EE2       = require('eventemitter2').EventEmitter2;
 
 module.exports = Loader;
@@ -11,9 +11,9 @@ function Loader (baseOptions) {
   if (this instanceof Loader) return Loader();
 
   baseOptions = baseOptions || {};
-  load.options = xtend({ shorthands: true }, baseOptions);
-  load.options.formats = xtend(
-    require('../formats/index.js'), baseOptions.formats);
+  load.options = extend(true,
+    { shorthands: true
+    , formats: require('../formats/index.js') }, baseOptions);
 
   load.nodes  = {};
   load.update = update;
@@ -30,8 +30,8 @@ function Loader (baseOptions) {
     if (load.nodes[name]) return update(name, source);
 
     _options = _options || {};
-    var options = xtend(load.options, _options);
-    options.formats = xtend(load.options.formats, _options.formats);
+    var options = extend(load.options, _options);
+    options.formats = extend(load.options.formats, _options.formats);
 
     var type = source instanceof Object ? loadDirectory : loadFile
       , node = type(name, source);
@@ -48,7 +48,7 @@ function Loader (baseOptions) {
     }
 
     function loadFile (name, source) {
-      return File(path.basename(name), xtend(options, { source: source }));
+      return File(path.basename(name), extend(options, { source: source }));
     }
   }
 

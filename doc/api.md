@@ -170,8 +170,6 @@ A `File` instance has the following methods:
 var Directory = require('glagol').Directory
 ```
 
-Using the `new` keyword when instantiating a `File` is optional.
-
 * `Directory.is(obj)` checks whether `obj` is an instance of `Directory`, i.e.
   either `obj instanceof Directory` is `true` *or* `obj._glagol.type` is
   `"Directory"`.

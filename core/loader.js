@@ -3,7 +3,7 @@ var fs        = require('fs')
   , chokidar  = require('chokidar')
   , glob      = require('glob')
   , colors    = require('colors')
-  , xtend     = require('xtend')
+  , extend    = require('extend')
   , EE2       = require('eventemitter2').EventEmitter2
   , File      = require('./file')
   , Directory = require('./directory')
@@ -17,14 +17,13 @@ function Loader (baseOptions) {
 
   // global loader options
   baseOptions = baseOptions || {};
-  load.options = xtend(
+  load.options = extend(true,
     { filter:     Loader.defaults.filter
     , reader:     Loader.defaults.reader
     , log:        true
     , eager:      true
-    , shorthands: true }, baseOptions);
-  load.options.formats = xtend(
-    require('../formats/index.js'), baseOptions.formats);
+    , shorthands: true
+    , formats:    require('../formats/index.js') }, baseOptions);
 
   // events and logging
   load.events = new EE2({ maxListeners: 0 });

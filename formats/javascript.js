@@ -8,7 +8,7 @@ var fs     = require('fs')
   , path   = require('path')
   , Module = require('module')
   , vm     = require('vm')
-  , xtend  = require('xtend');
+  , xtend  = require('extend');
 
 function compile (file) {
   var source = file.source;

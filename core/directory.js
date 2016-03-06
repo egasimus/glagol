@@ -1,7 +1,9 @@
-var path  = require('path')
-  , EE2   = require('eventemitter2').EventEmitter2
-  , error = require('./error')
-  , File  = require('./file');
+var path   = require('path')
+  , EE2    = require('eventemitter2').EventEmitter2
+  , extend = require('extend')
+
+var error  = require('./error')
+  , File   = require('./file');
 
 var Directory = module.exports = function Directory () {
 
@@ -30,7 +32,7 @@ var Directory = module.exports = function Directory () {
   Object.defineProperty(directory, "name", { value: name });
   directory.name = name;
   directory.nodes = {};
-  directory.options = options;
+  directory._options = options;
   directory.parent = options.parent || null;
   directory.events = new EE2({ maxListeners: 0 })
 
@@ -45,6 +47,7 @@ var Directory = module.exports = function Directory () {
   Object.defineProperties(directory,
     { path: descriptor(getPath)
     , root: descriptor(getRoot)
+    , options: descriptor(getOptions, setOptions)
     , _glagol: // hidden metadata for duck typing
       { configurable: false
       , enumerable:   false
@@ -189,5 +192,20 @@ function get (location) {
   }
 
   return current;
+
+}
+
+function getOptions () {
+
+  var baseOptions = {};
+  if (this.parent) baseOptions = this.parent.options;
+  return extend(true, baseOptions, this._options);
+
+}
+
+function setOptions (v) {
+
+  this._options = extend(true, this._options, v);
+  return this._options;
 
 }

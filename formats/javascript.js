@@ -4,10 +4,11 @@ module.exports =
   , globals:  globals
   , target:   "javascript" };
 
-var fs    = require('fs')
-  , path  = require('path')
-  , vm    = require('vm')
-  , xtend = require('xtend');
+var fs     = require('fs')
+  , path   = require('path')
+  , Module = require('module')
+  , vm     = require('vm')
+  , xtend  = require('xtend');
 
 function compile (file) {
   var source = file.source;
@@ -34,7 +35,11 @@ function globals (file) {
   context.global = process.browser ? global : context;
   context.Glagol = file;
   context.__filename = file._sourcePath || file.path;
-  context.__dirname  = path.dirname(context.__filename);
+  context.__dirname = path.dirname(context.__filename);
+
+  context.module = new Module(context.__filename);
+  context.module.filename = context.module.id;
+  context.module.loaded = true;
 
   var localRequire = require('require-like')(context.__filename);
 

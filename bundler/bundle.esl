@@ -3,11 +3,11 @@
   (try
     ; bundle the client code into a snapshot and get dependency map
     (var app (object
-      "ice"     (/util/freeze client)
-      "deps"    (/util/deps client)
+      "ice"     (./freeze client)
+      "deps"    (./deps client)
       "formats" client.options.formats))
 
-    (catch e (return (/util/error req res e
+    (catch e (return (./error req res e
       "Error creating initial client snapshot:"))))
 
   (try
@@ -29,10 +29,10 @@
     (var ctype (+ "text/" (?: embed "javascript" "html") "; charset=utf-8"))
     (br.bundle (lambda (err data)
       (if err (throw err))
-      (/util/wrap-js (String data) app (lambda (wrapped)
+      (./wrap-js (String data) app (lambda (wrapped)
         ((require "send-data") req res (object
-          "body"    (?: embed wrapped (/util/wrap-html wrapped))
+          "body"    (?: embed wrapped (./wrap-html wrapped))
           "headers" (object "Content-Type" ctype)))))))
 
-    (catch e (return (/util/error req res e
+    (catch e (return (./error req res e
       "Error bundling client code:")))))

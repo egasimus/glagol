@@ -45,9 +45,15 @@ defineError("TREE_NO_PARENT",
   })
 
 defineError("TREE_CAN_NOT_SET",
-  "You can't mutate a Directory's tree snapshot.",
+  "Can't mutate a Directory's tree snapshot.",
   function (parentPath, nodeName) {
     return Error("Can't set value " + nodeName + " in snapshot of " + parentPath)
+  })
+
+defineError("CAN_NOT_MOUNT_IN_BROWSER",
+  "Mounting in the browser is currently not implemented.",
+  function () {
+    return Error("Mounting in the browser is currently not implemented.")
   })
 
 function defineError (code, description, callback) {

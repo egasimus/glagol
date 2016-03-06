@@ -32,11 +32,12 @@ var File = module.exports = function File () {
   file.options = options;
   file.parent = options.parent || null;
   file.format = options.format || getFormat(options.formats, name) || null;
-  file.events = new EE2({ maxListeners: 0 })
+  file.events = new EE2({ maxListeners: 0 });
 
   // bind methods
   file.reset = reset.bind(file);
   file.get = get.bind(file);
+  file.mount = mount.bind(file);
 
   // actual values returned by getters are stored here
   file._cache =
@@ -132,6 +133,13 @@ function reset () {
 
 function get (location) {
   return this.parent.get(location);
+}
+
+function mount (target) {
+  if (process.browser) throw error.CAN_NOT_MOUNT_IN_BROWSER();
+  this._mountTarget = this._loader(path.resolve(this._sourcePath, target));
+  this._cache.value = this._mountTarget();
+  return this._cache.value;
 }
 
 function getFormat (formats, name) {

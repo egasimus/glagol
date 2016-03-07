@@ -1,6 +1,6 @@
 (lambda connected (routes socket)
 
-  (var socket-id (./shortid))
+  (var socket-id (../lib/shortid))
   (console.log "socket" socket-id "connected")
   (= socket.onclose (lambda ()
     (console.log "socket" socket-id "closed")

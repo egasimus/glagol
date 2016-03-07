@@ -5,6 +5,7 @@
     (var app (object
       "ice"     (./freeze client)
       "deps"    (./deps client)
+      "boot"    client.options.bundler.boot.source
       "formats" client.options.formats))
 
     (catch e (return (./error req res e
@@ -20,7 +21,6 @@
       (br.require format (object "expose" format))))
 
     ; add client-specific dependencies, dependency map, and client source
-    (console.log app.deps.ids)
     (.map (Object.keys app.deps.ids) (lambda (module)
       (br.require module (object "expose" (get app.deps.ids module)))))
 
@@ -29,10 +29,10 @@
     (var ctype (+ "text/" (?: embed "javascript" "html") "; charset=utf-8"))
     (br.bundle (lambda (err data)
       (if err (throw err))
-      (./wrap-js (String data) app (lambda (wrapped)
-        ((require "send-data") req res (object
-          "body"    (?: embed wrapped (./wrap-html wrapped))
-          "headers" (object "Content-Type" ctype)))))))
+      (var wrapped (./wrap-js (String data) app))
+      ((require "send-data") req res (object
+        "body"    (?: embed wrapped (./wrap-html wrapped))
+        "headers" (object "Content-Type" ctype)))))
 
     (catch e (return (./error req res e
       "Error bundling client code:")))))

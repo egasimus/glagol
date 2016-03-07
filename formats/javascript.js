@@ -10,6 +10,9 @@ var fs      = require('fs')
   , vm      = require('vm')
   , extend  = require('extend');
 
+// polyfill Module in browserify
+if (process.browser) { Module = function Module (id, parent) { this.id = id; } }
+
 function compile (file) {
   var source = file.source;
 

@@ -21,7 +21,7 @@ function compile (file) {
 
 function evaluate (file, globals) {
   var context = vm.createContext(globals || this.globals(file))
-    , source  = "(function(){return " + file.compiled + "})()"
+    , source  = file.compiled //"(function(){return " + file.compiled + "})()"
     , options = { filename: file._sourcePath || file.path }
     , result  = vm.runInContext(source, context, options);
   if (context.error) throw context.error;
@@ -40,6 +40,11 @@ function globals (file) {
   context.module = new Module(context.__filename);
   context.module.filename = context.module.id;
   context.module.loaded = true;
+  Object.defineProperty(context.module, "exports",
+    { enumerable: true
+    , configurable: true
+    , get: function ()  { return context.exports }
+    , set: function (v) { return context.exports = v; }});
 
   var localRequire = require('require-like')(context.__filename);
 

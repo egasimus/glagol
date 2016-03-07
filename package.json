@@ -14,7 +14,7 @@
   "dependencies": {
     "q": "^1.4.1",
     "q-connection": "^0.6.1",
-    "riko-api": "git://github.co/egasimus/riko-api.git",
-    "riko-mvc": "git://github.co/egasimus/riko-mvc.git"
+    "riko-api": "git+https://github.com/egasimus/riko-api.git",
+    "riko-mvc": "git+https://github.com/egasimus/riko-mvc.git"
   }
 }

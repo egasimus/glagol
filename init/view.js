@@ -1,18 +1,20 @@
 (function (App) {
 
+  var templates = App.nodes['templates'];
+
   // define globals for template dsl
-  if (App.nodes.templates) App.nodes.templates.options.globals =
-    function (file) { return {
-      emit: function () { return $.util.emit.apply(null, arguments) },
-      h:    function () { return $.util.h.apply(null, arguments) } } }
+  templates.options = require('extend')(templates.options, {
+    globals: function (file) { return {
+      emit: function () { return __.util.emit.apply(null, arguments) },
+      h:    function () { return __.util.h.apply(null, arguments) } } } });
 
   // start view
-  var view = require('riko-mvc').V(App.model, App.nodes.templates().app);
+  var view = require('riko-mvc').V(App.model, templates().app);
   document.body.innerHTML = "";
   document.body.appendChild(view.target);
 
   // update view if templates are edited
-  App.nodes.templates.events.onAny(function () { view.update(App.state()()) });
+  templates.events.onAny(function () { view.update(App.state()()) });
 
   return view;
 

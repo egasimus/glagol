@@ -196,16 +196,11 @@ function get (location) {
 }
 
 function getOptions () {
-
   var baseOptions = {};
   if (this.parent) baseOptions = this.parent.options;
   return extend(true, {}, baseOptions, this._options);
-
 }
 
 function setOptions (v) {
-
-  this._options = extend(true, {}, this._options, v);
-  return this._options;
-
+  return this._options = v;
 }

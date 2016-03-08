@@ -39,8 +39,10 @@ function Loader (baseOptions) {
 
   // a single watcher keeps track of all loaded nodes. its `depth` option
   // is set to 0, since directories are manually added to it during loading.
-  var watcher = load.watcher =
-    new chokidar.FSWatcher({ persistent: false, atomic: 400, depth: 0 });
+  var watcher = load.watcher = new chokidar.FSWatcher(
+    { persistent: false
+    , atomic: 1000
+    , depth: 0 });
 
   return load;
 
@@ -104,11 +106,10 @@ function Loader (baseOptions) {
       node._loader = load;
       nodes[location] = node;
 
-      // the `_justLoaded` attribute is used once then deleted immediately
-      // afterwards. it makes sure that the first `added` event emitted by
-      // the watcher, having found the node already loaded, and thus having
-      // turned into a `changed` event (see below), displays as an add event
-      // nonetheless.
+      // the `_justLoaded` flag makes sure that the first `added` event emitted
+      // by the watcher ever for a certain file, having found the node already
+      // loaded (by the initial `load(...)` call), does not turn into a `change`
+      // event.
       node._justLoaded = true;
 
       return node;
@@ -218,12 +219,18 @@ function Loader (baseOptions) {
       // then all is ok really, no need to do anything else to delete it.
       if (!node) return;
 
-      // if parent object exists, renounce deleted child
+      // if parent object exists, renounce deleted child, so that no new
+      // referrences to its value are created. but persist parent reference
+      // so that the deleted node does not forget its relative location.
+      // also set `_justLoaded` flag, so that next event is `added`, not
+      // `changed`.
       var parent = node.parent;
       if (parent) parent.remove(node);
+      node.parent = parent;
+      node._justLoaded = true;
 
       // remove loader's reference to deleted node
-      delete nodes[f];
+      // delete nodes[f];
 
       // emit events
       load.events.emit('removed', node, parent);

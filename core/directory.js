@@ -111,14 +111,14 @@ function add (node) {
 
 }
 
-function remove (nodeOrName) {
+function remove (node) {
   // nodes can be removed either by reference or by name
 
   delete this._cache;
 
-  var name = (typeof nodeOrName === 'string') ? nodeOrName : nodeOrName.name;
-  this.nodes[name].parent = null;
-  delete this.nodes[name];
+  if (typeof node === 'string') node = this.get(node);
+  node.parent = null;
+  delete this.nodes[node.name];
 
   return this;
 

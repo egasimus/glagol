@@ -2,4 +2,4 @@
   (socket.send (JSON.stringify (object
     event  "glagol.removed"
     name   node.name
-    parent node.parent.path))))
+    parent (?: node.parent node.parent.path null)))))

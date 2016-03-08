@@ -16,6 +16,7 @@ function Loader (baseOptions) {
     , formats: require('../formats/index.js') }, baseOptions);
 
   load.nodes  = {};
+  load.add    = add;
   load.update = update;
   load.remove = remove;
   load.events = new EE2();
@@ -64,6 +65,7 @@ function Loader (baseOptions) {
     if (!node) return add(name, source);
     node.source = source;
     load.events.emit('changed', node);
+    node.events.emit('changed', node);
   }
 
   function remove (name) {
@@ -72,8 +74,10 @@ function Loader (baseOptions) {
 
     var parent = node.parent;
     if (parent) parent.remove(node);
-    delete load.nodes[name];
+    node.parent = parent;
+
     load.events.emit('removed', node, parent);
+    node.events.emit('removed', node, parent);
   }
 
 }

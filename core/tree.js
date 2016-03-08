@@ -39,6 +39,8 @@ function getRoot (tree) {
 }
 
 function getter (name) {
+  var node = this.nodes[name];
+  if (!node) return undefined;
   return this.nodes[name]();
 }
 

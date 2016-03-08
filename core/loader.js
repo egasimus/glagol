@@ -203,11 +203,18 @@ function Loader (baseOptions) {
       }
 
       // first 'changed' event for a node converts to 'added'
-      var eventName = node._justLoaded ? 'added' : 'changed';
-      delete node._justLoaded;
-      load.events.emit(eventName, node);
-      if (eventName === 'changed') node.events.emit('changed', node);
-      if (node.parent) node.parent.events.emit(eventName, node);
+      if (node._justLoaded) {
+        delete node._justLoaded;
+        load.events.emit('added', node);
+        if (node.parent) {
+          node.parent.add(node) // re-add if deleted
+          node.parent.events.emit('added', node);
+        }
+      } else {
+        load.events.emit('changed', node);
+        node.events.emit('changed', node);
+        if (node.parent) node.parent.events.emit('changed', node);
+      }
     }
 
     function removed (f, s) {

@@ -1,0 +1,12 @@
+#!/usr/bin/env node
+
+var glagol = require('glagol')
+  , app    = glagol(require('path').resolve(__dirname, 'server'), {})
+  , libs   = ['lib/bundler', 'lib/server']
+
+libs.map(function (lib) {
+  var lib = app.get(lib);
+  lib.options = lib.get('glagol-options.js')();
+})
+
+app().main();

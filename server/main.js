@@ -8,8 +8,16 @@
   })
 
   server.sockets.on("connection", function (socket) {
-    // connected routes socket
-    _.lib.bundler.updater.connected(_.routes, socket);
+    socket.on("message", function dispatch (msg) {
+      if (msg === "glagol") {
+        _.lib.bundler.updater.connected(_.routes, socket);
+        socket.off("message", dispatch)
+      }
+      if (msg === "riko") {
+        _.lib.api.connect(socket, _.api);
+        socket.off("message", dispatch);
+      }
+    })
   })
 
 })

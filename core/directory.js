@@ -73,13 +73,10 @@ Directory.is = function (node) {
 }
 
 function getPath () {
-  // path of node relative to app root
-  if (!this.parent) return "/";
-
-  var p = this.parent.path;
-  if (this.parent.parent) p += "/";
-  p += this.name;
-  return p;
+  if (!this.parent) return '/';
+  return this.parent.path +
+    (this.parent.parent ? '/' : '') +
+    this.name;
 }
 
 function getRoot () {

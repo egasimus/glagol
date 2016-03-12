@@ -10,6 +10,8 @@ var Link = module.exports = function Link (name, target) {
 
   // link's own properties
   Object.defineProperty(link, 'name', { value: name })
+  Object.defineProperty(link, 'path', { get: getPath.bind(link) })
+  link.parent = null;
   link.target = target;
 
   // proxied properties;
@@ -27,10 +29,9 @@ var Link = module.exports = function Link (name, target) {
 
 Link.PROPERTIES =
   { COMMON:
-    [ '_options', 'options', 'parent', 'events', '_glagol', 'parent', 'path'
-    , 'reset', 'get', '_cache' ]
+    [ '_options', 'options', 'events', '_glagol', 'reset', 'get', '_cache' ]
   , FILE:
-    [ 'mount', 'source', 'compiled', 'value', 'path', 'format' ]
+    [ 'mount', 'source', 'compiled', 'value', 'format' ]
   , DIRECTORY:
     [ 'nodes', 'add', 'remove', 'overlay', 'root' ] }
 
@@ -52,4 +53,11 @@ function installTypeProperty (type, name) {
     , set: function (v) {
         if (type.is(self.target)) return self.target[name = v]
       }})
+}
+
+function getPath () {
+  if (!this.parent) return this.name;
+  return this.parent.path +
+    (this.parent.parent ? '/' : '') +
+    this.name;
 }

@@ -78,13 +78,10 @@ File.is = function (node) {
 };
 
 function getPath () {
-  if (this.parent) {
-    return this.parent.path +
-      (this.parent.parent ? '/' : '') +
-      this.name;
-  } else {
-    return this.name;
-  }
+  if (!this.parent) return this.name;
+  return this.parent.path +
+    (this.parent.parent ? '/' : '') +
+    this.name;
 }
 
 function getSource () {

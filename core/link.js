@@ -27,10 +27,10 @@ var Link = module.exports = function Link (name, target) {
 
 Link.PROPERTIES =
   { COMMON:
-    [ '_options', 'parent', 'events', '_glagol', 'parent', 'path'
+    [ '_options', 'options', 'parent', 'events', '_glagol', 'parent', 'path'
     , 'reset', 'get', '_cache' ]
   , FILE:
-    [ 'mount', 'source', 'compiled', 'value', 'path', 'format', 'options' ]
+    [ 'mount', 'source', 'compiled', 'value', 'path', 'format' ]
   , DIRECTORY:
     [ 'nodes', 'add', 'remove', 'overlay', 'root' ] }
 

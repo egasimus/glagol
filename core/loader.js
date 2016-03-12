@@ -7,6 +7,7 @@ var fs        = require('fs')
   , EE2       = require('eventemitter2').EventEmitter2
   , File      = require('./file')
   , Directory = require('./directory')
+  , Link      = require('./link')
   , error     = require('./error');
 
 module.exports = Loader;
@@ -46,15 +47,15 @@ function Loader (baseOptions) {
 
   return load;
 
-  function load (rootpath, _options) {
+  function load (rootPath, _options) {
 
     // use absolute path of requested starting location
-    rootpath = path.resolve(rootpath);
+    rootPath = path.resolve(rootPath);
 
     // deduplicate: if this path has already been loaded
     // (as a result of having loaded some parent directory)
     // return the object that corresponds to it
-    if (nodes[rootpath]) return nodes[rootpath];
+    if (nodes[rootPath]) return nodes[rootPath];
 
     // extend loader defaults with any user overrides for this load operation
     _options = _options || {};
@@ -62,27 +63,34 @@ function Loader (baseOptions) {
 
     // bind watcher callbacks for this root path
     // these keep track of changes to the actual files
+    // the point of adding them once per `load` call has to do with inheriting
+    // the options passed to that load call. this is unintuitive and now that
+    // options inheritance is implemented might be best resolved by removing
+    // the defaultLoader (TODO)
     watcher.on('add',       added);
     watcher.on('addDir',    added);
     watcher.on('change',    changed);
     watcher.on('unlink',    removed);
     watcher.on('unlinkDir', removed);
 
-    // load node at `rootpath`.
+    // load node at `rootPath`.
     // if it's a directory, its contents are recursively loaded.
     // having passed the deduplication check above, we can assume
     // that this node is so far completely unknown to this loader.
     // the initial loading pass is done synchronously; can't wait for
     // the watcher to detect and add files when we add directories to it.
-    return loadNode(rootpath);
+    return loadNode(rootPath);
 
     function loadNode (location) {
+
       // use absolute path of this node
       location = path.resolve(location);
 
-      // missing nodes throw an error, ignored ones just return null
+      // deduplicate again
+      if (nodes[location]) return nodes[location];
+
+      // missing nodes throw an error
       if (!fs.existsSync(location)) throw error.FILE_NOT_FOUND(location);
-      if (!options.filter(location, rootpath)) return null;
 
       // get info about the filesystem node
       var stat = fs.lstatSync(location);
@@ -91,9 +99,7 @@ function Loader (baseOptions) {
       // TODO: if possible, meaningfully integrate other Unix file types:
       //       socket, fifo, block device, character device
       if (stat.isSymbolicLink()) {
-        var resolved = path.resolve(location, '..', fs.readlinkSync(location))
-          , node = load(resolved);
-        return node;
+        var node = loadLink(location);
       } else if (stat.isFile()) {
         var node = loadFile(location);
       } else if (stat.isDirectory()) {
@@ -107,7 +113,7 @@ function Loader (baseOptions) {
       // is made aware of the filesystem path that corresponds to it, and is
       // stored into the loader's node cache.
       node._sourcePath = location;
-      node._rootPath = rootpath;
+      node._rootPath = rootPath;
       node._loader = load;
       nodes[location] = node;
 
@@ -120,14 +126,25 @@ function Loader (baseOptions) {
       return node;
     }
 
+    function loadLink (location) {
+      var target   = fs.readlinkSync(location)
+        , resolved = path.resolve(location, '..', target)
+        , name     = path.basename(location)
+        , node     = loadNode(resolved)
+        , link     = Link(name, node);
+      return Link(path.basename(location), loadNode(resolved));
+    }
+
     function loadDirectory (location) {
       // load a directory if not already loaded
       var dirNode = nodes[location] || Directory(path.basename(location), options);
 
       // recursively load its children
       require('glob').sync(path.join(location, "*")).forEach(function (f) {
-        var newNode = loadNode(f, options);
-        if (newNode) dirNode.add(newNode);
+        if (options.filter(f, rootPath)) { // skip filtered nodes
+          var newNode = loadNode(f, options);
+          if (newNode) dirNode.add(newNode);
+        }
       });
 
       return dirNode;
@@ -171,13 +188,9 @@ function Loader (baseOptions) {
     // since they are added once for each `load` call that does not return
     // an already loaded object, the `isChildOf` function is used to filter
     // out all the irrelevant events and run only the right one.
-    // the point of adding them once per `load` call has to do with inheriting
-    // the options passed to that load call. this is unintuitive and now that
-    // options inheritance is implemented might be best resolved by removing
-    // the defaultLoader (TODO)
 
     function added (f, s) {
-      if (!isChildOf(rootpath, f)) return;
+      if (!isChildOf(rootPath, f)) return;
 
       // normalize possible flukes: if an object already exists in memory
       // for this path, then this should be a change event
@@ -197,7 +210,7 @@ function Loader (baseOptions) {
     }
 
     function changed (f, s) {
-      if (!isChildOf(rootpath, f)) return;
+      if (!isChildOf(rootPath, f)) return;
 
       // normalize possible flukes: if no object exists in memory for this
       // path, then this should be an add event
@@ -226,7 +239,7 @@ function Loader (baseOptions) {
     }
 
     function removed (f, s) {
-      if (!isChildOf(rootpath, f)) return;
+      if (!isChildOf(rootPath, f)) return;
 
       var node = nodes[f];
 
@@ -282,7 +295,7 @@ function Loader (baseOptions) {
 
 Loader.defaults =
   { filter:
-      function defaultFilter (fullpath, rootpath) {
+      function defaultFilter (fullPath, rootPath) {
         // by default, Glagol's loader ignores a filesystem node if its path matches
         // any of these conditions:
         //   * if its path (relative to loader root) contains `node_modules`
@@ -297,8 +310,8 @@ Loader.defaults =
         //   * filename ends with `.swp` or `.swo`, a.k.a. Vim tempfiles
         //   * also, any other dotfiles (making the `.git` check a bit redundant
 
-        var relpath  = path.relative(rootpath, fullpath)
-          , basename = path.basename(fullpath);
+        var relpath  = path.relative(rootPath, fullPath)
+          , basename = path.basename(fullPath);
 
         var conditions =
           [ relpath.indexOf('node_modules') < 0

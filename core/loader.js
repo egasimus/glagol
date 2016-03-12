@@ -72,6 +72,8 @@ function Loader (baseOptions) {
     // if it's a directory, its contents are recursively loaded.
     // having passed the deduplication check above, we can assume
     // that this node is so far completely unknown to this loader.
+    // the initial loading pass is done synchronously; can't wait for
+    // the watcher to detect and add files when we add directories to it.
     return loadNode(rootpath);
 
     function loadNode (location) {
@@ -83,13 +85,16 @@ function Loader (baseOptions) {
       if (!options.filter(location, rootpath)) return null;
 
       // get info about the filesystem node
-      var stat = fs.statSync(location);
+      var stat = fs.lstatSync(location);
 
-      // the initial loading pass is done synchronously; can't wait for
-      // the watcher to detect and add files when we add directories to it.
+      // dispatch on node type
       // TODO: if possible, meaningfully integrate other Unix file types:
-      //       link, socket, fifo, block device, character device
-      if (stat.isFile()) {
+      //       socket, fifo, block device, character device
+      if (stat.isSymbolicLink()) {
+        var resolved = path.resolve(location, '..', fs.readlinkSync(location))
+          , node = load(resolved);
+        return node;
+      } else if (stat.isFile()) {
         var node = loadFile(location);
       } else if (stat.isDirectory()) {
         var node = loadDirectory(location);
@@ -166,6 +171,10 @@ function Loader (baseOptions) {
     // since they are added once for each `load` call that does not return
     // an already loaded object, the `isChildOf` function is used to filter
     // out all the irrelevant events and run only the right one.
+    // the point of adding them once per `load` call has to do with inheriting
+    // the options passed to that load call. this is unintuitive and now that
+    // options inheritance is implemented might be best resolved by removing
+    // the defaultLoader (TODO)
 
     function added (f, s) {
       if (!isChildOf(rootpath, f)) return;
@@ -190,10 +199,9 @@ function Loader (baseOptions) {
     function changed (f, s) {
       if (!isChildOf(rootpath, f)) return;
 
-      var node = nodes[f];
-
       // normalize possible flukes: if no object exists in memory for this
       // path, then this should be an add event
+      var node = nodes[f];
       if (!node) return added(f, s);
 
       // in non-eager mode, source is only reloaded on demand

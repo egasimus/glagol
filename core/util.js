@@ -21,13 +21,14 @@ function printDirectory (location, state) {
 
 function printIgnored (f, state, i, a) {
   printTreeNode(state.depth + 1, i === a.length - 1, false,
-    path.basename(f).gray + ' ' + 'X'.red)
+    path.basename(f).gray + ' ' + 'X'.red +
+    (state.linkPath ? (" -> " + state.linkPath).gray : ""))
 }
 
 function printTreeNode (depth, last, dir, name) {
   //var chars = printTreeNode._treeCharacters;
   console.log(
-    '┇ '.gray + Array(depth).join(chars[0] + ' ') +
+    '┇ '.gray + Array(depth).join('  ') +
     name);
 }
 

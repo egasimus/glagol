@@ -75,13 +75,13 @@ function Loader (baseOptions) {
 
       // dispatch on node type (TODO: socket, fifo, blockdev, chardev ?)
       var stat = fs.lstatSync(location)
-        , newState = extend({}, state, { depth: state.depth + 1});
+        , nextState = extend({}, state, { depth: state.depth + 1});
       if (stat.isSymbolicLink()) {
         var node = loadLink(location, state);
       } else if (stat.isFile()) {
         var node = loadFile(location, state);
       } else if (stat.isDirectory()) {
-        var node = loadDirectory(location, newState);
+        var node = loadDirectory(location, nextState);
       } else {
         throw error.LOADER_UNSUPPORTED(location);
       }
@@ -102,8 +102,8 @@ function Loader (baseOptions) {
       var target   = fs.readlinkSync(location)
         , resolved = path.resolve(location, '..', target)
         , name     = path.basename(location)
-        , newState = extend({}, state, { linkPath: state.linkPath || location })
-        , node     = loadNode(resolved, newState)
+        , nextState = extend({}, state, { linkPath: state.linkPath || location })
+        , node     = loadNode(resolved, nextState)
         , link     = Link(name, node);
       return Link(path.basename(location), node);
     }
@@ -121,15 +121,15 @@ function Loader (baseOptions) {
       require('glob')
         .sync(path.join(location, "*"))
         .forEach(function (f, i, a) {
+          var nextState = extend({}, state,
+            { linkPath: null
+            , last: i === a.length - 1 })
           if (options.filter(f)) { // skip filtered nodes
-            var newState = extend({}, state,
-              { linkPath: null
-              , last: i === a.length - 1 })
-            var newNode = loadNode(f, newState);
+            var newNode = loadNode(f, nextState);
             if (newNode) dirNode.add(newNode);
           } else {
             if (options.printTree)
-              require('./util').printIgnored(f, state, i, a);
+              require('./util').printIgnored(f, nextState, i, a);
           } });
 
       return dirNode;

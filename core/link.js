@@ -11,6 +11,14 @@ var Link = module.exports = function Link (name, target) {
   // link's own properties
   Object.defineProperty(link, 'name', { value: name })
   Object.defineProperty(link, 'path', { get: getPath.bind(link) })
+
+  var _glagol =
+    { version: require('../package.json').version 
+    , link: true }
+  Object.defineProperty(_glagol, 'type',
+    { get: function () { return link.target._glagol.type }})
+  Object.defineProperty(link, '_glagol',
+    { configurable: false, enumerable: false, value: _glagol });
   link.parent = null;
   link.target = target;
 
@@ -28,12 +36,9 @@ var Link = module.exports = function Link (name, target) {
 }
 
 Link.PROPERTIES =
-  { COMMON:
-    [ '_options', 'options', 'events', '_glagol', 'reset', 'get', '_cache' ]
-  , FILE:
-    [ 'mount', 'source', 'compiled', 'value', 'format' ]
-  , DIRECTORY:
-    [ 'nodes', 'add', 'remove', 'overlay', 'root' ] }
+  { COMMON:    [ '_options', 'options', 'events', 'reset', 'get', '_cache' ]
+  , FILE:      [ 'mount', 'source', 'compiled', 'value', 'format' ]
+  , DIRECTORY: [ 'nodes', 'add', 'remove', 'overlay', 'root' ] }
 
 function installCommonProperty (name) {
   var self = this;

@@ -45,6 +45,18 @@ function Loader (baseOptions) {
     , atomic: 1000
     , depth: 0 });
 
+  // bind watcher callbacks for this root path
+  // these keep track of changes to the actual files
+  // the point of adding them once per `load` call has to do with inheriting
+  // the options passed to that load call. this is unintuitive and now that
+  // options inheritance is implemented might be best resolved by removing
+  // the defaultLoader (TODO)
+  watcher.on('add',       added);
+  watcher.on('addDir',    added);
+  watcher.on('change',    changed);
+  watcher.on('unlink',    removed);
+  watcher.on('unlinkDir', removed);
+
   return load;
 
   function load (rootPath, _options) {
@@ -61,18 +73,6 @@ function Loader (baseOptions) {
     _options = _options || {};
     var options = extend(true, {}, load.options, _options);
 
-    // bind watcher callbacks for this root path
-    // these keep track of changes to the actual files
-    // the point of adding them once per `load` call has to do with inheriting
-    // the options passed to that load call. this is unintuitive and now that
-    // options inheritance is implemented might be best resolved by removing
-    // the defaultLoader (TODO)
-    watcher.on('add',       added);
-    watcher.on('addDir',    added);
-    watcher.on('change',    changed);
-    watcher.on('unlink',    removed);
-    watcher.on('unlinkDir', removed);
-
     // load node at `rootPath`.
     // if it's a directory, its contents are recursively loaded.
     // having passed the deduplication check above, we can assume
@@ -81,7 +81,7 @@ function Loader (baseOptions) {
     // the watcher to detect and add files when we add directories to it.
     return loadNode(rootPath);
 
-    function loadNode (location) {
+    function loadNode (location, linkPath) {
 
       // use absolute path of this node
       location = path.resolve(location);
@@ -99,12 +99,11 @@ function Loader (baseOptions) {
       // TODO: if possible, meaningfully integrate other Unix file types:
       //       socket, fifo, block device, character device
       if (stat.isSymbolicLink()) {
-        var node = loadLink(location);
+        var node = loadLink(location, linkPath);
       } else if (stat.isFile()) {
         var node = loadFile(location);
       } else if (stat.isDirectory()) {
-        var node = loadDirectory(location);
-        watcher.add(location);
+        var node = loadDirectory(location, linkPath);
       } else {
         throw error.LOADER_UNSUPPORTED(location);
       }
@@ -126,26 +125,29 @@ function Loader (baseOptions) {
       return node;
     }
 
-    function loadLink (location) {
+    function loadLink (location, linkPath) {
       var target   = fs.readlinkSync(location)
         , resolved = path.resolve(location, '..', target)
         , name     = path.basename(location)
-        , node     = loadNode(resolved)
+        , node     = loadNode(resolved, linkPath || location)
         , link     = Link(name, node);
       return Link(path.basename(location), loadNode(resolved));
     }
 
-    function loadDirectory (location) {
+    function loadDirectory (location, linkPath) {
       // load a directory if not already loaded
       var dirNode = nodes[location] || Directory(path.basename(location), options);
 
       // recursively load its children
-      require('glob').sync(path.join(location, "*")).forEach(function (f) {
-        if (options.filter(f, rootPath)) { // skip filtered nodes
-          var newNode = loadNode(f, options);
-          if (newNode) dirNode.add(newNode);
-        }
-      });
+      require('glob')
+        .sync(path.join(linkPath || location, "*"))
+        .forEach(function (f) {
+          if (options.filter(f)) { // skip filtered nodes
+            var newNode = loadNode(f);
+            if (newNode) dirNode.add(newNode); } });
+
+      // add to watcher
+      watcher.add(location);
 
       return dirNode;
     }
@@ -184,111 +186,89 @@ function Loader (baseOptions) {
       return node;
     }
 
-    // watcher callbacks
-    // since they are added once for each `load` call that does not return
-    // an already loaded object, the `isChildOf` function is used to filter
-    // out all the irrelevant events and run only the right one.
+  }
 
-    function added (f, s) {
-      if (!isChildOf(rootPath, f)) return;
+  // watcher callbacks
+  // since they are added once for each `load` call that does not return
+  // an already loaded object, the `isChildOf` function is used to filter
+  // out all the irrelevant events and run only the right one.
 
-      // normalize possible flukes: if an object already exists in memory
-      // for this path, then this should be a change event
-      if (nodes[f]) return changed(f, s);
+  function added (f, s) {
+    //if (!isChildOf(rootPath, f)) return;
 
-      // load newly created node into glagol -- unless it's filtered out.
-      var node = loadNode(f);
-      if (!node) return;
+    // normalize: if an object already exists in memory
+    // for this path, then this should be a change event
+    if (nodes[f]) return changed(f, s);
 
-      // automatically add the child node to its parent if already known
-      var parent = nodes[path.dirname(f)];
-      if (parent) parent.add(node);
+    // load newly created node into glagol -- unless it's filtered out.
+    if (!load.options.filter(f)) return;
+    var node = load(f);
+    if (!node) return;
 
-      // emit events
+    // automatically add the child node to its parent if already known
+    var parent = nodes[path.dirname(f)];
+    if (parent) parent.add(node);
+
+    // emit events
+    load.events.emit('added', node);
+    if (parent) parent.events.emit('added', node);
+  }
+
+  function changed (f, s) {
+    //if (!isChildOf(rootPath, f)) return;
+
+    // normalize: if no object exists in memory for this
+    // path, then this should be an add event
+    var node = nodes[f];
+    if (!node) return added(f, s);
+
+    // in non-eager mode, source is only reloaded on demand
+    // and there's nothing we need to do right now
+    if (node.options.eager && File.is(node)) {
+      node.source = node.options.reader(f);
+    }
+
+    // first 'changed' event for a node converts to 'added'
+    if (node._justLoaded) {
+      delete node._justLoaded;
       load.events.emit('added', node);
-      if (parent) parent.events.emit('added', node);
-    }
-
-    function changed (f, s) {
-      if (!isChildOf(rootPath, f)) return;
-
-      // normalize possible flukes: if no object exists in memory for this
-      // path, then this should be an add event
-      var node = nodes[f];
-      if (!node) return added(f, s);
-
-      // in non-eager mode, source is only reloaded on demand
-      // and there's nothing we need to do right now
-      if (options.eager && File.is(node)) {
-        node.source = options.reader(f);
+      if (node.parent) {
+        node.parent.add(node) // re-add if deleted
+        node.parent.events.emit('added', node);
       }
-
-      // first 'changed' event for a node converts to 'added'
-      if (node._justLoaded) {
-        delete node._justLoaded;
-        load.events.emit('added', node);
-        if (node.parent) {
-          node.parent.add(node) // re-add if deleted
-          node.parent.events.emit('added', node);
-        }
-      } else {
-        load.events.emit('changed', node);
-        node.events.emit('changed', node);
-        if (node.parent) node.parent.events.emit('changed', node);
-      }
+    } else {
+      load.events.emit('changed', node);
+      node.events.emit('changed', node);
+      if (node.parent) node.parent.events.emit('changed', node);
     }
+  }
 
-    function removed (f, s) {
-      if (!isChildOf(rootPath, f)) return;
+  function removed (f, s) {
+    //if (!isChildOf(rootPath, f)) return;
 
-      var node = nodes[f];
+    var node = nodes[f];
 
-      // normalize possible flukes: if an object is already missing from memory,
-      // then all is ok really, no need to do anything else to delete it.
-      if (!node) return;
+    // normalize: if an object is already missing from memory,
+    // then all is ok really, no need to do anything else to delete it.
+    if (!node) return;
 
-      // if parent object exists, renounce deleted child, so that no new
-      // referrences to its value are created. but persist parent reference
-      // so that the deleted node does not forget its relative location.
-      // also set `_justLoaded` flag, so that next event is `added`, not
-      // `changed`.
-      var parent = node.parent;
-      if (parent) parent.remove(node);
-      node.parent = parent;
-      node._justLoaded = true;
+    // if parent object exists, renounce deleted child, so that no new
+    // referrences to its value are created. but persist parent reference
+    // so that the deleted node does not forget its relative location.
+    // also set `_justLoaded` flag, so that next event is `added`, not
+    // `changed`.
+    var parent = node.parent;
+    if (parent) parent.remove(node);
+    node.parent = parent;
+    node._justLoaded = true;
 
-      // remove loader's reference to deleted node
-      // delete nodes[f];
+    // remove loader's reference to deleted node
+    // delete nodes[f];
 
-      // emit events
-      load.events.emit('removed', node, parent);
-      node.events.emit('removed', node, parent);
-      if (parent) parent.events.emit('removed', node, parent);
-    }
-
-    function isChildOf (currentRoot, location) {
-      if (path.parse(currentRoot).root !== path.parse(location).root) {
-        // root component of path can be different on windows systems
-        // where there is one filesystem per drive; in that case, `location`
-        // is certainly not a child of `currentRoot`.
-        return false;
-      }
-      if (path.parse(path.relative(currentRoot, location)).dir[0] === '.') {
-        // if the relative path from the node's location to the root under test
-        // starts with a dot, then the node is above the root; therefore, it
-        // is certainly not a child of that root.
-        return false;
-      } else {
-        // if the node's location is under the `currentRoot` after all, there
-        // is still the chance that it has not been loaded from that root
-        // because of filters, e.g. (assuming default filter): if there's a
-        // `foo/node_modules/bar` in `nodes`, then it's a separate root from
-        // `foo`, since anything under `node_modules` is ignored by default
-        // and can't have been loaded with the same loader call as `foo`.
-        return options.filter(location, currentRoot);
-      }
-    }
-
+    // emit events
+    load.events.emit('removed', node, parent);
+    node.events.emit('removed', node, parent);
+    if (parent) parent.events.emit('removed', node, parent);
   }
 
 }
@@ -310,7 +290,7 @@ Loader.defaults =
         //   * filename ends with `.swp` or `.swo`, a.k.a. Vim tempfiles
         //   * also, any other dotfiles (making the `.git` check a bit redundant
 
-        var relpath  = path.relative(rootPath, fullPath)
+        var relpath  = path.relative(rootPath || "", fullPath)
           , basename = path.basename(fullPath);
 
         var conditions =
@@ -325,7 +305,10 @@ Loader.defaults =
           return x.lastIndexOf(y) === x.length - y.length;
         }
 
-        return !conditions.some(function (x) { return !x; }); }
+        var pass = !conditions.some(function (x) { return !x; });
+        var regexp = new RegExp("^" + require('os').homedir())
+        if (!pass) console.log("not".red, fullPath.replace(regexp, "~"))
+        return pass }
 
   , reader:
       function defaultReader (location) {
@@ -334,17 +317,18 @@ Loader.defaults =
   , log:
       { added:
           function logAddition (node) {
-            var regexp = new RegExp("^" + require('os').homedir());
-            console.log("+ added".green,
-              node._glagol.type.toLowerCase().green,
-              node._rootPath.replace(regexp, "~").black + node.path.bold); }
+            var regexp = new RegExp("^" + require('os').homedir())
+              , type   = node._glagol.type.toLowerCase().slice(0, 3).green
+              , root   = node._rootPath.replace(regexp, "~").black
+            if (node._glagol.link) type = "lnk".blue;
+            console.log(type, node._sourcePath.replace(regexp, "~")); }
 
       , changed:
           function logChange (node) {
-            console.log("* changed".yellow,
+            console.log("mod".yellow,
               node.path.bold); }
 
       , removed:
           function logRemoval (node, parent) {
-            console.log("- removed".red,
+            console.log("del".red,
               path.join(parent ? parent.path : "", node.name).bold); } } };

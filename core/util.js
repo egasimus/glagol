@@ -15,7 +15,7 @@ function printFile (location, state) {
 
 function printDirectory (location, state) {
   printTreeNode(state.depth, state.last, true,
-    path.basename(state.linkPath || location) +
+    path.basename(state.linkPath || location) + '/' +
     (state.linkPath ? (" -> " + state.linkPath).gray : ""))
 }
 
@@ -25,15 +25,13 @@ function printIgnored (f, state, i, a) {
 }
 
 function printTreeNode (depth, last, dir, name) {
-  var chars = printTreeNode._treeCharacters;
+  //var chars = printTreeNode._treeCharacters;
   console.log(
-    Array(depth).join(chars[0] + ' ') + 
-    (last ? (dir ? chars[1] : chars[2]) : (dir ? chars[3] : chars[4])) +
-    (dir ? chars[5] : chars[6]) +
+    '┇ '.gray + Array(depth).join(chars[0] + ' ') +
     name);
 }
 
-printTreeNode._treeCharacters = [ '│', '┕', '└', '┝', '├', '╸' , '╴']
+//printTreeNode._treeCharacters = [ '│', '┕', '└', '┝', '├', '╸' , '╴'].map(function (c) { return " " })
 
 function endsWith (x, y) {
   if (x.lastIndexOf(y) < 0) return false;

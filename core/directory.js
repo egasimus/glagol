@@ -34,7 +34,18 @@ var Directory = module.exports = function Directory () {
   directory.nodes = {};
   directory._options = options;
   directory.parent = options.parent || null;
-  directory.events = new EE2({ maxListeners: 0 })
+
+  // events, w/ bubbling
+  directory.events = new EE2({ maxListeners: 0 });
+  directory.events.on('added', function (node) {
+    if (directory.parent) directory.parent.events.emit('added', node);
+  });
+  directory.events.on('changed', function (node) {
+    if (directory.parent) directory.parent.events.emit('changed', node);
+  });
+  directory.events.on('removed', function (node, parent) {
+    if (directory.parent) directory.parent.events.emit('removed', node, parent);
+  });
 
   // bind methods
   directory.add = add.bind(directory);

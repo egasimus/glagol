@@ -213,7 +213,7 @@ function Loader (baseOptions) {
       delete node._justLoaded;
       //load.events.emit('added', node);
       if (node.parent) {
-        node.parent.add(node) // re-add if deleted
+        node.parent.add(node); // re-add if deleted
         node.parent.events.emit('added', node);
       }
     } else {

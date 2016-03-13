@@ -5,36 +5,38 @@ module.exports =
   , printDirectory: printDirectory
   , printIgnored: printIgnored
   , printTreeNode: printTreeNode
-  , endsWith: endsWith }
+  , endsWith: endsWith 
+  , homedir: homedir}
 
 function printFile (location, state) {
-  printTreeNode(state.depth + 1, state.last, false,
+  printTreeNode(state.depth + 1, false,
     path.basename(state.linkPath || location) +
-    (state.linkPath ? " -> " + state.linkPath : ""))
-}
+    (state.linkPath ? " -> " + homedir(location) : "")) }
 
 function printDirectory (location, state) {
-  printTreeNode(state.depth, state.last, true,
+  printTreeNode(state.depth, true,
     path.basename(state.linkPath || location).bold + '/' +
-    (state.linkPath ? (" -> " + state.linkPath).gray : ""))
-}
+    (state.linkPath ? (" -> " + homedir(location)).gray : "")) }
 
 function printIgnored (f, state, i, a) {
-  printTreeNode(state.depth + 1, i === a.length - 1, false,
+  printTreeNode(state.depth + 1, false,
     path.basename(f).gray + ' ' + 'X'.red +
-    (state.linkPath ? (" -> " + state.linkPath).gray : ""))
-}
+    (state.linkPath ? (" -> " + homedir(location)).gray : "")) }
 
-function printTreeNode (depth, last, dir, name) {
+function printTreeNode (depth, dir, name) {
   //var chars = printTreeNode._treeCharacters;
   console.log(
     '┇ '.gray + Array(depth).join('  ') +
-    name);
-}
+    name); }
 
 //printTreeNode._treeCharacters = [ '│', '┕', '└', '┝', '├', '╸' , '╴'].map(function (c) { return " " })
 
 function endsWith (x, y) {
   if (x.lastIndexOf(y) < 0) return false;
   return x.lastIndexOf(y) === x.length - y.length;
+}
+
+function homedir (x) {
+  var regexp = new RegExp("^" + require('os').homedir());
+  return x.replace(regexp, "~");
 }

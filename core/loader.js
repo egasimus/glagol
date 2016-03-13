@@ -64,7 +64,7 @@ function Loader (baseOptions) {
     // the initial loading pass is done synchronously; can't wait for
     // the watcher to detect and add files when we add directories to it.
     console.log(rootPath.bold);
-    return loadNode(rootPath, { linkPath: null, depth: -1 });
+    return loadNode(rootPath, { depth: -1 });
 
     function loadNode (location, state) {
 
@@ -99,12 +99,12 @@ function Loader (baseOptions) {
     }
 
     function loadLink (location, state) {
-      var target   = fs.readlinkSync(location)
-        , resolved = path.resolve(location, '..', target)
-        , name     = path.basename(location)
+      var target    = fs.readlinkSync(location)
+        , resolved  = path.resolve(location, '..', target)
+        , name      = path.basename(location)
         , nextState = extend({}, state, { linkPath: state.linkPath || location })
-        , node     = loadNode(resolved, nextState)
-        , link     = Link(name, node);
+        , node      = loadNode(resolved, nextState)
+        , link      = Link(name, node);
       return Link(path.basename(location), node);
     }
 
@@ -121,10 +121,8 @@ function Loader (baseOptions) {
       require('glob')
         .sync(path.join(location, "*"))
         .forEach(function (f, i, a) {
-          var nextState = extend({}, state,
-            { linkPath: null
-            , last: i === a.length - 1 })
-          if (options.filter(f)) { // skip filtered nodes
+          var nextState = extend({}, state, { linkPath: null })
+          if (options.filter(f, state.linkPath)) { // skip filtered nodes
             var newNode = loadNode(f, nextState);
             if (newNode) dirNode.add(newNode);
           } else {
@@ -262,7 +260,7 @@ function Loader (baseOptions) {
 
 Loader.defaults =
   { filter:
-      function defaultFilter (fullPath, rootPath) {
+      function defaultFilter (fullPath, linkPath) {
         // by default, Glagol's loader ignores a filesystem node if its path matches
         // any of these conditions:
         //   * if its path (relative to loader root) contains `node_modules`
@@ -273,12 +271,12 @@ Loader.defaults =
         //     ignored)
         //   * filename ends with `.swp` or `.swo`, a.k.a. Vim tempfiles
         //   * any dotfiles
-
-        var relpath  = path.relative(rootPath || "", fullPath)
-          , basename = path.basename(fullPath);
+        //
+        var location = linkPath || fullPath
+          , basename = path.basename(location);
 
         var conditions =
-          [ relpath.indexOf('node_modules') < 0
+          [ location.indexOf('node_modules') < 0
           , !require('./util').endsWith(basename, '.swp')
           , !require('./util').endsWith(basename, '.swo')
           , basename[0] !== '.' ];
@@ -295,11 +293,10 @@ Loader.defaults =
   , log:
       { added:
           function logAddition (node) {
-            var regexp = new RegExp("^" + require('os').homedir())
-              , type   = node._glagol.type.toLowerCase().slice(0, 3).green
+            var type = node._glagol.type.toLowerCase().slice(0, 3).green
               //, root   = node._rootPath.replace(regexp, "~").black
             if (node._glagol.link) type = "lnk".blue;
-            console.log(type, node._sourcePath.replace(regexp, "~")); }
+            console.log(type, require('./util').homedir(node._sourcePath)); }
 
       , changed:
           function logChange (node) {

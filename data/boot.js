@@ -2,11 +2,10 @@
 
   var %REQUIRE%;
 
-  var loader = require('glagol')
-    , app = window.Glagol = loader(ice, { formats: %FORMATS% });
-  Glagol.events = loader.defaultLoader.events;
-  loader.require.install(deps, require);
-  Glagol.noConflict = function noConflict () {
+  var glagol = require('glagol')
+    , app = window.Glagol = glagol(ice, { formats: %FORMATS% });
+  glagol.require.install(deps, require);
+  window.Glagol.noConflict = function noConflict () {
     delete window.Glagol;
     return app;
   }
@@ -16,18 +15,21 @@
   var socket = new WebSocket("ws://" + window.location.host);
   socket.onmessage = function (msg) {
     var data = JSON.parse(msg.data);
+    console.log("->",data)
     switch (data.event) {
       case "glagol.added":
-        loader.add(data.path, data.value);
+        glagol.defaultLoader.add(data.path, data.value);
         break;
       case "glagol.changed":
-        loader.update(data.path, data.value);
+        glagol.defaultLoader.update(data.path, data.value);
         break;
       case "glagol.removed":
-        loader.remove(data.path);
+        glagol.defaultLoader.remove(data.path);
         break;
     }
   }
 
-})(%DEPS%, %ICE%)
-
+})(
+%DEPS%,
+%ICE%
+)

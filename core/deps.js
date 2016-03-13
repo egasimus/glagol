@@ -24,7 +24,8 @@
       } else if (node.compiled) {
 
         var opts   = { filename: node._sourcePath || "" }
-          , myDeps = deps["/" + path.relative(rootNode.path, node.path)] = {};
+          , key    = '/' + path.relative(rootNode.path, node.path)
+          , myDeps = deps[key] = {};
 
         require('detective')(node.compiled).forEach(function (d) {
           var resolved = require('browser-resolve').sync(d, opts);

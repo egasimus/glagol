@@ -1,11 +1,14 @@
 (lambda (client req res)
 
+  (var bundler-options (|| client.options.bundler (object)))
+  (var client-boot (|| bundler-options.boot (Glagol.get "../data/boot.js")))
+
   (try
     ; bundle the client code into a snapshot and get dependency map
     (var app (object
       "ice"     (./freeze client)
       "deps"    (./deps client)
-      "boot"    client.options.bundler.boot.source
+      "boot"    client-boot
       "formats" client.options.formats))
 
     (catch e (return (./error req res e

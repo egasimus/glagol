@@ -99,7 +99,7 @@ function Loader (baseOptions) {
     }
 
     function loadLink (location, state) {
-      var target    = fs.readlinkSync(location)
+      var target    = fs.realpathSync(location)
         , resolved  = path.resolve(location, '..', target)
         , name      = path.basename(location)
         , nextState = extend({}, state, { linkPath: state.linkPath || location })
@@ -122,7 +122,7 @@ function Loader (baseOptions) {
         .sync(path.join(location, "*"))
         .forEach(function (f, i, a) {
           var nextState = extend({}, state, { linkPath: null })
-          if (options.filter(f, state.linkPath)) { // skip filtered nodes
+          if (options.filter(f)) { // skip filtered nodes
             var newNode = loadNode(f, nextState);
             if (newNode) dirNode.add(newNode);
           } else {
@@ -260,7 +260,7 @@ function Loader (baseOptions) {
 
 Loader.defaults =
   { filter:
-      function defaultFilter (fullPath, linkPath) {
+      function defaultFilter (location) {
         // by default, Glagol's loader ignores a filesystem node if its path matches
         // any of these conditions:
         //   * if its path (relative to loader root) contains `node_modules`
@@ -272,8 +272,7 @@ Loader.defaults =
         //   * filename ends with `.swp` or `.swo`, a.k.a. Vim tempfiles
         //   * any dotfiles
         //
-        var location = linkPath || fullPath
-          , basename = path.basename(location);
+        var basename = path.basename(location);
 
         var conditions =
           [ location.indexOf('node_modules') < 0

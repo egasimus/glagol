@@ -1,10 +1,7 @@
 var fs        = require('fs')
   , path      = require('path')
-  , chokidar  = require('chokidar')
-  , glob      = require('glob')
   , colors    = require('colors')
   , extend    = require('extend')
-  , EE2       = require('eventemitter2').EventEmitter2
   , File      = require('./file')
   , Directory = require('./directory')
   , Link      = require('./link')
@@ -24,10 +21,12 @@ function Loader (baseOptions) {
     , log:        true
     , eager:      true
     , shorthands: true
+    , printTree:  true
     , formats:    require('../formats/index.js') }, baseOptions);
 
   // events and logging
-  load.events = new EE2({ maxListeners: 0 });
+  load.events = new (require('eventemitter2').EventEmitter2)(
+    { maxListeners: 0 });
   if (load.options.log) {
     load.events.on('added',   Loader.defaults.log.added);
     load.events.on('changed', Loader.defaults.log.changed);
@@ -39,7 +38,7 @@ function Loader (baseOptions) {
 
   // a single watcher keeps track of all loaded nodes. its `depth` option
   // is set to 0, since directories are only ever added manually.
-  var watcher = load.watcher = new chokidar.FSWatcher(
+  var watcher = load.watcher = new (require('chokidar').FSWatcher)(
     { persistent: false, atomic: 1000, depth: 0 });
   watcher.on('add', added);
   watcher.on('addDir', added);
@@ -64,7 +63,8 @@ function Loader (baseOptions) {
     // load the node. if it's a directory, its contents are recursively loaded.
     // the initial loading pass is done synchronously; can't wait for
     // the watcher to detect and add files when we add directories to it.
-    return loadNode(rootPath, { linkPath: null, depth: 0 });
+    console.log(rootPath.bold);
+    return loadNode(rootPath, { linkPath: null, depth: -1 });
 
     function loadNode (location, state) {
 
@@ -74,13 +74,14 @@ function Loader (baseOptions) {
       if (!fs.existsSync(location)) throw error.FILE_NOT_FOUND(location);
 
       // dispatch on node type (TODO: socket, fifo, blockdev, chardev ?)
-      var stat = fs.lstatSync(location);
+      var stat = fs.lstatSync(location)
+        , newState = extend({}, state, { depth: state.depth + 1});
       if (stat.isSymbolicLink()) {
         var node = loadLink(location, state);
       } else if (stat.isFile()) {
         var node = loadFile(location, state);
       } else if (stat.isDirectory()) {
-        var node = loadDirectory(location, state);
+        var node = loadDirectory(location, newState);
       } else {
         throw error.LOADER_UNSUPPORTED(location);
       }
@@ -101,28 +102,43 @@ function Loader (baseOptions) {
       var target   = fs.readlinkSync(location)
         , resolved = path.resolve(location, '..', target)
         , name     = path.basename(location)
-        , node     = loadNode(resolved, state)
+        , newState = extend({}, state, { linkPath: state.linkPath || location })
+        , node     = loadNode(resolved, newState)
         , link     = Link(name, node);
       return Link(path.basename(location), node);
     }
 
     function loadDirectory (location, state) {
-      // load directory and contents
-      var dirNode = Directory(path.basename(location), options);
-      require('glob')
-        .sync(path.join(state.linkPath || location, "*"))
-        .forEach(function (f) {
-          if (options.filter(f)) { // skip filtered nodes
-            var newNode = loadNode(f, state);
-            if (newNode) dirNode.add(newNode); } });
 
       // add to watcher
       watcher.add(location);
+
+      if (options.printTree && state.depth > 0)
+        require('./util').printDirectory(location, state);
+
+      // load directory and contents
+      var dirNode = Directory(path.basename(location), options);
+      require('glob')
+        .sync(path.join(location, "*"))
+        .forEach(function (f, i, a) {
+          if (options.filter(f)) { // skip filtered nodes
+            var newState = extend({}, state,
+              { linkPath: null
+              , last: i === a.length - 1 })
+            var newNode = loadNode(f, newState);
+            if (newNode) dirNode.add(newNode);
+          } else {
+            require('./util').printIgnored(f, state, i, a);
+          } });
 
       return dirNode;
     }
 
     function loadFile (location, state) {
+
+      if (options.printTree && state.depth > 0)
+        require('./util').printFile(location, state);
+
       // load a file if not already loaded
       var node = File(path.basename(location), options);
 
@@ -201,7 +217,7 @@ function Loader (baseOptions) {
     // first 'changed' event for a node converts to 'added'
     if (node._justLoaded) {
       delete node._justLoaded;
-      load.events.emit('added', node);
+      //load.events.emit('added', node);
       if (node.parent) {
         node.parent.add(node) // re-add if deleted
         node.parent.events.emit('added', node);
@@ -262,18 +278,13 @@ Loader.defaults =
 
         var conditions =
           [ relpath.indexOf('node_modules') < 0
-          , !endsWith(basename, '.swp')
-          , !endsWith(basename, '.swo')
+          , !require('./util').endsWith(basename, '.swp')
+          , !require('./util').endsWith(basename, '.swo')
           , basename[0] !== '.' ];
-
-        function endsWith (x, y) {
-          if (x.lastIndexOf(y) < 0) return false;
-          return x.lastIndexOf(y) === x.length - y.length;
-        }
 
         var pass = !conditions.some(function (x) { return !x; });
         var regexp = new RegExp("^" + require('os').homedir())
-        if (!pass) console.log("not".red, fullPath.replace(regexp, "~"))
+        //if (!pass) console.log("not".red, fullPath.replace(regexp, "~"))
         return pass }
 
   , reader:
@@ -292,9 +303,9 @@ Loader.defaults =
       , changed:
           function logChange (node) {
             console.log("mod".yellow,
-              node.path.bold); }
+              node.path); }
 
       , removed:
           function logRemoval (node, parent) {
             console.log("del".red,
-              path.join(parent ? parent.path : "", node.name).bold); } } };
+              path.join(parent ? parent.path : "", node.name)); } } };

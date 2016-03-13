@@ -128,7 +128,8 @@ function Loader (baseOptions) {
             var newNode = loadNode(f, newState);
             if (newNode) dirNode.add(newNode);
           } else {
-            require('./util').printIgnored(f, state, i, a);
+            if (options.printTree)
+              require('./util').printIgnored(f, state, i, a);
           } });
 
       return dirNode;
@@ -136,7 +137,7 @@ function Loader (baseOptions) {
 
     function loadFile (location, state) {
 
-      if (options.printTree && state.depth > 0)
+      if (options.printTree)
         require('./util').printFile(location, state);
 
       // load a file if not already loaded

@@ -16,7 +16,7 @@ function printFile (location, state) {
 function printDirectory (location, state) {
   printTreeNode(state.depth - 1, state.last, true,
     path.basename(state.linkPath || location) +
-    (state.linkPath ? (" -> " + state.linkPath).white : ""))
+    (state.linkPath ? (" -> " + state.linkPath).gray : ""))
 }
 
 function printIgnored (f, state, i, a) {

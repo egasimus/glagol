@@ -31,119 +31,89 @@ function Loader (baseOptions) {
   if (load.options.log) {
     load.events.on('added',   Loader.defaults.log.added);
     load.events.on('changed', Loader.defaults.log.changed);
-    load.events.on('removed', Loader.defaults.log.removed);
-  }
+    load.events.on('removed', Loader.defaults.log.removed); }
 
-  // glagol objects corresponding to loaded filesystem nodes
+  // node cache: glagol objects corresponding to loaded filesystem nodes
   // (files, directories, etc.; henceforth: nodes) are stored here
   var nodes = {};
 
   // a single watcher keeps track of all loaded nodes. its `depth` option
-  // is set to 0, since directories are manually added to it during loading.
+  // is set to 0, since directories are only ever added manually.
   var watcher = load.watcher = new chokidar.FSWatcher(
-    { persistent: false
-    , atomic: 1000
-    , depth: 0 });
-
-  // bind watcher callbacks for this root path
-  // these keep track of changes to the actual files
-  // the point of adding them once per `load` call has to do with inheriting
-  // the options passed to that load call. this is unintuitive and now that
-  // options inheritance is implemented might be best resolved by removing
-  // the defaultLoader (TODO)
-  watcher.on('add',       added);
-  watcher.on('addDir',    added);
-  watcher.on('change',    changed);
-  watcher.on('unlink',    removed);
+    { persistent: false, atomic: 1000, depth: 0 });
+  watcher.on('add', added);
+  watcher.on('addDir', added);
+  watcher.on('change', changed);
+  watcher.on('unlink', removed);
   watcher.on('unlinkDir', removed);
 
   return load;
 
   function load (rootPath, _options) {
 
-    // use absolute path of requested starting location
+    // use absolute path of requested starting location, and deduplicate:
+    // if this path has already been loaded (as a result of having loaded some
+    // parent directory, perhaps) return the object that corresponds to it.
     rootPath = path.resolve(rootPath);
-
-    // deduplicate: if this path has already been loaded
-    // (as a result of having loaded some parent directory)
-    // return the object that corresponds to it
     if (nodes[rootPath]) return nodes[rootPath];
 
     // extend loader defaults with any user overrides for this load operation
     _options = _options || {};
     var options = extend(true, {}, load.options, _options);
 
-    // load node at `rootPath`.
-    // if it's a directory, its contents are recursively loaded.
-    // having passed the deduplication check above, we can assume
-    // that this node is so far completely unknown to this loader.
+    // load the node. if it's a directory, its contents are recursively loaded.
     // the initial loading pass is done synchronously; can't wait for
     // the watcher to detect and add files when we add directories to it.
-    return loadNode(rootPath);
+    return loadNode(rootPath, { linkPath: null, depth: 0 });
 
-    function loadNode (location, linkPath) {
+    function loadNode (location, state) {
 
-      // use absolute path of this node
+      // get absolute path of this node; deduplicate; throw error if missing
       location = path.resolve(location);
-
-      // deduplicate again
       if (nodes[location]) return nodes[location];
-
-      // missing nodes throw an error
       if (!fs.existsSync(location)) throw error.FILE_NOT_FOUND(location);
 
-      // get info about the filesystem node
+      // dispatch on node type (TODO: socket, fifo, blockdev, chardev ?)
       var stat = fs.lstatSync(location);
-
-      // dispatch on node type
-      // TODO: if possible, meaningfully integrate other Unix file types:
-      //       socket, fifo, block device, character device
       if (stat.isSymbolicLink()) {
-        var node = loadLink(location, linkPath);
+        var node = loadLink(location, state);
       } else if (stat.isFile()) {
-        var node = loadFile(location);
+        var node = loadFile(location, state);
       } else if (stat.isDirectory()) {
-        var node = loadDirectory(location, linkPath);
+        var node = loadDirectory(location, state);
       } else {
         throw error.LOADER_UNSUPPORTED(location);
       }
 
-      // the JS object that we just created to represent a filesystem node
-      // is made aware of the filesystem path that corresponds to it, and is
-      // stored into the loader's node cache.
-      node._sourcePath = location;
-      node._rootPath = rootPath;
-      node._loader = load;
-      nodes[location] = node;
-
+      // make node aware of its filesystem path, and store it in loader's cache.
       // the `_justLoaded` flag makes sure that the first `added` event emitted
       // by the watcher ever for a certain file, having found the node already
-      // loaded (by the initial `load(...)` call), does not turn into a `change`
-      // event.
+      // loaded (by the initial `load(...)` call), does not become `change`.
       node._justLoaded = true;
-
+      node._sourcePath = location;
+      //node._rootPath   = rootPath;
+      node._loader     = load;
+      nodes[location]  = node;
       return node;
     }
 
-    function loadLink (location, linkPath) {
+    function loadLink (location, state) {
       var target   = fs.readlinkSync(location)
         , resolved = path.resolve(location, '..', target)
         , name     = path.basename(location)
-        , node     = loadNode(resolved, linkPath || location)
+        , node     = loadNode(resolved, state)
         , link     = Link(name, node);
-      return Link(path.basename(location), loadNode(resolved));
+      return Link(path.basename(location), node);
     }
 
-    function loadDirectory (location, linkPath) {
-      // load a directory if not already loaded
-      var dirNode = nodes[location] || Directory(path.basename(location), options);
-
-      // recursively load its children
+    function loadDirectory (location, state) {
+      // load directory and contents
+      var dirNode = Directory(path.basename(location), options);
       require('glob')
-        .sync(path.join(linkPath || location, "*"))
+        .sync(path.join(state.linkPath || location, "*"))
         .forEach(function (f) {
           if (options.filter(f)) { // skip filtered nodes
-            var newNode = loadNode(f);
+            var newNode = loadNode(f, state);
             if (newNode) dirNode.add(newNode); } });
 
       // add to watcher
@@ -152,9 +122,9 @@ function Loader (baseOptions) {
       return dirNode;
     }
 
-    function loadFile (location) {
+    function loadFile (location, state) {
       // load a file if not already loaded
-      var node = nodes[location] || File(path.basename(location), options);
+      var node = File(path.basename(location), options);
 
       if (options.eager) {
 
@@ -284,18 +254,14 @@ Loader.defaults =
         //     check uses relative path so that any Glagol-aware libraries in
         //     `node_modules` can use the same loader without their files being
         //     ignored)
-        //   * filename starts with `.git`; the contents of Git's history dir and
-        //     `.gitignore`/`.gitkeep` files have little relevance to the workings
-        //     of the program managed by Glagol.
         //   * filename ends with `.swp` or `.swo`, a.k.a. Vim tempfiles
-        //   * also, any other dotfiles (making the `.git` check a bit redundant
+        //   * any dotfiles
 
         var relpath  = path.relative(rootPath || "", fullPath)
           , basename = path.basename(fullPath);
 
         var conditions =
           [ relpath.indexOf('node_modules') < 0
-          , basename.indexOf('.git') !== 0
           , !endsWith(basename, '.swp')
           , !endsWith(basename, '.swo')
           , basename[0] !== '.' ];
@@ -319,7 +285,7 @@ Loader.defaults =
           function logAddition (node) {
             var regexp = new RegExp("^" + require('os').homedir())
               , type   = node._glagol.type.toLowerCase().slice(0, 3).green
-              , root   = node._rootPath.replace(regexp, "~").black
+              //, root   = node._rootPath.replace(regexp, "~").black
             if (node._glagol.link) type = "lnk".blue;
             console.log(type, node._sourcePath.replace(regexp, "~")); }
 

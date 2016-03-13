@@ -92,7 +92,6 @@ function Loader (baseOptions) {
       // loaded (by the initial `load(...)` call), does not become `change`.
       node._justLoaded = true;
       node._sourcePath = location;
-      //node._rootPath   = rootPath;
       node._loader     = load;
       nodes[location]  = node;
       return node;
@@ -179,8 +178,6 @@ function Loader (baseOptions) {
   // out all the irrelevant events and run only the right one.
 
   function added (f, s) {
-    //if (!isChildOf(rootPath, f)) return;
-
     // normalize: if an object already exists in memory
     // for this path, then this should be a change event
     if (nodes[f]) return changed(f, s);
@@ -200,8 +197,6 @@ function Loader (baseOptions) {
   }
 
   function changed (f, s) {
-    //if (!isChildOf(rootPath, f)) return;
-
     // normalize: if no object exists in memory for this
     // path, then this should be an add event
     var node = nodes[f];
@@ -229,8 +224,6 @@ function Loader (baseOptions) {
   }
 
   function removed (f, s) {
-    //if (!isChildOf(rootPath, f)) return;
-
     var node = nodes[f];
 
     // normalize: if an object is already missing from memory,
@@ -246,9 +239,6 @@ function Loader (baseOptions) {
     if (parent) parent.remove(node);
     node.parent = parent;
     node._justLoaded = true;
-
-    // remove loader's reference to deleted node
-    // delete nodes[f];
 
     // emit events
     load.events.emit('removed', node, parent);
@@ -271,7 +261,7 @@ Loader.defaults =
         //     ignored)
         //   * filename ends with `.swp` or `.swo`, a.k.a. Vim tempfiles
         //   * any dotfiles
-        //
+
         var basename = path.basename(location);
 
         var conditions =
@@ -281,9 +271,8 @@ Loader.defaults =
           , basename[0] !== '.' ];
 
         var pass = !conditions.some(function (x) { return !x; });
-        var regexp = new RegExp("^" + require('os').homedir())
-        //if (!pass) console.log("not".red, fullPath.replace(regexp, "~"))
-        return pass }
+        var regexp = new RegExp("^" + require('os').homedir());
+        return pass; }
 
   , reader:
       function defaultReader (location) {
@@ -292,8 +281,7 @@ Loader.defaults =
   , log:
       { added:
           function logAddition (node) {
-            var type = node._glagol.type.toLowerCase().slice(0, 3).green
-              //, root   = node._rootPath.replace(regexp, "~").black
+            var type = node._glagol.type.toLowerCase().slice(0, 3).green;
             if (node._glagol.link) type = "lnk".blue;
             console.log(type, require('./util').homedir(node._sourcePath)); }
 

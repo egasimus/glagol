@@ -1,30 +1,41 @@
 var path = require('path');
 
+module.exports =
+  { printFile: printFile
+  , printDirectory: printDirectory
+  , printIgnored: printIgnored
+  , printTreeNode: printTreeNode
+  , endsWith: endsWith }
 
-module.exports.printFile = function printFile (location, state) {
-  console.log(
-    Array(state.depth).join('│ ') +
-    (state.last ? '└' : '├') +
-    "╴" + path.basename(state.linkPath || location) +
+function printFile (location, state) {
+  printTreeNode(state.depth, state.last, false,
+    path.basename(state.linkPath || location) +
     (state.linkPath ? " -> " + state.linkPath : ""))
 }
 
-module.exports.printDirectory = function printDirectory (location, state) {
-  console.log(
-    Array(state.depth - 1).join('│ ') +
-    (state.last ? '└' : '├') +
-    "╴" + path.basename(state.linkPath || location) +
+function printDirectory (location, state) {
+  printTreeNode(state.depth - 1, state.last, true,
+    path.basename(state.linkPath || location) +
     (state.linkPath ? (" -> " + state.linkPath).white : ""))
 }
 
-module.exports.printIgnored = function printIgnored (f, state, i, a) {
-  console.log(
-    Array(state.depth).join('│ ') +
-    (i === a.length - 1 ? '└' : '├') +
-    "╴" + path.basename(f).gray, "X".red);
+function printIgnored (f, state, i, a) {
+  printTreeNode(state.depth, i === a.length - 1, false,
+    path.basename(f).gray + ' ' + 'X'.red)
 }
 
-module.exports.endsWith = function endsWith (x, y) {
+function printTreeNode (depth, last, dir, name) {
+  var chars = printTreeNode._treeCharacters;
+  console.log(
+    Array(depth).join(chars[0] + ' ') + 
+    (last ? (dir ? chars[1] : chars[2]) : (dir ? chars[3] : chars[4])) +
+    (dir ? chars[5] : chars[6]) +
+    name);
+}
+
+printTreeNode._treeCharacters = [ '│', '┕', '└', '┝', '├', '╸' , '╴']
+
+function endsWith (x, y) {
   if (x.lastIndexOf(y) < 0) return false;
   return x.lastIndexOf(y) === x.length - y.length;
 }

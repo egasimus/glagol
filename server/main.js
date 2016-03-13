@@ -8,16 +8,16 @@
   })
 
   server.sockets.on("connection", function (socket) {
-    socket.on("message", function dispatch (msg) {
-      if (msg === "glagol") {
+    socket.onmessage = function dispatch (msg) {
+      if (msg.data === "glagol") {
+        socket.onmessage = null;
         _.lib.bundler.updater.connected(_.routes, socket);
-        socket.off("message", dispatch)
       }
-      if (msg === "riko") {
+      if (msg.data === "riko") {
+        socket.onmessage = null;
         _.lib.api.connect(socket, _.api);
-        socket.off("message", dispatch);
       }
-    })
+    }
   })
 
 })

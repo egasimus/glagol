@@ -13,18 +13,18 @@
 
     return { ids: ids, deps: deps }
 
-    function _detect (node) {
+    function _detect (node, link) {
 
       if (node.nodes) {
 
         Object.keys(node.nodes).map(function (n) {
-          _detect(node.nodes[n]);
+          _detect(node.nodes[n], (node._glagol.link ? node.path : null) || link);
         })
 
       } else if (node.compiled) {
 
         var opts   = { filename: node._sourcePath || "" }
-          , key    = '/' + path.relative(rootNode.path, node.path)
+          , key    = (link || '') + '/' + path.relative(rootNode.path, node.path)
           , myDeps = deps[key] = {};
 
         require('detective')(node.compiled).forEach(function (d) {

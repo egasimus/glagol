@@ -15,7 +15,7 @@ function printFile (location, state) {
 
 function printDirectory (location, state) {
   printTreeNode(state.depth, state.last, true,
-    path.basename(state.linkPath || location) + '/' +
+    path.basename(state.linkPath || location).bold + '/' +
     (state.linkPath ? (" -> " + state.linkPath).gray : ""))
 }
 

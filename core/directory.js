@@ -24,7 +24,7 @@ var Directory = module.exports = function Directory () {
 
   // the core of our directory object
   function directory () {
-    if (!directory._cache) directory._cache = require('./tree.js')(directory);
+    if (!directory._cache) directory._cache = getTree(directory);
     return directory._cache;
   }
 
@@ -211,4 +211,66 @@ function getOptions () {
 
 function setOptions (v) {
   return this._options = v;
+}
+
+function getTree (node) {
+
+  // from file, . points to parent and .. to grandparent;
+  // from dir, .. points to parent and . to self.
+
+  if (File.is(node)) {
+
+    if (!node.parent) throw error.TREE_NO_PARENT(node.name);
+    return getTree(node.parent);
+
+  } else if (Directory.is(node)) {
+
+    var tree = {};
+
+    Object.keys(node.nodes).map(function (name) {
+      Object.defineProperty(tree, translate(name),
+        { configurable: true
+        , enumerable:   true
+        , get: treeGetter.bind(node, name)
+        , set: treeSetter.bind(node, name) }); });
+
+    addHiddenProperty(tree, '_',  tree);
+    addHiddenProperty(tree, '__', node.parent ? getTree(node.parent) : null);
+    addHiddenProperty(tree, '$',  getRoot(tree));
+
+    return tree;
+
+  } else throw error.FOREIGN_BODY(node);
+
+};
+
+function getRoot (tree) {
+  while (tree.__) tree = tree.__;
+  return tree;
+}
+
+function treeGetter (name) {
+  var node = this.nodes[name];
+  if (!node) return undefined;
+  return this.nodes[name]();
+}
+
+function treeSetter (name, value) {
+  throw error.TREE_CAN_NOT_SET(this.path, name);
+}
+
+function translate (name) {
+  // strip extension, replace hyphenated-identifiers with camelCasedOnes
+  if (-1 < name.indexOf('.')) name = name.substr(0, name.lastIndexOf('.'));
+  name = name.replace(/-(.)/g, function (g) { return g[1].toUpperCase(); });
+
+  return name;
+}
+
+function addHiddenProperty (obj, id, val) {
+  Object.defineProperty(obj, id, {
+    configurable: true,
+    enumerable:   false,
+    value:        val
+  });
 }

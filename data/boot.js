@@ -13,12 +13,9 @@
   app().main();
 
   var socket = new WebSocket("ws://" + window.location.host);
-  socket.onopen = function () {
-    socket.send('glagol');
-  }
+  socket.onopen = function () { socket.send('glagol'); }
   socket.onmessage = function (msg) {
     var data = JSON.parse(msg.data);
-    console.log("->",data)
     switch (data.event) {
       case "glagol.added":
         glagol.defaultLoader.add(data.path, data.value);

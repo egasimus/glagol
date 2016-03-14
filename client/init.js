@@ -16,8 +16,9 @@
     _.connect(state); }
 
   function installAPI () {
-    root._options.globals = require('extend')(
-      root._options.globals, { API: getAPI() }) }
+    var extra = {}
+    extra[config.globalName] = 'API';
+    root._options.globals = require('extend')(root._options.globals, extra) }
 
   function getAPI () {
     return require('riko-api/client')(

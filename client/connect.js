@@ -1,8 +1,6 @@
-(function () {
-
-  var socket = new WebSocket("ws://" + window.location.host);
-  socket.onclose = function () { $.state.server.set(false) };
-  socket.onopen  = function () { $.state.server.set(true)  };
-  $.state.connection.set(require('q-connection')(socket));
-
+(function (state) {
+  state.socket         = new WebSocket("ws://" + window.location.host);
+  state.socket.onclose = function () { state.server = false };
+  state.socket.onopen  = function () { state.server = true  };
+  state.connection     = require('q-connection')(state.socket);
 })

@@ -150,9 +150,11 @@ function getFormat () {
 function getOptions () {
   var baseOptions = {};
   if (this.parent) baseOptions = this.parent.options;
-  return extend(true, {}, baseOptions, this._options);
+  return extend(true, baseOptions, this._options);
 }
 
 function setOptions (v) {
-  return this._options = v;;
+  this._options = v;
+  this.reset();
+  return v;
 }

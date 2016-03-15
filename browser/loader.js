@@ -58,6 +58,9 @@ function Loader (baseOptions) {
     if (node) return update(name, source);
     node = load(name, source);
     load.events.emit('added', node);
+    if (!Directory.is(node) && node.parent) {
+      node.parent.events.emit('added', node);
+    }
   }
 
   function update (name, source) {
@@ -66,6 +69,9 @@ function Loader (baseOptions) {
     node.source = source;
     load.events.emit('changed', node);
     node.events.emit('changed', node);
+    if (!Directory.is(node) && node.parent) {
+      node.parent.events.emit('changed', node);
+    }
   }
 
   function remove (name) {
@@ -78,6 +84,9 @@ function Loader (baseOptions) {
 
     load.events.emit('removed', node, parent);
     node.events.emit('removed', node, parent);
+    if (!Directory.is(node) && parent) {
+      parent.events.emit('changed', node);
+    }
   }
 
 }

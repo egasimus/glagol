@@ -1,6 +1,6 @@
 var path   = require('path')
   , EE2    = require('eventemitter2').EventEmitter2
-  , extend = require('extend')
+  , extend = require('extend');
 
 var error  = require('./error')
   , File   = require('./file');
@@ -81,7 +81,7 @@ Directory.is = function (node) {
   return node &&
     node._glagol instanceof Object &&
     node._glagol.type === 'Directory';
-}
+};
 
 function getPath () {
   if (!this.parent) return '/';
@@ -154,8 +154,6 @@ function overlay () {
         if (oldNode) self.remove(oldNode);
         self.add(newNode);
       }
-
-      console.log(Object.keys(self.nodes))
     }
 
   });
@@ -206,17 +204,16 @@ function get (location) {
 function getOptions () {
   var baseOptions = {};
   if (this.parent) baseOptions = this.parent.options;
-  return extend(true, {}, baseOptions, this._options);
+  return extend(true, baseOptions, this._options);
 }
 
 function setOptions (v) {
-  return this._options = v;
+  this._options = v;
+  this.reset();
+  return this._options;
 }
 
 function getTree (node) {
-
-  // from file, . points to parent and .. to grandparent;
-  // from dir, .. points to parent and . to self.
 
   if (File.is(node)) {
 
@@ -240,9 +237,13 @@ function getTree (node) {
 
     return tree;
 
-  } else throw error.FOREIGN_BODY(node);
+  } else {
 
-};
+    throw error.FOREIGN_BODY(node);
+
+  }
+
+}
 
 function getRoot (tree) {
   while (tree.__) tree = tree.__;
@@ -263,7 +264,6 @@ function translate (name) {
   // strip extension, replace hyphenated-identifiers with camelCasedOnes
   if (-1 < name.indexOf('.')) name = name.substr(0, name.lastIndexOf('.'));
   name = name.replace(/-(.)/g, function (g) { return g[1].toUpperCase(); });
-
   return name;
 }
 

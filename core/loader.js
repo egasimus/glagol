@@ -193,7 +193,9 @@ function Loader (baseOptions) {
 
     // emit events
     load.events.emit('added', node);
-    if (parent) parent.events.emit('added', node);
+    if (!Directory.is(node) && node.parent) {
+      parent.events.emit('added', node);
+    }
   }
 
   function changed (f, s) {
@@ -219,7 +221,9 @@ function Loader (baseOptions) {
     } else {
       load.events.emit('changed', node);
       node.events.emit('changed', node);
-      if (node.parent) node.parent.events.emit('changed', node);
+      if (!Directory.is(node) && node.parent) {
+        node.parent.events.emit('changed', node);
+      }
     }
   }
 
@@ -235,6 +239,7 @@ function Loader (baseOptions) {
     // so that the deleted node does not forget its relative location.
     // also set `_justLoaded` flag, so that next event is `added`, not
     // `changed`.
+    // TODO? short circuiting delete if no parent
     var parent = node.parent;
     if (parent) parent.remove(node);
     node.parent = parent;
@@ -243,7 +248,9 @@ function Loader (baseOptions) {
     // emit events
     load.events.emit('removed', node, parent);
     node.events.emit('removed', node, parent);
-    if (parent) parent.events.emit('removed', node, parent);
+    if (!Directory.is(node) && parent) {
+      parent.events.emit('removed', node, parent);
+    }
   }
 
 }

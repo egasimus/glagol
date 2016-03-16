@@ -1,17 +1,13 @@
-(function () {
+(function () { return {
 
-  return {
+  session: {
 
-    session: {
+    start: function () {
 
-      start: function () {
-
-        console.log("start session")
-
-      }
+      console.log("start session")
 
     }
 
   }
 
-})
+} })

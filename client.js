@@ -6,7 +6,7 @@ module.exports = function apiClient (getConnection) {
   function apiCall (path) {
     var args = Array.prototype.slice.call(arguments, 1)
     var connection = apiCall.getConnection();
-    console.debug("api call", path, args, connection);
+    console.debug("api call", path, args);
     return connection.then(function (connection) {
       return connection.connection.fcall(path, args) })
   }

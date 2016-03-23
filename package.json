@@ -2,7 +2,7 @@
   "name": "glagol-inspector",
   "version": "0.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "inspector",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

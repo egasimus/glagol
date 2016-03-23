@@ -1,5 +1,10 @@
 module.exports = function apiServer (getApi) {
 
+  apiCall.getApi = getApi;
+  apiCall.delimiter = '/';
+
+  return apiCall;
+
   function apiCall (path, args) {
 
     return new Promise(function (win, fail) {
@@ -66,11 +71,6 @@ module.exports = function apiServer (getApi) {
     })
 
   }
-
-  apiCall.getApi = getApi;
-  apiCall.delimiter = '/';
-
-  return apiCall;
 
 }
 

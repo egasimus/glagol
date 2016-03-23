@@ -233,7 +233,7 @@ function getTree (node) {
 
     addHiddenProperty(tree, '_',  tree);
     addHiddenProperty(tree, '__', node.parent ? getTree(node.parent) : null);
-    addHiddenProperty(tree, '$',  getRoot(tree));
+    addHiddenProperty(tree, '$',  getTreeRoot(tree));
 
     return tree;
 
@@ -245,7 +245,7 @@ function getTree (node) {
 
 }
 
-function getRoot (tree) {
+function getTreeRoot (tree) {
   while (tree.__) tree = tree.__;
   return tree;
 }

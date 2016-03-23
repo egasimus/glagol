@@ -9,6 +9,7 @@
   "author": "Adam Avramov <fallenblood@example.com> (http://github.com/egasimus)",
   "license": "ISC",
   "dependencies": {
+    "q": "^1.4.1",
     "q-connection": "^0.6.1",
     "riko-api": "git+https://github.com/egasimus/riko-api.git"
   }

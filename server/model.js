@@ -1,5 +1,5 @@
-module.exports = {
+module.exports = require('riko-mvc').M({
 
   sessions: {},
 
-}
+})

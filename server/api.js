@@ -20,8 +20,10 @@ module.exports =
         socket.onerror = fail.bind(null, 'could not connect to ' + address);
         socket.onopen = function () {
           socket.onerror = null;
-          if (_.model.sessions[address]) _.model.sessions[address].close();
-          _.model.sessions[address] = socket;
+          var sessions = _.model.sessions()
+            , session  = sessions[address] || {}
+          if (session.socket) session.socket.close();
+          _.model.sessions.put(address, { socket: socket });
           win(address);
         }
       })
@@ -39,6 +41,7 @@ module.exports =
 
 function serialize (data) {
   return JSON.stringify(data, function (key, val) {
+    if (key === 'socket') return undefined;
     return val;
   });
 }

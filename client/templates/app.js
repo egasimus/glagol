@@ -36,6 +36,12 @@
     , padding: '3px 6px'
     , cursor: 'pointer' }
 
+  var linkButtonStyle =
+    { color: '#888'
+    , textDecoration: 'none'
+    , borderBottom: '2px solid #888'
+    , cursor: 'pointer' }
+
   var inputStyle =
     { fontFamily: 'monospace'
     , fontWeight: 'bold'
@@ -72,7 +78,7 @@
         [ h('.TabBar',
           { style: tabBarStyle },
           Object.keys(state.sessions).map(function (id) {
-            var session = state.sessions[id];
+            var session = state.sessions[id] || {};
             return h('.Tab', { style: tabStyle }, String(session.address));
           }).concat([ h('.TabAdd', { style: tabAddStyle }, '+') ]))
         , state.focusedSession
@@ -80,16 +86,25 @@
             { style: tableStyle },
             [ h('tr',
               [ h('th', { style: headerStyle }, 'name')
+              , h('th', { style: headerStyle }, 'format')
               , h('th', { style: headerStyle }, 'source')
               , h('th', { style: headerStyle }, 'compiled')
-              , h('th', { style: headerStyle }, 'value') ])
+              , h('th', { style: headerStyle }, 'value')
+              , h('th', { style: headerStyle }, 'options')
+              ])
             ].concat(
-              Object.keys(state.sessions[state.focusedSession].data).map(
+              Object.keys(state.sessions[state.focusedSession].data || {}).map(
                 function (id) {
                   var data = state.sessions[state.focusedSession].data[id];
                   return h('tr',
                     [ h('td', { style: cellStyle }, id)
-                    , h('td', { style: cellStyle }, data) ]) })))
+                    , h('td', { style: cellStyle }, 'JavaScript')
+                    , h('td', { style: cellStyle }, data)
+                    , h('td', { style: cellStyle },
+                        h('a', { style: linkButtonStyle }, 'compile'))
+                    , h('td', { style: cellStyle },
+                        h('a', { style: linkButtonStyle }, 'run'))
+                    ]) })))
           : '' ])
 
   } else {

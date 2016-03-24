@@ -7,7 +7,7 @@
         [ h('.TabBar',
           Object.keys(state.sessions).map(function (id) {
             var session = state.sessions[id] || {};
-            return h('.Tab', String(session.address));
+            return h('.Tab.Active', String(session.address));
           }).concat([ h('.TabAdd', '+') ]))
         , state.focusedSession
           ? h('table',

@@ -1,6 +1,4 @@
 (function () {
-  var API = $.lib.api.init(Glagol).API
-    , App = $.lib.client.init(Glagol);
-  API("session/start")
-  return App;
+  window.API = $.lib.api.init(Glagol).API;
+  return $.lib.client.init(Glagol);
 })

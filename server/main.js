@@ -15,8 +15,7 @@
       }
       if (msg.data === "riko") {
         socket.onmessage = null;
-        socket.send('');
-        _.lib.api.connect(socket, _.api);
+        _.lib.api.connect(socket, function () { return _.api });
       }
     }
   })

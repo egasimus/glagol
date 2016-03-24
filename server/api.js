@@ -28,6 +28,9 @@ module.exports =
       function fetch (address) {
         console.log("fetching data for", address);
         return new Promise(function (win, fail) {
-          win(JSON.stringify({ 'foo': '1234', 'bar': '5678', 'baz': '9101112' }))
+          win(JSON.stringify(
+            { 'foo/':  '1234'
+            , '  bar': '5678'
+            , '  baz': '9101112' }))
         })
       } } }

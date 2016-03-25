@@ -26,7 +26,14 @@
       }
       if (msg.data === "riko") {
         socket.onmessage = null;
-        _.lib.api.connect(socket, function () { return _.api });
+        var id  = _.lib.shortid()
+          , api = _.lib.api.connect(socket, function () { return _.api });
+        console.log("opened user connection", id);
+        _.model.users.put(id, api);
+        socket.onclose = function () {
+          console.log("closing user connection", id);
+          _.model.users.delete(id);
+        }
       }
     }
   }

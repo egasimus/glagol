@@ -1,9 +1,10 @@
-module.exports =
-  { subscribe: function subscribe (cb) {
+module.exports = function (id) {
+  return {
+    subscribe: function subscribe (cb) {
       if (cb) _.model(function (val) { cb(serialize(val)) });
       return serialize(_.model());
-    }
-  , connect: function connect (address) {
+    },
+    connect: function connect (address) {
       console.log("connecting to debug session at", address);
       address = (address || '').split(':');
       var host, port;
@@ -23,12 +24,14 @@ module.exports =
           var sessions = _.model.sessions()
             , session  = sessions[address] || {}
           if (session.socket) session.socket.close();
-          _.model.sessions.put(address, { socket: socket });
+          _.model.sessions.put(address,
+            { address: address
+            , socket:  socket });
           win(address);
         }
       })
-    }
-  , fetch: function fetch (address) {
+    },
+    fetch: function fetch (address) {
       console.log("fetching data for", address);
       return new Promise(function (win, fail) {
         win(JSON.stringify(
@@ -37,11 +40,12 @@ module.exports =
           , '  baz': '9101112' }))
       })
     }
-  };
+  }
+};
 
 function serialize (data) {
   return JSON.stringify(data, function (key, val) {
-    if (key === 'socket') return undefined;
+    if (key === 'socket' || key === 'api') return undefined;
     return val;
   });
 }

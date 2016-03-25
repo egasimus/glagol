@@ -27,9 +27,9 @@
       if (msg.data === "riko") {
         socket.onmessage = null;
         var id  = _.lib.shortid()
-          , api = _.lib.api.connect(socket, function () { return _.api });
+          , api = _.lib.api.connect(socket, function () { return _.api(id) });
         console.log("opened user connection", id);
-        _.model.users.put(id, api);
+        _.model.users.put(id, { api: api });
         socket.onclose = function () {
           console.log("closing user connection", id);
           _.model.users.delete(id);

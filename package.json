@@ -1,6 +1,6 @@
 {
-  "name": "glagol-web-api",
-  "version": "0.0.0",
+  "name": "glagol-riko-api",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -11,6 +11,6 @@
   "dependencies": {
     "q": "^1.4.1",
     "q-connection": "^0.6.1",
-    "riko-api": "git+https://github.com/egasimus/riko-api.git"
+    "riko-api": "^0.2.0"
   }
 }

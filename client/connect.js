@@ -7,8 +7,7 @@
     state.socket.send('riko');
     state.server = true;
   }
-  //state.socket.onmessage = function () {
-    var connection = require('q-connection')(state.socket);
-    connected.resolve({ connection: connection })
-  //}
+
+  // connection is also a promise-like, so it must be wrapped in an object
+  connected.resolve({ connection: require('q-connection')(state.socket) })
 })

@@ -1,6 +1,6 @@
 {
   "name": "glagol-web-client",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Boilerplate for single-page browser app with Glagol",
   "repository": {
     "type": "git",

@@ -31,6 +31,10 @@ module.exports = function (id) {
         }
       })
     },
+    disconnect: function disconnect (address) {
+      console.log("disconnecting from debug session at", address);
+      _.model.sessions.delete(address);
+    },
     fetch: function fetch (address) {
       console.log("fetching data for", address);
       return new Promise(function (win, fail) {

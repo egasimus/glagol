@@ -64,10 +64,11 @@ input[type=text]
   // tab bar
   &Bar
     display flex
-    background #ddd
+    background #888
 
   // tab
   &
+    background #ddd
     flex-grow 1
     margin 0 3px
     display flex
@@ -75,11 +76,26 @@ input[type=text]
     align-items center
     cursor pointer
   &.Active
-    border-bottom 2px solid #555
+    font-weight bold
   &:hover, &Add:hover
-    background #eee
+    background #e0e0e0
   &Text
     padding 0 6px
+  &Connected
+    background #aadd55
+    width 12px
+    height 12px
+    border-radius 100%
+    &:after
+      content 'connected'
+      color #777
+      margin-left 15px
+      line-height 11px
+      text-transform uppercase
+      letter-spacing -1px
+      background white
+      padding 3px 6px
+      border-radius 3px
   &Close
     background none
     border none
@@ -96,10 +112,12 @@ input[type=text]
   &Add
     flex-grow 0
     width 36px
-    line-height 28px
+    line-height 36px
     font-size 24px
     text-align center
     cursor pointer
+    height 36px
+    border-radius 50%
 
 .Node
   &Name

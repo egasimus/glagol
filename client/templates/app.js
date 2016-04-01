@@ -2,18 +2,23 @@
 
   state = state || {};
 
+  console.log('->', state);
+
   return Object.keys(state.sessions).length > 0
     ? h('.App',
         [ h('.TabBar',
           Object.keys(state.sessions).map(function (id) {
-            var session = state.sessions[id] || {};
-            session = String(session.address);
+            var session = state.sessions[id] || {}
+              , address = String(session.address);
             return h('.Tab.Active',
-              [ h('.TabText', session)
+              [ h('.TabText', address)
+              , state.sockets[address]
+                ? h('.TabConnected')
+                : null
               , h('button.TabClose',
                   { onclick: function (e) {
                       e.preventDefault();
-                      $.commands.disconnect(session);
+                      $.commands.disconnect(address);
                     }},
                   '×') ]);
           }).concat([ h('.TabAdd', '+') ]))

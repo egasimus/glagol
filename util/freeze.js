@@ -7,6 +7,7 @@
   return function freeze (node, parent) {
 
     if (File.is(node)) {
+      if (node._mountTarget) return freeze(node._mountTarget);
       return node.compiled || "";
     } else if (Directory.is(node)) {
       var ice = {};

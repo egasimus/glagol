@@ -1,7 +1,7 @@
 {
   "name": "glagol-web",
-  "version": "0.4.0",
-  "description": "Client-side loader and web server to use with [Glagol](https://github.com/egasimus/glagol).",
+  "version": "0.4.1",
+  "description": "All-in-one Web app pipeline with server, bundler, and client-side loader, for use with Glagol. Deprecated in favor of separate modules.",
   "main": "index.js",
   "browser": "./browser/index.js",
   "scripts": {
@@ -13,6 +13,7 @@
     "glagol": "git://github.com/egasimus/glagol.git"
   },
   "dependencies": {
+    "browser-resolve": "^1.11.1",
     "browserify": "^12.0.1",
     "browserify-incremental-plugin": "https://github.com/egasimus/browserify-incremental-plugin",
     "detective": "^4.3.1",

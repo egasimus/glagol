@@ -32,6 +32,8 @@ function printTreeNode (depth, dir, name) {
 //printTreeNode._treeCharacters = [ '│', '┕', '└', '┝', '├', '╸' , '╴'].map(function (c) { return " " })
 
 function endsWith (x, y) {
+  x = x || '';
+  y = y || '';
   if (x.lastIndexOf(y) < 0) return false;
   return x.lastIndexOf(y) === x.length - y.length;
 }

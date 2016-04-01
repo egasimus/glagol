@@ -98,13 +98,17 @@ function Loader (baseOptions) {
     }
 
     function loadLink (location, state) {
+
       var target    = fs.realpathSync(location)
         , resolved  = path.resolve(location, '..', target)
         , name      = path.basename(location)
-        , nextState = extend({}, state, { linkPath: state.linkPath || location })
+        , linkPath  = state.linkPath || location
+        , nextState = extend({}, state, { linkPath: linkPath })
         , node      = loadNode(resolved, nextState)
         , link      = Link(name, node);
+
       return Link(path.basename(location), node);
+
     }
 
     function loadDirectory (location, state) {
@@ -116,20 +120,24 @@ function Loader (baseOptions) {
         require('./util').printDirectory(location, state);
 
       // load directory and contents
-      var dirNode = Directory(path.basename(location), options);
-      require('glob')
-        .sync(path.join(location, "*"))
-        .forEach(function (f, i, a) {
-          var nextState = extend({}, state, { linkPath: null })
-          if (options.filter(f)) { // skip filtered nodes
-            var newNode = loadNode(f, nextState);
-            if (newNode) dirNode.add(newNode);
-          } else {
-            if (options.printTree)
-              require('./util').printIgnored(f, nextState, i, a);
-          } });
+      var dirNode = Directory(path.basename(location), options)
+        , globs   = require('glob').sync(path.join(location, "*"))
+
+      globs.forEach(loadChild);
 
       return dirNode;
+
+      function loadChild (f, i, a) {
+        var nextState = extend({}, state, { linkPath: null })
+        if (options.filter(location, path.relative(location, f))) {
+          var newNode = loadNode(f, nextState);
+          if (newNode) dirNode.add(newNode);
+        } else {
+          if (options.printTree)
+            require('./util').printIgnored(f, nextState, i, a);
+        }
+      };
+
     }
 
     function loadFile (location, state) {
@@ -168,6 +176,7 @@ function Loader (baseOptions) {
       }
 
       return node;
+
     }
 
   }
@@ -183,7 +192,7 @@ function Loader (baseOptions) {
     if (nodes[f]) return changed(f, s);
 
     // load newly created node into glagol -- unless it's filtered out.
-    if (!load.options.filter(f)) return;
+    if (!load.options.filter(path.dirname(f), path.basename(f))) return;
     var node = load(f);
     if (!node) return;
 
@@ -257,7 +266,7 @@ function Loader (baseOptions) {
 
 Loader.defaults =
   { filter:
-      function defaultFilter (location) {
+      function defaultFilter (directory, name) {
         // by default, Glagol's loader ignores a filesystem node if its path matches
         // any of these conditions:
         //   * if its path (relative to loader root) contains `node_modules`
@@ -269,16 +278,16 @@ Loader.defaults =
         //   * filename ends with `.swp` or `.swo`, a.k.a. Vim tempfiles
         //   * any dotfiles
 
-        var basename = path.basename(location);
+        name = name || ''
 
         var conditions =
-          [ location.indexOf('node_modules') < 0
-          , !require('./util').endsWith(basename, '.swp')
-          , !require('./util').endsWith(basename, '.swo')
-          , basename[0] !== '.' ];
+            [ name !== 'node_modules'
+            , !require('./util').endsWith(name, '.swp')
+            , !require('./util').endsWith(name, '.swo')
+            , name[0] !== '.' ]
+          , pass =
+            !conditions.some(function (x) { return !x; });
 
-        var pass = !conditions.some(function (x) { return !x; });
-        var regexp = new RegExp("^" + require('os').homedir());
         return pass; }
 
   , reader:

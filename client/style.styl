@@ -57,15 +57,42 @@ input[type=text]
     justify-content center
     align-items center
 
-.TabBar
-  display flex
-  background #ddd
 
+// tabs
 .Tab
-  flex-grow 1
-  padding 6px
+
+  // tab bar
+  &Bar
+    display flex
+    background #ddd
+
+  // tab
+  &
+    flex-grow 1
+    margin 0 3px
+    display flex
+    justify-content space-between
+    align-items center
+    cursor pointer
   &.Active
     border-bottom 2px solid #555
+  &:hover, &Add:hover
+    background #eee
+  &Text
+    padding 0 6px
+  &Close
+    background none
+    border none
+    width 30px
+    height 30px
+    text-align center
+    margin 0 3px 0 0
+    color #777
+    border-radius 24px
+    &:hover
+      background white
+
+  // new tab button
   &Add
     flex-grow 0
     width 36px
@@ -73,8 +100,6 @@ input[type=text]
     font-size 24px
     text-align center
     cursor pointer
-  &:hover, &Add:hover
-    background #eee
 
 .Node
   &Name

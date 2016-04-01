@@ -7,7 +7,15 @@
         [ h('.TabBar',
           Object.keys(state.sessions).map(function (id) {
             var session = state.sessions[id] || {};
-            return h('.Tab.Active', String(session.address));
+            session = String(session.address);
+            return h('.Tab.Active',
+              [ h('.TabText', session)
+              , h('button.TabClose',
+                  { onclick: function (e) {
+                      e.preventDefault();
+                      $.commands.disconnect(session);
+                    }},
+                  '×') ]);
           }).concat([ h('.TabAdd', '+') ]))
         , state.focusedSession
           ? h('table',

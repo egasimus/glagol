@@ -2,8 +2,6 @@
 
   state = state || {};
 
-  console.log('->', state);
-
   return Object.keys(state.sessions).length > 0
     ? h('.App',
         [ h('.TabBar',
@@ -13,7 +11,11 @@
             return h('.Tab.Active',
               [ h('.TabText', address)
               , state.sockets[address]
-                ? h('.TabConnected')
+                ? h('.TabConnected',
+                  { onclick: function (e) {
+                      e.preventDefault();
+                      $.commands.disconnect(address).then(
+                        $.commands.connect.bind(null, address)) }})
                 : null
               , h('button.TabClose',
                   { onclick: function (e) {

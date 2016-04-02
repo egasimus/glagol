@@ -1,40 +1,37 @@
 module.exports = function (id) {
   return {
+
     subscribe: function subscribe (cb) {
       if (cb) _.model(function (val) { cb(serialize(val)) });
       return serialize(_.model());
     },
+
     connect: function connect (address) {
-      console.log("connecting to debug session at", address);
-      address = (address || '').split(':');
-      var host, port;
-      if (address.length === 1) {
-        host = 'localhost';
-        port = address[0];
-      } else {
-        host = address[0];
-        port = address[1];
+      var fragments = (address || '').split(':')
+        , fullAddress = '';
+      switch (fragments.length) {
+        case 2:
+          fullAddress = 'ws://' + fragments[0] + ':' + fragments[1];
+          break;
+        case 1:
+          fullAddress = 'ws://localhost:' + fragments[0];
+          break;
+        default:
+          fullAddress = address;
+          break;
       }
-      return new Promise(function (win, fail) {
-        var address = 'ws://' + (host || 'localhost') + ':' + port
-          , socket  = new (require('ws'))(address);
-        socket.onerror = fail.bind(null, 'could not connect to ' + address);
-        socket.onopen = function () {
-          socket.onerror = null;
-          var sessions = _.model.sessions()
-            , session  = sessions[address] || {}
-          if (session.socket) session.socket.close();
-          _.model.sessions.put(address,
-            { address: address
-            , socket:  socket });
-          win(address);
-        }
-      })
+      console.log("adding debug session at: " +
+        fullAddress +
+        (fullAddress !== address ? ' (parsed from ' + address + ')' : ""));
+      _.model.sessions.put(fullAddress, { address: fullAddress });
+      return fullAddress;
     },
+
     disconnect: function disconnect (address) {
-      console.log("disconnecting from debug session at", address);
+      console.log("removing debug session at", address);
       _.model.sessions.delete(address);
     },
+
     fetch: function fetch (address) {
       console.log("fetching data for", address);
       return new Promise(function (win, fail) {
@@ -44,6 +41,7 @@ module.exports = function (id) {
           , '  baz': '9101112' }))
       })
     }
+
   }
 };
 

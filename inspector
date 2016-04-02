@@ -1,12 +1,19 @@
 #!/usr/bin/env node
 
+// initalize core
 var glagol = require('glagol')
   , app    = glagol(require('path').resolve(__dirname, 'server'), {})
 
+// set correct glagol options on symlinked directories
 var libs = ['lib/bundler', 'lib/server'];
 libs.map(function (lib) {
   var lib = app.get(lib);
   lib.options = lib.get('glagol-options.js')();
 })
 
-app().main();
+// start, or export
+if (module === require.main) {
+  app().main();
+} else {
+  module.exports = app;
+}

@@ -16,7 +16,10 @@
                       e.preventDefault();
                       $.commands.disconnect(address).then(
                         $.commands.connect.bind(null, address)) }})
-                : null
+                : h('.TabNotConnected',
+                  { onclick: function (e) {
+                      e.preventDefault();
+                      $.commands.connect(address); }})
               , h('button.TabClose',
                   { onclick: function (e) {
                       e.preventDefault();

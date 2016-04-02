@@ -81,13 +81,11 @@ input[type=text]
     background #e0e0e0
   &Text
     padding 0 6px
-  &Connected
-    background #aadd55
+  &Connected, &NotConnected
     width 12px
     height 12px
     border-radius 100%
     &:after
-      content 'connected'
       color #777
       margin-left 15px
       line-height 11px
@@ -96,6 +94,19 @@ input[type=text]
       background white
       padding 3px 6px
       border-radius 3px
+      white-space nowrap
+  &NotConnected
+    background #dd5555
+    &:after
+      content 'not connected'
+    &:hover:after
+      content 'connect'
+  &Connected
+    background #aadd55
+    &:after
+      content 'connected'
+    &:hover:after
+      content 'reconnect'
   &Close
     background none
     border none

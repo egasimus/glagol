@@ -7,5 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Adam Avramov <fallenblood@example.com> (http://github.com/egasimus)",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "glagol": "egasimus/glagol#9765f89e3ed1c2ffd2d2097a223b374c02bcbec2",
+    "glagol-riko-api": "^0.1.0",
+    "ws": "^1.0.1"
+  }
 }

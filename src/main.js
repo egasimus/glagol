@@ -1,31 +1,40 @@
-(function (model) {
+(function (state) {
 
   // debugger state
-  var model = model ||
+  var state = state ||
     { app:    null
     , path:   null
     , port:   null
     , socket: null };
+
+  // enable live editing
+  //Glagol.events.once('changed', function (self) {
+    //if (server) {
+      //server.http.removeListener("listening", listening);
+      //server.sockets.removeListener("connection", connection);
+    //}
+    //self()(state);
+  //})
 
   // parse path
   var appPath = require('path').resolve(process.argv[2]);
   $.log('loading', appPath);
 
   // load app
-  model.app = require(appPath);
+  state.app = require(appPath);
   $.log('loaded app from', appPath);
 
   // parse port
   var debugPort = process.argv[3] || 1616;
   $.log('listening on port', debugPort);
-  model.port = debugPort;
+  state.port = debugPort;
 
   // start socket server
-  var sockets = new (require("ws").Server)({ port: model.port })
+  var sockets = new (require("ws").Server)({ port: state.port })
   sockets.on('connection', connect);
 
   // launch app TODO async?
-  model.app().main();
+  state.app().main();
 
   // socket numbers
   var socketId = 0;
@@ -33,17 +42,14 @@
   function connect (socket) {
     // get socket id
     var id = socketId++;
-    $.log('socket open', id);
+    $.log('socket', id, 'opened');
 
     // set close handler
-    socket.onclose = function () { console.log('socket close', id); }
+    socket.onclose = function () { console.log('socket', id, 'closed'); }
 
     // expose app for remote access
-    var connection = require('q-connection')(socket,
-      function () { return model.app });
+    var connection = require('q-connection')(socket, function () {
+      return _.serialize(state.app) });
   }
-
-  // return state
-  return model;
 
 })

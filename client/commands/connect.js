@@ -29,8 +29,10 @@
       model.put('status', 'connected');
       console.debug('opened socket', model().address);
       socket.onerror = socket.onclose = closed(model().address);
-      model().connection.get('path').done(ask);
-      win(model); } }
+      model().connection.fcall().then(function (app) {
+        ask(app);
+        win(model);
+      }) } }
 
   function closed (address) {
     return function () {

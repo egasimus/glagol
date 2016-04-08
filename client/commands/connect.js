@@ -29,7 +29,7 @@
       model.put('status', 'connected');
       console.debug('opened socket', model().address);
       socket.onerror = socket.onclose = closed(model().address);
-      model().connection.fcall().done(ask);
+      model().connection.get('path').done(ask);
       win(model); } }
 
   function closed (address) {
@@ -38,6 +38,7 @@
       App.model.sockets[address].put('status', 'closed'); } }
 
   function ask (app) {
+    console.log("ask", app);
     app.get('nodes').done(function (nodes) { console.log("nodes", nodes) }) }
 
 })

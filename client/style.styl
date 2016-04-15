@@ -9,9 +9,7 @@ body, table, input, select, textarea, button
   padding 0
 
 table
-  margin 6px 0
-  padding 0 3px
-  min-width 100%
+  padding 3px
 
 td, th
   text-align left
@@ -50,10 +48,10 @@ input[type=text]
     border-bottom-style solid
 
 .App
+  height 100%
+  display flex
+  flex-direction column
   &.Blank
-    height 100%
-    display flex
-    flex-direction column
     justify-content center
     align-items center
 
@@ -63,6 +61,7 @@ input[type=text]
 
   // tab bar
   &Bar
+    flex-shrink 0
     display flex
     background #888
 
@@ -143,3 +142,46 @@ input[type=text]
     white-space pre-wrap
     &:hover
       opacity 1
+
+.StatusBar
+  flex-shrink 0
+  display flex
+  flex-direction row
+  height 24px
+  background #ddd
+  justify-content space-between
+  &Navigation, &Presentation
+    display flex
+    flex-direction row
+  &Button
+    cursor pointer
+    margin-top 2px
+    margin-bottom 2px
+    line-height 18px
+    padding 1px 6px
+    background #eee
+    border-radius 3px
+    letter-spacing 1px
+  &Navigation > &Button
+    margin-left 6px
+    margin-right 0
+  &Presentation > &Button
+    margin-left 0
+    margin-right 6px
+
+.Session
+  flex-grow 1
+  overflow auto
+
+.SourceEditor
+  &Input
+    position absolute
+    top 0
+    left 0
+    width 100%
+    height 100%
+    overflow hidden
+    opacity 0.5
+    background none
+    border none
+

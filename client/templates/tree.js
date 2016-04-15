@@ -15,9 +15,9 @@
         
   function renderRow (depth, name, data) {
     return h('tr.Node',
-      [ h('td.NodeName', { style: { paddingLeft: depth * 20 + 'px' } }, name)
+      [ h('td.NodeName', { style: { paddingLeft: depth * 12 + 'px' } }, name)
       , h('td.NodeFormat',   data.format)
-      , h('td.NodeSource',   data ? data.source: '')
+      , h('td.NodeSource',   _.editor(data))
       , h('td.NodeCompiled', data.format ? h('a.ButtonLink', 'compile') : '')
       , h('td.NodeValue'   , data.format ? h('a.ButtonLink', 'run')     : '')
       , h('td.NodeOptions') ]); }

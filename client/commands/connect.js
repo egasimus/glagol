@@ -25,9 +25,7 @@
   function onmessage (message) {
     if (message.data === 'hi') {
       App.model.sockets[address].status.set('connected');
-      App.model.sockets[address].socket().onmessage =
-        function () { $.api(address).apply(null, arguments) };
-      win(socket); } }
+      win(App.model.sockets[address].socket()); } }
 
   function onerror () {
     return function () {

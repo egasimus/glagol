@@ -54,8 +54,13 @@
             , 'connect')]) ]);
 
   function connect (e) {
-    $.commands.connect(eventToAddress(e)).then(
-      function (socket) { socket.send('subscribe'); }); }
+    var address = eventToAddress(e);
+    $.commands.connect(address).then(function (socket) {
+      socket.addEventListener('message', function (message) {
+        if (message.data.indexOf('update%') === 0)
+          $.commands.updateSession(
+            address, JSON.parse(message.data.slice(7))) });
+      socket.send('subscribe'); }); }
 
   function disconnect (e) {
     $.commands.disconnect(eventToAddress(e)); }

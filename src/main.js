@@ -1,47 +1,45 @@
 (function (state) {
 
   // debugger state
-  var state = state ||
-    { app:    null
-    , path:   null
-    , port:   null
-    , socket: null };
+  var state = state || {};
 
   // enable live editing
-  //Glagol.events.once('changed', function (self) {
-    //if (server) {
-      //server.http.removeListener("listening", listening);
-      //server.sockets.removeListener("connection", connection);
-    //}
-    //self()(state);
-  //})
+  Glagol.events.once('changed', reload);
 
   // parse path
-  var appPath = require('path').resolve(process.argv[2]);
-  $.log('loading', appPath);
+  if (!state.path) {
+    state.path = require('path').resolve(process.argv[2]);
+  }
 
   // load app
-  state.app = require(appPath);
-  $.log('loaded app from', appPath);
+  if (!state.app) {
+    state.app = require(state.path);
+    $.log('loaded app from', state.path);
+  }
 
   // parse port
-  var debugPort = process.argv[3] || 1616;
-  $.log('listening on port', debugPort);
-  state.port = debugPort;
+  if (!state.port) {
+    state.port = process.argv[3] || 1616;
+  }
 
   // start socket server
-  var sockets = new (require("ws").Server)({ port: state.port })
-  sockets.on('connection', connect);
+  if (!state.sockets) {
+    state.sockets = new (require("ws").Server)({ port: state.port })
+    $.log('listening on port', state.port);
+  }
+  state.sockets.on('connection', connect);
 
-  // launch app TODO async?
-  state.app().main();
-
-  // socket numbers
-  var socketId = 0;
+  // launch app
+  // TODO async?
+  if (!state.started) {
+    state.app().main();
+    state.started = true;
+    $.log('started app', state.app);
+  }
 
   function connect (socket) {
     // get socket id
-    var id = socketId++;
+    var id = state.socketId++;
     $.log('socket', id, 'opened');
 
     // set close handler
@@ -50,6 +48,14 @@
     // expose app for remote access
     var connection = require('q-connection')(socket, function () {
       return _.serialize(state.app) });
+  }
+
+  function reload (self) {
+    if (state.sockets) {
+      $.log('restarting server...')
+      state.sockets.removeListener("connection", connect);
+    }
+    self()(state);
   }
 
 })

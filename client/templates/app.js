@@ -28,18 +28,7 @@
               , h('th', 'value')
               , h('th', 'options')
               ])
-            ].concat(
-              Object.keys(state.sessions[state.focusedSession].nodes || {}).map(
-                function (id) {
-                  var data = state.sessions[state.focusedSession].nodes[id];
-                  return h('tr',
-                    [ h('td.NodeName', id)
-                    , h('td', 'JavaScript')
-                    , h('td', data)
-                    , h('td', h('a.ButtonLink', 'compile'))
-                    , h('td', h('a.ButtonLink', 'run'))
-                    , h('td')
-                    ]) })))
+            ].concat(_.tree(state.sessions[state.focusedSession].root)))
           : '' ])
     : h('.App.Blank',
         [ h('h1', 'Glagol Inspector')

@@ -8,6 +8,10 @@
       socket.send('hi');
     }
 
+    if (message.data === 'subscribe') {
+      socket.send('update%' + JSON.stringify(_.serialize(state.app)));
+    }
+
   }
 
 })

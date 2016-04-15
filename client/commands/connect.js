@@ -1,46 +1,36 @@
-(function connect (address) {
+(function connect (address) { return new Promise(function (win, fail) {
 
-  var connections = [];
+  console.debug('opening session for', address);
 
-  return new Promise(
-    function (win, fail) {
-      console.debug('opening session for', address);
-      API('connect', address).done(function (address) {
-        console.debug('connecting to remote debugger at', address);
-        var socket     = new WebSocket(address)
-          , connection = require('q-connection')(socket);
-        socket.onclose = socket.onerror = error(fail, address);
-        socket.onopen  = opened(win, address, socket);
-        App.model.sockets.put(address,
-          { status:     'connecting'
-          , address:    address
-          , socket:     socket
-          , connection: connection }) }) });
+  API('connect', address).done(init);
 
-  function error (fail, address) {
+  function init (address) {
+    console.debug('connecting to remote debugger at', address);
+    App.model.sockets.put(address,
+      { status: 'connecting'
+      , address: address });
+    App.model.sockets[address].put('socket', require('extend')(
+      new WebSocket(address),
+      { onopen:    onopen
+      , onclose:   onerror
+      , onerror:   onerror
+      , onmessage: onmessage }));
+    App.model.sockets[address].status(function (status) {
+      console.debug('socket', address, 'status', status); }) };
+
+  function onopen () {
+    App.model.sockets[address].status.set('handshaking');
+    App.model.sockets[address].socket().send('hello'); }
+
+  function onmessage (message) {
+    if (message.data === 'hi') {
+      App.model.sockets[address].status.set('connected');
+      App.model.sockets[address].socket().onmessage =
+        function () { $.api(address).apply(null, arguments) };
+      win(socket); } }
+
+  function onerror () {
     return function () {
       var model = App.model.sockets[address];
       model.put('status', 'failed');
-      fail('could not connect', model); } }
-
-  function opened (win, address) {
-    return function () {
-      var model = App.model.sockets[address];
-      model.put('status', 'connected');
-      console.debug('opened socket', model().address);
-      socket.onerror = socket.onclose = closed(model().address);
-      model().connection.fcall().then(function (app) {
-        ask(app);
-        win(model);
-      }) } }
-
-  function closed (address) {
-    return function () {
-      var model = App.model.sockets[address];
-      App.model.sockets[address].put('status', 'closed'); } }
-
-  function ask (app) {
-    console.log("ask", app);
-    app.get('nodes').done(function (nodes) { console.log("nodes", nodes) }) }
-
-})
+      fail('could not connect', model); } } } ); });

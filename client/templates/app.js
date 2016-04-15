@@ -9,23 +9,13 @@
             var session = state.sessions[id] || {}
               , address = String(session.address);
             return h('.Tab.Active',
+              { dataset: { address: address } },
               [ h('.TabText', address)
-              , state.sockets[address]
-                ? h('.TabConnected',
-                  { onclick: function (e) {
-                      e.preventDefault();
-                      $.commands.disconnect(address).then(
-                        $.commands.connect.bind(null, address)) }})
-                : h('.TabNotConnected',
-                  { onclick: function (e) {
-                      e.preventDefault();
-                      $.commands.connect(address); }})
-              , h('button.TabClose',
-                  { onclick: function (e) {
-                      e.preventDefault();
-                      $.commands.disconnect(address);
-                    }},
-                  '×') ]);
+              , (state.sockets[address]
+                && state.sockets[address].status === 'connected')
+                ? h('.TabConnected',    { onclick: disconnect })
+                : h('.TabNotConnected', { onclick: connect    })
+              , h('button.TabClose',    { onclick: remove     }, '×') ]);
           }).concat([ h('.TabAdd', '+') ]))
         , state.focusedSession
           ? h('table',
@@ -62,5 +52,19 @@
                 var address = document.getElementById('session-id').value
                 $.commands.connect(address); } }
             , 'connect')]) ]);
+
+  function connect (e) {
+    $.commands.connect(eventToAddress(e)).then(
+      function (socket) { socket.send('subscribe'); }); }
+
+  function disconnect (e) {
+    $.commands.disconnect(eventToAddress(e)); }
+
+  function remove (e) {
+    $.commands.remove(eventToAddress(e)); }
+
+  function eventToAddress (e) {
+    e.preventDefault();
+    return e.target.parentElement.dataset.address; }
 
 })

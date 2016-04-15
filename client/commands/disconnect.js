@@ -1,15 +1,10 @@
 (function disconnect (address) {
-
-  return new Promise(
-    function (win, fail) {
-      API('disconnect', address).done(
-        function () {
-          console.debug('disconnected from', address)
-          win(address);
-        },
-        function (err) {
-          console.debug('could not disconnect from', address, err);
-          fail(address, err);
-        }) })
-
-})
+  return new Promise(function (win) {
+    var sockets = App.model.sockets
+      , status  = sockets[address].status
+      , socket  = sockets[address].socket;
+    status.set('disconnecting');
+    socket().onclose = function () {
+      status.set('disconnected');
+      win(address); }
+    socket().close(); }); })

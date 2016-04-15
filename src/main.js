@@ -28,26 +28,24 @@
     $.log('listening on port', state.port);
   }
   state.sockets.on('connection', connect);
+  state.lastSocket = state.lastSocket || -1;
 
   // launch app
   // TODO async?
   if (!state.started) {
     state.app().main();
     state.started = true;
-    $.log('started app', state.app);
+    $.log('started app', _.serialize(state.app));
   }
 
   function connect (socket) {
-    // get socket id
-    var id = state.socketId++;
+    // give the socket an id, for reference
+    var id = ++state.lastSocket;
     $.log('socket', id, 'opened');
 
-    // set close handler
-    socket.onclose = function () { console.log('socket', id, 'closed'); }
-
-    // expose app for remote access
-    var connection = require('q-connection')(socket, function () {
-      return _.serialize(state.app) });
+    // set socket handlers
+    socket.onclose   = function () { console.log('socket', id, 'closed') }
+    socket.onmessage = function () { _.api(state, socket).apply(this, arguments) }
   }
 
   function reload (self) {

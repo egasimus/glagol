@@ -5,7 +5,7 @@
   return rows;
 
   function addRow (depth, id, row) {
-    rows.push(renderRow(depth, id, row))
+    rows.push(renderRow(depth, id + (row.nodes ? '/' : ''), row))
     if (row.nodes) {
       Object.keys(row.nodes).forEach(function (childId) {
         addRow(depth + 1, childId, row.nodes[childId]);

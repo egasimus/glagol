@@ -2,19 +2,19 @@ module.exports = function (id) {
   return {
 
     subscribe: function subscribe (cb) {
-      if (cb) _.model(function (val) { cb(serialize(val)) });
-      return serialize(_.model());
+      if (cb) $.model(function (val) { cb(serialize(val)) });
+      return serialize($.model());
     },
 
     add: function add (type, address) {
-      _model.sessions.put(address, { type: type, address: address });
+      $.model.frames.push({ type: type, address: address });
       $.log('added', type, 'at', address);
       return address;
     },
 
-    remove: function remove (address) {
+    remove: function remove (index) {
       console.log('remove', address);
-      _.model.sessions.delete(address);
+      $.model.frames.splice(index, 1);
     },
 
   }

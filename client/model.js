@@ -3,7 +3,8 @@ module.exports = {
   sessions: {},
   sockets: {},
   iframes: {},
-  windows: {},
+  frames: [],
+  focusedFrame: 0,
   focusedSession: null
 
 }

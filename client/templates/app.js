@@ -2,15 +2,16 @@
 
   state = state || {};
 
-  return Object.keys(state.sessions).length > 0
+  return state.frames.length > 0
     ? h('.App',
         [ h('.MainView',
-            [ h('.Sessions',
-                Object.keys(state.sessions).map(_.session.bind(null, state))) 
+            [ h('.Frames',
+                state.frames.map(_.frame)),
             , _.sidebar(state)
-            //, h('.SessionsToolbar')
+            //, h('.FramesToolbar')
             ])
-        , _.statusBar(state) ])
+        //, _.statusBar(state)
+        ])
     : _.welcome() ;
 
 })

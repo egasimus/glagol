@@ -1,7 +1,7 @@
 (function () {
 
   return h('.App.Blank',
-    [ h('h1', 'Glagol Inspector')
+    [ h('h1', 'Glagol')
     , h('form',
       [ h('input#session-id',
         { type:        'text'

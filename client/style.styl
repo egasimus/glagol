@@ -166,16 +166,17 @@ input[type=text]
   display flex
   flex-grow 1
 
-.Session
-  background white
+.Frame
+  background #ddd
   display flex
   flex-direction column
-  border-right 1px solid #ddd
+  border-right 1px solid #eee
   &Header
     background #ddd
     display flex
     align-items center
     flex-shrink 0
+    padding 0 3px
   &Title
     font-size 18px
     font-family serif
@@ -187,12 +188,19 @@ input[type=text]
     margin 0 6px
     background #ddd
     padding 3px 6px
+  &Close
+    font-size 30px
+    opacity 0.5
+    cursor pointer
+    &:hover
+      opacity 0.7
+      background #fff
   &Body
     overflow auto
-  &, &Body > table
-    background white
+    > table
+      background white
 
-.Sessions
+.Frames
   flex-grow 1
   display flex
   &Toolbar
@@ -218,7 +226,8 @@ input[type=text]
   h1
     font-family serif
     font-style italic
-    font-size 36px
+    font-size 6em
+    margin 0
 
 .Sidebar
   background #ddd
@@ -230,3 +239,11 @@ input[type=text]
       font-family serif
       font-style italic
       font-size 1.5em
+      cursor pointer
+  &Button
+    cursor pointer
+    &:hover
+      background #f0f0f0
+      border-radius 3px
+      margin 0 -3px
+      padding 0 3px

@@ -6,41 +6,16 @@ module.exports = function (id) {
       return serialize(_.model());
     },
 
-    connect: function connect (address) {
-      var fragments = (address || '').split(':')
-        , fullAddress = '';
-      switch (fragments.length) {
-        case 2:
-          fullAddress = 'ws://' + fragments[0] + ':' + fragments[1];
-          break;
-        case 1:
-          fullAddress = 'ws://localhost:' + fragments[0];
-          break;
-        default:
-          fullAddress = address;
-          break;
-      }
-      console.log("adding debug session at: " +
-        fullAddress +
-        (fullAddress !== address ? ' (parsed from ' + address + ')' : ""));
-      _.model.sessions.put(fullAddress, { address: fullAddress });
-      return fullAddress;
+    add: function add (type, address) {
+      _model.sessions.put(address, { type: type, address: address });
+      $.log('added', type, 'at', address);
+      return address;
     },
 
-    disconnect: function disconnect (address) {
-      console.log("removing debug session at", address);
+    remove: function remove (address) {
+      console.log('remove', address);
       _.model.sessions.delete(address);
     },
-
-    fetch: function fetch (address) {
-      console.log("fetching data for", address);
-      return new Promise(function (win, fail) {
-        win(JSON.stringify(
-          { 'foo/':  '1234'
-          , '  bar': '5678'
-          , '  baz': '9101112' }))
-      })
-    }
 
   }
 };

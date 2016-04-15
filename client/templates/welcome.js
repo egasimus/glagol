@@ -10,7 +10,7 @@
         { onclick: function (event) {
             event.preventDefault();
             var address = document.getElementById('session-id').value
-            $.commands.connect(address); } }
+            $.commands.add('glagol', address); } }
         , 'connect')]) ]);
 
 })

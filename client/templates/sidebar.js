@@ -11,12 +11,21 @@
   return h('.Sidebar',
     [ h('.SidebarSection',
       [ h('.SidebarSectionHeader', 'add...')
-      , h('.SidebarButton', 'glagol') 
-      , h('.SidebarButton', 'iframe') ])
+      , h('.SidebarButton', { onclick: add('glagol') }, 'glagol')
+      , h('.SidebarButton', { onclick: add('iframe') }, 'iframe') ])
     , h('.SidebarSection',
       [ h('.SidebarSectionHeader', 'windows:') ].concat(sessions))
     , h('.SidebarSection',
       [ h('.SidebarSectionHeader', 'sockets:') ].concat(sockets))
     ]);
+
+  function add(type) {
+    return function (event) {
+      event.preventDefautl();
+      if (type === 'iframe') {
+        console.log(App.model.iframes());
+      }
+    }
+  }
 
 })

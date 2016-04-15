@@ -2,7 +2,7 @@
 
   var obj = {};
 
-  obj.name = node.name;
+  obj.name_ = node.name;
 
   if (node.nodes) {
     obj.nodes = {};

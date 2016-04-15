@@ -7,6 +7,7 @@ body, table, input, select, textarea, button
   font-size 12px
   margin 0
   padding 0
+  background #777
 
 td, th
   text-align left
@@ -130,16 +131,10 @@ input[type=text]
     border-radius 24px
 
 .Node
-  opacity 0.8
-  &:hover
-    opacity 1
   &Name
     white-space pre-wrap
   &Source, &Compiled, &Value
-    opacity 0.8
     white-space pre-wrap
-    &:hover
-      opacity 1
 
 .StatusBar
   flex-shrink 0
@@ -172,11 +167,14 @@ input[type=text]
   flex-grow 1
 
 .Session
-  flex-grow 1
-  overflow auto
+  background white
+  display flex
+  flex-direction column
+  border-right 1px solid #ddd
   &Header
     display flex
     align-items center
+    flex-shrink 0
   &Title
     font-size 18px
     font-family serif
@@ -188,6 +186,19 @@ input[type=text]
     margin 0 6px
     background #ddd
     padding 3px 6px
+  &Body
+    overflow auto
+  &, &Body > table
+    background white
+
+.Sessions
+  flex-grow 1
+  display flex
+  &Toolbar
+    background #ddd
+    width 24px
+    display flex
+    flex-direction column-reverse
 
 .SourceEditor
   &Input

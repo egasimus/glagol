@@ -5,7 +5,10 @@
   return Object.keys(state.sessions).length > 0
     ? h('.App',
         [ h('.MainView',
-            Object.keys(state.sessions).map(_.session.bind(null, state)))
+            [ h('.Sessions',
+                Object.keys(state.sessions).map(_.session.bind(null, state))) 
+            //, h('.SessionsToolbar')
+            ])
         , _.statusBar(state) ])
     : _.welcome() ;
 

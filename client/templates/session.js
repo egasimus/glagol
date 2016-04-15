@@ -4,21 +4,23 @@
     , socket  = state.sockets[id] || { status: 'not connected' };
 
   return h('.Session',
+    { dataset: { id: id } },
     [ h('.SessionHeader',
       [ h('.SessionTitle', id)
       , h('.SessionStatus',
-          { onclick: socket.status === 'connected' ? connect : disconnect },
+          { onclick: socket.status !== 'connected' ? connect : disconnect },
           socket.status) ])
-    , h('table',
-        [ h('tr',
-          [ h('th', 'name')
-          , h('th', 'format')
-          , h('th', 'source')
-          , h('th', 'compiled')
-          , h('th', 'value')
-          , h('th', 'options')
-          ])
-        ].concat(_.tree(state.sessions[id].root))) ])
+    , h('.SessionBody',
+        h('table',
+          [ h('tr',
+            [ h('th', 'name')
+            , h('th', 'source')
+            , h('th', 'compiled')
+            , h('th', 'value')
+            , h('th', 'format')
+            , h('th', 'options')
+            ])
+          ].concat(_.tree(state.sessions[id].root)))) ])
 
   function connect (event) {
     event.preventDefault();

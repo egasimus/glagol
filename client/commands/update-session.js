@@ -1,5 +1,5 @@
 (function (address, data) {
 
-  console.log("UPDATE SESSION", address, data);
+  App.model.sessions[address].put('nodes', data);
 
 })

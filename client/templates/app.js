@@ -9,7 +9,8 @@
             var session = state.sessions[id] || {}
               , address = String(session.address);
             return h('.Tab.Active',
-              { dataset: { address: address } },
+              { dataset: { address: address }
+              , onclick: focusSession },
               [ h('.TabText', address)
               , (state.sockets[address]
                 && state.sockets[address].status === 'connected')
@@ -28,9 +29,9 @@
               , h('th', 'options')
               ])
             ].concat(
-              Object.keys(state.sessions[state.focusedSession].data || {}).map(
+              Object.keys(state.sessions[state.focusedSession].nodes || {}).map(
                 function (id) {
-                  var data = state.sessions[state.focusedSession].data[id];
+                  var data = state.sessions[state.focusedSession].nodes[id];
                   return h('tr',
                     [ h('td.NodeName', id)
                     , h('td', 'JavaScript')
@@ -47,14 +48,17 @@
             { type:        'text'
             , placeholder: '[HOST:]PORT' })
           , h('button',
-            { onclick: function (e) {
-                e.preventDefault();
+            { onclick: function (event) {
+                event.preventDefault();
                 var address = document.getElementById('session-id').value
                 $.commands.connect(address); } }
             , 'connect')]) ]);
 
-  function connect (e) {
-    var address = eventToAddress(e);
+  function focusSession (event) {
+    App.model.put('focusedSession', getAddress(event)); }
+
+  function connect (event) {
+    var address = getAddress(event);
     $.commands.connect(address).then(function (socket) {
       socket.addEventListener('message', function (message) {
         if (message.data.indexOf('update%') === 0)
@@ -62,14 +66,15 @@
             address, JSON.parse(message.data.slice(7))) });
       socket.send('subscribe'); }); }
 
-  function disconnect (e) {
-    $.commands.disconnect(eventToAddress(e)); }
+  function disconnect (event) {
+    $.commands.disconnect(getAddress(event)); }
 
-  function remove (e) {
-    $.commands.remove(eventToAddress(e)); }
+  function remove (event) {
+    $.commands.remove(getAddress(event)); }
 
-  function eventToAddress (e) {
-    e.preventDefault();
-    return e.target.parentElement.dataset.address; }
+  function getAddress (event) {
+    event.preventDefault();
+    return event.target.dataset.address ||
+      event.target.parentElement.dataset.address; }
 
 })

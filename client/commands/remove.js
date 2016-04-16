@@ -1,8 +1,8 @@
-(function (address) { return new Promise(function (win, fail) {
-  API('disconnect', address).done(
+(function (index) { return new Promise(function (win, fail) {
+  API('remove', index).done(
     function () {
-      console.debug('disconnected from', address)
-      win(address); },
+      console.debug('removed', index)
+      win(index); },
     function (err) {
-      console.debug('could not disconnect from', address, err);
-      fail(address, err); }) }) })
+      console.debug('could not remove', index + ':', err);
+      fail([index, err]); }) }) })

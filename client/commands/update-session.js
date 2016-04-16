@@ -1,5 +1,9 @@
-(function (address, data) {
+(function (frame, data) {
 
-  App.model.sessions[address].put('root', data);
+  console.log("UPDATE", frame, data)
+
+  frame.put('root', data);
+
+  console.log(frame.root());
 
 })

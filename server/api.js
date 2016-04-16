@@ -8,12 +8,12 @@ module.exports = function (id) {
 
     add: function add (type, address) {
       $.model.frames.push({ type: type, address: address });
-      $.log('added', type, 'at', address);
+      $.log('add', type, 'at', address);
       return address;
     },
 
     remove: function remove (index) {
-      console.log('remove', address);
+      $.log('remove', index);
       $.model.frames.splice(index, 1);
     },
 

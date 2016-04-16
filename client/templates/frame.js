@@ -7,11 +7,11 @@
       , h('.FrameStatus', frame.status)
       , h('div', { style: { flexGrow: 1 } })
       , h('.FrameClose', { onclick: remove }, '×')])
-    , h('.FrameBody') ]);
+    , h('.FrameBody', _.frames[frame.type](frame, index)) ]);
 
   function remove (event) {
     event.preventDefault();
-    API('remove', index);
+    $.commands.remove(index);
   }
 
 });

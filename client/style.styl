@@ -2,12 +2,14 @@
   box-sizing border-box
   position relative
 
+body
+  background url("http://subtlepatterns2015.subtlepatterns.netdna-cdn.com/patterns/noisy_net.png")
+
 body, table, input, select, textarea, button
   font-family monospace
   font-size 12px
   margin 0
   padding 0
-  background #777
 
 td, th
   text-align left
@@ -168,6 +170,7 @@ input[type=text]
 
 .Frame
   background #ddd
+  color #333
   display flex
   flex-direction column
   border-right 1px solid #eee
@@ -197,6 +200,7 @@ input[type=text]
       background #fff
   &Body
     overflow auto
+    flex-grow 1
     > table
       background white
 
@@ -247,3 +251,21 @@ input[type=text]
       border-radius 3px
       margin 0 -3px
       padding 0 3px
+
+.Glagol
+  &, &Connect
+    position absolute
+    top 0
+    left 0
+    width 100%
+    height 100%
+  &Connect
+    cursor pointer
+    display flex
+    flex-direction column
+    text-align center
+    justify-content center
+    &:hover
+      text-shadow 0 0 6px white
+    &Icon
+      font-size 6em

@@ -6,9 +6,9 @@
 
     console.debug('adding', type, '(empty)');
 
-    App.model.frames.push(
+    App.model.frames.push(require('riko-mvc/model')(
       { type:    type
-      , status:  'empty' })
+      , status:  'empty' }))
 
   } else {
 
@@ -32,7 +32,7 @@
       , address: address
       , status:  'loading' })
 
-    App.model.frames.push(frame);
+    App.model.frames.put(index, frame);
 
     API('add', type, address).done(function () {
       console.log("->", frame)
@@ -42,7 +42,7 @@
           socket.addEventListener('message', function (message) {
             if (message.data.indexOf('update%') === 0)
               $.commands.updateSession(
-                frame, JSON.parse(message.data.slice(7))) });
+                index, JSON.parse(message.data.slice(7))) });
           socket.send('subscribe'); }) } });
 
   }

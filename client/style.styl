@@ -180,13 +180,24 @@ input[type=text]
     align-items center
     flex-shrink 0
     padding 0 3px
-  &Title
+  &Title, &Address
     font-size 18px
     font-family serif
     font-style italic
     padding 0 3px
-    margin 9px 0
+    margin 0
     font-weight bold
+  &Address
+    display inline-block
+    background none
+    border none
+    padding 0
+    border-bottom 1px dotted #aaa
+    &:hover, &:focus
+      background white
+    &:focus
+      outline none
+      border-bottom 1px solid #aaa
   &Status
     margin 0 6px
     background #ddd
@@ -207,6 +218,7 @@ input[type=text]
 .Frames
   flex-grow 1
   display flex
+  overflow auto
   &Toolbar
     background #ddd
     width 24px
@@ -253,6 +265,7 @@ input[type=text]
       padding 0 3px
 
 .Glagol
+  padding 0 6px
   &, &Connect
     position absolute
     top 0

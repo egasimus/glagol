@@ -1,9 +1,3 @@
-(function (frame, data) {
-
-  console.log("UPDATE", frame, data)
-
-  frame.put('root', data);
-
-  console.log(frame.root());
-
+(function (index, data) {
+  App.model.frames.get(index).put('root', data);
 })

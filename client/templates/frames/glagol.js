@@ -1,8 +1,20 @@
 (function (frame, index) {
 
+  var socket = App.model.sockets()[frame.address] || {};
+
   return h('.Glagol',
-    frame.status === 'connected'
-    ? JSON.stringify(frame)
+    socket.status === 'connected'
+    ? h('.SessionBody',
+        h('table',
+          [ h('tr',
+            [ h('th', 'name')
+            , h('th', 'source')
+            , h('th', 'compiled')
+            , h('th', 'value')
+            , h('th', 'format')
+            , h('th', 'options')
+            ])
+          ].concat(__.tree(frame.root))))
     : h('.GlagolConnect', { onclick: connect },
       [ h('.GlagolConnectIcon', '⌛')
       , h('.GlagolConnectText', 'disconnected') ]));

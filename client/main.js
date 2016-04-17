@@ -2,6 +2,11 @@
 
   window.App = $.lib.client.init(Glagol);
 
+  var codemirrorStyle = document.createElement('link');
+  codemirrorStyle.rel  = 'stylesheet';
+  codemirrorStyle.href = 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.13.4/codemirror.css';
+  document.head.appendChild(codemirrorStyle);
+
   // TODO automatically add API to Glagol pseudo-globals instead of the window
   // object. The problem here is that modifying options objects is tricky; and
   // furthermore does not automatically invalidate evaluation caches.

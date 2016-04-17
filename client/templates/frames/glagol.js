@@ -1,9 +1,11 @@
 (function (frame, index) {
 
-  var socket = App.model.sockets()[frame.address] || {};
+  var address = frame.address
+    , socket = App.model.sockets()[address] || {}
+    , connected = socket.status === 'connected';
 
-  return h('.Glagol',
-    socket.status === 'connected'
+  return h('.Glagol' + (connected ? '' : '.Disconnected'),
+    connected
     ? h('.SessionBody',
         h('table',
           [ h('tr',
@@ -21,7 +23,13 @@
 
   function connect (event) {
     event.preventDefault();
-    $.commands.connect(frame.address);
+    $.commands.connect(address).then(function () {
+      var socket = App.model.sockets[address].socket();
+      socket.addEventListener('message', function (message) {
+        if (message.data.indexOf('update%') === 0)
+          $.commands.updateSession(
+            index, JSON.parse(message.data.slice(7))) });
+      socket.send('subscribe'); });
   }
 
 })

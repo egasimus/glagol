@@ -7,7 +7,7 @@ body
 
 body, table, input, select, textarea, button
   font-family monospace
-  font-size 12px
+  font-size 11px
   margin 0
   padding 0
 
@@ -140,6 +140,9 @@ input[type=text]
   &Source .CodeMirror
     max-width 50em
     height auto
+    background none
+    &-focused
+      background white
 
 .StatusBar
   flex-shrink 0

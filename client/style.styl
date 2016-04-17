@@ -135,6 +135,7 @@ input[type=text]
 .Node
   &Name
     white-space pre-wrap
+    cursor default
   &Source, &Compiled, &Value
     white-space pre-wrap
   &Source .CodeMirror
@@ -143,6 +144,13 @@ input[type=text]
     background none
     &-focused
       background white
+  &Collapse, &Expand
+    opacity 0
+    display inline-block
+    margin-right 3px
+    color #777
+    .Node:hover &
+      opacity 1
 
 .StatusBar
   flex-shrink 0

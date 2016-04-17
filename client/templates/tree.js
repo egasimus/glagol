@@ -15,7 +15,9 @@
         
   function renderRow (depth, name, data) {
     return h('tr.Node',
-      [ h('td.NodeName', { style: { paddingLeft: depth * 12 + 'px' } }, name)
+      [ h('td.NodeName', { style: { paddingLeft: depth * 12 + 'px' } },
+        [ h('.NodeCollapse', data.source ? '' : '▶')
+        , name ])
       , h('td.NodeSource',   data.source ? _.editor(data) : '')
       , h('td.NodeCompiled', data.format ? h('a.ButtonLink', 'compile') : '')
       , h('td.NodeValue'   , data.format ? h('a.ButtonLink', 'run')     : '')

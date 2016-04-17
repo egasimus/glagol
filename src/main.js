@@ -40,8 +40,9 @@
 
   function connect (socket) {
     // give the socket an id, for reference
-    var id = ++state.lastSocket;
-    $.log('socket', id, 'opened');
+    var id  = ++state.lastSocket
+      , url = socket.upgradeReq.url;
+    $.log('socket', id, 'opened at', url);
 
     // set socket handlers
     socket.onclose   = function () { console.log('socket', id, 'closed') }

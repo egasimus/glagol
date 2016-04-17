@@ -9,7 +9,8 @@
     }
 
     if (message.data === 'subscribe') {
-      socket.send('update%' + JSON.stringify(_.serialize(state.app)));
+      var url = socket.upgradeReq.url;
+      socket.send('update%' + JSON.stringify(_.serialize(state.app.get(url))));
     }
 
   }

@@ -23,7 +23,7 @@
 
   function connect (event) {
     event.preventDefault();
-    $.commands.connect(address).then($.commands.initGlagol(address));
+    $.commands.connect(address).then($.commands.initGlagol(index, address));
   }
 
 })

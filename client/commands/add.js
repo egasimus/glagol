@@ -8,6 +8,7 @@
 
     App.model.frames.push(require('riko-mvc/model')(
       { type:    type
+      , address: null
       , status:  'empty' }))
 
   } else {
@@ -35,7 +36,6 @@
     App.model.frames.put(index, frame);
 
     API('add', type, address).done(function () {
-      console.log("->", frame)
       if (type === 'glagol') {
         $.commands.connect(address).then($.commands.initGlagol(index, address));
       }

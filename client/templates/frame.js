@@ -15,7 +15,7 @@
 
   function changeAddress (event) {
     event.preventDefault();
-    App.model.frames[index].address.set(event.target.value);
+    App.model.frames.get(index).address.set(event.target.value);
   }
 
   function remove (event) {

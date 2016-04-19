@@ -136,6 +136,28 @@ input[type=text]
   &Name
     white-space pre-wrap
     cursor default
+    font-weight bold
+    &Name
+      white-space nowrap
+      margin-left 20px
+      line-height 15px
+  &Collapse, &Expand
+    border-radius 50%
+    width 20px
+    height 20px
+    line-height 20px
+    text-align center
+    cursor pointer
+    position absolute
+    right 100%
+    opacity 0
+    display inline-block
+    padding 0 6px
+    margin -3px 0
+    color #777
+    .Node:hover &
+      opacity 1
+      background white
   &Source, &Compiled, &Value
     white-space pre-wrap
   &Source .CodeMirror
@@ -144,13 +166,7 @@ input[type=text]
     background none
     &-focused
       background white
-  &Collapse, &Expand
-    opacity 0
-    display inline-block
-    margin-right 3px
-    color #777
-    .Node:hover &
-      opacity 1
+      box-shadow 3px 3px 3px rgba(0,0,0,0.1)
 
 .StatusBar
   flex-shrink 0
@@ -303,3 +319,5 @@ input[type=text]
       text-shadow 0 0 6px white
     &Icon
       font-size 6em
+  &Body > table
+    margin 0

@@ -14,13 +14,15 @@
   }
         
   function renderRow (depth, name, data) {
+    var file = !!data.source;
     return h('tr.Node',
       [ h('td.NodeName', { style: { paddingLeft: depth * 12 + 'px' } },
-        [ h('.NodeCollapse', data.source ? '' : '▶')
-        , name ])
-      , h('td.NodeSource',   data.source ? _.editor(data) : '')
-      , h('td.NodeCompiled', data.format ? h('a.ButtonLink', 'compile') : '')
-      , h('td.NodeValue'   , data.format ? h('a.ButtonLink', 'run')     : '')
+          h('.NodeNameName',
+          [ name
+          , !file ? h('.NodeCollapse', file ? '' : '▶') : null ]))
+      , h('td.NodeSource',   file ? _.editor(data) : '')
+      , h('td.NodeCompiled', file ? h('a.ButtonLink', 'compile') : '')
+      , h('td.NodeValue'   , file ? h('a.ButtonLink', 'run')     : '')
       , h('td.NodeFormat',   data.format)
       , h('td.NodeOptions') ]); }
 

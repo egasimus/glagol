@@ -1,6 +1,6 @@
 (function (frame, index) {
 
-  return h('.Frame',
+  return h('section.Frame',
     { dataset: { type: frame.type, address: frame.address } },
     [ h('.FrameHeader',
       [ h('.FrameTitle',

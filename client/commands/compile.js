@@ -1,5 +1,3 @@
-(function compile (socket, event) {
-
-  console.log("COMPILE", event, socket);
-
+(function (path, socket) {
+  socket.send('compile ' + path);
 })

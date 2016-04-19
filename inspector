@@ -12,8 +12,5 @@ libs.map(function (lib) {
 })
 
 // start, or export
-if (module === require.main) {
-  app().main();
-} else {
-  module.exports = app;
-}
+module.exports = app;
+if (module === require.main) app().main();

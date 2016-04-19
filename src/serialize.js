@@ -1,5 +1,7 @@
 (function serialize (node) {
 
+  if (!node) return null;
+
   var obj = {};
 
   obj.name_ = node.name;

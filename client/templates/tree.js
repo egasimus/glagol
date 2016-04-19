@@ -1,4 +1,4 @@
-(function (root) {
+(function (root, socket) {
 
   var rows = [];
   if (root) addRow(0, root.name_, root);
@@ -15,15 +15,31 @@
         
   function renderRow (depth, name, data) {
     var file = !!data.source;
+
     return h('tr.Node',
-      [ h('td.NodeName', { style: { paddingLeft: depth * 12 + 'px' } },
+      [ h('td.NodeName',
+          { style: { paddingLeft: depth * 12 + 'px' } },
           h('.NodeNameName',
           [ name
-          , !file ? h('.NodeCollapse', file ? '' : '▶') : null ]))
-      , h('td.NodeSource',   file ? _.editor(data) : '')
-      , h('td.NodeCompiled', file ? h('a.ButtonLink', 'compile') : '')
-      , h('td.NodeValue'   , file ? h('a.ButtonLink', 'run')     : '')
-      , h('td.NodeFormat',   data.format)
-      , h('td.NodeOptions') ]); }
+          , !file ? h('.NodeCollapse', '▶')
+                  : null ]))
+      ].concat(
+        file
+        ? [ h('td.NodeSource',   _.editor(data)   )
+          , h('td.NodeCompiled', button('compile'))
+          , h('td.NodeValue',    button('run')    )
+          , h('td.NodeFormat',   data.format      ) ]
+        : [ h('td', h('hr'))
+          , h('td')
+          , h('td')
+          , h('td') ]
+      ).concat(
+        [ h('td.NodeOptions') ])
+      );
+
+    function button (command) {
+      return h('a.ButtonLink', { onclick: $.cmd(command, socket) }, command);
+    }
+  }
 
 })

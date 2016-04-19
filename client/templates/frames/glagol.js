@@ -16,7 +16,7 @@
             , h('th', 'format')
             , h('th', 'options')
             ])
-          ].concat(__.tree(frame.root))))
+          ].concat(__.tree(frame.root, socket.socket))))
     : h('.GlagolConnect', { onclick: connect },
       [ h('.GlagolConnectIcon', '⌛')
       , h('.GlagolConnectText', 'disconnected') ]));

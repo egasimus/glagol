@@ -2,24 +2,31 @@
 
   var address = frame.address
     , socket = App.model.sockets()[address] || {}
-    , connected = socket.status === 'connected';
+    , connected = socket.status === 'connected'
+    , visible = App.model.visibleColumns();
+
+  console.log("->", visible)
 
   return h('.Glagol' + (connected ? '' : '.Disconnected'),
     connected
     ? h('.GlagolBody',
-        h('table',
+        h('table', { cellSpacing: 0 },
           [ h('tr',
-            [ h('th', 'name')
-            , h('th', 'source')
-            , h('th', 'compiled')
-            , h('th', 'value')
-            , h('th', 'format')
-            , h('th', 'options')
+            [ header('name')
+            , header('source')
+            , header('compiled')
+            , header('value')
+            , header('format')
+            , header('options')
             ])
           ].concat(__.tree(frame.root, socket.socket))))
     : h('.GlagolConnect', { onclick: connect },
       [ h('.GlagolConnectIcon', '⌛')
       , h('.GlagolConnectText', 'disconnected') ]));
+
+  function header (name) {
+    return (visible.indexOf(name) > -1) ? h('th', name) : null;
+  }
 
   function connect (event) {
     event.preventDefault();

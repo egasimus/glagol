@@ -14,12 +14,17 @@ body, table, input, select, textarea, button
 td, th
   text-align left
   vertical-align top
+  padding 0
 
 th
   font-weight bold
   text-transform uppercase
   letter-spacing 1px
   padding-bottom 3px
+
+hr
+  border-top 1px solid #f0f0f0
+  border-bottom none
 
 button
   font-weight bold
@@ -37,6 +42,9 @@ input[type=text]
   border-bottom 2px solid #aaa
   text-align center
   color #333
+
+.Highlight
+  background linear-gradient(to right, #f0f0f0 0%, rgba(255,255,255,0.15) 33%);
 
 .ButtonLink
   color #888
@@ -160,11 +168,16 @@ input[type=text]
       background white
   &Source, &Compiled, &Value
     white-space pre-wrap
+  &Compiled, &Value
+    padding-left 4px
+    border-left 1px solid #bbb
   &Source .CodeMirror
     max-width 50em
     height auto
-    background none
+    background #f0f0f0
+    background linear-gradient(to right, #f0f0f0 0%, rgba(255,255,255,0.15) 33%);
     margin-top -3px
+    margin-bottom 12px
     &-focused
       background white
       box-shadow 3px 3px 3px rgba(0,0,0,0.1)
@@ -296,11 +309,11 @@ input[type=text]
       cursor pointer
   &Button
     cursor pointer
+    margin 3px -3px
+    padding 0 3px
     &:hover
       background #f0f0f0
       border-radius 3px
-      margin 0 -3px
-      padding 0 3px
 
 .Glagol
   padding 0 6px

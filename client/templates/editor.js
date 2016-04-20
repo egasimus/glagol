@@ -8,7 +8,8 @@ require('virtual-widget')(
       document.body.appendChild(this.el);
       this.mirror = require('codemirror').fromTextArea(
         this.el.firstChild,
-        { viewportMargin: Infinity });
+        { viewportMargin: Infinity 
+        , lineNumbers: true });
       document.body.removeChild(this.el);
       return this.el;
     }

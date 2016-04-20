@@ -5,6 +5,7 @@ module.exports = {
   iframes: {},
   frames: [],
   focusedFrame: 0,
-  focusedSession: null
+  focusedSession: null,
+  visibleColumns: [ 'name', 'source', 'compiled', 'value', 'format', 'options' ]
 
 }

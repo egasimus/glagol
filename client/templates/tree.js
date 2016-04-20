@@ -1,5 +1,7 @@
 (function (root, socket) {
 
+  var visible = App.model.visibleColumns();
+
   var rows = [];
   if (root) addRow(0, '/', root.name_, root);
   return rows;
@@ -28,14 +30,15 @@
                   : null ]))
       ].concat(
         file
-        ? [ h('td.NodeSource',   _.editor(data)   )
-          , h('td.NodeCompiled', data.compiled ? data.compiled : button('compile'))
-          , h('td.NodeValue',    data.value    ? data.value    : button('run')    )
-          , h('td.NodeFormat',   data.format      ) ]
-        : [ h('td', h('hr'))
-          , h('td')
-          , h('td')
-          , h('td') ]
+        ? [ col('source',   _.editor(data))
+          , col('compiled', [ button('compile'), data.compiled || '' ])
+          , col('value',    [ button('run'),     data.value    || '' ])
+          , col('format',   data.format || '')
+          ]
+        : [ h('td',              h('hr'))
+          , h('td.NodeCompiled', h('hr'))
+          , h('td.NodeCompiled', h('hr'))
+          ]
       ).concat(
         [ h('td.NodeOptions') ])
       );
@@ -43,6 +46,11 @@
     function button (command) {
       return h('a.ButtonLink', { onclick: $.cmd(command, path, socket) }, command);
     }
+  }
+
+  function col (name, body) {
+    if (visible.indexOf(name) === -1) return null;
+    return h('td.Node' + name.charAt(0).toUpperCase() + name.slice(1), body)
   }
 
 })

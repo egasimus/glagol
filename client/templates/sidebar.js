@@ -9,20 +9,43 @@
   })
 
   return h('.Sidebar',
-    [ h('.SidebarSection',
-      [ h('.SidebarSectionHeader', 'add...')
-      , h('.SidebarButton', { onclick: add('glagol') }, 'glagol')
+    [ section('add...',
+      [ h('.SidebarButton', { onclick: add('glagol') }, 'glagol')
       , h('.SidebarButton', { onclick: add('iframe') }, 'iframe') ])
-    , h('.SidebarSection',
-      [ h('.SidebarSectionHeader', 'frames:') ].concat(frames))
-    , h('.SidebarSection',
-      [ h('.SidebarSectionHeader', 'sockets:') ].concat(sockets))
-    ]);
+    , section('frames:',  frames)
+    , section('sockets:', sockets)
+    , section('columns:',
+      [ 'name', 'source', 'compiled', 'value', 'format', 'options' ].map(
+        function (name) {
+          var visible = state.visibleColumns.indexOf(name) > -1;
+          return h('.SidebarButton' + (visible ? '.Highlight' : ''),
+            { onclick: toggle(name, visible) },
+            name); })) ]);
+
+  function section (title, children) {
+    return h('.SidebarSection',
+      [ h('.SidebarSectionHeader', title) ].concat(children)) }
 
   function add(type) {
     return function (event) {
       event.preventDefault();
       $.commands.add(type);
+    }
+  }
+
+  function toggle(column, visible) {
+    return function (event) {
+      event.preventDefault();
+      var index = App.model.visibleColumns().indexOf(column);
+      if (visible) {
+        if (index > -1) {
+          App.model.visibleColumns.splice(index, 1);
+        }
+      } else {
+        if (index === -1) {
+          App.model.visibleColumns.push(require('riko-mvc/model')(column));
+        }
+      }
     }
   }
 

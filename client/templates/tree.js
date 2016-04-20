@@ -29,8 +29,8 @@
       ].concat(
         file
         ? [ h('td.NodeSource',   _.editor(data)   )
-          , h('td.NodeCompiled', button('compile'))
-          , h('td.NodeValue',    button('run')    )
+          , h('td.NodeCompiled', data.compiled ? data.compiled : button('compile'))
+          , h('td.NodeValue',    data.value    ? data.value    : button('run')    )
           , h('td.NodeFormat',   data.format      ) ]
         : [ h('td', h('hr'))
           , h('td')

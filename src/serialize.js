@@ -15,6 +15,8 @@
 
   if (node.source) {
     obj.source = node.source;
+    if (node._cache.compiled) obj.compiled = node._cache.compiled;
+    if (node._cache.evaluated) obj.value = node._cache.value;
   }
 
   return obj;

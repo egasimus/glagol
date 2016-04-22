@@ -18,16 +18,16 @@
     , section('frames:',  frames)
     , section('sockets:', sockets)
     , section('columns:',
-      [ 'name', 'source', 'compiled', 'value', 'format', 'options' ].map(
+      Object.keys(state.visibleColumns).map(
         function (name) {
-          var visible = state.visibleColumns.indexOf(name) > -1;
+          var visible = !!state.visibleColumns[name];
           return h('.SidebarButton' + (visible ? '.Highlight' : ''),
             { onclick: toggleCol(name, visible) },
             name); }))
     , section('options:',
-      [ 'expand', 'line numbers' ].map(
+      Object.keys(state.displayOptions).map(
         function (name) {
-          var visible = state.displayOptions.indexOf(name) > -1;
+          var visible = !!state.displayOptions[name];
           return h('.SidebarButton' + (visible ? '.Highlight' : ''),
             { onclick: toggleOpt(name, visible) },
             name); }))
@@ -47,12 +47,7 @@
   function toggle(model, name, visible) {
     return function (event) {
       event.preventDefault();
-      var index = model().indexOf(name);
-      if (visible && index > -1) {
-        model.splice(index, 1);
-      } else if (index === -1) {
-        model.push(require('riko-mvc/model')(name));
-      }
+      model[name].set(!model[name]());
     }
   }
 

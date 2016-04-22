@@ -44,7 +44,7 @@
   }
 
   function col (name, body) {
-    if (visible.indexOf(name) === -1) return null;
+    if (!visible[name]) return;
     return h('td.Node' + name.charAt(0).toUpperCase() + name.slice(1), body)
   }
 

@@ -10,7 +10,7 @@
     ? h('.GlagolBody',
         h('table', { cellSpacing: 0 },
           [ h('tr',
-            [ header('name')
+            [ header('name_')
             , header('source')
             , header('compiled')
             , header('value')
@@ -23,7 +23,7 @@
       , h('.GlagolConnectText', 'disconnected') ]));
 
   function header (name) {
-    return (visible.indexOf(name) > -1) ? h('th', name) : null;
+    return !!visible[name] ? h('th', name) : null;
   }
 
   function connect (event) {

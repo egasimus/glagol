@@ -1,23 +1,30 @@
 (function (frame, index) {
 
-  var address = frame.address
-    , socket = App.model.sockets()[address] || {}
+  var address   = frame.address
+    , socket    = App.model.sockets()[address] || {}
     , connected = socket.status === 'connected'
-    , visible = App.model.visibleColumns();
+    , visible   = App.model.visibleColumns()
+    , expanded  = App.model.displayOptions()['expanded view']
+
+  var headerColumns =
+    expanded
+    ? [ header('name_')
+      , header('source')
+      , header('compiled')
+      , header('value')
+      , header('format')
+      , header('options') ]
+    : [ header('name and source')
+      , header('format and compiled')
+      , header('value')
+      , header('options') ];
 
   return h('.Glagol' + (connected ? '' : '.Disconnected'),
     connected
     ? h('.GlagolBody',
         h('table', { cellSpacing: 0 },
-          [ h('tr',
-            [ header('name_')
-            , header('source')
-            , header('compiled')
-            , header('value')
-            , header('format')
-            , header('options')
-            ])
-          ].concat(_.glagolTree(frame.root, socket.socket))))
+          [ h('tr', headerColumns)
+          , _.glagolTree(frame.root, socket.socket) ]))
     : h('.GlagolConnect', { onclick: connect },
       [ h('.GlagolConnectIcon', '⌛')
       , h('.GlagolConnectText', 'disconnected') ]));

@@ -33,7 +33,10 @@
           , visible.compiled
             ? ifFile(data.compiled)
             : '' ])
-      , h('td.Node_Value') ]
+      , h('td.Node_Value',
+          ifFile(
+            [ h('.Node_Value_Run', 'run')
+            , data.value || '' ])) ]
 
   }
 

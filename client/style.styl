@@ -145,13 +145,15 @@ highlight()
 
 .Node
   &_NameSource
-    &_Name
+    & .Node_Toolbar
       font-weight bold
-      line-height 2em
+      white-space nowrap
 
   &_FormatCompiled
-    &_Format
-      line-height 2em
+    white-space pre
+
+  &_Toolbar
+    line-height 2em
 
   .CodeMirror
     max-width 50em

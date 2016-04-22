@@ -13,7 +13,8 @@ module.exports =
     , 'format':   true
     , 'options':  true }
   , displayOptions:
-    { 'expanded view':   true
+    { 'hide links':      true
+    , 'expanded view':   true
     , 'line numbers':    true
     , 'snap horizontal': true
     , 'snap vertical':   true }

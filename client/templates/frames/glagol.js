@@ -5,8 +5,6 @@
     , connected = socket.status === 'connected'
     , visible = App.model.visibleColumns();
 
-  console.log("->", visible)
-
   return h('.Glagol' + (connected ? '' : '.Disconnected'),
     connected
     ? h('.GlagolBody',

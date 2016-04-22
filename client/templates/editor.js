@@ -1,4 +1,8 @@
-require('virtual-widget')(
+module.exports = function (state) {
+  return require('vdom-thunk')(module.exports.widget, state)
+}
+
+module.exports.widget = require('virtual-widget')(
   { init: function (state) {
       this.state = state;
       this.el = document.createElement('div');
@@ -18,13 +22,3 @@ require('virtual-widget')(
     }
   , destroy: function (el) {
     } })
-
-//(function (data) {
-
-  //if (data.source)
-    //return h('.SourceEditor',
-      //[ h('.SourceEditorOutput',        data.source)
-      ////, h('textarea.SourceEditorInput', data.source)
-      //]);
-
-//})

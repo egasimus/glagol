@@ -8,6 +8,9 @@
     return h('.SidebarButton', id);
   })
 
+  var toggleCol = toggle.bind(null, App.model.visibleColumns)
+    , toggleOpt = toggle.bind(null, App.model.displayOptions);
+
   return h('.Sidebar',
     [ section('add...',
       [ h('.SidebarButton', { onclick: add('glagol') }, 'glagol')
@@ -19,8 +22,16 @@
         function (name) {
           var visible = state.visibleColumns.indexOf(name) > -1;
           return h('.SidebarButton' + (visible ? '.Highlight' : ''),
-            { onclick: toggle(name, visible) },
-            name); })) ]);
+            { onclick: toggleCol(name, visible) },
+            name); }))
+    , section('options:',
+      [ 'expand', 'line numbers' ].map(
+        function (name) {
+          var visible = state.displayOptions.indexOf(name) > -1;
+          return h('.SidebarButton' + (visible ? '.Highlight' : ''),
+            { onclick: toggleOpt(name, visible) },
+            name); }))
+    ]);
 
   function section (title, children) {
     return h('.SidebarSection',
@@ -33,18 +44,14 @@
     }
   }
 
-  function toggle(column, visible) {
+  function toggle(model, name, visible) {
     return function (event) {
       event.preventDefault();
-      var index = App.model.visibleColumns().indexOf(column);
-      if (visible) {
-        if (index > -1) {
-          App.model.visibleColumns.splice(index, 1);
-        }
-      } else {
-        if (index === -1) {
-          App.model.visibleColumns.push(require('riko-mvc/model')(column));
-        }
+      var index = model().indexOf(name);
+      if (visible && index > -1) {
+        model.splice(index, 1);
+      } else if (index === -1) {
+        model.push(require('riko-mvc/model')(name));
       }
     }
   }

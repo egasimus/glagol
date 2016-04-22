@@ -29,16 +29,11 @@
           , !file ? h('.NodeCollapse', '▶')
                   : null ]))
       ].concat(
-        file
-        ? [ col('source',   _.editor(data))
-          , col('compiled', [ button('compile'), data.compiled || '' ])
-          , col('value',    [ button('run'),     data.value    || '' ])
-          , col('format',   data.format || '')
-          ]
-        : [ h('td',              h('hr'))
-          , h('td.NodeCompiled', h('hr'))
-          , h('td.NodeCompiled', h('hr'))
-          ]
+        [ col('source',   file ? _.editor(data) : '')
+        , col('compiled', file ? [ button('compile'), data.compiled || '' ] : '')
+        , col('value',    file ? [ button('run'),     data.value    || '' ] : '')
+        , col('format',   file ? (data.format || '') : '')
+        ]
       ).concat(
         [ h('td.NodeOptions') ])
       );

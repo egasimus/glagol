@@ -23,7 +23,7 @@ th
   padding-bottom 3px
 
 hr
-  border-top 1px solid #f0f0f0
+  border-top 1px solid #bbb
   border-bottom none
 
 button
@@ -43,8 +43,11 @@ input[type=text]
   text-align center
   color #333
 
-.Highlight
+highlight()
   background linear-gradient(to right, #f0f0f0 0%, rgba(255,255,255,0.15) 33%);
+
+.Highlight
+  highlight()
 
 .ButtonLink
   color #888
@@ -167,17 +170,18 @@ input[type=text]
       opacity 1
       background white
   &Source, &Compiled, &Value
-    white-space pre-wrap
-  &Compiled, &Value
-    padding-left 4px
+    white-space pre
     border-left 1px solid #bbb
+    border-top 1px solid #bbb
+    highlight()
   &Source .CodeMirror
     max-width 50em
     height auto
-    background #f0f0f0
-    background linear-gradient(to right, #f0f0f0 0%, rgba(255,255,255,0.15) 33%);
+    background none
     margin-top -3px
     margin-bottom 12px
+    &:hover
+      background #f0f0f0
     &-focused
       background white
       box-shadow 3px 3px 3px rgba(0,0,0,0.1)

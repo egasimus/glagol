@@ -93,17 +93,16 @@ function Loader (baseOptions) {
 
 Loader.logAdded = function (node) {
   var type = node._glagol.type.toLowerCase();
-  console.log("%cadded " + type, consoleTag("green"), node.name);
-};
+  console.log((new Date().toUTCString()) + " %cadded " + type,
+    consoleTag("green"), node.name); };
 
 Loader.logChanged = function (node) {
-  console.log("%cchanged", consoleTag("orange"), node.path);
-};
+  console.log((new Date().toUTCString()) + " %cchanged",
+    consoleTag("orange"), node.path); };
 
 Loader.logRemoved = function (node, parent) {
-  console.log("%cremoved", consoleTag("darkred"),
-    path.join(parent ? parent.path : "", node.name))
-};
+  console.log((new Date().toUTCString()) + " %cremoved",
+    consoleTag("darkred"), path.join(parent ? parent.path : "", node.name)) };
 
 function consoleTag (color) {
   return "background:"+color+";color:white;font-weight:bold;padding:2px 6px"

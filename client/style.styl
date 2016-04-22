@@ -144,15 +144,37 @@ highlight()
     border-radius 24px
 
 .Node
-  &Name
+  &_NameSource
+    &_Name
+      font-weight bold
+      line-height 2em
+
+  &_FormatCompiled
+    &_Format
+      line-height 2em
+
+  .CodeMirror
+    max-width 50em
+    height auto
+    background none
+    margin-top -3px
+    margin-bottom 12px
+    &:hover
+      background #f0f0f0
+    &_-focused
+      background white
+      box-shadow 3px 3px 3px rgba(0,0,0,0.1)
+
+  &_Name
     white-space pre-wrap
     cursor default
     font-weight bold
-    &Name
+    &_Name
       white-space nowrap
       margin-left 20px
       line-height 15px
-  &Collapse, &Expand
+
+  &_Collapse, &_Expand
     border-radius 50%
     width 20px
     height 20px
@@ -169,22 +191,12 @@ highlight()
     .Node:hover &
       opacity 1
       background white
-  &Source, &Compiled, &Value
+
+  &_Source, &_Compiled, &_Value
     white-space pre
     border-left 1px solid #bbb
     border-top 1px solid #bbb
     highlight()
-  &Source .CodeMirror
-    max-width 50em
-    height auto
-    background none
-    margin-top -3px
-    margin-bottom 12px
-    &:hover
-      background #f0f0f0
-    &-focused
-      background white
-      box-shadow 3px 3px 3px rgba(0,0,0,0.1)
 
 .StatusBar
   flex-shrink 0

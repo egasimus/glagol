@@ -23,7 +23,10 @@
     cols =
       [ h('td.Node_NameSource', { style: { paddingLeft: depth * 12 + 'px' } },
           [ h('.Node_Toolbar',
-            [ h('.Node_NameSource_Name', name) ])
+            [ h('.Node_NameSource_Name',
+              file
+                ? h('strong', name)
+                : [ h('strong', name.slice(0, -1)), '/' ]) ])
           , visible.source
             ? ifFile(_.glagolEditor(data))
             : '' ])

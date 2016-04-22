@@ -17,15 +17,15 @@
     ice.source = node.source;
     ice.format = node.format;
     if (node._cache.compiled) ice.compiled = node._cache.compiled;
-    if (node._cache.evaluated) ice.value = node._cache.value;
-    if (typeof ice.value === 'function') ice.value = serializeFn(ice.value);
+    if (node._cache.evaluated) {
+      var value = node._cache.value;
+      ice.value =
+        typeof value === 'function'
+        ? { type: 'function', name_: value.name, args: value.length }
+        : { value: value }
+    }
   }
 
   return ice;
-
-  function serializeFn(fn) {
-    return 'Function ' + fn.name + " " + fn.length
-    //return {type:'Function'}
-  }
 
 })

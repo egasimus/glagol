@@ -2,23 +2,30 @@
 
   if (!node) return null;
 
-  var obj = {};
+  var ice = {};
 
-  obj.name_ = node.name;
+  ice.name_ = node.name; // TODO handle in client instead
 
   if (node.nodes) {
-    obj.nodes = {};
+    ice.nodes = {};
     Object.keys(node.nodes).forEach(function (key) {
-      obj.nodes[key] = serialize(node.nodes[key])
+      ice.nodes[key] = serialize(node.nodes[key])
     })
   }
 
   if (node.source) {
-    obj.source = node.source;
-    if (node._cache.compiled) obj.compiled = node._cache.compiled;
-    if (node._cache.evaluated) obj.value = node._cache.value;
+    ice.source = node.source;
+    ice.format = node.format;
+    if (node._cache.compiled) ice.compiled = node._cache.compiled;
+    if (node._cache.evaluated) ice.value = node._cache.value;
+    if (typeof ice.value === 'function') ice.value = serializeFn(ice.value);
   }
 
-  return obj;
+  return ice;
+
+  function serializeFn(fn) {
+    return 'Function ' + fn.name + " " + fn.length
+    //return {type:'Function'}
+  }
 
 })

@@ -6,4 +6,5 @@ module.exports =
       return file.compiled;
     }
   , globals: function globals (file) {}
+  , name:   "Plaintext"
   , target: "plaintext" };

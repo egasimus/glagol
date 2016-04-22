@@ -2,6 +2,7 @@ module.exports =
   { compile:  compile
   , evaluate: evaluate
   , globals:  globals
+  , name:     "JavaScript"
   , target:   "javascript" };
 
 var fs      = require('fs')

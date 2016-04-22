@@ -144,16 +144,34 @@ highlight()
     border-radius 24px
 
 .Node
+  &:hover
+    background #f0f0f0
+
   &_NameSource
-    & .Node_Toolbar
+    &_Name
       font-weight bold
+      line-height 2em
       white-space nowrap
 
   &_FormatCompiled
     white-space pre
+    &_Format
+      line-height 2em
 
   &_Toolbar
     line-height 2em
+    padding 6px 0
+    display flex
+    &_Button
+      border-radius 3px
+      padding 0 6px
+      cursor pointer
+      & + .Node_Toolbar_Button
+        margin-left 6px
+    .Node:hover &
+      background #eee
+      &_Button
+        background #fff
 
   .CodeMirror
     max-width 50em
@@ -163,8 +181,9 @@ highlight()
     margin-bottom 12px
     &:hover
       background #f0f0f0
-    &_-focused
-      background white
+    &-focused
+      //background white
+      highlight()
       box-shadow 3px 3px 3px rgba(0,0,0,0.1)
 
   &_Name

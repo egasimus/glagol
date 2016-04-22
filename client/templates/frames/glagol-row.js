@@ -14,29 +14,33 @@
           h('.Node_Name_Name',
           [ name, !file ? h('.Node_Collapse', '▶') : null ]))
       , col('source',   ifFile(_.glagolEditor(data)))
-      , col('compiled', ifFile([ button('compile'), data.compiled || '' ]))
-      , col('value',    ifFile([ button('run'),     data.value    || '' ]))
+      , col('compiled', ifFile([ button('compile'), data.compiled  || '' ]))
+      , col('value',    ifFile([ button('run'),     getValue(data) || '' ]))
       , col('format',   ifFile((data.format || ''))) ];
 
   } else {
 
     cols =
       [ h('td.Node_NameSource', { style: { paddingLeft: depth * 12 + 'px' } },
-          [ h('.Node_NameSource_Name', name)
+          [ h('.Node_Toolbar',
+            [ h('.Node_NameSource_Name', name) ])
           , visible.source
             ? ifFile(_.glagolEditor(data))
             : '' ])
       , h('td.Node_FormatCompiled',
-          [ visible.format
-            ? ifFile(h('.Node_FormatCompiled_Format', data.format || '<format>'))
-            : ''
-          , visible.compiled
-            ? ifFile(data.compiled)
-            : '' ])
-      , h('td.Node_Value',
-          ifFile(
-            [ h('.Node_Value_Run', 'run')
-            , data.value || '' ])) ]
+          ifFile([ h('.Node_Toolbar',
+            [ visible.format
+              ? h('.Node_Toolbar_Button',
+                  data.format
+                  ? data.format.name_
+                  : h('em', '<no format>'))
+              : ''
+            , h('.Node_Toolbar_Button', 'compile')] )
+            , visible.compiled ? data.compiled : '' ]))
+      , h('td.Node_Value-notExpanded',
+          visible.value ? ifFile([ h('.Node_Toolbar',
+            [ h('.Node_Toolbar_Button', 'run') ])
+          , getValue(data) || '' ]) : '') ]
 
   }
 
@@ -53,6 +57,18 @@
   function col (name, body) {
     if (!visible[name]) return;
     return h('td.Node_' + name.charAt(0).toUpperCase() + name.slice(1), body)
+  }
+
+  function getValue (data) {
+    var value = data.value;
+    if (!value) return;
+    if (value.type === 'function') {
+      return h('.Node_Value_Function',
+        'function ' + value.name_ +
+        ' (' + value.args + ')')
+    } else {
+      return value.value;
+    }
   }
 
 })

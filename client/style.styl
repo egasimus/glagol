@@ -150,17 +150,35 @@ highlight()
 
   &_NameSource
     &_Name
+      font-size 12px
       line-height 2em
       white-space nowrap
+      margin-right 6px
+
+  &_Name
+    font-size 12px
+    white-space pre-wrap
+    cursor default
+    font-weight bold
+    &_Name
+      white-space nowrap
+      margin-left 20px
+      line-height 15px
 
   &_FormatCompiled
     white-space pre
     &_Format
       line-height 2em
 
+  &_Source, &_Compiled, &_Value
+    white-space pre
+    border-left 1px solid #fff
+    border-top 1px solid #ddd
+    highlight()
+
   &_Toolbar
     line-height 2em
-    padding 6px 0
+    padding 3px 0
     display flex
     &_Button
       line-height 1em
@@ -174,7 +192,7 @@ highlight()
     .Node:hover &
       &_Button
         border-radius 3px
-        border-bottom-color white
+        border-bottom-color #ccc
         background #fff
         color #333
         &:hover
@@ -197,21 +215,6 @@ highlight()
       background none
     &-linenumber
       color #777
-
-  &_Name
-    white-space pre-wrap
-    cursor default
-    font-weight bold
-    &_Name
-      white-space nowrap
-      margin-left 20px
-      line-height 15px
-
-  &_Source, &_Compiled, &_Value
-    white-space pre
-    border-left 1px solid #fff
-    border-top 1px solid #ddd
-    highlight()
 
   &_Collapse, &_Expand
     border-radius 50%
@@ -266,8 +269,8 @@ highlight()
   color #333
   display flex
   flex-direction column
-  border-right 1p &-linenumber
-    color #777
+  border-right 1
+  max-width 100%
   &Header
     background #ddd
     display flex

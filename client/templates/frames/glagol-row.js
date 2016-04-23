@@ -31,7 +31,9 @@
                 ? h('.Node_Toolbar_Button',
                     data.format
                     ? data.format.name_
-                    : h('em', '<no format>'))
+                    : file
+                      ? h('em', 'no format')
+                      : h('em', 'Directory'))
                 : ''
             ])
           , visible.source

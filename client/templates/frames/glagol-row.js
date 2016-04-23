@@ -26,23 +26,25 @@
             [ h('.Node_NameSource_Name',
               file
                 ? h('strong', name)
-                : [ h('strong', name.slice(0, -1)), '/' ]) ])
+                : [ h('strong', name.slice(0, -1)), '/' ])
+            , visible.format
+                ? h('.Node_Toolbar_Button',
+                    data.format
+                    ? data.format.name_
+                    : h('em', '<no format>'))
+                : ''
+            ])
           , visible.source
             ? ifFile(_.glagolEditor(data))
             : '' ])
       , h('td.Node_FormatCompiled',
-          ifFile([ h('.Node_Toolbar',
-            [ visible.format
-              ? h('.Node_Toolbar_Button',
-                  data.format
-                  ? data.format.name_
-                  : h('em', '<no format>'))
-              : ''
-            , h('.Node_Toolbar_Button', 'compile')] )
-            , visible.compiled ? data.compiled : '' ]))
+          ifFile(
+          [ h('.Node_Toolbar',
+            [ h('.Node_Toolbar_Button', 'compile')
+            , h('.Node_Toolbar_Button', 'evaluate') ] )
+          , visible.compiled ? data.compiled : '' ]))
       , h('td.Node_Value-notExpanded',
-          visible.value ? ifFile([ h('.Node_Toolbar',
-            [ h('.Node_Toolbar_Button', 'run') ])
+          visible.value ? ifFile([ h('.Node_Toolbar', [])
           , getValue(data) || '' ]) : '') ]
 
   }

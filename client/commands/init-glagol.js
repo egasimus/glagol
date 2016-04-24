@@ -1,7 +1,6 @@
 (function (index, address) {
 
   return function () {
-    console.log(App.model(), address);
     var socket = App.model.sockets[address].socket();
     socket.addEventListener('message', onmessage);
     socket.send('subscribe');

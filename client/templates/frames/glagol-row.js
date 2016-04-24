@@ -6,10 +6,8 @@
     , name
     , cols;
 
-  if (expanded) {
-
-    cols =
-      [ h('td.Node_Name',
+  cols = expanded
+    ? [ h('td.Node_Name',
           { style: { paddingLeft: depth * 12 + 'px' } },
           h('.Node_Name_Name',
           [ name, !file ? h('.Node_Collapse', '▶') : null ]))
@@ -18,51 +16,42 @@
       , col('value',    ifFile([ button('run'),     getValue(data) || '' ]))
       , col('format',   ifFile((data.format || '')))
       , col('options',  '')
-      ];
+      ]
+    : [ nameAndSource()
+      , formatAndCompiled()
+      , valueNonExpanded() ]
 
-  } else {
+  return h('tr.Node', { dataset: { path: path } }, cols);
 
-    if (file) {
-      cols =
-        [ h('td.Node_NameSource', { style: { paddingLeft: depth * 12 + 'px' } },
-            [ h('.Node_Toolbar',
-              [ h('.Node_NameSource_Name', h('strong', name))
-              , visible.format ?
-                  button('format', data.format
-                    ? data.format.name_
-                    : h('em', 'unknown')) : '' ])
-            , visible.source ? _.glagolEditor(data) : '' ])
-        , h('td.Node_FormatCompiled',
-            [ h('.Node_Toolbar',
-              [ button('compile')
-              , button('evaluate') ] )
-            , visible.compiled ? data.compiled : '' ])
-        , h('td.Node_Value-notExpanded',
-            visible.value
-            ? [ h('.Node_Toolbar', [])
-              , getValue(data) || '' ]
-            : '')
-        ]
-    } else {
-      cols =
-        [ h('td.Node_NameSource', { style: { paddingLeft: depth * 12 + 'px' } },
-            [ h('.Node_Toolbar',
-              [ h('.Node_NameSource_Name',
-                [ h('strong', name.slice(0, -1)), '/' ])
-              , visible.format
-                  ? h('.Node_Toolbar_Button',
-                      data.format
-                      ? data.format.name_
-                      : h('em', 'Directory'))
-                  : ''
-              ])
-            ])
-        , h('td.Node_FormatCompiled',
-            [ h('.Node_FileCount',
-                String(Object.keys(data.nodes).length) + ' nodes') ])
-        , h('td.Node_Value-notExpanded') ]
-    }
+  function nameAndSource () {
+    return h('td.Node_NameSource',
+      { style: { paddingLeft: depth * 12 + 'px' } },
+      [ h('.Node_Toolbar',
+        [ h('.Node_NameSource_Name', h('strong', name))
+        , when(data.link, h('.Node_Link', data.link) )
+        , when(visible.format,
+            h('.Node_Toolbar_Button', data.file
+            ? when(data.format, data.format._name)
+            : h('em', 'Directory')))
+        ])
+      , when(file,
+          when(visible.source,
+            _.glagolEditor({ format: data.format, source: data.source })))
+      ]);
+  }
 
+  function formatAndCompiled () {
+    return h('td.Node_FormatCompiled',
+      file
+      ? [ h('.Node_Toolbar', [ button('compile'), button('evaluate') ] )
+        , when(visible.compiled, data.compiled) ]
+      : [ h('.Node_FileCount',
+          String(Object.keys(data.nodes).length) + ' items') ])
+  }
+
+  function valueNonExpanded () {
+    return h('td.Node_Value-notExpanded',
+      when(file &&visible.value, getValue(data)))
   }
 
   function button (name, text) {
@@ -72,8 +61,6 @@
       null;
     return h('.Node_Toolbar_Button', { onclick: onclick }, String(text || name));
   }
-
-  return h('tr.Node', { dataset: { path: path } }, cols);
 
   function when(key, el) {
     return key ? el : '';
@@ -92,12 +79,13 @@
     var value = data.value;
     if (!value) return;
     if (value.type === 'function') {
-      return h('.Node_Value_Function',
-        [ h('strong', h('em', 'Fn  '))
-        , value.name_
-        , ' (' + value.args + ')' ])
+      return h('.Node_Toolbar',
+        h('.Node_Value_Function',
+          [ h('strong', h('em', 'Fn  '))
+          , value.name_
+          , ' (' + value.args + ')' ]))
     } else {
-      return value.value;
+      return h('.Node_Value_Data', value.value);
     }
   }
 

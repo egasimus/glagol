@@ -13,7 +13,7 @@ module.exports =
     , 'format':   true
     , 'options':  true }
   , displayOptions:
-    { 'hide links':      true
+    { 'collapse links':  true
     , 'expanded view':   true
     , 'line numbers':    true
     , 'snap horizontal': true

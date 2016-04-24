@@ -16,7 +16,9 @@
       , col('source',   ifFile(_.glagolEditor(data)))
       , col('compiled', ifFile([ button('compile'), data.compiled  || '' ]))
       , col('value',    ifFile([ button('run'),     getValue(data) || '' ]))
-      , col('format',   ifFile((data.format || ''))) ];
+      , col('format',   ifFile((data.format || '')))
+      , col('options',  '')
+      ];
 
   } else {
 

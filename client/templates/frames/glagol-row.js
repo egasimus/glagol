@@ -24,14 +24,15 @@
   return h('tr.Node', { dataset: { path: path } }, cols);
 
   function nameAndSource () {
+    console.log(data)
     return h('td.Node_NameSource',
       { style: { paddingLeft: depth * 12 + 'px' } },
       [ h('.Node_Toolbar',
         [ h('.Node_NameSource_Name', h('strong', name))
         , when(data.link, h('.Node_Link', data.link) )
         , when(visible.format,
-            h('.Node_Toolbar_Button', data.file
-            ? when(data.format, data.format._name)
+            h('.Node_Toolbar_Button', file
+            ? when(data.format, data.format.name_)
             : h('em', 'Directory')))
         ])
       , when(file,

@@ -13,25 +13,27 @@
 
   return h('.Sidebar',
     [ section('add...',
-      [ h('.SidebarButton', { onclick: add('glagol') }, 'glagol')
-      , h('.SidebarButton', { onclick: add('iframe') }, 'iframe') ])
+      [ button('glagol',  add('glagol'))
+      , button('iframe',  add('iframe'))
+      , button('process', add('process')) ])
     , section('frames:',  frames)
     , section('sockets:', sockets)
     , section('columns:',
       Object.keys(state.visibleColumns).map(
         function (name) {
           var visible = !!state.visibleColumns[name];
-          return h('.SidebarButton' + (visible ? '.Highlight' : ''),
-            { onclick: toggleCol(name, visible) },
-            name); }))
+          return button(name, toggleCol(name, visible), visible); }))
     , section('options:',
       Object.keys(state.displayOptions).map(
         function (name) {
           var visible = !!state.displayOptions[name];
-          return h('.SidebarButton' + (visible ? '.Highlight' : ''),
-            { onclick: toggleOpt(name, visible) },
-            name); }))
+          return button(name, toggleOpt(name, visible), visible) }))
     ]);
+
+  function button (text, onclick, highlight) {
+    return h('.SidebarButton' + (highlight ? '.Highlight': ''),
+      { onclick: onclick }, text);
+  }
 
   function section (title, children) {
     return h('.SidebarSection',

@@ -7,7 +7,7 @@
   function addRow (depth, path, id, row) {
     if (row.nodes) id = id + '/';
     if (depth > 0) path = path + id;
-    rows.push(_.glagolRow(depth, path, id, row))
+    rows.push(_.glagolRow(depth, path, id, row, socket))
     if (row.nodes) {
       Object.keys(row.nodes).forEach(function (childId) {
         addRow(depth + 1, path, childId, row.nodes[childId]);

@@ -1,4 +1,4 @@
-(function renderRow (depth, path, name, data) {
+(function renderRow (depth, path, name, data, socket) {
 
   var visible  = App.model.visibleColumns()
     , expanded = App.model.displayOptions()['expanded view']
@@ -22,45 +22,65 @@
 
   } else {
 
-    cols =
-      [ h('td.Node_NameSource', { style: { paddingLeft: depth * 12 + 'px' } },
-          [ h('.Node_Toolbar',
-            [ h('.Node_NameSource_Name',
-              file
-                ? h('strong', name)
-                : [ h('strong', name.slice(0, -1)), '/' ])
-            , visible.format
-                ? h('.Node_Toolbar_Button',
-                    data.format
+    if (file) {
+      cols =
+        [ h('td.Node_NameSource', { style: { paddingLeft: depth * 12 + 'px' } },
+            [ h('.Node_Toolbar',
+              [ h('.Node_NameSource_Name', h('strong', name))
+              , visible.format ?
+                  button('format', data.format
                     ? data.format.name_
-                    : file
-                      ? h('em', 'no format')
+                    : h('em', 'unknown')) : '' ])
+            , visible.source ? _.glagolEditor(data) : '' ])
+        , h('td.Node_FormatCompiled',
+            [ h('.Node_Toolbar',
+              [ button('compile')
+              , button('evaluate') ] )
+            , visible.compiled ? data.compiled : '' ])
+        , h('td.Node_Value-notExpanded',
+            visible.value
+            ? [ h('.Node_Toolbar', [])
+              , getValue(data) || '' ]
+            : '')
+        ]
+    } else {
+      cols =
+        [ h('td.Node_NameSource', { style: { paddingLeft: depth * 12 + 'px' } },
+            [ h('.Node_Toolbar',
+              [ h('.Node_NameSource_Name',
+                [ h('strong', name.slice(0, -1)), '/' ])
+              , visible.format
+                  ? h('.Node_Toolbar_Button',
+                      data.format
+                      ? data.format.name_
                       : h('em', 'Directory'))
-                : ''
+                  : ''
+              ])
             ])
-          , visible.source
-            ? ifFile(_.glagolEditor(data))
-            : '' ])
-      , h('td.Node_FormatCompiled',
-          ifFile(
-          [ h('.Node_Toolbar',
-            [ h('.Node_Toolbar_Button', 'compile')
-            , h('.Node_Toolbar_Button', 'evaluate') ] )
-          , visible.compiled ? data.compiled : '' ]))
-      , h('td.Node_Value-notExpanded',
-          visible.value ? ifFile([ h('.Node_Toolbar', [])
-          , getValue(data) || '' ]) : '') ]
+        , h('td.Node_FormatCompiled',
+            [ h('.Node_FileCount',
+                String(Object.keys(data.nodes).length) + ' nodes') ])
+        , h('td.Node_Value-notExpanded') ]
+    }
 
+  }
+
+  function button (name, text) {
+    var onclick =
+      name === 'compile'  ? $.cmd('compile',  path, socket) :
+      name === 'evaluate' ? $.cmd('evaluate', path, socket) :
+      null;
+    return h('.Node_Toolbar_Button', { onclick: onclick }, String(text || name));
   }
 
   return h('tr.Node', { dataset: { path: path } }, cols);
 
-  function ifFile (data) {
-    return file ? data : ''
+  function when(key, el) {
+    return key ? el : '';
   }
 
-  function button (command) {
-    return h('a.ButtonLink', { onclick: $.cmd(command, path, socket) }, command);
+  function ifFile (data) {
+    return when(file, data);
   }
 
   function col (name, body) {
@@ -73,7 +93,7 @@
     if (!value) return;
     if (value.type === 'function') {
       return h('.Node_Value_Function',
-        [ h('em', 'F ')
+        [ h('strong', h('em', 'Fn  '))
         , value.name_
         , ' (' + value.args + ')' ])
     } else {

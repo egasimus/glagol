@@ -3,7 +3,9 @@
   position relative
 
 body
-  background url("http://subtlepatterns2015.subtlepatterns.netdna-cdn.com/patterns/noisy_net.png")
+  background-color #333
+  background-image url('http://i.imgur.com/DgIEr0a.jpg')
+  background-size  cover
 
 body, table, input, select, textarea, button
   font-family sans
@@ -46,7 +48,7 @@ input[type=text]
   color #333
 
 highlight()
-  background linear-gradient(to right, #f0f0f0 0%, rgba(255,255,255,0.15) 33%);
+  background linear-gradient(to right, #f0f0f0 0%, rgba(255,255,255,0.15) 33%, transparent 100%);
 
 .Highlight
   highlight()
@@ -179,6 +181,10 @@ highlight()
     max-width 50em
     overflow auto
 
+  &_FileCount
+    line-height 19px
+    padding 6px 0 5px
+
   &_Source, &_Compiled, &_Value
     font-family monospace
     white-space pre
@@ -215,19 +221,25 @@ highlight()
         &:hover
           border-bottom-color #aaa
 
+  &_Value
+    &_Function
+      @extend .Node_Toolbar_Button
+      .Node:hover &
+        @extend .Node:hover .Node_Toolbar_Button
+
   .CodeMirror
     max-width 50em
     height auto
     background none
     margin-top -3px
     margin-bottom 12px
+    margin-right 6px
     &:hover
       //background #f0f0f0
       highlight()
     &-focused
       //background white
       highlight()
-      box-shadow 3px 3px 3px rgba(0,0,0,0.1)
     &-gutters
       background none
     &-linenumber

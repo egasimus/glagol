@@ -16,13 +16,21 @@
 
     if (message.data.indexOf('compile') === 0) {
       var path = message.data.split(' ')[1].trim().slice(1);
-      console.log(state.cwd.get(path).compiled);
+      try {
+        console.log(state.cwd.get(path).compiled);
+      } catch (e) {
+        console.log(e);
+      }
       update();
     }
 
     if (message.data.indexOf('evaluate') === 0) {
       var path = message.data.split(' ')[1].trim().slice(1);
-      console.log(state.cwd.get(path).value);
+      try {
+        console.log(state.cwd.get(path).value);
+      } catch (e) {
+        console.log(e);
+      }
       update();
     }
 

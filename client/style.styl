@@ -175,6 +175,10 @@ highlight()
     &_Format
       line-height 2em
 
+  &_FormatCompiled, &_Compiled
+    max-width 50em
+    overflow auto
+
   &_Source, &_Compiled, &_Value
     font-family monospace
     white-space pre
@@ -187,7 +191,13 @@ highlight()
     line-height 2em
     padding 3px 0
     display flex
+    .Node_NameSource &
+      justify-content space-between
+      &_Button
+        margin-right 6px
     &_Button
+      height 24px
+      white-space nowrap
       line-height 1em
       padding 6px 6px 5px
       cursor pointer

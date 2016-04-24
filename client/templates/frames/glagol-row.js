@@ -71,8 +71,9 @@
     if (!value) return;
     if (value.type === 'function') {
       return h('.Node_Value_Function',
-        'function ' + value.name_ +
-        ' (' + value.args + ')')
+        [ h('em', 'F ')
+        , value.name_
+        , ' (' + value.args + ')' ])
     } else {
       return value.value;
     }

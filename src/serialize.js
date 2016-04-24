@@ -26,6 +26,10 @@
     }
   }
 
+  if (node.target) {
+    ice.link = node.target._sourcePath;
+  }
+
   return ice;
 
 })

@@ -228,14 +228,17 @@ highlight()
           border-bottom-color #aaa
 
   &_Value
-    &_Function
-      margin-left 6px
-      @extend .Node_Toolbar_Button
-      .Node:hover &
-        @extend .Node:hover .Node_Toolbar_Button
-    &_Data
-      font-family monospace
-      white-space pre
+    &, &-notExpanded
+      max-width 50em
+      overflow auto
+      &_Function
+        margin-left 6px
+        @extend .Node_Toolbar_Button
+        .Node:hover &
+          @extend .Node:hover .Node_Toolbar_Button
+      &_Data
+        font-family monospace
+        white-space pre
 
   .CodeMirror
     max-width 50em

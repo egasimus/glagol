@@ -27,7 +27,10 @@
           , _.glagolTree(frame.root, socket.socket) ]))
     : h('.GlagolConnect', { onclick: connect },
       [ h('.GlagolConnectIcon', '⌛')
-      , h('.GlagolConnectText', 'disconnected') ]));
+      , h('.GlagolConnectText',
+        [ socket.status || 'disconnected'
+        , socket.error ? ' (' + socket.error + ')' : '' ])
+      ]));
 
   function header (name) {
     return !!visible[name] ? h('th', name) : null;

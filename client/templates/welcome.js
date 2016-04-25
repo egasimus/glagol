@@ -1,4 +1,4 @@
-module.exports = function (state) {
+var welcome = module.exports = function (state) {
 
   return h('.App.Blank',
     [ h('h1', 'glagol')
@@ -9,13 +9,10 @@ module.exports = function (state) {
         , onfocus:     focus
         , onblur:      blur })
       , h('button.DjinnButton',
-        { onclick: function (event) {
-            event.preventDefault();
-            var address = document.getElementById('djinn').value
-            $.commands.add('glagol', address); } }
+        { onclick: djinn }
         , 'enter')
       , state.djinn.focused || true
-        ? h('.DjinnHints', module.exports.hints.map(hint))
+        ? h('.DjinnHints', welcome.hints.map(hint))
         : ''
       ]) ]);
 
@@ -28,8 +25,8 @@ module.exports = function (state) {
   }
 
   function placeholder () {
-    return module.exports.placeholders[
-      Math.floor(Math.random() * module.exports.placeholders.length)]
+    return welcome.placeholders[
+      Math.floor(Math.random() * welcome.placeholders.length)]
   }
 
   function hint (data) {
@@ -38,20 +35,25 @@ module.exports = function (state) {
       , h('.DjinnHintInfo',  data.info) ])
   }
 
+  function djinn (event) {
+    event.preventDefault();
+    $.commands.djinn(document.getElementById('djinn').value, null);
+  }
+
 }
 
-module.exports.placeholders =
+welcome.placeholders =
   [ 'your will is my command'
   , 'abra cadabra'
   , 'let there be light'
   , 'got a lighter?'
   , 'just do it'
-  , 'yeah boss?'
+  , 'yeah guv?'
   , 'няма филм' ]
 
 var br = h('br');
 
-module.exports.hints =
+welcome.hints =
   [ { title: [ '1616', br
              , 'example.com:1616' ]
     , info:  'connect to glagol-remote-debugger at that port' }

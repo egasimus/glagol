@@ -11,20 +11,29 @@ var djinn = module.exports = function (input, data) {
   })) {
     return result;
   } else {
-    return djinn.default();
+    return djinn.default(input, data);
   }
 
 
 }
 
+djinn.default = function (input, data) {
+  console.error('No match for', input, 'with', data);
+}
+
 djinn.handlers = {}
 
 function handler (name) {
-  return djinn.handlers[name];
+  return function (input, data) {
+    console.log(input, 'with (', data, ') matched:', name);
+    if (djinn.handlers[name]) djinn.handlers[name](input, data);
+  }
 }
 
 function re (string) {
-  return new RegExp(string);
+  return function (input) {
+    return (new RegExp(string)).test(input);
+  }
 }
 
 djinn.routes =

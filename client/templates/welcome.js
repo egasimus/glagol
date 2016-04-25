@@ -2,16 +2,14 @@ var welcome = module.exports = function (state) {
 
   return h('.App.Blank',
     [ h('h1', 'glagol')
-    , h('form',
+    , h('form', { onsubmit: djinn },
       [ h('input.DjinnInput#djinn',
         { type:        'text'
         , placeholder: placeholder()
         , onfocus:     focus
         , onblur:      blur })
-      , h('button.DjinnButton',
-        { onclick: djinn }
-        , 'enter')
-      , state.djinn.focused || true
+      , h('button.DjinnButton', 'enter')
+      , state.djinn.focused
         ? h('.DjinnHints', welcome.hints.map(hint))
         : ''
       ]) ]);

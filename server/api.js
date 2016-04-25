@@ -1,3 +1,7 @@
+var path = require('path')
+  , fs   = require('fs')
+  , os   = require('os')
+
 module.exports = function (id) {
   return {
 
@@ -7,6 +11,11 @@ module.exports = function (id) {
     },
 
     add: function add (type, address) {
+      console.log('add', type, address)
+      if (type === 'directory') {
+        if (address[0] === '~') address = path.join(os.homedir(), address.slice(1));
+        $.model.directories.put(address, require('fs').readdirSync(address))
+      }
       $.model.frames.push({ type: type, address: address });
       $.log('add', type, 'at', address);
       return address;

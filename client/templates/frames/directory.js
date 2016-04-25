@@ -1,9 +1,13 @@
 (function (frame, index) {
 
-  return h('.Directory', App.model.directories()[frame.address].map(entry))
+  var directory = App.model.directories()[frame.address];
 
-  function entry (name) {
-    return h('.DirectoryEntry', name)
+  return h('.Directory', directory.map(entry))
+
+  function entry (data) {
+    var isDir = !!(data.stat.mode & 0040000);
+    return h('.DirectoryEntry',
+      isDir ? h('strong', data.name_+'/') : data.name_)
   }
 
 })

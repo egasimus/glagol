@@ -14,7 +14,10 @@ module.exports = function (id) {
       console.log('add', type, address)
       if (type === 'directory') {
         if (address[0] === '~') address = path.join(os.homedir(), address.slice(1));
-        $.model.directories.put(address, require('fs').readdirSync(address))
+        var entries = fs.readdirSync(address).map(function (name) {
+          return { name: name, stat: fs.statSync(path.join(address, name)) }
+        })
+        $.model.directories.put(address, entries);
       }
       $.model.frames.push({ type: type, address: address });
       $.log('add', type, 'at', address);

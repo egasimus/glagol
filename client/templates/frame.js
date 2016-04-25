@@ -4,7 +4,8 @@
     { dataset: { type: frame.type, address: frame.address } },
     [ h('.FrameHeader',
       [ h('.FrameTitle',
-        [ frame.type + '+'
+        [ frame.type
+        , ' '
         , h('input.FrameAddress',
           { onchange: changeAddress
           , value: frame.address }) ])

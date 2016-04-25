@@ -4,7 +4,7 @@
 
   if (!address) {
 
-    console.debug('adding', type, '(empty)');
+    console.info('adding', type, '(empty)');
 
     App.model.frames.push(require('riko-mvc/model')(
       { type:    type
@@ -13,18 +13,7 @@
 
   } else {
 
-    var fragments = (address || "").trim().split(':').length;
-    address =
-      fragments === 3
-      ? address
-      : fragments === 2
-        ? ('ws://' + address)
-        : fragments === 1
-          ? ('ws://localhost:' + address)
-          : null;
-    if (!address) throw Error('address must be: [[ws://]<HOST>]<PORT>');
-
-    console.debug('adding', type, 'at', address);
+    console.info('adding', type, 'at', address);
 
     var index = App.model.frames().length;
 

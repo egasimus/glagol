@@ -47,7 +47,8 @@ welcome.placeholders =
   , 'got a lighter?'
   , 'just do it'
   , 'yeah guv?'
-  , 'няма филм' ]
+  , 'няма филм'
+  , 'everything is true even this' ]
 
 var br = h('br');
 

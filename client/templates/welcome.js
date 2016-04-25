@@ -49,10 +49,14 @@ module.exports.placeholders =
   , 'yeah boss?'
   , 'няма филм' ]
 
+var br = h('br');
+
 module.exports.hints =
-  [ { title: '1616'
+  [ { title: [ '1616', br
+             , 'example.com:1616' ]
     , info:  'connect to glagol-remote-debugger at that port' }
-  , { title: '~/foo/bar'
+  , { title: [ '/foo/bar', br
+             , '~/baz/quux' ]
     , info:  'browse directory at that location' }
   , { title: 'anything else'
-    , info:  'search for it' } ];
+    , info:  'search for it with DuckDuckGo' } ];

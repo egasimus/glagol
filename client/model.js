@@ -1,5 +1,8 @@
 module.exports =
-  { sessions: {}
+  { djinn:
+    { focused: false
+    , query:   "" }
+  , sessions: {}
   , sockets: {}
   , iframes: {}
   , frames: []

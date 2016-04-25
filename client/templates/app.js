@@ -12,6 +12,6 @@
             ])
         //, _.statusBar(state)
         ])
-    : _.welcome() ;
+    : _.welcome(state) ;
 
 })

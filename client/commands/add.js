@@ -24,11 +24,14 @@
 
     App.model.frames.put(index, frame);
 
-    API('add', type, address).done(function () {
-      if (type === 'glagol') {
-        $.commands.connect(address).then($.commands.initGlagol(index, address));
-      }
-    });
+    API('add', type, address).done(
+      function () {
+        if (type === 'glagol') {
+          $.commands.connect(address).then($.commands.initGlagol(index, address));
+        } },
+      function (err) {
+        console.error('could not add', type, 'at', address, ':', err);
+      });
 
   }
 

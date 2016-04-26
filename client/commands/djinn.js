@@ -14,7 +14,6 @@ var djinn = module.exports = function (input, data) {
     return djinn.default(input, data);
   }
 
-
 }
 
 djinn.default = function (input, data) {

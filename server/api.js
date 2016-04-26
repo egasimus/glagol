@@ -15,20 +15,20 @@ module.exports = function (id) {
         var location = address[0] === '~'
           ? path.join(os.homedir(), address.slice(1))
           : address;
-        var stats = fs.statSync(address);
+        var stats = fs.statSync(location);
         if (stats.isFile()) {
           type = 'file';
           $.model.files.put(address, stats);
         } else if (stats.isDirectory()) {
           type = 'directory';
           $.model.directories.put(address,
-            fs.readdirSync(address).map(function (name) {
-              return { name: name, stat: fs.statSync(path.join(address, name)) }
+            fs.readdirSync(location).map(function (name) {
+              return { name: name, stat: fs.statSync(path.join(location, name)) }
             }));
         }
       }
       $.model.frames.push({ type: type, address: address });
-      $.log('add', type, 'at', address);
+      $.log('added', type, 'at', address);
       return address;
     },
 

@@ -19,6 +19,7 @@
     "glagol-web-client": "^0.1.1",
     "glagol-web-server": "^0.1.0",
     "q-connection": "^0.6.1",
+    "send-data": "^8.0.0",
     "shortid": "^2.2.4",
     "vdom-thunk": "^3.0.0",
     "virtual-widget": "^1.3.0",

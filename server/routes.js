@@ -5,4 +5,5 @@ var route = _.lib.server.route
 var opts = { formats: { '.styl': require('glagol-stylus')() } }
 
 module.exports =
-  [ route("/", app(opts, path.resolve(__dirname, '../client'))) ];
+  [ route('/',      app(opts, path.resolve(__dirname, '../client'))),
+  , route('/file'), function (req, res) { return _.file(req, res) } ];

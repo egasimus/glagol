@@ -17,7 +17,7 @@
     return function (event) {
       event.preventDefault();
       var location = require('path').join(frame.address, name);
-      if (isDir) $.commands.add('directory', location);
+      $.commands.add(isDir ? 'directory' : 'file', location);
     }
   }
 

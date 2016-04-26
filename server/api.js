@@ -11,13 +11,21 @@ module.exports = function (id) {
     },
 
     add: function add (type, address) {
-      console.log('add', type, address)
-      if (type === 'directory') {
-        if (address[0] === '~') address = path.join(os.homedir(), address.slice(1));
-        var entries = fs.readdirSync(address).map(function (name) {
-          return { name: name, stat: fs.statSync(path.join(address, name)) }
-        })
-        $.model.directories.put(address, entries);
+      if (type === 'directory' || type === 'file') {
+        var location = address[0] === '~'
+          ? path.join(os.homedir(), address.slice(1))
+          : address;
+        var stats = fs.statSync(address);
+        if (stats.isFile()) {
+          type = 'file';
+          $.model.files.put(address, stats);
+        } else if (stats.isDirectory()) {
+          type = 'directory';
+          $.model.directories.put(address,
+            fs.readdirSync(address).map(function (name) {
+              return { name: name, stat: fs.statSync(path.join(address, name)) }
+            }));
+        }
       }
       $.model.frames.push({ type: type, address: address });
       $.log('add', type, 'at', address);

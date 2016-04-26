@@ -13,9 +13,10 @@
 
   return h('.Sidebar',
     [ section('add...',
-      [ button('glagol',  add('glagol'))
-      , button('iframe',  add('iframe'))
-      , button('process', add('process')) ])
+      [ button('glagol',    add('glagol'))
+      , button('iframe',    add('iframe'))
+      , button('directory', add('directory'))
+      , button('process',   add('process')) ])
     , section('frames:',  frames)
     , section('sockets:', sockets)
     , section('columns:',

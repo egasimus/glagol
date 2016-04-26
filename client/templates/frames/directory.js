@@ -1,16 +1,21 @@
 (function (frame, index) {
 
-  var directory = App.model.directories()[frame.address];
+  var directory = App.model.directories()[frame.address] || [];
 
-  return h('.Directory', (directory || []).map(entry))
+  return h('.Directory', [ directory.map(dir), directory.map(file) ])
 
-  function entry (data) {
-    var isDir = !!(data.stat.mode & 0040000);
+  function file (data) {
+    if (!!(data.stat.mode & 0040000)) return;
     return h('.DirectoryEntry',
-      { onclick: open(data.name_, isDir) },
-      isDir
-        ? h('strong', data.name_+'/')
-        : [ data.name_, ' ', h('em', data.stat.size + ' b') ])
+      { onclick: open(data.name_, false) },
+      [ data.name_, ' ', h('em', data.stat.size + ' b') ])
+  }
+
+  function dir (data) {
+    if (!(data.stat.mode & 0040000)) return;
+    return h('.DirectoryEntry',
+      { onclick: open(data.name_, true) },
+      h('strong', data.name_+'/'));
   }
 
   function open (name, isDir) {

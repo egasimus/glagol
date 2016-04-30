@@ -453,14 +453,16 @@ highlight()
     margin 0
 
 .Sidebar
-  background #ddd
-  color #333
+  .Highlight
+    background linear-gradient(to right, rgba(255,255,255,0.2) 33%, transparent 100%);
+
+  background rgba(0,0,0,0.5)
+  color #ddd
   font-family sans
-  border-left 1px solid #fff
   box-shadow -3px 0 6px #aaa
   &Section
     padding 6px
-    border-bottom 1px solid #ccc
+    border-bottom 1px solid rgba(0,0,0,0.5)
     &Header
       font-family serif
       font-style italic
@@ -471,7 +473,7 @@ highlight()
     margin 3px -3px
     padding 0 3px
     &:hover
-      background #f0f0f0
+      background #888
       border-radius 3px
 
 .Glagol
@@ -532,6 +534,13 @@ highlight()
       width 70px
     &Type
       width 100px
+    &Label
+      display inline-block
+      padding 2px 4px
+      background #555
+      color #ddd
+      font-weight bold
+      margin -2px 3px
 
 .File
   text-align center

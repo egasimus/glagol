@@ -21,6 +21,9 @@ function identify (parent) {
           data.package = JSON.parse(fs.readFileSync(path.join(fullpath, 'package.json')))
         } catch (e) {}
       }
+      if (files.indexOf('.git') > 0) {
+        data.git = true;
+      }
     }
     return data;
   }

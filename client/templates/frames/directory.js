@@ -4,12 +4,11 @@
 
   return [
     h('.Directory',
-      [ frame.address !== '/'
-        ? h('.DirectoryEntry',
-          { onclick: goUp },
-          [ h('strong', '../')
-          , h('em', 'parent directory') ])
-        : ''
+      [ when(frame.address !== '/',
+          h('.DirectoryEntry',
+            { onclick: goUp },
+            [ h('strong', '../')
+            , h('em', 'parent directory') ]))
       , directory.map(dir)
       , directory.map(file) ]),
     h('.DirectoryToolbar',
@@ -24,9 +23,7 @@
     if (!!(data.stat.mode & 0040000)) return;
     return entry(open(data.name_, false),
       [ h('.DirectoryEntryName', data.name_)
-      , ' '
       , h('.DirectoryEntryType', data.type)
-      , ' '
       , h('.DirectoryEntrySize', data.stat.size + ' b') ])
   }
 
@@ -34,9 +31,10 @@
     if (!(data.stat.mode & 0040000)) return;
     return entry(open(data.name_, false),
       [ h('strong.DirectoryEntryName', data.name_ + '/')
-      , ' '
-      , h('em.DirectoryEntryType', 'directory')
-      , ' '
+      , h('.DirectoryEntryType',
+          [ when(data.package, h('span.DirectoryEntryLabel', 'npm'))
+          , when(data.git,     h('span.DirectoryEntryLabel', 'git'))
+          , h('em', 'directory') ])
       , h('.DirectoryEntrySize', data.files + ' files')
       ])
   }
@@ -53,6 +51,10 @@
       var location = require('path').join(frame.address, name);
       $.commands.add(isDir ? 'directory' : 'file', location);
     }
+  }
+
+  function when (what, then) {
+    return what ? then : null;
   }
 
 })

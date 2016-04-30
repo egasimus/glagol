@@ -13,6 +13,9 @@
     case 'image/jpeg':
       body = addSrc(h('img'))
       break;
+    case 'text/plain':
+      body = _.glagolEditor({ source: 'foo' })
+      break;
   }
 
   return h('.File', body);

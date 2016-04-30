@@ -7,7 +7,9 @@
   switch (file.type) {
     case 'audio/mpeg':
     case 'audio/x-wav':
-      body = addSrc(h('audio', { controls: true }))
+      body = h('.AudioPlayer',
+        [ h('.AudioPlayerButton', '▶')
+        , addSrc(h('audio', { controls: true })) ]);
       break;
     case 'image/png':
     case 'image/jpeg':

@@ -29,7 +29,7 @@
 
   function dir (data) {
     if (!(data.stat.mode & 0040000)) return;
-    return entry(open(data.name_, false),
+    return entry(open(data.name_, true),
       [ h('strong.DirectoryEntryName', data.name_ + '/')
       , h('.DirectoryEntryType',
           [ when(data.package, h('span.DirectoryEntryLabel', 'npm'))
@@ -49,7 +49,11 @@
     return function (event) {
       event.preventDefault();
       var location = require('path').join(frame.address, name);
-      $.commands.add(isDir ? 'directory' : 'file', location);
+      if (isDir) {
+        App.model.frames.get(index).put('address', location)
+      } else {
+        $.commands.add(isDir ? 'directory' : 'file', location);
+      }
     }
   }
 

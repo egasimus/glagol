@@ -345,12 +345,23 @@ highlight()
     padding 0 3px
     background #333
     color #ddd
+    z-index 1
     .FrameWithError &
       background #c0392b
+    .Frame[data-type="file"] &
+      opacity 0
+      margin-bottom -34px
+      transition opacity 0.2s, margin-bottom 0.2s
+      background rgba(0,0,0,0.5)
+    .Frame[data-type="file"]:hover &
+      margin-bottom 0
+      opacity 1
   &Title, &Address
     padding 0 3px
     margin 0
     font-weight bold
+  &Title
+    flex-grow 1
   &Address
     color #fff
     display inline-block
@@ -358,6 +369,7 @@ highlight()
     border none
     padding 3px
     border-bottom 1px dotted #aaa
+    transition background 0.2s
     &:hover, &:focus
       background #555
     &:focus
@@ -502,5 +514,6 @@ highlight()
       background white
 
 .File
+  text-align center
   audio
     width 100%

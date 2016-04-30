@@ -8,9 +8,8 @@
         , ' '
         , h('input.FrameAddress',
           { onchange: changeAddress
-          , value: frame.address }) ])
-      , h('.FrameStatus', frame.status)
-      , h('div', { style: { flexGrow: 1 } })
+          , value: frame.address
+          , size: 40 }) ])
       , h('.FrameClose', { onclick: remove }, '×')])
     , frameError()
     , h('.FrameBody', _.frames[frame.type](frame, index)) ]);

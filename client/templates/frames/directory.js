@@ -2,21 +2,25 @@
 
   var directory = App.model.directories()[frame.address] || [];
 
-  return h('.Directory',
-    [ frame.address !== '/'
-      ? h('.DirectoryEntry',
-        { onclick: goUp },
-        [ h('strong', '../')
-        , h('em', 'parent directory') ])
-      : ''
-    , directory.map(dir)
-    , directory.map(file) ])
+  return [
+    h('.Directory',
+      [ frame.address !== '/'
+        ? h('.DirectoryEntry',
+          { onclick: goUp },
+          [ h('strong', '../')
+          , h('em', 'parent directory') ])
+        : ''
+      , directory.map(dir)
+      , directory.map(file) ]),
+    h('.DirectoryToolbar',
+      h('button', { onclick: $.cmd('refresh', frame, index) }, 'Refresh'))
+    ]
 
   function file (data) {
     if (!!(data.stat.mode & 0040000)) return;
     return h('.DirectoryEntry',
       { onclick: open(data.name_, false) },
-      [ data.name_, ' ', h('em', data.stat.size + ' b') ])
+      [ data.name_, ' ', h('em', data.type + ' ' + data.stat.size + ' b') ])
   }
 
   function dir (data) {

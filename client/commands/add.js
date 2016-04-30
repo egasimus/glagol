@@ -30,7 +30,10 @@
           $.commands.connect(address).then($.commands.initGlagol(index, address));
         } },
       function (err) {
-        console.error('could not add', type, 'at', address, ':', err);
+        var msg = 'could not add ' + type + ' at ' + address;
+        console.error(msg, 'because:', err);
+        err.message = msg;
+        App.model.frames.get(index).put('error', err)
       });
 
   }

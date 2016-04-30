@@ -2,7 +2,7 @@
 
   return h('section.Frame',
     { dataset: { type: frame.type, address: frame.address } },
-    [ h('.FrameHeader',
+    [ h('header.FrameHeader',
       [ h('.FrameTitle',
         [ frame.type
         , ' '
@@ -12,6 +12,7 @@
       , h('.FrameStatus', frame.status)
       , h('div', { style: { flexGrow: 1 } })
       , h('.FrameClose', { onclick: remove }, '×')])
+    , frameError()
     , h('.FrameBody', _.frames[frame.type](frame, index)) ]);
 
   function changeAddress (event) {
@@ -22,6 +23,24 @@
   function remove (event) {
     event.preventDefault();
     $.commands.remove(index);
+  }
+
+  function frameError () {
+    if (!frame.error) return;
+    return h('.FrameError',
+      [ h('.FrameErrorBody',
+        [ frame.error['@']
+          ? h('.FrameErrorRemote',
+              [ "Remote error "
+              , h('strong', frame.error['@']) ])
+          : ''
+        , h('.FrameErrorMessage', frame.error.message) ])
+      , h('.FrameErrorClose', { onclick: clearError }, '×') ])
+  }
+
+  function clearError (event) {
+    event.preventDefault();
+    App.model.frames.get(index).put('error', null)
   }
 
 });

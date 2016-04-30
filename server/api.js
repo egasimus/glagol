@@ -5,37 +5,41 @@ var path = require('path')
 module.exports = function (id) {
   return {
 
-    subscribe: function subscribe (cb) {
-      if (cb) $.model(function (val) { cb(serialize(val)) });
-      return serialize($.model());
-    },
+    subscribe:
+      function (cb) {
+        if (cb) $.model(function (val) { cb(serialize(val)) });
+        return serialize($.model());
+      },
 
-    add: function add (type, address) {
-      if (type === 'directory' || type === 'file') {
-        var location = address[0] === '~'
-          ? path.join(os.homedir(), address.slice(1))
-          : address;
-        var stats = fs.statSync(location);
-        if (stats.isFile()) {
-          type = 'file';
-          $.model.files.put(address, stats);
-        } else if (stats.isDirectory()) {
-          type = 'directory';
-          $.model.directories.put(address,
-            fs.readdirSync(location).map(function (name) {
-              return { name: name, stat: fs.statSync(path.join(location, name)) }
-            }));
+    add:
+      function (type, address) {
+        if (type === 'directory' || type === 'file') {
+          var location = address[0] === '~'
+            ? path.join(os.homedir(), address.slice(1))
+            : address;
+          var stats = fs.statSync(location);
+          type = stats.isFile()
+            ? loadFile(address, location, stats)
+            : loadDir(address, location);
         }
-      }
-      $.model.frames.push({ type: type, address: address });
-      $.log('added', type, 'at', address);
-      return address;
-    },
+        $.model.frames.push({ type: type, address: address });
+        $.log('added', type, 'at', address);
+        return address;
+      },
 
-    remove: function remove (index) {
-      $.log('remove', index);
-      $.model.frames.splice(index, 1);
-    },
+    remove:
+      function (index) {
+        $.log('remove', index);
+        $.model.frames.splice(index, 1);
+      },
+
+    refresh:
+      function refresh (index) {
+        console.log('refresh', index, $.model())
+        var frame = $.model.frames()[index];
+        console.log(frame);
+        return true;
+      }
 
   }
 };
@@ -45,4 +49,15 @@ function serialize (data) {
     if (key === 'socket' || key === 'api') return undefined;
     return val;
   });
+}
+
+function loadFile (address, location, stats) {
+  var data = { name: location, type: $.util.mimeType(location), stats: stats }
+  $.model.files.put(address, data)
+  return 'file'
+}
+
+function loadDir (address, location) {
+  $.model.directories.put(address, $.util.readDir(location));
+  return 'directory'
 }

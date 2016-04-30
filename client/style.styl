@@ -361,6 +361,23 @@ highlight()
     &:focus
       outline none
       border-bottom 1px solid #aaa
+  &Error
+    display flex
+    justify-content space-between
+    align-items center
+    background #9c5050
+    color white
+    padding 8px 6px
+    line-height 18px
+    &Message
+      font-weight bold
+    &Close
+      font-size 24px
+      margin-right -3px
+      padding 9px 2px
+      cursor pointer
+      &:hover
+        background rgba(255,255,255,0.1)
   &Status
     display none
     margin 0 6px
@@ -374,6 +391,8 @@ highlight()
       opacity 0.7
       background #fff
   &Body
+    display flex
+    flex-direction column
     overflow auto
     flex-grow 1
     > table
@@ -466,6 +485,8 @@ highlight()
       color #555
 
 .Directory
+  .FrameBody > &
+    flex-grow 1
   &Entry
     display flex
     justify-content space-between

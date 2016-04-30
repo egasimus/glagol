@@ -6,7 +6,8 @@ module.exports =
   , sockets: {}
   , iframes: {}
   , frames: []
-  , directories: []
+  , directories: {}
+  , files: {}
   , focusedFrame: 0
   , focusedSession: null
   , visibleColumns:

@@ -57,5 +57,5 @@ djinn.routes =
   , [ re('wss://(.+):(\d+)'), handler('wss')   ]
   , [ re('http://(.+)'),      handler('http')  ]
   , [ re('https://(.+)'),     handler('https') ]
-  , [ re('/(.*)'),            handler('root')  ]
-  , [ re('~(.*)'),            handler('home')  ] ];
+  , [ re('~(?:/(.*))?'),      handler('home')  ]
+  , [ re('/(.*)'),            handler('root')  ] ];

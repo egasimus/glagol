@@ -8,7 +8,8 @@
     case 'audio/mpeg':
     case 'audio/x-wav':
       body = h('.AudioPlayer',
-        [ h('.AudioPlayerButton', '▶')
+        [ h('.AudioPlayerButton', { onclick: playback }, '▶')
+        , h('.AudioPlayerInfo', require('path').basename(file.name_))
         , addSrc(h('audio', { controls: true })) ]);
       break;
     case 'image/png':
@@ -25,6 +26,12 @@
   function addSrc (vnode) {
     vnode.properties.src = '/file/' + file.name_;
     return vnode;
+  }
+
+  function playback (event) {
+    event.preventDefault();
+    var audio = event.target.parentElement.querySelector('audio');
+    audio.play();
   }
 
 })

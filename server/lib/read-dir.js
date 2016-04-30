@@ -13,7 +13,7 @@ function identify (location) {
     var fullpath = path.join(location, name)
       , data =
         { name: name
-        , type: $.mimeType(fullpath)
+        , type: _.mimeType(fullpath)
         , stat: fs.statSync(fullpath) };
     return data;
   }

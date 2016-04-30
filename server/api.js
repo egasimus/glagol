@@ -52,12 +52,12 @@ function serialize (data) {
 }
 
 function loadFile (address, location, stats) {
-  var data = { name: location, type: $.util.mimeType(location), stats: stats }
+  var data = { name: location, type: $.lib.mimeType(location), stats: stats }
   $.model.files.put(address, data)
   return 'file'
 }
 
 function loadDir (address, location) {
-  $.model.directories.put(address, $.util.readDir(location));
+  $.model.directories.put(address, $.lib.readDir(location));
   return 'directory'
 }

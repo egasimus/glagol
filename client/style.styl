@@ -342,8 +342,10 @@ highlight()
     align-items center
     flex-shrink 0
     padding 0 3px
-    background #333
     background rgba(0,0,0,0.5)
+    transition background 0.2s
+    .Frame:hover &
+      background rgba(0,0,0,0.8)
     color #ddd
     z-index 1
     .FrameWithError &
@@ -351,9 +353,8 @@ highlight()
     .Frame[data-type="file"] &
       opacity 0
       margin-bottom -34px
-      transition opacity 0.2s, margin-bottom 0.2s
+      transition background 0.2s, opacity 0.2s
     .Frame[data-type="file"]:hover &
-      margin-bottom 0
       opacity 1
   &Title, &Address
     padding 0 3px
@@ -485,7 +486,6 @@ highlight()
   &Body > table
     margin 0
 
-
 .Djinn
   &Hints
     display flex
@@ -501,8 +501,6 @@ highlight()
       color #555
 
 .Directory
-  table&
-    background none
   .FrameBody > &
     flex-grow 1
     overflow auto
@@ -514,6 +512,17 @@ highlight()
     cursor pointer
     &:hover
       background white
+    &Name
+      flex-grow 1
+    &Size, &Type
+      margin-left 6px
+      overflow hidden
+      text-overflow ellipsis
+      text-align right
+    &Size
+      width 70px
+    &Type
+      width 100px
 
 .File
   text-align center

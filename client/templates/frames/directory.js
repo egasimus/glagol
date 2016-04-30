@@ -3,7 +3,7 @@
   var directory = App.model.directories()[frame.address] || [];
 
   return [
-    h('table.Directory',
+    h('.Directory',
       [ frame.address !== '/'
         ? h('.DirectoryEntry',
           { onclick: goUp },
@@ -23,7 +23,11 @@
   function file (data) {
     if (!!(data.stat.mode & 0040000)) return;
     return entry(open(data.name_, false),
-      [ data.name_, ' ', h('em', data.type + ' ' + data.stat.size + ' b') ])
+      [ h('.DirectoryEntryName', data.name_)
+      , ' '
+      , h('.DirectoryEntryType', data.type)
+      , ' '
+      , h('.DirectoryEntrySize', data.stat.size + ' b') ])
   }
 
   function dir (data) {

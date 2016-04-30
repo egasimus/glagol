@@ -1,5 +1,7 @@
 (function (frame, index) {
 
+  if (!frame) return;
+
   return h('section.Frame' + (frame.error ? '.FrameWithError' : ''),
     { dataset: { type: frame.type, address: frame.address } },
     [ h('header.FrameHeader',
@@ -44,7 +46,7 @@
 
   function frameType () {
     return frame.type === 'file'
-      ? App.model.files()[frame.address].type || file
+      ? (App.model.files()[frame.address] || {}).type || 'file'
       : frame.type
   }
 

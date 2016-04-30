@@ -18,7 +18,8 @@ module.exports =
     , 'format':   true
     , 'options':  true }
   , displayOptions:
-    { 'collapse links':  true
+    { 'show sidebar':    true
+    , 'collapse links':  true
     , 'expanded view':   true
     , 'line numbers':    true
     , 'snap horizontal': true

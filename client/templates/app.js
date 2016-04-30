@@ -7,7 +7,7 @@
         [ h('.MainView',
             [ h('.Frames',
                 state.frames.map(_.frame)),
-            , _.sidebar(state)
+            , state.displayOptions['show sidebar'] ? _.sidebar(state) : null
             //, h('.FramesToolbar')
             ])
         //, _.statusBar(state)

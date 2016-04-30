@@ -7,22 +7,19 @@
   switch (file.type) {
     case 'audio/mpeg':
     case 'audio/x-wav':
-      body = h('audio', { controls: true })
-      addSrc();
+      body = addSrc(h('audio', { controls: true }))
       break;
     case 'image/png':
     case 'image/jpeg':
-      body = h('img')
-      addSrc();
+      body = addSrc(h('img'))
       break;
   }
 
-  console.log(body)
-
   return h('.File', body);
 
-  function addSrc () {
-    body.properties.src = '/file/' + file.name_;
+  function addSrc (vnode) {
+    vnode.properties.src = '/file/' + file.name_;
+    return vnode;
   }
 
 })

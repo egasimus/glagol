@@ -4,7 +4,7 @@
     { dataset: { type: frame.type, address: frame.address } },
     [ h('header.FrameHeader',
       [ h('.FrameTitle',
-        [ frame.type
+        [ frameType()
         , ' '
         , h('input.FrameAddress',
           { onchange: changeAddress
@@ -41,6 +41,12 @@
   function clearError (event) {
     event.preventDefault();
     App.model.frames.get(index).put('error', null)
+  }
+
+  function frameType () {
+    return frame.type === 'file'
+      ? App.model.files()[frame.address].type || file
+      : frame.type
   }
 
 });

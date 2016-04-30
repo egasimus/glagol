@@ -376,6 +376,7 @@ highlight()
       outline none
       border-bottom 1px solid #aaa
   &Error
+    flex-shrink 0
     display flex
     justify-content space-between
     align-items center
@@ -385,6 +386,14 @@ highlight()
     line-height 18px
     &Message
       font-weight bold
+    &Stack
+      font-family monospace
+      background rgba(0,0,0,0.5)
+      white-space pre
+      overflow auto
+      padding 6px
+      margin-bottom 6px
+      line-height 14px
     &Close
       font-size 24px
       margin-right -3px

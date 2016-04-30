@@ -35,7 +35,9 @@
               [ "Remote error "
               , h('strong', frame.error['@']) ])
           : ''
-        , h('.FrameErrorMessage', frame.error.message) ])
+        , [ h('.FrameErrorMessage', frame.error.message)
+          , frame.error.stack ? h('.FrameErrorStack',   frame.error.stack) : ''
+          ] ])
       , h('.FrameErrorClose', { onclick: clearError }, '×') ])
   }
 

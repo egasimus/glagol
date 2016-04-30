@@ -33,7 +33,12 @@
   function dir (data) {
     if (!(data.stat.mode & 0040000)) return;
     return entry(open(data.name_, false),
-      h('strong', data.name_ + '/'));
+      [ h('strong.DirectoryEntryName', data.name_ + '/')
+      , ' '
+      , h('em.DirectoryEntryType', 'directory')
+      , ' '
+      , h('.DirectoryEntrySize', data.files + ' files')
+      ])
   }
 
   function goUp (event) {

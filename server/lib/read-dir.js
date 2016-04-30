@@ -6,15 +6,22 @@ module.exports = function (location) {
   return items.map(identify(location));
 }
 
-function identify (location) {
-  console.log('id', location)
+function identify (parent) {
   return function (name) {
-    console.log('id', location, name)
-    var fullpath = path.join(location, name)
+    var fullpath = path.join(parent, name)
       , data =
         { name: name
         , type: _.mimeType(fullpath)
         , stat: fs.statSync(fullpath) };
+    if (data.stat.isDirectory()) {
+      var files = fs.readdirSync(fullpath);
+      data.files = files.length;
+      if (files.indexOf('package.json') > 0) {
+        try {
+          data.package = JSON.parse(fs.readFileSync(path.join(fullpath, 'package.json')))
+        } catch (e) {}
+      }
+    }
     return data;
   }
 }

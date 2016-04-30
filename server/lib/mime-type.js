@@ -6,7 +6,6 @@ module.exports = function getMimeType (location) {
   try {
     data = exec(cmd, args).toString().trim();
   } catch (e) {}
-  console.log(location, data)
   return data;
 }
 

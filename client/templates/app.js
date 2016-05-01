@@ -6,8 +6,8 @@
     ? h('.App',
         [ h('.MainView',
             [ h('.Frames',
-                state.frames.map(_.frame)),
-            , state.displayOptions['show sidebar'] ? _.sidebar(state) : null
+                state.frames.map(_.frame))
+            , _.sidebar(state)
             //, h('.FramesToolbar')
             ])
         //, _.statusBar(state)

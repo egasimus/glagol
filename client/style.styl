@@ -453,6 +453,13 @@ highlight()
     margin 0
 
 .Sidebar
+  &Collapsed
+    padding-left 6px
+    border-right 6px solid rgba(0,0,0,0.5)
+    cursor pointer
+    &:hover
+      border-right-color rgba(0,0,0,0.8)
+
   .Highlight
     background linear-gradient(to right, rgba(255,255,255,0.2) 33%, transparent 100%);
 
@@ -568,7 +575,7 @@ highlight()
     height 54px
     border-radius 30px
     box-shadow 0 0 6px #333
-    margin 0 9px 9px
+    margin 0 9px 12px
     padding-left 5px
     &:hover
       background #eee

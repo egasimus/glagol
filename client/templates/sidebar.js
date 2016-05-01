@@ -1,35 +1,48 @@
 (function (state) {
 
-  var frames = state.frames.map(function (frame, i) {
-    return h('.SidebarButton', i + ' ' + frame.type + '+' + frame.address);
-  })
+  return state.displayOptions['show sidebar']
+    ? expandedSidebar()
+    : collapsedSidebar()
 
-  var sockets = Object.keys(state.sockets).map(function (id) {
-    return h('.SidebarButton', id);
-  })
+  function collapsedSidebar () {
+    return h('.SidebarCollapsed', { onclick: function (event) {
+      event.preventDefault();
+      App.model.displayOptions.put('show sidebar', true);
+    } })
+  }
 
-  var toggleCol = toggle.bind(null, App.model.visibleColumns)
-    , toggleOpt = toggle.bind(null, App.model.displayOptions);
+  function expandedSidebar () {
+    var frames = state.frames.map(function (frame, i) {
+      return h('.SidebarButton', i + ' ' + frame.type + '+' + frame.address);
+    })
 
-  return h('.Sidebar',
-    [ section('add...',
-      [ button('glagol',    add('glagol'))
-      , button('iframe',    add('iframe'))
-      , button('directory', add('directory'))
-      , button('process',   add('process')) ])
-    , section('frames:',  frames)
-    , section('sockets:', sockets)
-    , section('columns:',
-      Object.keys(state.visibleColumns).map(
-        function (name) {
-          var visible = !!state.visibleColumns[name];
-          return button(name, toggleCol(name, visible), visible); }))
-    , section('options:',
-      Object.keys(state.displayOptions).map(
-        function (name) {
-          var visible = !!state.displayOptions[name];
-          return button(name, toggleOpt(name, visible), visible) }))
-    ]);
+    var sockets = Object.keys(state.sockets).map(function (id) {
+      return h('.SidebarButton', id);
+    })
+
+    var toggleCol = toggle.bind(null, App.model.visibleColumns)
+      , toggleOpt = toggle.bind(null, App.model.displayOptions);
+
+    return h('.Sidebar',
+      [ section('add...',
+        [ button('glagol',    add('glagol'))
+        , button('iframe',    add('iframe'))
+        , button('directory', add('directory'))
+        , button('process',   add('process')) ])
+      , section('frames:',  frames)
+      , section('sockets:', sockets)
+      , section('columns:',
+        Object.keys(state.visibleColumns).map(
+          function (name) {
+            var visible = !!state.visibleColumns[name];
+            return button(name, toggleCol(name, visible), visible); }))
+      , section('options:',
+        Object.keys(state.displayOptions).map(
+          function (name) {
+            var visible = !!state.displayOptions[name];
+            return button(name, toggleOpt(name, visible), visible) }))
+      ]);
+  }
 
   function button (text, onclick, highlight) {
     return h('.SidebarButton' + (highlight ? '.Highlight': ''),

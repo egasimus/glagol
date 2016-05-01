@@ -1,19 +1,26 @@
 (function (frame, index) {
 
-  var directory = App.model.directories()[frame.address] || [];
+  var directory = App.model.directories()[frame.address];;
 
   return [
-    h('.Directory',
-      [ when(frame.address !== '/',
-          h('.DirectoryEntry',
-            { onclick: goUp },
-            [ h('strong', '../')
-            , h('em', 'parent directory') ]))
-      , directory.map(dir)
-      , directory.map(file) ]),
+    h('.Directory', directory ? directoryBody() : noData()),
     h('.DirectoryToolbar',
       h('button', { onclick: $.cmd('refresh', frame, index) }, 'Refresh'))
     ]
+
+  function directoryBody () {
+    return [
+      when(frame.address !== '/',
+        h('.DirectoryEntry',
+          { onclick: goUp },
+          [ h('strong', '../')
+          , h('em', 'parent directory') ])),
+      directory.map(dir),
+      directory.map(file)
+    ]
+  }
+
+  function noData () { return 'no data' }
 
   function entry (onclick, body) {
     return h('tr.DirectoryEntry', { onclick: onclick }, body);

@@ -3,9 +3,10 @@
   position relative
 
 body
-  background-color #333
-  background-image url('http://i.imgur.com/DgIEr0a.jpg')
-  background-size  cover
+  background-color    #333
+  background-image    url('http://i.imgur.com/DgIEr0a.jpg')
+  background-size     cover
+  background-position center
 
 body, table, input, select, textarea, button
   font-family sans
@@ -463,13 +464,14 @@ highlight()
   .Highlight
     background linear-gradient(to right, rgba(255,255,255,0.2) 33%, transparent 100%);
 
+  border-left 1px solid rgba(255,255,255,0.25)
   background rgba(0,0,0,0.5)
   color #ddd
   font-family sans
-  box-shadow -3px 0 6px #222
+  box-shadow -3px 0 6px rgba(30,30,30,0.4)
   &Section
     padding 6px
-    border-bottom 1px solid rgba(0,0,0,0.5)
+    border-bottom 1px solid rgba(30,30,30,0.7)
     &Header
       font-family serif
       font-style italic

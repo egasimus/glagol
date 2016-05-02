@@ -1,3 +1,10 @@
+// TODO: automatically add modules to Glagol's per-file pseudo-globals,
+// instead of using the window object.
+//
+// The problem here is that modifying options objects is tricky; and
+// furthermore does not automatically invalidate evaluation caches.
+// These things need to be fixed in Glagol core.
+
 (function (noGlobals) {
 
   var modules =
@@ -18,7 +25,7 @@
 function initView () {
   var App = $.lib.gui.init(Glagol);
   // inject codemirror stylesheet; TODO from node_modules
-  var codemirrorStyle = document.createElement('link');
+  var codemirrorStyle  = document.createElement('link');
   codemirrorStyle.rel  = 'stylesheet';
   codemirrorStyle.href = 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.13.4/codemirror.css';
   document.head.appendChild(codemirrorStyle);
@@ -26,13 +33,8 @@ function initView () {
 }
 
 function initAPI () {
-  // TODO automatically add API to Glagol pseudo-globals instead of the window
-  // object. The problem here is that modifying options objects is tricky; and
-  // furthermore does not automatically invalidate evaluation caches. Things
-  // to fix in Glagol core.
   var _API   = $.lib.api.init(Glagol)
     , socket = _API.socket;
-  // reload page when socket closes
   socket.onclose = function () { window.location.reload() }
   // subscribe to server api
   // TODO replace with new api framework

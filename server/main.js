@@ -15,7 +15,7 @@
   return server;
 
   function listening () {
-    console.log("listening on 0.0.0.0:1617");
+    $.log("listening on 0.0.0.0:1617");
   }
 
   function connection (socket) {
@@ -25,14 +25,12 @@
         _.lib.bundler.updater.connected(_.routes, socket);
       }
       if (msg.data === "riko") {
-        socket.onmessage = null;
-        var id  = _.lib.shortid()
-          , api = _.lib.api.connect(socket, function () { return _.api(id) });
-        console.log("opened user connection", id);
-        _.model.users.put(id, { api: api });
+        var state = { id: _.lib.shortid() }
+        $.log("opened client connection", state.id);
+        _.model.users.put(state.id, state);
+        socket.onmessage = require('riko-api2')($.api)(state);
         socket.onclose = function () {
-          console.log("closing user connection", id);
-          _.model.users.delete(id);
+          $.log('closed client connection', state.id)
         }
       }
     }

@@ -9,8 +9,8 @@
 
   var modules =
     { App: initView()
-    , API: initAPI()
-    , FS:  initFS() };
+    , API: initSessionAPI()
+    , FS:  initFileAPI() };
 
   if (!noGlobals) {
     Object.keys(modules).forEach(function (id) {
@@ -32,22 +32,26 @@ function initView () {
   return App;
 }
 
-function initAPI () {
-  var _API   = $.lib.api.init(Glagol)
-    , socket = _API.socket;
-  socket.onclose = function () { window.location.reload() }
-  // subscribe to server api
-  // TODO replace with new api framework
-  _API.API('subscribe', function (data) { _.commands.update(data) })
-    .done(function (data) {
-      console.debug("subscribed to server");
-      _.commands.update(data);
-    });
-  return _API.API;
+function initSessionAPI () {
+  var socket     = new WebSocket('ws://localhost:1617')
+    , sessionAPI = require('riko-api2')(socket);
+  socket.onopen = function () {
+    socket.onopen = null;
+    socket.send('riko');
+  }
+  socket.onclose =
+    function () {
+      window.location.reload()
+    }
+  socket.onmessage =
+    function (message) {
+      _.commands.update(JSON.parse(message.data))
+    }
+  return sessionAPI;
 }
 
-function initFS () {
-  var FSSocket = new WebSocket('ws://localhost:1615')
-    , FS       = require('riko-api2')(FSSocket)
-  return FS;
+function initFileAPI () {
+  var socket  = new WebSocket('ws://localhost:1615')
+    , fileAPI = require('riko-api2')(socket)
+  return fileAPI;
 }

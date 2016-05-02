@@ -35,9 +35,9 @@ module.exports = function (id) {
 
     refresh:
       function refresh (index) {
-        console.log('refresh', index, $.model())
+        $.log('refresh', index, $.model())
         var frame = $.model.frames()[index];
-        console.log(frame);
+        $.log(frame);
         return true;
       }
 

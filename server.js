@@ -1,16 +1,18 @@
-module.exports = function makeAPI (commands) {
+module.exports = function makeAPI (getCommands) {
 
-  API.commands = commands;
+  API.getCommands = getCommands;
+  API.parse       = JSON.parse;
 
   return API;
 
   function API (state) {
     return function (message) {
-      message = JSON.parse(message);
+      message = API.parse(message);
       return Promise(function (win, fail) {
-        var command = API.commands[message[0]];
-        if (API.commands[message[0]]) {
-          win(command.apply(state, message[1] || []))
+        var commands = API.getCommands(state)
+          , command  = commands[message[0]];
+        if (command) {
+          win(command.apply(commands, message[1] || []))
         } else {
           fail("no command " + message[0]);
         }

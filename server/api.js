@@ -2,7 +2,7 @@ var path = require('path')
   , fs   = require('fs')
   , os   = require('os')
 
-module.exports = function (id) {
+module.exports = function (state) {
   return {
 
     subscribe:
@@ -24,7 +24,7 @@ module.exports = function (id) {
         }
         $.model.frames.push({ type: type, address: address });
         $.log('added', type, 'at', address);
-        return address;
+        state.socket.send(serialize($.model()));
       },
 
     remove:

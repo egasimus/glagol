@@ -24,17 +24,8 @@
 
     App.model.frames.put(index, frame);
 
-    API('add', type, address).done(
-      function () {
-        if (type === 'glagol') {
-          $.commands.connect(address).then($.commands.initGlagol(index, address));
-        } },
-      function (err) {
-        var msg = 'could not add ' + type + ' at ' + address;
-        console.error(msg, 'because:', err);
-        err.message = msg;
-        App.model.frames.get(index).put('error', err)
-      });
+    API('add', type, address);
+    if (type === 'file' || type === 'directory') FS('read', address);
 
   }
 

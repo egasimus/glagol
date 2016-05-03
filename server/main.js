@@ -25,7 +25,7 @@
         _.lib.bundler.updater.connected(_.routes, socket);
       }
       if (msg.data === "riko") {
-        var state = { id: _.lib.shortid() }
+        var state = { id: _.lib.shortid(), socket: socket }
         $.log("opened client connection", state.id);
         _.model.users.put(state.id, state);
         socket.onmessage = require('riko-api2')($.api)(state);

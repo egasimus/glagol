@@ -1,0 +1,3 @@
+module.exports =
+  { directories: {}
+  , files:       {} }

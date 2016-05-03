@@ -2,40 +2,42 @@ var path = require('path')
   , fs   = require('fs')
   , os   = require('os')
 
-var API = module.exports = function (state, socket) {
-  return function (message) {
-    message = JSON.parse(message);
-    return Promise(function (win, fail) {
-      var command = API.commands[message[0]];
-      if (API.commands[message[0]]) {
-        win(command.apply(API.commands, message[1] || []))
-      } else {
-        fail("no command " + message[0]);
-      }
-    })
-  }
-}
+module.exports = require('riko-api2')(function (state) {
 
-API.commands = {
+  return {
 
-  read:
-    function (location) {
-      return Promise(function (win, fail) {
-        location = resolve(location);
-        var stats = fs.statSync(location);
+    read:
+      function (location) {
+
+        location = resolve(location.trim());
+        $.log("read", location);
+
+        var stats = fs.statSync(location)
           , data  = { path: location, stats: stats, type: getType(stats) };
+
         if (data.type === 'directory') {
           data.items = readDir(location);
+          $.model.directories[location] = data;
         }
-        if (data.type === 'file') {
-        }
-      }
-    })
 
-}
+        if (data.type === 'file') {
+          $.model.files[location] = data;
+        }
+
+        $.log(data);
+
+        state.socket.send(JSON.stringify({ location: location, data: data }))
+
+      }
+
+  }
+
+});
 
 function resolve (location) {
-  if (location[0] === '~' && location[1] === '/') {
+  if (location === '~') {
+    location = os.homedir();
+  } else if (location.indexOf('~/') === 0) {
     location = path.resolve(path.join(os.homedir(), location.slice(1)))
   }
   return location;
@@ -47,7 +49,7 @@ function getType (stats) {
                              : 'other';
 }
 
-function readDir function (location) {
+function readDir (location) {
   var items = fs.readdirSync(location);
   return items.map(identify(location));
 }
@@ -57,7 +59,7 @@ function identify (parent) {
     var fullpath = path.join(parent, name)
       , data =
         { name: name
-        , type: _.mimeType(fullpath)
+        , type: ''//_.mimeType(fullpath)
         , stat: fs.statSync(fullpath) };
     if (data.stat.isDirectory()) {
       var files = fs.readdirSync(fullpath);

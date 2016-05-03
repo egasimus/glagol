@@ -21,11 +21,15 @@
     // give the socket an id, for reference
     var id  = ++state.lastSocket
       , url = socket.upgradeReq.url;
-    $.log('socket', id, 'opened at', url);
+    $.log('socket', id, 'opened');
 
     // set socket handlers
-    socket.onclose   = function () { console.log('socket', id, 'closed') }
-    socket.onmessage = function () { _.api(state, socket).apply(this, arguments) }
+    socket.onclose   = function () {
+      $.log('socket', id, 'closed')
+    }
+    socket.onmessage = function () {
+      _.api({ socket: socket }).apply(this, arguments)
+    }
   }
 
   function reload (self) {

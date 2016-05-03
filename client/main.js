@@ -40,15 +40,13 @@ function initSessionAPI () {
     socket.send('riko');
     sessionAPI('refresh');
   }
-  socket.onclose =
-    function () {
-      window.location.reload()
-    }
-  socket.onmessage =
-    function (message) {
-      console.debug("Session update", message.data)
-      _.commands.update(JSON.parse(message.data))
-    }
+  socket.onclose = function () {
+    window.location.reload()
+  }
+  socket.onmessage = function (message) {
+    //console.debug("Session update", message.data)
+    _.commands.updateSession(JSON.parse(message.data))
+  }
   return sessionAPI;
 }
 
@@ -56,7 +54,8 @@ function initFileAPI () {
   var socket  = new WebSocket('ws://localhost:1615')
     , fileAPI = require('riko-api2')(socket)
   socket.onmessage = function (message) {
-    console.debug("FS update", message.data)
+    //console.debug("FS update", message.data)
+    _.commands.updateFs(JSON.parse(message.data));
   }
   return fileAPI;
 }

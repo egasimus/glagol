@@ -5,41 +5,33 @@ var path = require('path')
 module.exports = function (state) {
   return {
 
-    subscribe:
-      function (cb) {
-        if (cb) $.model(function (val) { cb(serialize(val)) });
-        return serialize($.model());
+    refresh:
+      function () {
+        state.socket.send(serialize($.model()));
       },
 
     add:
       function (type, address) {
-        if (type === 'directory' || type === 'file') {
-          var location = address[0] === '~'
-            ? path.join(os.homedir(), address.slice(1))
-            : address;
-          var stats = fs.statSync(location);
-          type = stats.isFile()
-            ? loadFile(address, location, stats)
-            : loadDir(address, location);
-        }
+        //if (type === 'directory' || type === 'file') {
+          //var location = address[0] === '~'
+            //? path.join(os.homedir(), address.slice(1))
+            //: address;
+          //var stats = fs.statSync(location);
+          //type = stats.isFile()
+            //? loadFile(address, location, stats)
+            //: loadDir(address, location);
+        //}
         $.model.frames.push({ type: type, address: address });
         $.log('added', type, 'at', address);
-        state.socket.send(serialize($.model()));
+        this.refresh();
       },
 
     remove:
       function (index) {
         $.log('remove', index);
         $.model.frames.splice(index, 1);
+        this.refresh();
       },
-
-    refresh:
-      function refresh (index) {
-        $.log('refresh', index, $.model())
-        var frame = $.model.frames()[index];
-        $.log(frame);
-        return true;
-      }
 
   }
 };
@@ -51,13 +43,13 @@ function serialize (data) {
   });
 }
 
-function loadFile (address, location, stats) {
-  var data = { name: location, type: $.lib.mimeType(location), stats: stats }
-  $.model.files.put(address, data)
-  return 'file'
-}
+//function loadFile (address, location, stats) {
+  //var data = { name: location, type: $.lib.mimeType(location), stats: stats }
+  //$.model.files.put(address, data)
+  //return 'file'
+//}
 
-function loadDir (address, location) {
-  $.model.directories.put(address, $.lib.readDir(location));
-  return 'directory'
-}
+//function loadDir (address, location) {
+  //$.model.directories.put(address, $.lib.readDir(location));
+  //return 'directory'
+//}

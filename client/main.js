@@ -38,6 +38,7 @@ function initSessionAPI () {
   socket.onopen = function () {
     socket.onopen = null;
     socket.send('riko');
+    sessionAPI('refresh');
   }
   socket.onclose =
     function () {

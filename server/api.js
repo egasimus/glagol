@@ -64,12 +64,12 @@ function identify (parent) {
     if (data.stat.isDirectory()) {
       var files = fs.readdirSync(fullpath);
       data.files = files.length;
-      if (files.indexOf('package.json') > 0) {
+      if (files.indexOf('package.json') > -1) {
         try {
           data.package = JSON.parse(fs.readFileSync(path.join(fullpath, 'package.json')))
         } catch (e) {}
       }
-      if (files.indexOf('.git') > 0) {
+      if (files.indexOf('.git') > -1) {
         data.git = true;
       }
     }

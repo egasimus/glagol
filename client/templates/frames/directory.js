@@ -58,8 +58,9 @@
       var location = require('path').join(frame.address, name);
       if (isDir) {
         App.model.frames.get(index).put('address', location)
+        FS('read', location);
       } else {
-        $.commands.add(isDir ? 'directory' : 'file', location);
+        $.commands.add('file', location);
       }
     }
   }

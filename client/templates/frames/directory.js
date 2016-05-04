@@ -15,8 +15,8 @@
           { onclick: goUp },
           [ h('strong', '../')
           , h('em', 'parent directory') ])),
-      directory.map(dir),
-      directory.map(file)
+      directory.items.map(dir),
+      directory.items.map(file)
     ]
   }
 

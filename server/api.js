@@ -12,15 +12,7 @@ module.exports = function (state) {
 
     add:
       function (type, address) {
-        //if (type === 'directory' || type === 'file') {
-          //var location = address[0] === '~'
-            //? path.join(os.homedir(), address.slice(1))
-            //: address;
-          //var stats = fs.statSync(location);
-          //type = stats.isFile()
-            //? loadFile(address, location, stats)
-            //: loadDir(address, location);
-        //}
+        address = getAddress(type, address);
         $.model.frames.push({ type: type, address: address });
         $.log('added', type, 'at', address);
         this.refresh();
@@ -41,6 +33,19 @@ function serialize (data) {
     if (key === 'socket' || key === 'api') return undefined;
     return val;
   });
+}
+
+function getAddress (type, address) {
+  console.log("getLocation", type, address);
+  if (type === 'directory' || type === 'file') {
+    if (address === '~') {
+      return os.homedir();
+    }
+    if (address.indexOf('~/') === 0) {
+      return path.join(os.homedir(), address.slice(1));
+    }
+  }
+  return address;
 }
 
 //function loadFile (address, location, stats) {

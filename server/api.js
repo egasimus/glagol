@@ -26,7 +26,7 @@ module.exports = require('riko-api2')(function (state) {
 
         $.log(data);
 
-        state.socket.send(JSON.stringify({ location: location, data: data }))
+        state.socket.send(JSON.stringify(data))
 
       }
 

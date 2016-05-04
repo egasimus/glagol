@@ -6,8 +6,4 @@ module.exports = require('riko-mvc').M({
 
   frames: [],
 
-  directories: {},
-
-  files: {}
-
 })

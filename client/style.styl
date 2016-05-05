@@ -454,6 +454,13 @@ highlight()
     margin 0
 
 .Sidebar
+  border-left 1px solid rgba(255,255,255,0.25)
+  background rgba(0,0,0,0.5)
+  color #ddd
+  font-family sans
+  box-shadow -3px 0 6px rgba(30,30,30,0.4)
+  overflow scroll
+
   &Collapsed
     padding-left 6px
     border-right 6px solid rgba(0,0,0,0.5)
@@ -463,12 +470,6 @@ highlight()
 
   .Highlight
     background linear-gradient(to right, rgba(255,255,255,0.2) 33%, transparent 100%);
-
-  border-left 1px solid rgba(255,255,255,0.25)
-  background rgba(0,0,0,0.5)
-  color #ddd
-  font-family sans
-  box-shadow -3px 0 6px rgba(30,30,30,0.4)
   &Section
     padding 6px
     border-bottom 1px solid rgba(30,30,30,0.7)
@@ -550,6 +551,8 @@ highlight()
       color #ddd
       font-weight bold
       margin -2px 3px
+      .DirectoryEntry:hover &
+        color #fff
 
 .File
   text-align center

@@ -4,12 +4,12 @@
 
   var body = 'unknown file type: ' + file.type;
 
-  switch (file.type) {
+  switch (file.contentType) {
     case 'audio/mpeg':
     case 'audio/x-wav':
       body = h('.AudioPlayer',
         [ h('.AudioPlayerButton', { onclick: playback }, '▶')
-        , h('.AudioPlayerInfo', require('path').basename(file.name_))
+        , h('.AudioPlayerInfo', require('path').basename(file.path))
         , addSrc(h('audio', { controls: true })) ]);
       break;
     case 'image/png':

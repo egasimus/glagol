@@ -1,6 +1,7 @@
 var path = require('path')
   , fs   = require('fs')
   , os   = require('os')
+  , exec = require('child_process').execFileSync;
 
 module.exports = require('riko-api2')(function (state) {
 
@@ -21,10 +22,9 @@ module.exports = require('riko-api2')(function (state) {
         }
 
         if (data.type === 'file') {
+          data.contentType = getContentType(location);
           $.model.files[location] = data;
         }
-
-        $.log(data);
 
         state.socket.send(JSON.stringify(data))
 
@@ -75,4 +75,14 @@ function identify (parent) {
     }
     return data;
   }
+}
+
+function getContentType (file) {
+  var cmd  = 'file'
+    , args = [ '-b', '--mime-type', file ]
+    , data = null;
+  try {
+    data = exec(cmd, args).toString().trim();
+  } catch (e) {}
+  return data;
 }

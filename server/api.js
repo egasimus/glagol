@@ -13,7 +13,7 @@ module.exports = function (state) {
     add:
       function (type, address) {
         address = getAddress(type, address);
-        $.model.frames.push({ type: type, address: address });
+        $.model.frames.push(require('riko-mvc/model')({ type: type, address: address }));
         $.log('added', type, 'at', address);
         this.refresh();
       },
@@ -27,7 +27,6 @@ module.exports = function (state) {
 
     change:
       function (id, key, val) {
-        $.log("API SET", id, key, val)
         $.model.frames.get(id).put(key, val);
         this.refresh();
       }

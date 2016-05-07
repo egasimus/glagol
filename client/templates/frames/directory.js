@@ -56,7 +56,6 @@
     return function (event) {
       event.preventDefault();
       var location = require('path').join(frame.address, name);
-      console.log("OPEN", isDir)
       if (isDir) {
         API('change', index, 'address', location);
       } else {

@@ -24,13 +24,27 @@
 })
 
 function initView () {
+  // set view engine rolling
   var App = $.lib.gui.init(Glagol);
-  // inject codemirror stylesheet; TODO from node_modules
-  var codemirrorStyle  = document.createElement('link');
-  codemirrorStyle.rel  = 'stylesheet';
-  codemirrorStyle.href = 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.13.4/codemirror.css';
-  document.head.appendChild(codemirrorStyle);
+
+  // inject stylesheets from CDN; TODO from node_modules
+  document.head.appendChild(CDNStyleSheet(
+    'https://maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css',
+    'sha384-aNUYGqSUL9wG/vP7+cWZ5QOM4gsQou3sBfWRr/8S3R1Lv0rysEmnwsRKMbhiQX/O',
+    'anonymous'));
+  document.head.appendChild(CDNStyleSheet(
+    'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.13.4/codemirror.css'));
+
   return App;
+}
+
+function CDNStyleSheet(href, integrity, crossOrigin) {
+  var link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = href;
+  if (integrity) link.integrity = integrity;
+  if (crossOrigin) link.crossOrigin = crossOrigin;
+  return link;
 }
 
 function initSessionAPI () {

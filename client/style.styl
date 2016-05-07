@@ -614,6 +614,7 @@ highlight()
     font-size 18px
     color white
     font-weight bold
+    flex-grow 1
   &_Button
     cursor pointer
     color #555
@@ -636,3 +637,14 @@ highlight()
   &_Waveform, canvas
     width 100%
     height 100px
+  &_Cues
+    display flex
+    flex-direction row
+    flex-wrap wrap
+    max-height 96px
+  &_Cue
+    background #ddd
+    margin 0 2px 2px 0
+    border 2px solid rgba(0,0,0,0.1)
+    padding 2px
+    line-height 12px

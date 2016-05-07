@@ -14,6 +14,16 @@ module.exports.widget = require('virtual-widget')(
           [ h('.AudioPlayer_Waveform')
           , h('.AudioPlayer_Button', { onclick: playback }, '▶')
           , h('.AudioPlayer_Info', require('path').basename(src))
+          , h('.AudioPlayer_Cues',
+            [ h('.AudioPlayer_Cue', [ h('strong', '01'), ' 00:00:00' ])
+            , h('.AudioPlayer_Cue', [ h('strong', '02'), ' 00:00:11' ])
+            , h('.AudioPlayer_Cue', [ h('strong', '03'), ' 00:00:42' ])
+            , h('.AudioPlayer_Cue', [ h('strong', '04'), ' 00:01:01' ])
+            , h('.AudioPlayer_Cue', [ h('strong', '05'), ' 00:01:08' ])
+            , h('.AudioPlayer_Cue', [ h('strong', '06'), ' 00:01:11' ])
+            , h('.AudioPlayer_Cue', [ h('strong', '07'), ' 00:01:31' ])
+            , h('.AudioPlayer_Cue', [ h('strong', '08'), ' 00:02:44' ])
+            ])
           ]));
 
       if (this.data) {

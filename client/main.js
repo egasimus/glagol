@@ -8,9 +8,10 @@
 (function (noGlobals) {
 
   var modules =
-    { App: initView()
-    , API: initSessionAPI()
-    , FS:  initFileAPI() };
+    { App:   initView()
+    , API:   initSessionAPI()
+    , FS:    initFileAPI()
+    , Sound: initSoundAPI() };
 
   if (!noGlobals) {
     Object.keys(modules).forEach(function (id) {
@@ -58,4 +59,11 @@ function initFileAPI () {
     _.commands.updateFs(JSON.parse(message.data));
   }
   return fileAPI;
+}
+
+function initSoundAPI () {
+  return {
+    sound:  new AudioContext(),
+    chains: {}
+  }
 }

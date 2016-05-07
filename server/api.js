@@ -25,6 +25,12 @@ module.exports = function (state) {
         this.refresh();
       },
 
+    set:
+      function (id, key, val) {
+        $.model.frames.get(id).put(key, val);
+        this.refresh();
+      }
+
   }
 };
 

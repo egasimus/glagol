@@ -3,7 +3,7 @@
   console.debug("update", newState);
 
   newState.frames.forEach(function (frame, i) {
-    if (frame.type === 'directory') {
+    if (frame.type === 'directory' || frame.type === 'file') {
       FS('read', frame.address);
     }
   })

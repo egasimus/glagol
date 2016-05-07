@@ -24,7 +24,7 @@
   return h('.File', body);
 
   function addSrc (vnode) {
-    vnode.properties.src = '/file/' + file.name_;
+    vnode.properties.src = 'http://localhost:1615/file?path=' + file.path;
     return vnode;
   }
 

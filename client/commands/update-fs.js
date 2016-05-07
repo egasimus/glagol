@@ -1,6 +1,6 @@
 (function (node) {
 
-  console.log("---->", node);
+  console.info("FS read", node.type, node.path, node);
 
   if (node.type === 'file') {
 

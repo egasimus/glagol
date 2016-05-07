@@ -39,7 +39,11 @@
     $.log("responding to http request", req.url);
     var query = require('url').parse(req.url, true).query;
     $.log("query", query.path)
-    require('send-data')(req, res, { body: require('fs').readFileSync(query.path) })
+    require('fs').readFile(query.path, function (err, data) {
+      require('send-data')(req, res,
+        { body:    data
+        , headers: { 'Access-Control-Allow-Origin': '*' }})
+    })
   }
 
   function connect (socket) {

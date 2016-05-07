@@ -35,7 +35,7 @@
         , button([ _.icon('folder-open-o'), ' directory' ], add('directory'))
         , button([ _.icon('server'),        ' process'   ], add('process'))
         ])
-      , section('frames:',  frames)
+      //, section('frames:',  frames)
       , section('sockets:', sockets)
       , section('columns:',
         Object.keys(state.visibleColumns).map(

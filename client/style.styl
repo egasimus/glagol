@@ -330,9 +330,20 @@ highlight()
   flex-grow 1
 
 .TopBar
+  flex-shrink 0
   width 100%
   height 24px
   background black
+  display flex
+  flex-direction row
+  background rgba(0,0,0,0.5)
+  color white
+  line-height 24px
+  &_Button
+    padding 0 6px
+    cursor pointer
+    &:hover
+      background black
 
 .Frame
   color #333
@@ -341,6 +352,10 @@ highlight()
   border-right 1
   max-height 100%
   margin 3px
+  background rgba(0,0,0,0.5)
+  transition background 0.2s
+  &:hover
+    background rgba(0,0,0,0.8)
   &[data-type="directory"]
     flex-grow 1
   &Header
@@ -348,10 +363,6 @@ highlight()
     align-items center
     flex-shrink 0
     padding 0 3px
-    background rgba(0,0,0,0.5)
-    transition background 0.2s
-    .Frame:hover &
-      background rgba(0,0,0,0.8)
     color #ddd
     z-index 10
     .FrameWithError &
@@ -591,9 +602,6 @@ highlight()
   display flex
   flex-direction row
   flex-wrap wrap
-  background rgba(0,0,0,0.5)
-  &:hover
-    background rgba(0,0,0,0.8)
   &_Info
     margin 6px 0
     color white

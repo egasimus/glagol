@@ -7,13 +7,11 @@
   switch (file.contentType) {
     case 'audio/mpeg':
     case 'audio/x-wav':
-      body = h('.AudioPlayer',
-        [ h('.AudioPlayerButton', { onclick: playback }, '▶')
-        , h('.AudioPlayerInfo', require('path').basename(file.path))
-        , addSrc(h('audio', { controls: true })) ]);
+      body = _.audio(file.path);
       break;
     case 'image/png':
     case 'image/jpeg':
+    case 'image/gif':
       body = addSrc(h('img'))
       break;
     case 'text/plain':
@@ -26,12 +24,6 @@
   function addSrc (vnode) {
     vnode.properties.src = 'http://localhost:1615/file?path=' + file.path;
     return vnode;
-  }
-
-  function playback (event) {
-    event.preventDefault();
-    var audio = event.target.parentElement.querySelector('audio');
-    audio.play();
   }
 
 })

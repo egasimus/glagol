@@ -13,11 +13,16 @@
 
   function expandedSidebar () {
     var frames = state.frames.map(function (frame, i) {
-      return h('.SidebarButton', i + ' ' + frame.type + '+' + frame.address);
+      var icon =
+        frame.type === 'directory' ? _.icon('folder-open-o') :
+        frame.type === 'file'      ? _.icon('music') : '???'
+      return h('.Sidebar_Button',
+        [ icon, ' '
+        , require('path').basename(frame.address) ]);
     })
 
     var sockets = Object.keys(state.sockets).map(function (id) {
-      return h('.SidebarButton', id);
+      return h('.Sidebar_Button', id);
     })
 
     var toggleCol = toggle.bind(null, App.model.visibleColumns)
@@ -25,10 +30,11 @@
 
     return h('.Sidebar',
       [ section('add...',
-        [ button('glagol',    add('glagol'))
-        , button('iframe',    add('iframe'))
-        , button('directory', add('directory'))
-        , button('process',   add('process')) ])
+        [ button([ _.icon('sitemap'),       ' glagol'    ], add('glagol'))
+        , button([ _.icon('square-o'),      ' iframe'    ], add('iframe'))
+        , button([ _.icon('folder-open-o'), ' directory' ], add('directory'))
+        , button([ _.icon('server'),        ' process'   ], add('process'))
+        ])
       , section('frames:',  frames)
       , section('sockets:', sockets)
       , section('columns:',
@@ -45,13 +51,13 @@
   }
 
   function button (text, onclick, highlight) {
-    return h('.SidebarButton' + (highlight ? '.Highlight': ''),
+    return h('.Sidebar_Button' + (highlight ? '.Highlight': ''),
       { onclick: onclick }, text);
   }
 
   function section (title, children) {
-    return h('.SidebarSection',
-      [ h('.SidebarSectionHeader', title) ].concat(children)) }
+    return h('.Sidebar_Section',
+      [ h('.Sidebar_Section_Header', title) ].concat(children)) }
 
   function add(type) {
     return function (event) {

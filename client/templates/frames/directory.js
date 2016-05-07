@@ -5,7 +5,7 @@
   return [
     h('.Directory', directory ? directoryBody() : noData()),
     h('.DirectoryToolbar',
-      h('button', { onclick: $.cmd('refresh', frame, index) }, 'Refresh'))
+      h('button', { onclick: $.cmd('refresh', frame, index) }, __.icon('refresh')))
     ]
 
   function directoryBody () {
@@ -56,9 +56,9 @@
     return function (event) {
       event.preventDefault();
       var location = require('path').join(frame.address, name);
+      console.log("OPEN", isDir)
       if (isDir) {
-        App.model.frames.get(index).put('address', location)
-        FS('read', location);
+        API('change', index, 'address', location);
       } else {
         $.commands.add('file', location);
       }

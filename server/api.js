@@ -25,8 +25,9 @@ module.exports = function (state) {
         this.refresh();
       },
 
-    set:
+    change:
       function (id, key, val) {
+        $.log("API SET", id, key, val)
         $.model.frames.get(id).put(key, val);
         this.refresh();
       }

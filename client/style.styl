@@ -470,18 +470,20 @@ highlight()
 
   .Highlight
     background linear-gradient(to right, rgba(255,255,255,0.2) 33%, transparent 100%);
-  &Section
+  &_Section
     padding 6px
     border-bottom 1px solid rgba(30,30,30,0.7)
-    &Header
+    &_Header
       font-family serif
       font-style italic
       font-size 1.5em
       cursor pointer
-  &Button
+  &_Button
     cursor pointer
     margin 3px -3px
     padding 0 3px
+    i
+      font-size 20px
     &:hover
       background #888
       border-radius 3px
@@ -525,6 +527,15 @@ highlight()
   .FrameBody > &
     flex-grow 1
     overflow auto
+  &Toolbar button
+    font-size 30px
+    padding 0
+    border 0
+    background 0
+    color #555
+    &:hover
+      color #444
+      text-shadow 0 0 3px white, 0 0 3px white
   &Entry
     display flex
     justify-content space-between

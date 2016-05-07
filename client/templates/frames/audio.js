@@ -5,6 +5,8 @@ module.exports = function (state) {
 module.exports.widget = require('virtual-widget')(
   { init: function (src) {
 
+      var self = this;
+
       //this.canvas = document.createElement('canvas');
 
       this.controls = require('virtual-dom/create-element')(
@@ -13,15 +15,37 @@ module.exports.widget = require('virtual-widget')(
           , h('.AudioPlayer_Info', require('path').basename(src))
           //, h('.AudioPlayer_Waveform')
           ]));
-      //this.controls.lastChild.appendChild(this.canvas);
 
-      getData(src, this.controls);
+      if (this.data) {
+        renderViewer()
+      } else {
+        var request = new XMLHttpRequest()
+          , src     = 'http://localhost:1615/file?path=' + src
+          , parent  = this.controls;
+        request.open('GET', src, true);
+        request.responseType = 'arraybuffer';
+        request.onload = function () {
+          self.data = request.response;
+          renderViewer();
+        }
+        request.send();
+      }
 
       function playback (event) {
         event.preventDefault();
       }
 
       return this.controls;
+
+      function renderViewer () {
+        setTimeout(function () {
+          var opts   = { width: self.controls.offsetWidth, height: 72, samples: self.controls.offsetWidth
+                       , colors: { waveform: '#ccc', waveformHover: '#ccc' }}
+            , viewer = require('waveform-viewer')(opts);
+          viewer.appendTo(self.controls);
+          viewer.load(self.data);
+        }, 1)
+      }
 
     }
 
@@ -36,23 +60,4 @@ module.exports.widget = require('virtual-widget')(
   })
 
 function getData (src, parent) {
-  var request = new XMLHttpRequest()
-    , src     = 'http://localhost:1615/file?path=' + src
-  request.open('GET', src, true);
-  request.responseType = 'arraybuffer';
-  request.onload = function () {
-    var data = request.response;
-    console.log('decode', data);
-    //Sound.context.decodeAudioData(data, function (buffer) {
-      var options =
-          { width:   parent.offsetWidth
-          , height:  100
-          , samples: parent.offsetWidth
-          , colors: { waveform: '#222', waveformHover: '#ddd' }}
-        , viewer = require('waveform-viewer')(options);
-      viewer.appendTo(parent);
-      viewer.load(data);
-    //})
-  }
-  request.send();
 }

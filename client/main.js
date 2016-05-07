@@ -77,7 +77,7 @@ function initFileAPI () {
 
 function initSoundAPI () {
   return {
-    sound:  new AudioContext(),
-    chains: {}
+    context: new AudioContext(),
+    chains:  {}
   }
 }

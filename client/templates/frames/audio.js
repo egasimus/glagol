@@ -5,18 +5,19 @@ module.exports = function (state) {
 module.exports.widget = require('virtual-widget')(
   { init: function (src) {
 
-      this.audio = document.createElement('audio');
-      this.audio.src = 'http://localhost:1615/file?path=' + src;
+      this.canvas = document.createElement('canvas');
+
+      getData(src, this.canvas);
 
       this.controls = require('virtual-dom/create-element')(
         h('.AudioPlayer',
-          [ h('.AudioPlayerButton', { onclick: playback }, '▶')
-       , h('.AudioPlayerInfo', require('path').basename(src)) ]));
+          [ h('.AudioPlayer_Button', { onclick: playback }, '▶')
+          , h('.AudioPlayer_Info', require('path').basename(src))
+          , h('.AudioPlayer_Waveform') ]));
+      this.controls.lastChild.appendChild(this.canvas);
 
-      var self = this;
       function playback (event) {
         event.preventDefault();
-        if (self.audio.paused) self.audio.play(); else self.audio.pause();
       }
 
       return this.controls;
@@ -35,3 +36,17 @@ module.exports.widget = require('virtual-widget')(
     }
 
   })
+
+function getData (src, canvas) {
+  var request = new XMLHttpRequest()
+    , src     = 'http://localhost:1615/file?path=' + src
+  request.open('GET', src, true);
+  request.responseType = 'arraybuffer';
+  request.onload = function () {
+    var data = request.response;
+    Sound.context.decodeAudioData(data, function (buffer) {
+      console.log(buffer);
+    })
+  }
+  request.send();
+}

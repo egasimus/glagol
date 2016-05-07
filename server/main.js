@@ -20,7 +20,7 @@
       state.http = new (require("http").Server)();
       state.http.on("request", respond);
       state.http.listen(state.port);
-      $.log('http listening on port', state.port);
+      $.log('listening for http requests on port', state.port);
       initWs();
     }
   }
@@ -31,6 +31,7 @@
       state.sockets = new (require("ws").Server)({ server: state.http })
       state.sockets.on('connection', connect);
       state.lastSocket = state.lastSocket || -1;
+      $.log('listening for websocket connections on port', state.port);
     }
   }
 

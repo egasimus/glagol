@@ -4,7 +4,8 @@
 
   return state.frames.length > 0
     ? h('.App',
-        [ h('.MainView',
+        [ _.topbar(state)
+        , h('.MainView',
             [ h('.Frames',
                 state.frames.map(_.frame))
             , _.sidebar(state)

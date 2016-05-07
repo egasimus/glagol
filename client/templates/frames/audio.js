@@ -11,9 +11,9 @@ module.exports.widget = require('virtual-widget')(
 
       this.controls = require('virtual-dom/create-element')(
         h('.AudioPlayer',
-          [ h('.AudioPlayer_Button', { onclick: playback }, '▶')
+          [ h('.AudioPlayer_Waveform')
+          , h('.AudioPlayer_Button', { onclick: playback }, '▶')
           , h('.AudioPlayer_Info', require('path').basename(src))
-          //, h('.AudioPlayer_Waveform')
           ]));
 
       if (this.data) {
@@ -42,7 +42,7 @@ module.exports.widget = require('virtual-widget')(
           var opts   = { width: self.controls.offsetWidth, height: 72, samples: self.controls.offsetWidth
                        , colors: { waveform: '#ccc', waveformHover: '#ccc' }}
             , viewer = require('waveform-viewer')(opts);
-          viewer.appendTo(self.controls);
+          viewer.appendTo(self.controls.firstChild);
           viewer.load(self.data);
         }, 1)
       }

@@ -5,14 +5,15 @@ module.exports = function (state) {
 module.exports.widget = require('virtual-widget')(
   { init: function (src) {
 
-      var self = this;
+      var self = this
+        , ctx  = App.Model.Sound.context();
 
       //this.canvas = document.createElement('canvas');
 
       this.controls = require('virtual-dom/create-element')(
         h('.AudioPlayer',
           [ h('.AudioPlayer_Waveform')
-          , h('.AudioPlayer_Button', { onclick: playback }, '▶')
+          , h('.AudioPlayer_Button', '▶')
           , h('.AudioPlayer_Info', require('path').basename(src))
           , h('.AudioPlayer_Cues',
             [ h('.AudioPlayer_Cue', [ h('strong', '01'), ' 00:00:00' ])
@@ -34,15 +35,32 @@ module.exports.widget = require('virtual-widget')(
           , parent  = this.controls;
         request.open('GET', src, true);
         request.responseType = 'arraybuffer';
-        request.onload = function () {
-          self.data = request.response;
-          renderViewer();
-        }
+        request.onload = dataLoaded;
         request.send();
       }
 
-      function playback (event) {
-        event.preventDefault();
+      function dataLoaded () {
+        self.data = request.response;
+        ctx.decodeAudioData(self.data).then(dataDecoded);
+        renderViewer();
+      }
+
+      function dataDecoded (audioData) {
+        self.audio = ctx.createBufferSource();
+        self.audio.buffer = audioData;
+        console.log(audioData, self.audio);
+        self.audio.connect(ctx.destination);
+        self.controls.getElementsByClassName('AudioPlayer_Button')[0].onclick = play;
+      }
+
+      function play (event) {
+        self.audio.start(0, 1, 2);
+        self.controls.getElementsByClassName('AudioPlayer_Button')[0].onclick = pause;
+      }
+
+      function pause (event) {
+        self.audio.stop();
+        self.controls.getElementsByClassName('AudioPlayer_Button')[0].onclick = play;
       }
 
       return this.controls;
@@ -62,6 +80,8 @@ module.exports.widget = require('virtual-widget')(
   , update: function (prev, el) {
       this.canvas   = this.canvas   || prev.canvas;
       this.controls = this.controls || prev.controls;
+      this.data     = this.data     || prev.data;
+      this.audio    = this.audio    || prev.audio;
     }
 
   , destroy: function (el) {

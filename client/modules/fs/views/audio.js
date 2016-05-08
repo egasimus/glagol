@@ -18,8 +18,8 @@ module.exports.widget = require('virtual-widget')(
           [ 
           //, h('.AudioPlayer_Waveform')
             h('.AudioPlayer_Button', '⏯')
-          , h('.AudioPlayer_Title', require('path').basename(src))
           , h('.AudioPlayer_Position', 'paused')
+          , h('.AudioPlayer_Title', require('path').basename(src))
           //, h('.AudioPlayer_Cues',
             //[ h('.AudioPlayer_Cue', [ h('strong', '01'), ' 00:00:00' ])
             //, h('.AudioPlayer_Cue', [ h('strong', '02'), ' 00:00:11' ])

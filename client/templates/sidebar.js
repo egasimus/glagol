@@ -1,32 +1,24 @@
 (function (state) {
 
-  return state.displayOptions['show sidebar']
+  return state.Debugger.displayOptions['show sidebar']
     ? expandedSidebar()
     : collapsedSidebar()
 
   function collapsedSidebar () {
     return h('.SidebarCollapsed', { onclick: function (event) {
       event.preventDefault();
-      App.model.displayOptions.put('show sidebar', true);
+      App.Model.Debugger.displayOptions.put('show sidebar', true);
     } })
   }
 
   function expandedSidebar () {
-    var frames = state.frames.map(function (frame, i) {
-      var icon =
-        frame.type === 'directory' ? _.icon('folder-open-o') :
-        frame.type === 'file'      ? _.icon('music') : '???'
-      return h('.Sidebar_Button',
-        [ icon, ' '
-        , require('path').basename(frame.address) ]);
-    })
 
-    var sockets = Object.keys(state.sockets).map(function (id) {
+    var sockets = Object.keys(state.Debugger.sockets).map(function (id) {
       return h('.Sidebar_Button', id);
     })
 
-    var toggleCol = toggle.bind(null, App.model.visibleColumns)
-      , toggleOpt = toggle.bind(null, App.model.displayOptions);
+    var toggleCol = toggle.bind(null, App.Model.Debugger.visibleColumns)
+      , toggleOpt = toggle.bind(null, App.Model.Debugger.displayOptions);
 
     return h('.Sidebar',
       [ section('add...',
@@ -35,17 +27,16 @@
         , button([ _.icon('folder-open-o'), ' directory' ], add('directory'))
         , button([ _.icon('server'),        ' process'   ], add('process'))
         ])
-      //, section('frames:',  frames)
       , section('sockets:', sockets)
       , section('columns:',
-        Object.keys(state.visibleColumns).map(
+        Object.keys(state.Debugger.visibleColumns).map(
           function (name) {
-            var visible = !!state.visibleColumns[name];
+            var visible = !!state.Debugger.visibleColumns[name];
             return button(name, toggleCol(name, visible), visible); }))
       , section('options:',
-        Object.keys(state.displayOptions).map(
+        Object.keys(state.Debugger.displayOptions).map(
           function (name) {
-            var visible = !!state.displayOptions[name];
+            var visible = !!state.Debugger.displayOptions[name];
             return button(name, toggleOpt(name, visible), visible) }))
       ]);
   }

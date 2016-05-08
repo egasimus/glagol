@@ -7,7 +7,7 @@
         [ _.topbar(state)
         , h('.MainView',
             [ h('.Frames',
-                state.frames.map(_.frame))
+                state.Session.frames.map(_.frame))
             , _.sidebar(state)
             //, h('.FramesToolbar')
             ])

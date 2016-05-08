@@ -1,6 +1,6 @@
 (function (frame, index) {
 
-  var directory = App.model.directories()[frame.address];;
+  var directory = App.Model.FS.directories()[frame.address];;
 
   return [
     h('.Directory', directory ? directoryBody() : noData()),

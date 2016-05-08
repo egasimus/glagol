@@ -1,9 +1,10 @@
 var Router = module.exports = function Router (routes, options) {
 
+  options = options || {};
   router.prepare  = options.prepare  || Router.default.prepare;
   router.handler  = options.handler  || Router.default.handler;
   router.catchall = options.catchall || Router.default.catchall;
-  router.routes   = routers.map(router.prepare);
+  router.routes   = routes.map(router.prepare);
   return router;
 
   function router (input, data) {
@@ -30,6 +31,7 @@ Router.default =
       var newRoute = [ route[0], route[1] ];
       if (typeof route[0] === 'string') newRoute[0] = Router.stringMatcher(route[0]);
       if (route[0] instanceof RegExp)   newRoute[0] = Router.regExpMatcher(route[0]);
+      return newRoute;
     }
   , handler: function (route, input, data) {
       return route(input, data);

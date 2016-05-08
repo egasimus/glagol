@@ -6,6 +6,8 @@
   (function overlay (x)
     (app.overlay (to-glagol x)))
   (function handler (req res)
-    (./core/bundle app req res))
+    (try
+      (./core/bundle app req res)
+      (catch e (console.log e.stack))))
   (= handler.tracked app)
   (return handler))

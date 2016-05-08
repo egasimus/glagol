@@ -9,14 +9,16 @@
   (routes.for-each track)
 
   (function track (route)
-    (route.tracked.events.on "added"   on-added)
-    (route.tracked.events.on "changed" on-changed)
-    (route.tracked.events.on "removed" on-removed))
+    (if route.tracked (block
+      (route.tracked.events.on "added"   on-added)
+      (route.tracked.events.on "changed" on-changed)
+      (route.tracked.events.on "removed" on-removed))))
 
   (function untrack (route)
-    (route.tracked.events.off "added"   on-added)
-    (route.tracked.events.off "changed" on-changed)
-    (route.tracked.events.off "removed" on-removed))
+    (if route.tracked (block
+      (route.tracked.events.off "added"   on-added)
+      (route.tracked.events.off "changed" on-changed)
+      (route.tracked.events.off "removed" on-removed))))
 
   (function on-added   (node) (./added   socket node))
   (function on-changed (node) (./changed socket node))

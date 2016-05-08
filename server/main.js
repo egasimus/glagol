@@ -40,9 +40,15 @@
     var query = require('url').parse(req.url, true).query;
     $.log("query", query.path)
     require('fs').readFile(query.path, function (err, data) {
-      require('send-data')(req, res,
-        { body:    data
-        , headers: { 'Access-Control-Allow-Origin': '*' }})
+      if (err) {
+        require('send-data/error')(req, res,
+          { body:    err 
+          , headers: { 'Access-Control-Allow-Origin': '*' }})
+      } else {
+        require('send-data')(req, res,
+          { body:    data
+          , headers: { 'Access-Control-Allow-Origin': '*' }})
+      }
     })
   }
 

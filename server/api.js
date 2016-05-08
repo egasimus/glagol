@@ -13,8 +13,16 @@ module.exports = require('riko-api2')(function (state) {
         location = resolve(location.trim());
         $.log("read", location);
 
-        var stats = fs.statSync(location)
-          , data  = { path: location, stats: stats, type: getType(stats) };
+        var data = { path: location }
+
+        try {
+          data.stats = fs.statSync(location);
+        } catch (e) {
+          console.log(e);
+          return;
+        }
+
+        data.type = getType(data.stats);
 
         if (data.type === 'directory') {
           data.items = readDir(location);
@@ -57,21 +65,38 @@ function readDir (location) {
 function identify (parent) {
   return function (name) {
     var fullpath = path.join(parent, name)
-      , data =
-        { name: name
-        , type: ''//_.mimeType(fullpath)
-        , stat: fs.statSync(fullpath) };
+      , data     = { name: name }
+
+    try {
+      data.stat = fs.statSync(fullpath)
+    } catch (e) {
+      console.log(e);
+      return;
+    }
+
     if (data.stat.isDirectory()) {
-      var files = fs.readdirSync(fullpath);
+
+      var files;
+
+      try {
+        files = fs.readdirSync(fullpath);
+      } catch (e) {
+        data.accessDenied = true;
+        return data;
+      }
+
       data.files = files.length;
+
       if (files.indexOf('package.json') > -1) {
         try {
           data.package = JSON.parse(fs.readFileSync(path.join(fullpath, 'package.json')))
         } catch (e) {}
       }
+
       if (files.indexOf('.git') > -1) {
         data.git = true;
       }
+
     }
     return data;
   }

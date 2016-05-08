@@ -330,6 +330,7 @@ highlight()
   flex-grow 1
 
 .TopBar
+  overflow-x hidden
   flex-shrink 0
   width 100%
   height 24px
@@ -458,6 +459,8 @@ highlight()
   flex-direction column
   flex-wrap wrap
   overflow auto
+  & > *
+    flex-shrink 0
   &Toolbar
     background #ddd
     width 24px
@@ -479,6 +482,8 @@ highlight()
   font-family sans
   box-shadow -3px 0 6px rgba(30,30,30,0.4)
   overflow auto
+  //&:hover
+    //flex-shrink 0
 
   &Collapsed
     padding-left 6px

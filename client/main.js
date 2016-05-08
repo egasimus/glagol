@@ -7,7 +7,7 @@
 
 (function (embedded) {
 
-  var App = $.lib.gui.init(Glagol, Glagol.get('modules'))
+  var App = $.lib.gui.init(Glagol)
     , API = initSessionAPI()
     , FS  = initFileAPI();
 
@@ -81,7 +81,7 @@ function initFileAPI () {
     , fileAPI = require('riko-api2')(socket)
   socket.onmessage = function (message) {
     //console.debug("FS update", message.data)
-    _.commands.updateFs(JSON.parse(message.data));
+    $.modules.fs.update(JSON.parse(message.data));
   }
   return fileAPI;
 }

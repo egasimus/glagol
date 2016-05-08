@@ -14,7 +14,8 @@
           , size: 40 }) ])
       , h('.FrameClose', { onclick: remove }, '×')])
     , frameError()
-    , h('.FrameBody', _.frames[frame.type](frame, index)) ]);
+    , h('.FrameBody', __.getViewForType(frame.type, { frame: frame, index: index}))
+    ]);
 
   function changeAddress (event) {
     event.preventDefault();

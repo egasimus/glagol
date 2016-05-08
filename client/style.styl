@@ -610,22 +610,24 @@ highlight()
   display flex
   flex-direction row
   flex-wrap wrap
+  color white
   svg.waveform
     display block
     width 100%
     height 72px
-  &_Info
+  &_Title
     margin 8px 3px 0
     font-size 18px
-    color white
     font-weight bold
     flex-grow 1
     text-align left
+  &_Position
+    margin 12px
   &_Button
     cursor pointer
     color #555
     text-align center
-    font-size 24px
+    font-size 30px
     line-height 30px
     background #ddd
     width 48px
@@ -638,6 +640,14 @@ highlight()
     border-bottom 2px solid #999
     &:hover
       background #f0f0f0
+    &.Playing
+      background #ccaa26
+      color white
+      border-top 1px solid #ddcc37
+      border-bottom 1px solid #aa8810
+      text-shadow 0 0 6px #777
+      &:hover
+        background #ddcc37
   audio
     display none
   &_Waveform, canvas

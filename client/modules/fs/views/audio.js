@@ -17,8 +17,9 @@ module.exports.widget = require('virtual-widget')(
         h('.AudioPlayer',
           [ 
           //, h('.AudioPlayer_Waveform')
-            h('.AudioPlayer_Button', '▶')
-          , h('.AudioPlayer_Info', require('path').basename(src))
+            h('.AudioPlayer_Button', '⏯')
+          , h('.AudioPlayer_Title', require('path').basename(src))
+          , h('.AudioPlayer_Position', 'paused')
           //, h('.AudioPlayer_Cues',
             //[ h('.AudioPlayer_Cue', [ h('strong', '01'), ' 00:00:00' ])
             //, h('.AudioPlayer_Cue', [ h('strong', '02'), ' 00:00:11' ])
@@ -67,7 +68,9 @@ module.exports.widget = require('virtual-widget')(
         audio.connect(ctx.destination);
         self.startedAt = null;
         if (self.timer) clearInterval(self.timer);
-        self.controls.getElementsByClassName('AudioPlayer_Button')[0].onclick = play;
+        var button = self.controls.getElementsByClassName('AudioPlayer_Button')[0];
+        button.classList.remove('Playing')
+        button.onclick = play;
       }
 
       function play (event) {
@@ -75,16 +78,23 @@ module.exports.widget = require('virtual-widget')(
         self.timer = setInterval(update, 20);
         self.audio.start(0, 0);
         self.audio.onended = createVoice.bind(null, null);
-        self.controls.getElementsByClassName('AudioPlayer_Button')[0].onclick = pause;
+        var button = self.controls.getElementsByClassName('AudioPlayer_Button')[0];
+        button.classList.add('Playing')
+        button.onclick = pause;
       }
 
       function pause (event) {
         self.audio.stop();
         createVoice();
+        var position = self.controls.getElementsByClassName('AudioPlayer_Position')[0];
+        position.innerText = 'paused';
       }
 
       function update () {
         console.log(ctx.currentTime - self.startedAt);
+        self.controls.getElementsByClassName('AudioPlayer_Position')
+        var position = self.controls.getElementsByClassName('AudioPlayer_Position')[0];
+        position.innerText = String(ctx.currentTime - self.startedAt);
       }
 
       return this.controls;

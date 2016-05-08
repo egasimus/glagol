@@ -15,11 +15,11 @@ var welcome = module.exports = function (state) {
       ]) ]);
 
   function focus () {
-    App.Model.Session.djinn.focused.set(true);
+    App.Model.Workspace.djinn.focused.set(true);
   }
 
   function blur () {
-    App.Model.Session.djinn.focused.set(false);
+    App.Model.Workspace.djinn.focused.set(false);
   }
 
   function placeholder () {

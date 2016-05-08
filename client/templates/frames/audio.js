@@ -59,7 +59,7 @@ module.exports.widget = require('virtual-widget')(
       function play (event) {
         self.startedAt = ctx.currentTime;
         self.timer = setInterval(update, 20);
-        self.audio.start(0, 0, 10);
+        self.audio.start(0, 0);
         self.audio.onended = createVoice.bind(null, null);
         self.controls.getElementsByClassName('AudioPlayer_Button')[0].onclick = pause;
       }

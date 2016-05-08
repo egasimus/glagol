@@ -71,7 +71,7 @@ function initSessionAPI () {
   }
   socket.onmessage = function (message) {
     //console.debug("Session update", message.data)
-    _.commands.updateSession(JSON.parse(message.data))
+    $.modules.workspace.update(JSON.parse(message.data))
   }
   return sessionAPI;
 }

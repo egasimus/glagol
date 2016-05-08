@@ -1,5 +1,5 @@
 module.exports =
-  { Session:
+  { Workspace:
     { djinn:
       { focused: false
       , query:   "" }

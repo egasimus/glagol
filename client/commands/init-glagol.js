@@ -9,7 +9,7 @@
 
   function onmessage (message) {
     if (message.data.indexOf('update%') === 0) {
-      $.commands.updateSession(index, JSON.parse(message.data.slice(7)))
+      $.modules.workspace.update(index, JSON.parse(message.data.slice(7)))
     }
   };
 

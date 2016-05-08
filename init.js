@@ -1,25 +1,14 @@
-(function (root, overrides) {
+(function (root, modules) {
 
   var reload = window.location.reload.bind(window.location);
   Glagol.events.on('changed', reload);
   root.events.on('changed', reload);
 
-  var App = { root: root };
-  overrides = overrides || {};
-  ['model', 'socket'].map(install.bind(null, '.js'));
-  install('.styl', 'style');
-  ['templates', 'events'].map(install.bind(null, ''));
-  function install (ext, name) {
-    var defaultName = './' + name + ext;
-    App[name] = App.root.get(overrides[name] || defaultName);
-  }
+  var App = { Source: root };
+  App.Model = _.tasks.model(root, modules);
+  App.View  = _.tasks.view(App.Model, root, modules);
 
   console.debug("initializing", App);
-
-  _.tasks.model(App);
-  if (App.socket) _.tasks.socket(App);
-  if (App.style)  _.tasks.style(App);
-  _.tasks.view(App);
 
   return App;
 

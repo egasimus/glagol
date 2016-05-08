@@ -1,5 +1,17 @@
-(function (App) {
-  App._initialState = App.model();
-  App.model = require('riko-mvc/model')(App._initialState);
-  return App;
+(function (root, modules) {
+
+  var model = root().model || {};
+
+  Object.keys(modules.nodes).forEach(function (module) {
+    console.info('creating model for module', module);
+    var initial = modules.nodes[module]().model;
+    Object.keys(initial).forEach(function (key) {
+      model[key] = initial[key];
+    })
+  })
+
+  model = require('riko-mvc/model')(model);
+  console.log(model, model());
+  return model;
+
 })

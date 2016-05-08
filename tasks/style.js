@@ -1,6 +1,6 @@
 (function (root) {
 
-  var style = root.parent.nodes['style.styl']
+  var style = root.nodes['style.styl']
     , css = __.util.insertCss(style())
 
   style.events.on('changed',

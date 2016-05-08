@@ -1,8 +1,8 @@
 var Router = module.exports = function Router (routes, options) {
 
-  router.prepare  = options.prepare  || default.prepare;
-  router.handler  = options.handler  || default.handler;
-  router.catchall = options.catchall || default.catchall;
+  router.prepare  = options.prepare  || Router.default.prepare;
+  router.handler  = options.handler  || Router.default.handler;
+  router.catchall = options.catchall || Router.default.catchall;
   router.routes   = routers.map(router.prepare);
   return router;
 
@@ -37,6 +37,7 @@ Router.default =
   , catchall: function (input, data) {
       console.error('with (', data, ') no match for:', input);
     }
+  };
 
 Router.debugHandler = function (input, data) {
   console.info(input, 'with (', data, ') matched:', name);

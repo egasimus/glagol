@@ -9,17 +9,17 @@ var welcome = module.exports = function (state) {
         , onfocus:     focus
         , onblur:      blur })
       , h('button.DjinnButton', 'enter')
-      , state.djinn.focused
+      , state.Session.djinn.focused
         ? h('.DjinnHints', welcome.hints.map(hint))
         : ''
       ]) ]);
 
   function focus () {
-    App.model.djinn.focused.set(true);
+    App.Model.Session.djinn.focused.set(true);
   }
 
   function blur () {
-    App.model.djinn.focused.set(false);
+    App.Model.Session.djinn.focused.set(false);
   }
 
   function placeholder () {

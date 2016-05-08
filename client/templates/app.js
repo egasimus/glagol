@@ -2,7 +2,7 @@
 
   state = state || {};
 
-  return state.frames.length > 0
+  return state.Session.frames.length > 0
     ? h('.App',
         [ _.topbar(state)
         , h('.MainView',

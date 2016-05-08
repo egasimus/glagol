@@ -5,10 +5,20 @@
 // furthermore does not automatically invalidate evaluation caches.
 // These things need to be fixed in Glagol core.
 
-(function (noGlobals) {
+(function (embedded) {
 
   var App = $.lib.gui.init(Glagol, Glagol.get('modules'));
-  if (!noGlobals) window.App = App;
+
+  if (!embedded) {
+    window.App = App;
+    document.head.appendChild(CDNStyleSheet(
+      'https://maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css',
+      'sha384-aNUYGqSUL9wG/vP7+cWZ5QOM4gsQou3sBfWRr/8S3R1Lv0rysEmnwsRKMbhiQX/O',
+      'anonymous'));
+    document.head.appendChild(CDNStyleSheet(
+      'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.13.4/codemirror.css'));
+  }
+
   return App;
 
   //var modules =
@@ -31,12 +41,6 @@ function initView () {
   //var App = $.lib.gui.init(Glagol);
 
   // inject stylesheets from CDN; TODO from node_modules
-  document.head.appendChild(CDNStyleSheet(
-    'https://maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css',
-    'sha384-aNUYGqSUL9wG/vP7+cWZ5QOM4gsQou3sBfWRr/8S3R1Lv0rysEmnwsRKMbhiQX/O',
-    'anonymous'));
-  document.head.appendChild(CDNStyleSheet(
-    'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.13.4/codemirror.css'));
 
   //return App;
 }

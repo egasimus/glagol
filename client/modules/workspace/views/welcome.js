@@ -2,24 +2,24 @@ var welcome = module.exports = function (state) {
 
   return h('.App.Blank',
     [ h('h1', 'glagol')
-    , h('form', { onsubmit: djinn },
-      [ h('input.DjinnInput#djinn',
+    , h('form', { onsubmit: command },
+      [ h('input.CommandInput#command',
         { type:        'text'
         , placeholder: placeholder()
         , onfocus:     focus
         , onblur:      blur })
-      , h('button.DjinnButton', 'enter')
-      , state.Workspace.djinn.focused
-        ? h('.DjinnHints', welcome.hints.map(hint))
+      , h('button.CommandButton', 'enter')
+      , state.Workspace.command.focused
+        ? h('.CommandHints', welcome.hints.map(hint))
         : ''
       ]) ]);
 
   function focus () {
-    App.Model.Workspace.djinn.focused.set(true);
+    App.Model.Workspace.command.focused.set(true);
   }
 
   function blur () {
-    App.Model.Workspace.djinn.focused.set(false);
+    App.Model.Workspace.command.focused.set(false);
   }
 
   function placeholder () {
@@ -28,14 +28,14 @@ var welcome = module.exports = function (state) {
   }
 
   function hint (data) {
-    return h('.DjinnHint',
-      [ h('.DjinnHintTitle', data.title)
-      , h('.DjinnHintInfo',  data.info) ])
+    return h('.CommandHint',
+      [ h('.CommandHintTitle', data.title)
+      , h('.CommandHintInfo',  data.info) ])
   }
 
-  function djinn (event) {
+  function command (event) {
     event.preventDefault();
-    $.commands.djinn(document.getElementById('djinn').value, null);
+    __.command(document.getElementById('command').value, null);
   }
 
 }

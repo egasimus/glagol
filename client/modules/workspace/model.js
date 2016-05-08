@@ -1,6 +1,6 @@
 module.exports =
   { Workspace:
-    { djinn:
+    { command:
       { focused: false
       , query:   "" }
     , frames: []

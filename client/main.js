@@ -7,10 +7,14 @@
 
 (function (embedded) {
 
-  var App = $.lib.gui.init(Glagol, Glagol.get('modules'));
+  var App = $.lib.gui.init(Glagol, Glagol.get('modules'))
+    , API = initSessionAPI()
+    , FS  = initFileAPI();
 
   if (!embedded) {
     window.App = App;
+    window.API = API;
+    window.FS  = FS;
     document.head.appendChild(CDNStyleSheet(
       'https://maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css',
       'sha384-aNUYGqSUL9wG/vP7+cWZ5QOM4gsQou3sBfWRr/8S3R1Lv0rysEmnwsRKMbhiQX/O',

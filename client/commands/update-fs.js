@@ -4,11 +4,11 @@
 
   if (node.type === 'file') {
 
-    App.model.files.put(node.path, require('riko-mvc/model')(node))
+    App.Model.FS.files.put(node.path, require('riko-mvc/model')(node))
 
   } else if (node.type === 'directory') {
 
-    App.model.directories.put(node.path, require('riko-mvc/model')(node))
+    App.Model.FS.directories.put(node.path, require('riko-mvc/model')(node))
 
   }
 

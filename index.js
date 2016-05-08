@@ -13,14 +13,14 @@ var Router = module.exports = function Router (routes, options) {
       , matched = false;
 
     matched = router.routes.some(function (route, i) {
-      var match = route[0];
-      if (match(input, data)) {
+      var check = route[0];
+      if (check(input, data)) {
         result = router.handler(route[1], input, data);
         return true;
       }
     })
 
-    return matcher ? result : router.catchall(input, data);
+    return matched ? result : router.catchall(input, data);
     
   }
 

@@ -7,25 +7,28 @@
 
 (function (noGlobals) {
 
-  var modules =
-    { App:   initView()
-    , API:   initSessionAPI()
-    , FS:    initFileAPI()
-    , Sound: initSoundAPI() };
+  var App = $.lib.gui.init(Glagol, Glagol.get('modules'));
+  if (!noGlobals) window.App = App;
+  return App;
 
-  if (!noGlobals) {
-    Object.keys(modules).forEach(function (id) {
-      window[id] = modules[id];
-    })
-  }
+  //var modules =
+    //{ App:   initView()
+    //, API:   initSessionAPI()
+    //, FS:    initFileAPI()
+    //, Sound: initSoundAPI() };
 
-  return modules;
+  //if (!noGlobals) {
+    //Object.keys(modules).forEach(function (id) {
+      //window[id] = modules[id];
+    //})
+  //}
+
 
 })
 
 function initView () {
   // set view engine rolling
-  var App = $.lib.gui.init(Glagol);
+  //var App = $.lib.gui.init(Glagol);
 
   // inject stylesheets from CDN; TODO from node_modules
   document.head.appendChild(CDNStyleSheet(
@@ -35,7 +38,7 @@ function initView () {
   document.head.appendChild(CDNStyleSheet(
     'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.13.4/codemirror.css'));
 
-  return App;
+  //return App;
 }
 
 function CDNStyleSheet(href, integrity, crossOrigin) {
@@ -76,8 +79,5 @@ function initFileAPI () {
 }
 
 function initSoundAPI () {
-  return {
-    context: new AudioContext(),
-    chains:  {}
-  }
+  return 
 }

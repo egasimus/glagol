@@ -8,6 +8,6 @@
     }
   })
 
-  App.model.put("frames", require('riko-mvc/model')(newState.frames));
+  App.Model.Session.put("frames", require('riko-mvc/model')(newState.frames));
 
 })

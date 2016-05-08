@@ -59,7 +59,7 @@
       if (isDir) {
         API('change', index, 'address', location);
       } else {
-        $.commands.add('file', location);
+        $.modules.workspace.add('file', location);
       }
     }
   }

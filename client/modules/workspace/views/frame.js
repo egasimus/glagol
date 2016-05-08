@@ -24,7 +24,7 @@
 
   function remove (event) {
     event.preventDefault();
-    $.commands.remove(index);
+    __.remove(index);
   }
 
   function frameError () {

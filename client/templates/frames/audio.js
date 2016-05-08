@@ -5,8 +5,9 @@ module.exports = function (state) {
 module.exports.widget = require('virtual-widget')(
   { init: function (src) {
 
-      var self = this
-        , ctx  = App.Model.Sound.context();
+      var self  = this
+        , ctx   = App.Model.Sound.context()
+        , timer = null;
 
       //this.canvas = document.createElement('canvas');
 
@@ -50,11 +51,15 @@ module.exports.widget = require('virtual-widget')(
         audio.buffer = audioData || self.audio.buffer;
         self.audio = audio;
         audio.connect(ctx.destination);
+        self.startedAt = null;
+        if (self.timer) clearInterval(self.timer);
         self.controls.getElementsByClassName('AudioPlayer_Button')[0].onclick = play;
       }
 
       function play (event) {
-        self.audio.start(0, 1, 2);
+        self.startedAt = ctx.currentTime;
+        self.timer = setInterval(update, 20);
+        self.audio.start(0, 0, 10);
         self.audio.onended = createVoice.bind(null, null);
         self.controls.getElementsByClassName('AudioPlayer_Button')[0].onclick = pause;
       }
@@ -62,6 +67,10 @@ module.exports.widget = require('virtual-widget')(
       function pause (event) {
         self.audio.stop();
         createVoice();
+      }
+
+      function update () {
+        console.log(ctx.currentTime - self.startedAt);
       }
 
       return this.controls;
@@ -86,6 +95,7 @@ module.exports.widget = require('virtual-widget')(
     }
 
   , destroy: function (el) {
+      if (this.audio) this.audio.stop();
     }
 
   })

@@ -31,11 +31,11 @@
     (var embed (. (.parse (require "url") req.url true) query embed))
     (var ctype (+ "text/" (?: embed "javascript" "html") "; charset=utf-8"))
     (br.bundle (lambda (err data)
-      (if err (throw err))
+      (if err (return (./error req res err "Error bundling client code:")))
       (var wrapped (./wrap-js (String data) app))
       ((require "send-data") req res (object
         "body"    (?: embed wrapped (./wrap-html wrapped))
         "headers" (object "Content-Type" ctype)))))
 
     (catch e (return (./error req res e
-      "Error bundling client code:")))))
+      "Error preparing to bundle client code:")))))

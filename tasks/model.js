@@ -11,7 +11,6 @@
   })
 
   model = require('riko-mvc').M(model);
-  console.log(model, model());
   return model;
 
 })

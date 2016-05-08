@@ -8,7 +8,7 @@
   // * when entry point changes
   // * when anything in this lib changes
   var reload = window.location.reload.bind(window.location);
-  root.events.on('changed', reload);
+  entryPoint.events.on('changed', reload);
   Glagol.parent.events.on('changed', reload);
 
   // create the app state singleton

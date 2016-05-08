@@ -33,7 +33,6 @@
   }
 
   function render (state) {
-    console.log('render', ready, state)
     return ready
       ? root().view(state)
       : __.util.h('h1', 'preparing views...');

@@ -18,11 +18,11 @@
 
   function directoryBody () {
     return [
-      when(frame.address !== '/',
-        h('.DirectoryEntry',
-          { onclick: goUp },
-          [ h('strong', '../')
-          , h('em', 'parent directory') ])),
+      //when(frame.address !== '/',
+        //h('.DirectoryEntry',
+          //{ onclick: goUp },
+          //[ h('strong', '../')
+          //, h('em', 'parent directory') ])),
       directory.items.map(dir),
       directory.items.map(file)
     ]

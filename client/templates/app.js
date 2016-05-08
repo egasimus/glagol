@@ -2,14 +2,13 @@
 
   state = state || {};
 
-  return state.Session.frames.length > 0
+  return state.Workspace.frames.length > 0
     ? h('.App',
-        [ _.topbar(state)
+        [ _.bars.top(state)
         , h('.MainView',
-            [ h('.Frames',
-                state.Session.frames.map(_.frame))
-            , _.sidebar(state)
-            //, h('.FramesToolbar')
+            [ _.bars.left(state)
+            , h('.Workspace',
+                state.Workspace.frames.map(_.frame))
             ])
         //, _.statusBar(state)
         ])

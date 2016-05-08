@@ -9,7 +9,7 @@ var welcome = module.exports = function (state) {
         , onfocus:     focus
         , onblur:      blur })
       , h('button.DjinnButton', 'enter')
-      , state.Session.djinn.focused
+      , state.Workspace.djinn.focused
         ? h('.DjinnHints', welcome.hints.map(hint))
         : ''
       ]) ]);
@@ -48,7 +48,8 @@ welcome.placeholders =
   , 'just do it'
   , 'yeah guv?'
   , 'няма филм'
-  , 'everything is true even this' ]
+  , 'everything is true even this'
+  , 'mind the djinn' ]
 
 var br = h('br');
 

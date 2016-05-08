@@ -22,10 +22,10 @@
 
     return h('.Sidebar',
       [ section('add...',
-        [ button([ _.icon('sitemap'),       ' glagol'    ], add('glagol'))
-        , button([ _.icon('square-o'),      ' iframe'    ], add('iframe'))
-        , button([ _.icon('folder-open-o'), ' directory' ], add('directory'))
-        , button([ _.icon('server'),        ' process'   ], add('process'))
+        [ button([ __.icon('sitemap'),       ' glagol'    ], add('glagol'))
+        , button([ __.icon('square-o'),      ' iframe'    ], add('iframe'))
+        , button([ __.icon('folder-open-o'), ' directory' ], add('directory'))
+        , button([ __.icon('server'),        ' process'   ], add('process'))
         ])
       , section('sockets:', sockets)
       , section('columns:',

@@ -41,26 +41,27 @@ module.exports.widget = require('virtual-widget')(
 
       function dataLoaded () {
         self.data = request.response;
-        ctx.decodeAudioData(self.data).then(dataDecoded);
+        ctx.decodeAudioData(self.data).then(createVoice);
         renderViewer();
       }
 
-      function dataDecoded (audioData) {
-        self.audio = ctx.createBufferSource();
-        self.audio.buffer = audioData;
-        console.log(audioData, self.audio);
-        self.audio.connect(ctx.destination);
+      function createVoice (audioData) {
+        var audio = ctx.createBufferSource();
+        audio.buffer = audioData || self.audio.buffer;
+        self.audio = audio;
+        audio.connect(ctx.destination);
         self.controls.getElementsByClassName('AudioPlayer_Button')[0].onclick = play;
       }
 
       function play (event) {
         self.audio.start(0, 1, 2);
+        self.audio.onended = createVoice.bind(null, null);
         self.controls.getElementsByClassName('AudioPlayer_Button')[0].onclick = pause;
       }
 
       function pause (event) {
         self.audio.stop();
-        self.controls.getElementsByClassName('AudioPlayer_Button')[0].onclick = play;
+        createVoice();
       }
 
       return this.controls;

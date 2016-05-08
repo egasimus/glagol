@@ -5,7 +5,7 @@
   return [
     h('.Directory', directory ? directoryBody() : noData()),
     h('.DirectoryToolbar',
-      h('button', { onclick: $.cmd('refresh', frame, index) }, __.__.workspace.views.icon('refresh')))
+      h('button', { onclick: $.modules.fs.refresh(frame, index) }, __.__.workspace.views.icon('refresh')))
     ]
 
   function directoryBody () {

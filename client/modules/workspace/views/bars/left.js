@@ -27,17 +27,17 @@
         , button([ __.icon('sitemap'),       ' glagol'    ], add('glagol'))
         , button([ __.icon('server'),        ' service'   ], add('service'))
         ])
-      , section('sockets:', sockets)
-      , section('columns:',
-        Object.keys(state.Debugger.visibleColumns).map(
-          function (name) {
-            var visible = !!state.Debugger.visibleColumns[name];
-            return button(name, toggleCol(name, visible), visible); }))
-      , section('options:',
-        Object.keys(state.Debugger.displayOptions).map(
-          function (name) {
-            var visible = !!state.Debugger.displayOptions[name];
-            return button(name, toggleOpt(name, visible), visible) }))
+      //, section('sockets:', sockets)
+      //, section('columns:',
+        //Object.keys(state.Debugger.visibleColumns).map(
+          //function (name) {
+            //var visible = !!state.Debugger.visibleColumns[name];
+            //return button(name, toggleCol(name, visible), visible); }))
+      //, section('options:',
+        //Object.keys(state.Debugger.displayOptions).map(
+          //function (name) {
+            //var visible = !!state.Debugger.displayOptions[name];
+            //return button(name, toggleOpt(name, visible), visible) }))
       ]);
   }
 
@@ -53,7 +53,7 @@
   function add(type) {
     return function (event) {
       event.preventDefault();
-      $.commands.add(type);
+      $.modules.workspace.add(type);
     }
   }
 

@@ -91,10 +91,10 @@ module.exports.widget = require('virtual-widget')(
       }
 
       function update () {
-        console.log(ctx.currentTime - self.startedAt);
+        var pos = ctx.currentTime - self.startedAt;
         self.controls.getElementsByClassName('AudioPlayer_Position')
         var position = self.controls.getElementsByClassName('AudioPlayer_Position')[0];
-        position.innerText = String(ctx.currentTime - self.startedAt);
+        position.innerText = String(Math.round(pos*1000)/1000);
       }
 
       return this.controls;

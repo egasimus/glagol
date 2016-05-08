@@ -11,6 +11,8 @@
       , address: null
       , status:  'empty' }))
 
+    API('add', type);
+
   } else {
 
     console.info('adding', type, 'at', address);

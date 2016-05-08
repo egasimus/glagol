@@ -5,6 +5,7 @@
 body
   background-color    #333
   background-image    url('http://i.imgur.com/DgIEr0a.jpg')
+  //background-image    url('http://wallpapercave.com/wp/JnBur5a.jpg')
   background-size     cover
   background-position center
 
@@ -330,6 +331,7 @@ highlight()
   flex-grow 1
 
 .TopBar
+  text-shadow 0 0 12px rgba(0,0,0,0.8)
   overflow-x hidden
   flex-shrink 0
   width 100%
@@ -338,6 +340,7 @@ highlight()
   display flex
   flex-direction row
   background rgba(0,0,0,0.5)
+  background linear-gradient(to top, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.3) 100%)
   color white
   line-height 24px
   &_Button
@@ -356,7 +359,7 @@ highlight()
   border-right 1
   max-height 100%
   margin 3px
-  background rgba(0,0,0,0.5)
+  background rgba(0,0,0,0.65)
   transition background 0.2s
   &:hover
     background rgba(0,0,0,0.8)
@@ -476,11 +479,12 @@ highlight()
     margin 0
 
 .Sidebar
-  border-left 1px solid rgba(255,255,255,0.25)
   background rgba(0,0,0,0.5)
+  background linear-gradient(to left, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.3) 100%)
   color #ddd
   font-family sans
   box-shadow -3px 0 6px rgba(30,30,30,0.4)
+  text-shadow 0 0 9px rgba(0,0,0,0.8)
   overflow auto
   //&:hover
     //flex-shrink 0
@@ -496,7 +500,7 @@ highlight()
     background linear-gradient(to right, rgba(255,255,255,0.2) 33%, transparent 100%);
   &_Section
     padding 6px
-    border-bottom 1px solid rgba(30,30,30,0.7)
+    border-bottom 1px solid rgba(200,200,200,0.3)
     &_Header
       //font-family serif
       //font-style italic
@@ -619,7 +623,6 @@ highlight()
     margin 8px 3px 0
     font-size 18px
     font-weight bold
-    flex-grow 1
     text-align left
   &_Position
     margin 12px

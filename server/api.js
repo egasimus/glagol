@@ -42,7 +42,7 @@ function serialize (data) {
 }
 
 function getAddress (type, address) {
-  console.log("getLocation", type, address);
+  address = address || '';
   if (type === 'directory' || type === 'file') {
     if (address === '~') {
       return os.homedir();

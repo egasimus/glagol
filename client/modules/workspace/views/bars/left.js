@@ -27,6 +27,9 @@
         , button([ __.icon('sitemap'),       ' glagol'    ], add('glagol'))
         , button([ __.icon('server'),        ' service'   ], add('service'))
         ])
+      , h('.FlexSpacer')
+      , button([ __.icon('angle-double-left'), 'hide' ], toggleOpt('show sidebar', true))
+      ]);
       //, section('sockets:', sockets)
       //, section('columns:',
         //Object.keys(state.Debugger.visibleColumns).map(
@@ -38,7 +41,6 @@
           //function (name) {
             //var visible = !!state.Debugger.displayOptions[name];
             //return button(name, toggleOpt(name, visible), visible) }))
-      ]);
   }
 
   function button (text, onclick, highlight) {

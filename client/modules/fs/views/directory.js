@@ -3,9 +3,12 @@
   var directory = App.Model.FS.directories()[frame.address];;
 
   return [
-    h('.Directory', directory ? directoryBody() : noData()),
     h('.DirectoryToolbar',
-      h('button', { onclick: refresh }, __.__.workspace.views.icon('refresh')))
+      [ h('button', { onclick: refresh }, __.__.workspace.views.icon('refresh'))
+      , when(frame.address !== '/',
+          h('button', { onclick: goUp },    __.__.workspace.views.icon('chevron-up')))
+      ]),
+    h('.Directory', directory ? directoryBody() : noData()),
     ]
 
   function refresh (event) {

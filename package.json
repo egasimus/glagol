@@ -9,6 +9,7 @@
   "author": "Adam Avramov <fallenblood@example.com> (http://github.com/egasimus)",
   "license": "GPL-3.0",
   "dependencies": {
+    "audio-spectrum": "^1.0.0",
     "codemirror": "^5.13.4",
     "colors": "^1.1.2",
     "extend": "^3.0.0",

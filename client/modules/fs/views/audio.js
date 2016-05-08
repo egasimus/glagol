@@ -7,9 +7,10 @@ module.exports = function (state) {
 module.exports.widget = require('virtual-widget')(
   { init: function (src) {
 
+      console.debug('init', src);
+
       var self  = this
         , ctx   = App.Model.Sound.context()
-        , timer = null;
 
       //this.canvas = document.createElement('canvas');
 
@@ -52,13 +53,15 @@ module.exports.widget = require('virtual-widget')(
       }
 
       function dataDecoded (audioBuffer) {
+        console.debug('decoded', audioBuffer);
         createVoice(audioBuffer);
-        var spectrogram = require('spectrogram')(
-          self.controls.getElementsByTagName('canvas')[0],
-          { audio: { enable: false }})
-        console.log(spectrogram)
-        spectrogram.connectSource(audioBuffer, ctx);
-        spectrogram.start();
+        var spectrogram = self.controls.lastChild;
+        drawSpectrogram(spectrogram, audioBuffer);
+        //var spectrogram = require('spectrogram')(
+          //self.controls.getElementsByTagName('canvas')[0],
+          //{ audio: { enable: false }})
+        //spectrogram.connectSource(audioBuffer, ctx);
+        //spectrogram.start();
       }
 
       function createVoice (audioBuffer) {
@@ -84,7 +87,10 @@ module.exports.widget = require('virtual-widget')(
       }
 
       function pause (event) {
-        self.audio.stop();
+        if (self.timer) {
+          self.audio.stop();
+          self.timer = clearInterval(self.timer)
+        }
         createVoice();
         var position = self.controls.getElementsByClassName('AudioPlayer_Position')[0];
         position.innerText = 'paused';
@@ -112,6 +118,7 @@ module.exports.widget = require('virtual-widget')(
     }
 
   , update: function (prev, el) {
+      console.debug('update', prev, el);
       this.canvas   = this.canvas   || prev.canvas;
       this.controls = this.controls || prev.controls;
       this.data     = this.data     || prev.data;
@@ -119,10 +126,39 @@ module.exports.widget = require('virtual-widget')(
     }
 
   , destroy: function (el) {
-      if (this.audio) this.audio.stop();
+      console.debug('destroy', el);
+      if (this.audio && this.timer) this.audio.stop();
     }
 
   })
 
 function getData (src, parent) {
+}
+
+function drawSpectrogram (canvas, buffer) {
+  var audioCtx = new OfflineAudioContext(
+        buffer.numberOfChannels,
+        buffer.length,
+        buffer.sampleRate)
+    , drawCtx  = canvas.getContext('2d')
+    , source   = audioCtx.createBufferSource()
+    , analyser = audioCtx.createAnalyser()
+    , script   = audioCtx.createScriptProcessor(2048, 1, 1);
+
+  source.buffer = buffer;
+  source.connect(analyser);
+  analyser.smoothingTimeConstant = 0;
+  analyser.fftSize = 1024;
+  analyser.connect(script);
+  script.onaudioprocess = drawFrame;
+  script.connect(audioCtx.destination);
+  audioCtx.startRendering();
+
+  var i = 0;
+
+  function drawFrame (event) {
+    var array = new Uint8Array(analyser.frequencyBinCount);
+    analyser.getByteFrequencyData(array);
+    console.log("-->", ++i, array);
+  }
 }

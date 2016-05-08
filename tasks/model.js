@@ -10,7 +10,7 @@
     })
   })
 
-  model = require('riko-mvc/model')(model);
+  model = require('riko-mvc').M(model);
   console.log(model, model());
   return model;
 

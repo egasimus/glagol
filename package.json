@@ -12,6 +12,7 @@
   "author": "Adam Avramov <fallenblood@example.com> (http://github.com/egasimus)",
   "license": "GPL-3.0",
   "dependencies": {
+    "extend": "^3.0.0",
     "q": "^1.4.1",
     "q-connection": "^0.6.1",
     "riko-mvc": "^0.2.0"

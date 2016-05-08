@@ -1,3 +1,5 @@
+var create = require('virtual-dom/create-element');
+
 module.exports = function (state) {
   return require('vdom-thunk')(module.exports.widget, state);
 }
@@ -11,25 +13,27 @@ module.exports.widget = require('virtual-widget')(
 
       //this.canvas = document.createElement('canvas');
 
-      this.controls = require('virtual-dom/create-element')(
+      this.controls = create(
         h('.AudioPlayer',
-          [ h('.AudioPlayer_Waveform')
-          , h('.AudioPlayer_Button', '▶')
+          [ 
+          //, h('.AudioPlayer_Waveform')
+            h('.AudioPlayer_Button', '▶')
           , h('.AudioPlayer_Info', require('path').basename(src))
-          , h('.AudioPlayer_Cues',
-            [ h('.AudioPlayer_Cue', [ h('strong', '01'), ' 00:00:00' ])
-            , h('.AudioPlayer_Cue', [ h('strong', '02'), ' 00:00:11' ])
-            , h('.AudioPlayer_Cue', [ h('strong', '03'), ' 00:00:42' ])
-            , h('.AudioPlayer_Cue', [ h('strong', '04'), ' 00:01:01' ])
-            , h('.AudioPlayer_Cue', [ h('strong', '05'), ' 00:01:08' ])
-            , h('.AudioPlayer_Cue', [ h('strong', '06'), ' 00:01:11' ])
-            , h('.AudioPlayer_Cue', [ h('strong', '07'), ' 00:01:31' ])
-            , h('.AudioPlayer_Cue', [ h('strong', '08'), ' 00:02:44' ])
-            ])
+          //, h('.AudioPlayer_Cues',
+            //[ h('.AudioPlayer_Cue', [ h('strong', '01'), ' 00:00:00' ])
+            //, h('.AudioPlayer_Cue', [ h('strong', '02'), ' 00:00:11' ])
+            //, h('.AudioPlayer_Cue', [ h('strong', '03'), ' 00:00:42' ])
+            //, h('.AudioPlayer_Cue', [ h('strong', '04'), ' 00:01:01' ])
+            //, h('.AudioPlayer_Cue', [ h('strong', '05'), ' 00:01:08' ])
+            //, h('.AudioPlayer_Cue', [ h('strong', '06'), ' 00:01:11' ])
+            //, h('.AudioPlayer_Cue', [ h('strong', '07'), ' 00:01:31' ])
+            //, h('.AudioPlayer_Cue', [ h('strong', '08'), ' 00:02:44' ])
+            //])
+          , h('canvas.AudioPlayer_Spectrogram')
           ]));
 
       if (this.data) {
-        renderViewer()
+        renderWaveform()
       } else {
         var request = new XMLHttpRequest()
           , src     = 'http://localhost:1615/file?path=' + src
@@ -42,13 +46,23 @@ module.exports.widget = require('virtual-widget')(
 
       function dataLoaded () {
         self.data = request.response;
-        ctx.decodeAudioData(self.data).then(createVoice);
-        renderViewer();
+        ctx.decodeAudioData(self.data).then(dataDecoded)
+        //renderWaveform();
       }
 
-      function createVoice (audioData) {
+      function dataDecoded (audioBuffer) {
+        createVoice(audioBuffer);
+        var spectrogram = require('spectrogram')(
+          self.controls.getElementsByTagName('canvas')[0],
+          { audio: { enable: false }})
+        console.log(spectrogram)
+        spectrogram.connectSource(audioBuffer, ctx);
+        spectrogram.start();
+      }
+
+      function createVoice (audioBuffer) {
         var audio = ctx.createBufferSource();
-        audio.buffer = audioData || self.audio.buffer;
+        audio.buffer = audioBuffer || self.audio.buffer;
         self.audio = audio;
         audio.connect(ctx.destination);
         self.startedAt = null;
@@ -75,7 +89,7 @@ module.exports.widget = require('virtual-widget')(
 
       return this.controls;
 
-      function renderViewer () {
+      function renderWaveform () {
         setTimeout(function () {
           var opts   = { width: self.controls.offsetWidth, height: 72, samples: self.controls.offsetWidth
                        , colors: { waveform: '#ccc', waveformHover: '#ccc' }}

@@ -615,11 +615,12 @@ highlight()
     width 100%
     height 72px
   &_Info
-    margin 9px 0 0
+    margin 8px 3px 0
     font-size 18px
     color white
     font-weight bold
     flex-grow 1
+    text-align left
   &_Button
     cursor pointer
     color #555
@@ -630,7 +631,7 @@ highlight()
     width 48px
     height 36px
     box-shadow 0 0 6px #333
-    margin 0 9px 9px
+    margin 0 6px
     transition 0.2s background
     outline 3px solid rgba(0,0,0,0.1)
     border-top 1px solid white
@@ -642,6 +643,8 @@ highlight()
   &_Waveform, canvas
     width 100%
     height 100px
+  &_Spectrogram
+    margin 6px
   &_Cues
     display flex
     flex-direction row

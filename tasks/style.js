@@ -1,10 +1,11 @@
-(function (App) {
+(function (root) {
 
-  var css = __.util.insertCss(App.style());
+  var style = root.parent.nodes['style.styl']
+    , css = __.util.insertCss(style())
 
-  App.style.events.on('changed',
+  style.events.on('changed',
     function () {
       css.parentElement.removeChild(css);
-      css = __.util.insertCss(App.style()); });
+      css = __.util.insertCss(style()); });
 
 })

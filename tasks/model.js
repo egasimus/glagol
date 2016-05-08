@@ -1,6 +1,6 @@
 (function (root, modules) {
 
-  var model = root().model || {};
+  var model = root.parent().model || {};
 
   Object.keys(modules.nodes).forEach(function (module) {
     console.info('creating model for module', module);

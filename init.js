@@ -6,6 +6,7 @@
 
   var App = { Source: root };
   App.Model = _.tasks.model(root, modules);
+  App.Style = _.tasks.style(root);
   App.View  = _.tasks.view(App.Model, root, modules);
 
   console.debug("initializing", App);

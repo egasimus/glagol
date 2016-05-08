@@ -1,6 +1,6 @@
 (function (frame, index) {
 
-  var file = App.model.files()[frame.address] || {};
+  var file = App.Model.FS.files()[frame.address] || {};
 
   var body = 'unknown file type: ' + file.type;
 

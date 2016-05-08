@@ -49,7 +49,7 @@
   function goUp (event) {
     event.preventDefault();
     var location = require('path').dirname(frame.address);
-    App.model.frames.get(index).put('address', location);
+    App.Model.Session.frames.get(index).put('address', location);
   }
 
   function open (name, isDir) {

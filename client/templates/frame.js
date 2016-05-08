@@ -48,7 +48,7 @@
 
   function frameType () {
     return frame.type === 'file'
-      ? (App.model.files()[frame.address] || {}).type || 'file'
+      ? (App.Model.FS.files()[frame.address] || {}).type || 'file'
       : frame.type
   }
 

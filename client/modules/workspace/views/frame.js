@@ -5,13 +5,11 @@
   return h('section.Frame' + (frame.error ? '.FrameWithError' : ''),
     { dataset: { type: frame.type, address: frame.address } },
     [ h('header.FrameHeader',
-      [ h('.FrameTitle',
-        [ frameType()
-        , ' '
-        , h('input.FrameAddress',
-          { onchange: changeAddress
-          , value: frame.address
-          , size: 40 }) ])
+      [ h('.FrameTitle', frameType())
+      , h('input.FrameAddress',
+        { onchange: changeAddress
+        , value: frame.address
+        , size: 40 })
       , h('.FrameClose', { onclick: remove }, '×')])
     , frameError()
     , h('.FrameBody', __.getViewForType(frame.type, { frame: frame, index: index}))

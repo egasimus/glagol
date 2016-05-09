@@ -355,15 +355,23 @@ button()
     margin-right 6px
 
 .MainView
+  padding-top 24px
   display flex
   flex-grow 1
+  height 100%
 
 .TopBar
+  position absolute
+  left 0
+  right 0
+  top 0
+  z-index 10
+
   text-shadow 0 0 12px rgba(0,0,0,0.8)
   overflow-x hidden
   flex-shrink 0
   width 100%
-  height 24px
+  height 23px
   background black
   display flex
   flex-direction row
@@ -381,13 +389,12 @@ button()
       background black
 
 .Frame
-  box-shadow 1px 1px 6px black, 0 1px 2px black
+  //box-shadow 0 0 6px black, 0 0 2px black
   color #333
   display flex
   flex-direction column
-  border-right 1
-  //max-height 100%
-  margin 3px
+  border 1px solid #000
+  max-height 100%
   background rgba(0,0,0,0.5)
   transition background 0.2s
   &:hover
@@ -413,18 +420,17 @@ button()
     padding 0 3px
     margin 0
     font-weight bold
-  &Title
-    flex-grow 1
   &Address
+    flex-grow 1
     color #fff
     display inline-block
     background none
     border none
     padding 3px
-    border-bottom 1px dotted #aaa
+    //border-bottom 1px dotted #000
     transition background 0.2s
     &:hover, &:focus
-      background #555
+      background #111
     &:focus
       outline none
       border-bottom 1px solid #aaa
@@ -485,7 +491,7 @@ button()
       height 100%
 
 .Workspace
-  padding 3px
+  outline 1px solid black
   flex-grow 1
   display flex
   flex-direction column

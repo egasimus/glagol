@@ -9,12 +9,22 @@ module.exports.widget = require('virtual-widget')(
       this.el.className = 'SourceEditor';
       this.el.appendChild(document.createElement('textarea'))
       this.el.firstChild.value = state.source;
+
       document.body.appendChild(this.el);
       this.mirror = require('codemirror').fromTextArea(
         this.el.firstChild,
         { viewportMargin: Infinity 
         , lineNumbers: true });
       document.body.removeChild(this.el);
+
+      var request = new XMLHttpRequest()
+        , src     = 'http://localhost:1615/file?path=' + state
+      request.open('GET', src, true);
+      request.onload = function () {
+        this.mirror.setValue(request.response);
+      }.bind(this);
+      request.send();
+
       return this.el;
     }
   , update: function (prev, el) {

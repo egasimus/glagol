@@ -15,7 +15,7 @@
       body = addSrc(h('img'))
       break;
     case 'text/plain':
-      body = _.glagolEditor({ source: 'foo' })
+      body = _.editor(file.path);
       break;
   }
 

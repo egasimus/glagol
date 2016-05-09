@@ -7,6 +7,15 @@
 
 (function (embedded) {
 
+  if (!embedded) {
+    document.head.appendChild(CDNStyleSheet(
+      'https://maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css',
+      'sha384-aNUYGqSUL9wG/vP7+cWZ5QOM4gsQou3sBfWRr/8S3R1Lv0rysEmnwsRKMbhiQX/O',
+      'anonymous'));
+    document.head.appendChild(CDNStyleSheet(
+      'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.13.4/codemirror.css'));
+  }
+
   var App = $.lib.gui.init(Glagol)
     , API = initSessionAPI()
     , FS  = initFileAPI();
@@ -15,12 +24,6 @@
     window.App = App;
     window.API = API;
     window.FS  = FS;
-    document.head.appendChild(CDNStyleSheet(
-      'https://maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css',
-      'sha384-aNUYGqSUL9wG/vP7+cWZ5QOM4gsQou3sBfWRr/8S3R1Lv0rysEmnwsRKMbhiQX/O',
-      'anonymous'));
-    document.head.appendChild(CDNStyleSheet(
-      'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.13.4/codemirror.css'));
   }
 
   return App;

@@ -634,7 +634,6 @@ button()
         color #fff
 
 .File
-  text-align center
   audio
     width 100%
 
@@ -652,7 +651,6 @@ button()
     margin 0 3px
     font-size 18px
     font-weight bold
-    text-align left
   &_Position
     margin 0 12px
     width 4em
@@ -705,3 +703,17 @@ button()
     border-bottom 2px solid #999
     padding 2px
     line-height 12px
+
+.CodeMirror
+  background rgba(33,33,33,0.8)
+  transition background 0.2s
+  color #ddd
+  &-focused
+    background rgba(25,25,25,0.8)
+  &-gutters
+    background none
+    border-right 1px solid #444
+  &-cursor
+    border-left 2px solid #888
+  &-linenumber
+    color #777

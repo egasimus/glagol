@@ -55,8 +55,8 @@ module.exports.widget = require('virtual-widget')(
       function dataDecoded (audioBuffer) {
         console.debug('decoded', audioBuffer);
         createVoice(audioBuffer);
-        var spectrogram = self.controls.lastChild;
-        drawSpectrogram(spectrogram, audioBuffer);
+        //var spectrogram = self.controls.lastChild;
+        //drawSpectrogram(spectrogram, audioBuffer);
         //var spectrogram = require('spectrogram')(
           //self.controls.getElementsByTagName('canvas')[0],
           //{ audio: { enable: false }})

@@ -9,16 +9,16 @@ module.exports = { Workspace:
   , bars:
 
     { top:
-      { visible: false
-      , input:   ''
-      , result:  null }
+      { show: false
+      , input: ''
+      , result: null }
 
     , left:
-      { visible: false }
+      { show: false }
 
     , bottom:
-      { visible: true
-      , text:    '' } }
+      { show: true
+      , text: '' } }
 
   , frames:
     []

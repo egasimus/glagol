@@ -17,7 +17,7 @@
         ]);
 
   function bar (side) {
-    return state.Workspace.bars[side].visible ? _.bars[side](state) : '';
+    return state.Workspace.bars[side].show ? _.bars[side](state) : '';
   }
 
 })

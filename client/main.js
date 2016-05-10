@@ -19,7 +19,7 @@
   // furthermore does not automatically invalidate evaluation caches.
   // These things need to be fixed in Glagol core.
   //
-  window.App = $.lib.gui.init(Glagol);
+  var App = window.App = $.lib.gui.init(Glagol);
 
   [ 'workspace'
   , 'fs'

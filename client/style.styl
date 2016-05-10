@@ -3,7 +3,7 @@
   position relative
 
 body
-  background-color    #777
+  background-color    #444
   //background-image    url('http://wallpapercave.com/wp/JnBur5a.jpg')
   background-size     cover
   background-position center
@@ -420,7 +420,9 @@ button()
   color #333
   display flex
   flex-direction column
-  border-top 1px solid #111
+  border-top 1px solid #555
+  border-left 1px solid #555
+  border-bottom 1px solid #111
   border-right 1px solid #111
   max-height 100%
   background rgba(0,0,0,0.5)
@@ -497,9 +499,13 @@ button()
     font-size 30px
     opacity 0.5
     cursor pointer
+    transition opacity 0.2s, text-shadow 0.2s
+    padding-left 9px
+    margin-left 9px
     &:hover
-      opacity 0.7
-      background #fff
+      opacity 1
+      color #eee
+      text-shadow 0 0 3px white, 0 0 3px white
   &Body
     color #f0f0f0
     display flex

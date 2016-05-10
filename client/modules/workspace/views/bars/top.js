@@ -13,7 +13,8 @@
     h('input.TopBar_Input',
       { type:      'text'
       , onblur:    blur
-      , onkeydown: update }))
+      , onkeydown: update
+      , hookFocus: require('focus-hook')() }))
 
   function blur () {
     App.Model.Workspace.bars.top.show.set(false);

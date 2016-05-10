@@ -13,6 +13,7 @@
     "codemirror": "^5.13.4",
     "colors": "^1.1.2",
     "extend": "^3.0.0",
+    "focus-hook": "^1.0.0",
     "glagol": "egasimus/glagol#9765f89e3ed1c2ffd2d2097a223b374c02bcbec2",
     "glagol-riko-api": "^0.1.0",
     "glagol-stylus": "^0.1.0",

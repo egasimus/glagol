@@ -11,7 +11,7 @@
       , address: null
       , status:  'empty' }))
 
-    API('add', type);
+    App.Workspace('add', type);
 
   } else {
 
@@ -26,7 +26,7 @@
 
     App.Model.Workspace.frames.put(index, frame);
 
-    API('add', type, address);
+    App.Workspace('add', type, address);
     if (type === 'file' || type === 'directory') FS('read', address);
 
   }

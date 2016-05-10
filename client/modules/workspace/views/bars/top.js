@@ -27,8 +27,8 @@
     if (event.code === 'Enter') {
       var el  = document.getElementsByClassName('TopBar_Input')[0]
         , val = el.value;
-      App.Workspace('add', 'iframe', 'https://duckduckgo.com/?q=' + val);
       console.info('Entered command:', val);
+      __.__.command(val);
     }
   }
 

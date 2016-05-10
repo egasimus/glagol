@@ -15,3 +15,7 @@ command.handlers =
   { home: function (input) { _.add('directory', input) }
   , root: function (input) { _.add('directory', input) }
   , port: function (input) { _.add('glagol', 'ws://localhost:' + input) } };
+
+command.catchall = function (input) {
+  App.Workspace('add', 'iframe', 'https://duckduckgo.com/?q=' + input);
+}

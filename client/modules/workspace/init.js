@@ -18,6 +18,8 @@
     $.modules.workspace.update(JSON.parse(message.data))
   }
 
+  window.addEventListener('keydown', function (event) { _.onKeyDown(event) })
+
   App.Workspace = API;
 
 })

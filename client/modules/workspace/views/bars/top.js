@@ -10,6 +10,25 @@
   //}))
 
   return h('.TopBar',
-    h('input.TopBar_Input', { type: 'text' }))
+    h('input.TopBar_Input',
+      { type:      'text'
+      , onblur:    blur
+      , onkeydown: update }))
+
+  function blur () {
+    App.Model.Workspace.bars.top.show.set(false);
+  }
+
+  function update (event) {
+    if (event.code === 'Escape') {
+      blur();
+    }
+    if (event.code === 'Enter') {
+      var el  = document.getElementsByClassName('TopBar_Input')[0]
+        , val = el.value;
+      App.Workspace('add', 'iframe', 'https://duckduckgo.com/?q=' + val);
+      console.info('Entered command:', val);
+    }
+  }
 
 })

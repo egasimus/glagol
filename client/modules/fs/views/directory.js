@@ -65,7 +65,7 @@
       event.preventDefault();
       var location = require('path').join(frame.address, name);
       if (isDir) {
-        API('change', index, 'address', location);
+        App.Workspace('change', index, 'address', location);
       } else {
         $.modules.workspace.add('file', location);
       }

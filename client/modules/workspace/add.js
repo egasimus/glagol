@@ -27,7 +27,7 @@
     App.Model.Workspace.frames.put(index, frame);
 
     App.Workspace('add', type, address);
-    if (type === 'file' || type === 'directory') FS('read', address);
+    if (type === 'file' || type === 'directory') App.FS('read', address);
 
   }
 

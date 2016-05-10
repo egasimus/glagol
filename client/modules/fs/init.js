@@ -7,6 +7,6 @@
     $.modules.fs.update(JSON.parse(message.data));
   }
 
-  App.File = require('riko-api2')(socket);
+  App.FS = require('riko-api2')(socket);
 
 })

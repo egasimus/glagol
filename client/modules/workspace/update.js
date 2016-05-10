@@ -4,7 +4,7 @@
 
   newState.frames.forEach(function (frame, i) {
     if (frame.type === 'directory' || frame.type === 'file') {
-      FS('read', frame.address);
+      App.FS('read', frame.address);
     }
   })
 

@@ -1,3 +1,3 @@
 (function (name) {
-  return h('i.fa.fa-' + name, { 'aria-hidden': true });
+  return require('virtual-dom/h')('i.fa.fa-' + name, { 'aria-hidden': true });
 })

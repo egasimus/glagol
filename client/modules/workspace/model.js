@@ -1,10 +1,32 @@
-module.exports =
-  { Workspace:
-    { command:
-      { focused: false
-      , query:   "" }
-    , loading: true
-    , statusText: ""
-    , frames: []
-    , focusedFrame: 0
-    , focusedSession: null } }
+module.exports = { Workspace:
+  { loading:
+    true
+
+  , command:
+    { focused: false
+    , query:   "" }
+
+  , bars:
+
+    { top:
+      { visible: false
+      , input:   ''
+      , result:  null }
+
+    , left:
+      { visible: false }
+
+    , bottom:
+      { visible: true
+      , text:    '' } }
+
+  , frames:
+    []
+
+  , focusedFrame:
+    0
+
+  , focusedSession:
+    null
+
+  } }

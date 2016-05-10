@@ -2,16 +2,22 @@
 
   state = state || {};
 
+  if (state.Workspace.loading) return _.loading(state);
+
   return state.Workspace.loading
     ? _.loading(state)
     : h('.App',
-        [ _.bars.top(state)
+        [ bar('top')
         , h('.MainView',
-            [ _.bars.left(state)
+            [ bar('left')
             , h('.Workspace',
                 state.Workspace.frames.map(_.frame))
             ])
-        //, _.statusBar(state)
+        , bar('bottom')
         ]);
+
+  function bar (side) {
+    return state.Workspace.bars[side].visible ? _.bars[side](state) : '';
+  }
 
 })

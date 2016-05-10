@@ -5,7 +5,7 @@
       //h('.StatusBarNavigation',
       //[ h('a.StatusBarButton', 'Console')
       //, h('a.StatusBarButton', 'Tree') ])
-    , h('.StatusBarText')
+    , h('.StatusBarText', state.Workspace.bars.bottom.text)
     //, h('.StatusBarPresentation',
       //[ h('a.StatusBarButton', '-' )
       //, h('a.StatusBarButton', '12px')

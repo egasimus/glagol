@@ -26,12 +26,12 @@
   , 'sound' ].forEach(initModule);
 
   App.Model.Workspace.loading.set(false);
-  App.Model.Workspace.statusText.set("");
+  App.Model.Workspace.bars.bottom.text.set("Ready.");
 
   return App;
 
   function initModule (moduleName) {
-    App.Model.Workspace.statusText.set('initializing ' + moduleName);
+    App.Model.Workspace.bars.bottom.text.set('initializing ' + moduleName);
     var module = $.modules[moduleName];
     try {
       module.init(App);

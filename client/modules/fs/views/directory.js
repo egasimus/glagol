@@ -4,9 +4,9 @@
 
   return [
     h('.DirectoryToolbar',
-      [ h('button', { onclick: refresh }, __.__.workspace.views.icon('refresh'))
+      [ h('button', { onclick: refresh }, $.lib.icon('refresh'))
       , when(frame.address !== '/',
-          h('button', { onclick: goUp },    __.__.workspace.views.icon('chevron-up')))
+          h('button', { onclick: goUp }, $.lib.icon('chevron-up')))
       ]),
     h('.Directory', directory ? directoryBody() : noData()),
     ]

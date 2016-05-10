@@ -22,13 +22,13 @@
 
     return h('.Sidebar',
       [ section('add:',
-        [ button([ __.icon('folder-open-o'), ' directory' ], add('directory'))
-        , button([ __.icon('square-o'),      ' iframe'    ], add('iframe'))
-        , button([ __.icon('sitemap'),       ' glagol'    ], add('glagol'))
-        , button([ __.icon('server'),        ' service'   ], add('service'))
+        [ button([ $.lib.icon('folder-open-o'), ' directory' ], add('directory'))
+        , button([ $.lib.icon('square-o'),      ' iframe'    ], add('iframe'))
+        , button([ $.lib.icon('sitemap'),       ' glagol'    ], add('glagol'))
+        , button([ $.lib.icon('server'),        ' service'   ], add('service'))
         ])
       , h('.FlexSpacer')
-      , button([ __.icon('angle-double-left'), 'hide' ], toggleOpt('show sidebar', true))
+      , button([ $.lib.icon('angle-double-left'), 'hide' ], toggleOpt('show sidebar', true))
       ]);
       //, section('sockets:', sockets)
       //, section('columns:',

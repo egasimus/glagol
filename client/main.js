@@ -38,8 +38,10 @@
     } catch (e) {
       console.warn('Could not init module', moduleName, 'because of', e);
     }
-    Glagol.get('modules/' + moduleName).events.on('changed',
-      function () { window.location.reload() });
+
+    // reload whole page when editing module entry point
+    var g = Glagol.get('modules/' + moduleName + '/init.js');
+    if (g) g.events.on('changed', function () { window.location.reload() });
   }
 
 })

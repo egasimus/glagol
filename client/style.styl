@@ -3,11 +3,11 @@
   position relative
 
 body
-  background-color    #333
-  background-image    url('http://i.imgur.com/DgIEr0a.jpg')
+  background-color    #777
   //background-image    url('http://wallpapercave.com/wp/JnBur5a.jpg')
   background-size     cover
   background-position center
+  overflow            hidden
 
 body, table, input, select, textarea, button
   font-size 11px
@@ -368,10 +368,16 @@ button()
     margin-right 6px
 
 .MainView
-  padding-top 24px
+  background-image url('http://i.imgur.com/DgIEr0a.jpg')
+  background-size  cover
   display flex
   flex-grow 1
   height 100%
+  transform translateY(0)
+  transition transform 0.2s
+  .TopBar + &
+    position relative
+    transform translateY(24px)
 
 .TopBar
   position absolute

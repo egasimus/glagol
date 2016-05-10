@@ -20,41 +20,24 @@
   // These things need to be fixed in Glagol core.
   //
   window.App = $.lib.gui.init(Glagol);
-  window.API = initSessionAPI();
-  window.FS  = initFileAPI();
+
+  [ 'workspace'
+  , 'fs'
+  , 'sound' ].forEach(initModule);
+
+  App.Model.Workspace.loading.set(false);
+  App.Model.Workspace.statusText.set("");
 
   return App;
 
+  function initModule (moduleName) {
+    App.Model.Workspace.statusText.set('initializing ' + moduleName);
+    var module = $.modules[moduleName];
+    try {
+      module.init(App);
+    } catch (e) {
+      console.warn('Could not init module', moduleName, 'because of', e);
+    }
+  }
+
 })
-
-function initSessionAPI () {
-  var socket     = new WebSocket('ws://localhost:1617')
-    , sessionAPI = require('riko-api2')(socket);
-  socket.onopen = function () {
-    socket.onopen = null;
-    socket.send('riko');
-    sessionAPI('refresh');
-  }
-  socket.onclose = function () {
-    window.location.reload()
-  }
-  socket.onmessage = function (message) {
-    //console.debug("Session update", message.data)
-    $.modules.workspace.update(JSON.parse(message.data))
-  }
-  return sessionAPI;
-}
-
-function initFileAPI () {
-  var socket  = new WebSocket('ws://localhost:1615')
-    , fileAPI = require('riko-api2')(socket)
-  socket.onmessage = function (message) {
-    //console.debug("FS update", message.data)
-    $.modules.fs.update(JSON.parse(message.data));
-  }
-  return fileAPI;
-}
-
-function initSoundAPI () {
-  return 
-}

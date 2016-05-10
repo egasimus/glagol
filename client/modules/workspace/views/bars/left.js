@@ -21,7 +21,7 @@
       , toggleOpt = toggle.bind(null, App.Model.Debugger.displayOptions);
 
     return h('.Sidebar',
-      [ section('add...',
+      [ section('add:',
         [ button([ __.icon('folder-open-o'), ' directory' ], add('directory'))
         , button([ __.icon('square-o'),      ' iframe'    ], add('iframe'))
         , button([ __.icon('sitemap'),       ' glagol'    ], add('glagol'))

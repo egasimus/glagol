@@ -1,6 +1,6 @@
 (function (event) {
 
-  console.log(event);
+  console.debug(event);
 
   var keys = _.keys;
 

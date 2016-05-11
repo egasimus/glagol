@@ -114,19 +114,11 @@ module.exports.widget = require('virtual-widget')(
           , dur = self.audio.buffer.duration
           , position = self.controls.getElementsByClassName('AudioPlayer_Position')[0]
           , progress = self.controls.getElementsByClassName('AudioPlayer_ProgressBar_Foreground')[0]
-        position.innerText = formatTime(pos) + "\n" + formatTime(dur) + "\n" + formatTime(dur - pos);
+        position.innerText =
+          $.lib.formatTime(pos) + "\n" +
+          $.lib.formatTime(dur) + "\n" +
+          $.lib.formatTime(dur - pos);
         progress.style.width = pos / dur * 100 + '%';
-      }
-
-      function formatTime (t) {
-        t = Math.round(t * 1000) / 1000;
-        var m  = Math.floor(t / 60)
-          , s  = Math.floor(t % 60)
-          , ms = Math.floor(t % 1 * 1000);
-        m  = m < 10 ? "0" + m : m;
-        s  = s < 10 ? "0" + s : s;
-        ms = ms < 10 ? ("00" + ms) : ms < 100 ? ("0" + ms) : ms;
-        return m + ':' + s + '.' + ms;
       }
 
       function renderWaveform () {

@@ -1,8 +1,8 @@
 module.exports =
-  { KeyH: go(-1)
-  , KeyL: go(1)
-  , Alt:
-    { KeyR: toggleLauncher } }
+  { Alt:
+    { KeyH: go(-1)
+    , KeyL: go(1)
+    , KeyR: toggleLauncher } }
 
 function go (by) {
   return function () {

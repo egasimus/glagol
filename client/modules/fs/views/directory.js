@@ -17,18 +17,15 @@
   }
 
   function directoryBody () {
-    return [
-      //when(frame.address !== '/',
-        //h('.DirectoryEntry',
-          //{ onclick: goUp },
-          //[ h('strong', '../')
-          //, h('em', 'parent directory') ])),
-      directory.items.map(dir),
-      directory.items.map(file)
-    ]
+    return directory.items.length === 0
+      ? h('.DirectoryEmpty', [ $.lib.icon('info-circle'), 'This directory is empty.' ])
+      : [ directory.items.map(dir)
+        , directory.items.map(file) ];
   }
 
-  function noData () { return 'no data' }
+  function noData () {
+    return h('.DirectoryEmpty', [ $.lib.icon('exclamation-circle'), "This directory's contents have not been loaded. Hit 'Reload' to try again." ]);
+  }
 
   function entry (onclick, body) {
     return h('tr.DirectoryEntry', { onclick: onclick }, body);

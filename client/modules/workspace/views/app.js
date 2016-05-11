@@ -7,17 +7,13 @@
   return state.Workspace.loading
     ? _.loading(state)
     : h('.App',
-        [ bar('top')
+        [ _.bars.top(state)
         , h('.MainView',
-            [ bar('left')
+            [ //bar('left')
             , h('.Workspace',
                 state.Workspace.frames.map(_.frame))
             ])
-        , bar('bottom')
+        , _.bars.bottom(state)
         ]);
-
-  function bar (side) {
-    return state.Workspace.bars[side].show ? _.bars[side](state) : '';
-  }
 
 })

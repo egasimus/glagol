@@ -9,7 +9,7 @@
       //, require('path').basename(frame.address) ]);
   //}))
 
-  return h('.TopBar',
+  return h('.TopBar' + (state.Workspace.bars.top.show ? '.Visible' : '.Hidden'),
     h('input.TopBar_Input',
       { type:      'text'
       , onblur:    blur
@@ -29,6 +29,7 @@
         , val = el.value;
       console.info('Entered command:', val);
       __.__.command(val);
+      el.blur();
     }
   }
 

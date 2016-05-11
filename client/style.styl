@@ -375,7 +375,7 @@ button()
   height 100%
   transform translateY(0)
   transition transform 0.2s
-  .TopBar + &
+  .TopBar.Visible + &
     position relative
     transform translateY(24px)
 
@@ -385,19 +385,23 @@ button()
   right 0
   top 0
   z-index 10
-
-  text-shadow 0 0 12px rgba(0,0,0,0.8)
-  overflow-x hidden
-  flex-shrink 0
-  width 100%
   height 24px
+
+  overflow-x hidden
   background black
+  flex-shrink 0
   display flex
   flex-direction row
   background rgba(0,0,0,0.5)
   background linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.65) 100%)
   color white
+  text-shadow 0 0 12px rgba(0,0,0,0.8)
   line-height 24px
+
+  transition transform 0.2s
+  &.Hidden
+    transform translateY(-24px)
+
   &_Button
     white-space nowrap
     padding 0 6px
@@ -640,12 +644,24 @@ button()
   .FrameBody > &
     flex-grow 1
     overflow auto
+  &Empty
+    font-size 1.2em
+    font-weight bold
+    font-style italic
+    color #ccc
+    line-height 32px
+    i
+      font-size 24px
+      line-height 24px
+      vertical-align middle
+      margin-right 6px
   &Toolbar
-    padding 3px
+    padding 0 3px
     display flex
     flex-direction column
     button
       button()
+      margin-top 0
   &Entry
     font-size 1.2em
     display flex

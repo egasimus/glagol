@@ -12,8 +12,9 @@
   return h('.TopBar' + (state.Workspace.bars.top.show ? '.Visible' : '.Hidden'),
     h('input.TopBar_Input',
       { type:      'text'
+      , value:     state.Workspace.bars.top.input
       , onblur:    blur
-      , onkeydown: update
+      , onkeyup:   update
       , hookFocus: require('focus-hook')() }))
 
   function blur () {
@@ -21,16 +22,24 @@
   }
 
   function update (event) {
+
     if (event.code === 'Escape') {
       blur();
+      return;
     }
+
+    var el  = document.getElementsByClassName('TopBar_Input')[0]
+
     if (event.code === 'Enter') {
-      var el  = document.getElementsByClassName('TopBar_Input')[0]
-        , val = el.value;
-      console.info('Entered command:', val);
-      __.__.command(val);
+      console.info('Entered command:', el.value);
+      __.__.command(el.value);
       el.blur();
+      App.Model.Workspace.bars.top.input.set('');
+      return;
     }
+
+    App.Model.Workspace.bars.top.input.set(el.value);
+
   }
 
 })

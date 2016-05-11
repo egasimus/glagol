@@ -9,9 +9,9 @@ module.exports = { Workspace:
   , bars:
 
     { top:
-      { show: false
-      , input: ''
-      , result: null }
+      { show:   false
+      , input:  ''
+      , output: [] }
 
     , left:
       { show: false }

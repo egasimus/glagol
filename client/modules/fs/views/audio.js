@@ -49,6 +49,8 @@ module.exports.widget = require('virtual-widget')(
         request.send();
       }
 
+      return this.controls;
+
       function dataLoaded () {
         self.data = request.response;
         ctx.decodeAudioData(self.data).then(dataDecoded)
@@ -104,15 +106,13 @@ module.exports.widget = require('virtual-widget')(
           , dur = self.audio.buffer.duration
           , position = self.controls.getElementsByClassName('AudioPlayer_Position')[0]
           , progress = self.controls.getElementsByClassName('AudioPlayer_ProgressBar_Foreground')[0]
-        position.innerText = formatTime(pos) + ' / ' + formatTime(dur);
+        position.innerText = formatTime(pos) + "\n" + formatTime(dur) + "\n" + formatTime(dur - pos);
         progress.style.width = pos / dur * 100 + '%';
       }
 
       function formatTime (t) {
         return String(Math.round(t * 1000) / 1000);
       }
-
-      return this.controls;
 
       function renderWaveform () {
         setTimeout(function () {

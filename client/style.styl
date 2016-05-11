@@ -754,18 +754,31 @@ button()
   &_Spectrogram
     margin 6px
   &_Cues
+    padding 6px
+    display flex
+    flex-direction column
+    width 100%
+  &_Cue
+    padding 3px 0
+    line-height 18px
     display flex
     flex-direction row
-    flex-wrap wrap
-    max-height 96px
-    outline 3px solid rgba(0,0,0,0.1)
-  &_Cue
-    background #ddd
-    margin 0 2px 2px 0
-    border-top 1px solid white
-    border-bottom 2px solid #999
-    padding 2px
-    line-height 12px
+    justify-content space-between
+    &:hover
+      background #555
+    strong
+      padding 6px
+      font-size 1.2em
+      cursor pointer
+      margin-right 3px
+      &:hover
+        background #777
+  &_AddCue
+    button()
+    width 7em
+    padding 6px
+    text-align center
+    margin-bottom 6px
 
 .CodeMirror
   background rgba(33,33,33,0.8)

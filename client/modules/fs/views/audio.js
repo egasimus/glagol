@@ -24,16 +24,16 @@ module.exports.widget = require('virtual-widget')(
           , h('.AudioPlayer_ProgressBar',
               h('.AudioPlayer_ProgressBar_Background',
                 h('.AudioPlayer_ProgressBar_Foreground')))
-          //, h('.AudioPlayer_Cues',
-            //[ h('.AudioPlayer_Cue', [ h('strong', '01'), ' 00:00:00' ])
-            //, h('.AudioPlayer_Cue', [ h('strong', '02'), ' 00:00:11' ])
-            //, h('.AudioPlayer_Cue', [ h('strong', '03'), ' 00:00:42' ])
-            //, h('.AudioPlayer_Cue', [ h('strong', '04'), ' 00:01:01' ])
-            //, h('.AudioPlayer_Cue', [ h('strong', '05'), ' 00:01:08' ])
-            //, h('.AudioPlayer_Cue', [ h('strong', '06'), ' 00:01:11' ])
-            //, h('.AudioPlayer_Cue', [ h('strong', '07'), ' 00:01:31' ])
-            //, h('.AudioPlayer_Cue', [ h('strong', '08'), ' 00:02:44' ])
-            //])
+          , h('.AudioPlayer_Cues',
+            [ h('.AudioPlayer_AddCue', '+ add cue')
+            , cue('1', 'Fade in',     '00:00:11')
+            , cue('2', 'First beat',  '00:00:42')
+            , cue('3', 'Theme',       '00:01:01')
+            , cue('4', 'Verse',       '00:01:08')
+            , cue('5', 'Chorus',      '00:01:11')
+            , cue('6', 'Breakdown',   '00:01:31')
+            , cue('7', 'Phrase',      '00:02:44')
+            ])
           , h('canvas.AudioPlayer_Spectrogram')
           ]));
 
@@ -50,6 +50,14 @@ module.exports.widget = require('virtual-widget')(
       }
 
       return this.controls;
+
+      function cue (number, label, time) {
+        return h('.AudioPlayer_Cue',
+          [ h('.AudioPlayer_Cue_Label',
+            [ h('strong', number)
+            , label ])
+          , h('.AudioPlayer_Cue_Time', time) ])
+      }
 
       function dataLoaded () {
         self.data = request.response;

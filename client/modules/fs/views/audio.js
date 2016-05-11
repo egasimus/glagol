@@ -25,7 +25,7 @@ module.exports.widget = require('virtual-widget')(
               h('.AudioPlayer_ProgressBar_Background',
                 h('.AudioPlayer_ProgressBar_Foreground')))
           , h('.AudioPlayer_Cues',
-            [ h('.AudioPlayer_AddCue', '+ add cue')
+            [ h('.AudioPlayer_AddCue', $.lib.icon('map-marker'))
             , cue('1', 'Fade in',     '00:00:11')
             , cue('2', 'First beat',  '00:00:42')
             , cue('3', 'Theme',       '00:01:01')

@@ -719,22 +719,6 @@ button()
     button()
     margin 0 6px 6px
     font-size 30px
-    //cursor pointer
-    //color #555
-    //text-align center
-    //font-size 30px
-    //line-height 30px
-    //background #ddd
-    //width 48px
-    //height 36px
-    //box-shadow 0 0 6px #333
-    //margin 0 6px
-    //transition 0.2s background
-    //outline 3px solid rgba(0,0,0,0.1)
-    //border-top 1px solid white
-    //border-bottom 2px solid #999
-    //&:hover
-      //background #f0f0f0
     &.Playing
       background #ccaa26
       color white
@@ -743,6 +727,21 @@ button()
       &:hover
         text-shadow 0 0 3px white, 0 0 3px white
         //background #ddcc37
+  &_ProgressBar
+    width 100%
+    height 42px
+    padding 0 6px
+    &_Background
+      background #222
+      width 100%
+      height 100%
+    &_Foreground
+      background #ccaa26
+      position absolute
+      left 0
+      top 0
+      bottom 0
+      width 42%
   audio
     display none
   &_Waveform, canvas

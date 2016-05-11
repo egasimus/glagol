@@ -21,6 +21,9 @@ module.exports.widget = require('virtual-widget')(
             h('.AudioPlayer_Button', '⏯')
           , h('.AudioPlayer_Position', 'paused')
           , h('.AudioPlayer_Title', require('path').basename(src))
+          , h('.AudioPlayer_ProgressBar',
+              h('.AudioPlayer_ProgressBar_Background',
+                h('.AudioPlayer_ProgressBar_Foreground')))
           //, h('.AudioPlayer_Cues',
             //[ h('.AudioPlayer_Cue', [ h('strong', '01'), ' 00:00:00' ])
             //, h('.AudioPlayer_Cue', [ h('strong', '02'), ' 00:00:11' ])
@@ -97,10 +100,16 @@ module.exports.widget = require('virtual-widget')(
       }
 
       function update () {
-        var pos = ctx.currentTime - self.startedAt;
-        self.controls.getElementsByClassName('AudioPlayer_Position')
-        var position = self.controls.getElementsByClassName('AudioPlayer_Position')[0];
-        position.innerText = String(Math.round(pos*1000)/1000);
+        var pos = ctx.currentTime - self.startedAt
+          , dur = self.audio.buffer.duration
+          , position = self.controls.getElementsByClassName('AudioPlayer_Position')[0]
+          , progress = self.controls.getElementsByClassName('AudioPlayer_ProgressBar_Foreground')[0]
+        position.innerText = formatTime(pos) + ' / ' + formatTime(dur);
+        progress.style.width = pos / dur * 100 + '%';
+      }
+
+      function formatTime (t) {
+        return String(Math.round(t * 1000) / 1000);
       }
 
       return this.controls;

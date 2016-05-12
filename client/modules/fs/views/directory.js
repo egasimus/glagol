@@ -36,7 +36,7 @@
     return entry(open(data.name_, false),
       [ h('.DirectoryEntryName', data.name_)
       , h('.DirectoryEntryType', data.type)
-      , h('.DirectoryEntrySize', data.stat.size + ' b') ])
+      , h('.DirectoryEntrySize', data.stat.size + ' B') ])
   }
 
   function dir (data) {

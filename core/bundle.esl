@@ -3,16 +3,19 @@
   (var bundler-options (|| client.options.bundler (object)))
   (var client-boot (|| bundler-options.boot (Glagol.get "../data/boot.js")))
 
-  (try
-    ; bundle the client code into a snapshot and get dependency map
-    (var app (object
-      "ice"     (./freeze client)
-      "deps"    (./deps client)
-      "boot"    client-boot
-      "formats" client.options.formats))
+  (var app (object
+    "boot"    client-boot
+    "formats" client.options.formats))
 
+  (try
+    (= app.ice (./freeze client))
     (catch e (return (./error req res e
-      "Error creating initial client snapshot:"))))
+      "Error freezing app:"))))
+
+  (try
+    (= app.deps (./deps client))
+    (catch e (return (./error req res e
+      "Error getting deps for app:"))))
 
   (try
     ; instantiate browserify and add common glagol dependencies

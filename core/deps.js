@@ -6,7 +6,7 @@
 
   function detect (rootNode) {
 
-    var ids = {}
+    var ids  = {}
       , deps = {};
 
     _detect(rootNode);
@@ -27,11 +27,16 @@
           , key    = (link || '') + '/' + path.relative(rootNode.path, node.path)
           , myDeps = deps[key] = {};
 
-        require('detective')(node.compiled).forEach(function (d) {
-          var resolved = require('browser-resolve').sync(d, opts);
-          ids[resolved] = ids[resolved] || require('shortid').generate();
-          myDeps[d] = ids[resolved];
-        })
+        try {
+          require('detective')(node.compiled).forEach(function (d) {
+            var resolved = require('browser-resolve').sync(d, opts);
+            ids[resolved] = ids[resolved] || require('shortid').generate();
+            myDeps[d] = ids[resolved];
+          })
+        } catch (e) {
+          e.sourceNode = node.path;
+          throw e;
+        }
 
       }
 

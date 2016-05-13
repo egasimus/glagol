@@ -722,6 +722,8 @@ button()
     button()
     margin 0 6px 6px
     font-size 30px
+    width 42px
+    text-align center
     &.Playing
       background #ccaa26
       color white
@@ -752,8 +754,14 @@ button()
     height 100px
   &_Spectrogram
     margin 6px
-  &_Cues
+  &_CueSection
+    display flex
+    flex-direction row
+    width 100%
     padding 6px
+    &_Toolbar
+      flex-shrink 0
+  &_CueList
     display flex
     flex-direction column
     width 100%
@@ -762,9 +770,10 @@ button()
     display flex
     flex-direction row
     justify-content space-between
+    align-items center
     &:hover
       background #555
-    strong
+    &_Number
       padding 3px
       font-size 1.2em
       cursor pointer
@@ -774,6 +783,8 @@ button()
       text-align center
       &:hover
         background #777
+    &_Time
+      padding 0 3px
   &_AddCue
     button()
     width 36px

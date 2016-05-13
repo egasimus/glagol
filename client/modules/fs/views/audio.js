@@ -24,23 +24,26 @@ module.exports.widget = function (src) {
           , h('.AudioPlayer_ProgressBar',
               h('.AudioPlayer_ProgressBar_Background',
                 h('.AudioPlayer_ProgressBar_Foreground')))
-          , h('.AudioPlayer_Cues',
-            [ h('.AudioPlayer_AddCue', $.lib.icon('map-marker'))
-            , cue('1', 'Fade in',     '00:00:11')
-            , cue('2', 'First beat',  '00:00:42')
-            , cue('3', 'Theme',       '00:01:01')
-            , cue('4', 'Verse',       '00:01:08')
-            , cue('5', 'Chorus',      '00:01:11')
-            , cue('6', 'Breakdown',   '00:01:31')
-            , cue('7', 'Phrase',      '00:02:44')
+          , h('.AudioPlayer_CueSection',
+            [ h('.AudioPlayer_CueSection_Toolbar',
+              [ h('.AudioPlayer_AddCue', $.lib.icon('map-marker')) ])
+            , h('.AudioPlayer_CueList',
+              [ cue('1', 'Fade in',     '00:00:11')
+              , cue('2', 'First beat',  '00:00:42')
+              , cue('3', 'Theme',       '00:01:01')
+              , cue('4', 'Verse',       '00:01:08')
+              , cue('5', 'Chorus',      '00:01:11')
+              , cue('6', 'Breakdown',   '00:01:31')
+              , cue('7', 'Phrase',      '00:02:44')
+              ])
             ])
-          , h('canvas.AudioPlayer_Spectrogram')
-          ]));
+            , h('canvas.AudioPlayer_Spectrogram')
+            ]));
 
-      function cue (number, label, time) {
-        return h('.AudioPlayer_Cue',
-          [ h('.AudioPlayer_Cue_Label',
-            [ h('strong', number)
+        function cue (number, label, time) {
+          return h('.AudioPlayer_Cue',
+            [ h('.AudioPlayer_Cue_Label',
+              [ h('.AudioPlayer_Cue_Number', number)
             , label ])
           , h('.AudioPlayer_Cue_Time', time) ])
       }

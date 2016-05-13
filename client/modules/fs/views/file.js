@@ -2,9 +2,12 @@
 
   var file = App.Model.FS.files()[frame.address] || {};
 
-  var body = 'unknown file type: ' + file.type;
+  var body;
 
   switch (file.contentType) {
+    case undefined:
+      body = 'loading...';
+      break;
     case 'audio/mpeg':
     case 'audio/x-wav':
       body = _.audio(file.path);
@@ -17,6 +20,8 @@
     case 'text/plain':
       body = _.editor(file.path);
       break;
+    default:
+      body = 'unknown file type: ' + file.type;
   }
 
   return h('.File', body);

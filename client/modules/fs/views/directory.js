@@ -4,10 +4,9 @@
 
   return [
     h('.DirectoryToolbar',
-      [ h('button', { onclick: refresh }, $.lib.icon('refresh'))
-      , when(frame.address !== '/',
+      [ when(frame.address !== '/',
           h('button', { onclick: goUp }, $.lib.icon('chevron-up')))
-      ]),
+      , h('button', { onclick: refresh }, $.lib.icon('refresh')) ]),
     h('.Directory', directory ? directoryBody() : noData()),
     ]
 
@@ -54,7 +53,7 @@
   function goUp (event) {
     event.preventDefault();
     var location = require('path').dirname(frame.address);
-    App.Model.Workspace.frames.get(index).put('address', location);
+    App.Workspace('change', index, 'address', location);
   }
 
   function open (name, isDir) {

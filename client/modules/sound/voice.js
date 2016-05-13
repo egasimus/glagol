@@ -43,13 +43,13 @@
     }
     voice.source.connect(ctx.destination);
     voice.startedAt = null
-    voice.timer = clearInterval(voice.timer);
+    voice.timer = clearTimeout(voice.timer);
   }
 
   function stop () {
     if (voice.timer) {
       voice.source.stop();
-      voice.timer = clearInterval(voice.timer);
+      voice.timer = clearTimeout(voice.timer);
     }
     makeVoice();
   }

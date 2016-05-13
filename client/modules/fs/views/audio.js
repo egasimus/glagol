@@ -80,9 +80,9 @@ module.exports.widget = function (src) {
         button.onclick = play;
       }
 
-      function update () {
-        var pos = App.Model.Sound.context().currentTime - self.startedAt
-          , dur = self.voice1.buffer.duration
+      function update (voice) {
+        var pos = App.Model.Sound.context().currentTime - voice.startedAt
+          , dur = voice.buffer.duration
         position.innerText =
           $.lib.formatTime(pos) + "\n" +
           $.lib.formatTime(dur) + "\n" +

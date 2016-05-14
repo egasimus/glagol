@@ -26,18 +26,15 @@
   voice.updateFps   = 30;
   voice.stop        = stop;
 
-  _.buffer(src).then(function (buffer) {
+  return _.buffer(src).then(function (buffer) {
     voice.buffer = buffer;
     makeVoice();
+    return voice;
   })
 
-  return voice;
-
   function makeVoice () {
-    if (!voice.source) {
-      voice.source = ctx.createBufferSource();
-      voice.source.buffer = voice.buffer;
-    }
+    voice.source = voice.source || ctx.createBufferSource();
+    voice.source.buffer = voice.source.buffer || voice.buffer;
     voice.source.connect(ctx.destination);
     voice.startedAt = null
     voice.timer = clearTimeout(voice.timer);

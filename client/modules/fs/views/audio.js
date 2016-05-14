@@ -109,6 +109,7 @@ module.exports.widget = function (src) {
           , rect = bg.getBoundingClientRect()
           , pos  = (event.clientX - rect.left) / rect.width
         progress(pos * duration, duration);
+        player.seek(pos * duration);
       }
 
       function getControl (cls) {

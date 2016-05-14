@@ -1,8 +1,13 @@
 (function (src) {
 
+  var ctx = App.Model.Sound.context();
+
   var player = {};
 
-  player.voices = [ $.modules.sound.voice(src) ];
+  player.voices = [];
+  init();
+
+  player.status = 'loading';
   player.position = null;
   player.duration = null;
   player.cuePoint = 0;
@@ -12,20 +17,30 @@
 
   return player;
 
+  function init () {
+    _.buffer(src).then(function (buffer) {
+      var voice = ctx.createBufferSource();
+      voice.buffer = buffer;
+      player.voices.push(voice);
+      player.duration = buffer.duration;
+      player.status = 'stopped';
+      update();
+    });
+  }
+
   function play () {
-    var voice = player.voices[0];
-    player.voices[0].onupdate = update;
-    player.voices[0](0, player.cuePoint);
+    player.voices[0].start(0, player.cuePoint);
+    player.status = 'playing';
+    update();
   }
 
   function stop () {
-    var voice = player.voices.shift();
-    player.cuePoint = voice.stop();
-    player.voices.push($.modules.sound.voice(src));
+    player.cuePoint = player.voices.shift().stop();
+    init();
   }
 
   function seek (t) {
-    pause();
+    stop();
     player.cuePoint = t;
     play();
   }

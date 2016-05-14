@@ -4,8 +4,9 @@
 
   var voice = function voice () {
     if (!voice.source) throw Error("can't play yet: no data loaded");
+    console.log("PLAYING")
     voice.startedAt = ctx.currentTime;
-    if (voice.updateFps) voice.timer = setInterval(update, 1000 / voice.updateFps);
+    if (voice.updateFps) voice.timer = setTimeout(update, 1000 / voice.updateFps);
     voice.source.start(0, 0);
     voice.source.onended = makeVoice;
   }
@@ -47,16 +48,16 @@
   }
 
   function stop () {
-    if (voice.timer) {
-      voice.source.stop();
-      voice.timer = clearTimeout(voice.timer);
-    }
+    console.log("STOP")
+    voice.source.stop();
+    voice.timer = clearTimeout(voice.timer);
     makeVoice();
   }
 
   function update () {
+    console.log("UPDATE")
     if (voice.update)    voice.update(voice);
-    if (voice.updateFps) setTimeout(update, voice.updateFps);
+    if (voice.updateFps) voice.timer = setTimeout(update, voice.updateFps);
   }
 
 })

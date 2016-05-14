@@ -78,7 +78,7 @@ module.exports.widget = function (src) {
         self.voice1.stop();
         self.voice1 = self.voice2;
         self.voice2 = $.modules.sound.voice(src);
-        button.classList.remove('playing');
+        button.classList.remove('Playing');
         button.onclick = play;
       }
 

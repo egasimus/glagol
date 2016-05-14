@@ -4,7 +4,6 @@
 
   var voice = function voice () {
     if (!voice.source) throw Error("can't play yet: no data loaded");
-    console.log("PLAYING")
     voice.startedAt = ctx.currentTime;
     if (voice.updateFps) voice.timer = setTimeout(update, 1000 / voice.updateFps);
     voice.source.start(0, 0);
@@ -48,14 +47,12 @@
   }
 
   function stop () {
-    console.log("STOP")
     voice.source.stop();
     voice.timer = clearTimeout(voice.timer);
     makeVoice();
   }
 
   function update () {
-    console.log("UPDATE")
     if (voice.update)    voice.update(voice);
     if (voice.updateFps) voice.timer = setTimeout(update, voice.updateFps);
   }

@@ -22,7 +22,7 @@ module.exports.widget = function (src) {
           [ h('.AudioPlayer_Button_Play', '⏯')
           , h('.AudioPlayer_Button_Cue', 'CUE')
           , h('.AudioPlayer_Title', require('path').basename(src))
-          , h('.AudioPlayer_Position', 'stopped')
+          , h('.AudioPlayer_Position', 'loading')
           , h('.AudioPlayer_ProgressBar',
               h('.AudioPlayer_ProgressBar_Background',
                 h('.AudioPlayer_ProgressBar_Foreground')))
@@ -60,12 +60,10 @@ module.exports.widget = function (src) {
         , button   = getControl('Button_Play')
         , bar      = getControl('ProgressBar_Background')
         , barFg    = getControl('ProgressBar_Foreground')
-        , position = getControl('Position')
-        , duration = null;;
+        , position = getControl('Position');
 
-      player.onupdate = function (pos, dur) {
-        duration = dur;
-        progress(pos, dur);
+      player.onupdate = function (player) {
+        progress(player.position, player.duration);
       }
 
       bar.onmousedown = scrubStart;
@@ -107,8 +105,8 @@ module.exports.widget = function (src) {
         var bg   = getControl('ProgressBar_Background')
           , rect = bg.getBoundingClientRect()
           , pos  = (event.clientX - rect.left) / rect.width
-        progress(pos * duration, duration);
-        player.seek(pos * duration);
+        progress(pos * player.duration, player.duration);
+        player.seek(pos * player.duration);
       }
 
       function getControl (cls) {

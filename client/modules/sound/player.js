@@ -8,12 +8,19 @@
   init();
 
   player.status = 'loading';
+
   player.position = null;
   player.duration = null;
   player.cuePoint = 0;
+
   player.play = play;
   player.stop = stop;
   player.seek = seek;
+
+  player.startedAt   = null;
+  player.startedFrom = null;
+  player.updateTimer = null;
+  player.updateFPS   = 30;
 
   return player;
 
@@ -32,6 +39,7 @@
   function play () {
     player.voices[0].start(0, player.cuePoint);
     player.status = 'playing';
+    player.startedAt = ctx.currentTime;
     update();
   }
 
@@ -41,6 +49,7 @@
     } catch (e) {
       console.warn("can't stop:", e);
     }
+    player.updateTimer = clearTimeout(player.updateTimer);
     init();
   }
 
@@ -50,10 +59,15 @@
     play();
   }
 
-  function update (voice) {
-    //var pos = ctx.currentTime - voice.startedAt + voice.startedFrom
-      //, dur = voice.buffer.duration;
-    //if (player.onupdate) player.onupdate(pos, dur);
+  function update () {
+    if (player.startedAt) {
+      var elapsed = ctx.currentTime - player.startedAt;
+      player.position = player.startedFrom + elapsed;
+    }
+    if (player.status === 'playing') {
+      player.updateTimer = setTimeout(update, 1000 / player.updateFPS);
+    }
+    if (player.onupdate) player.onupdate(player);
   }
 
 })

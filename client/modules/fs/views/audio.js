@@ -69,13 +69,17 @@ module.exports.widget = function (src) {
           pos / dur * 100 + '%';
       }
 
+      getControl('ProgressBar_Background').onclick = function (event) {
+        var x1   = event.clientX
+          , rect = getControl('ProgressBar_Background').getBoundingClientRect()
+          , x2   = rect.left
+          , x3   = rect.width;
+        console.log((x1 - x2) / x3);
+      }
+
       var button = getControl('Button')
       button.classList.remove('playing');
       button.onclick = play;
-
-      function getControl (cls) {
-        return self.controls.getElementsByClassName('AudioPlayer_' + cls)[0];
-      }
 
       function play () {
         self.player.play();
@@ -87,6 +91,10 @@ module.exports.widget = function (src) {
         self.player.pause();
         button.classList.remove('Playing');
         button.onclick = play;
+      }
+
+      function getControl (cls) {
+        return self.controls.getElementsByClassName('AudioPlayer_' + cls)[0];
       }
 
     }

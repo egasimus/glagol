@@ -6,7 +6,11 @@
     if (!voice.source) throw Error("can't play yet: no data loaded");
     voice.startedAt = ctx.currentTime;
     if (voice.updateFps) voice.timer = setTimeout(update, 1000 / voice.updateFps);
-    voice.source.start.apply(voice.source, arguments);
+    try {
+      voice.source.start.apply(voice.source, arguments);
+    } catch (e) {
+      console.warn("can't start: already spent")
+    }
     voice.source.onended = makeVoice;
   }
 
@@ -38,7 +42,11 @@
 
   function stop () {
     var p = ctx.currentTime - voice.startedAt;
-    voice.source.stop();
+    try {
+      voice.source.stop();
+    } catch (e) {
+      console.warn("can't stop: not started")
+    }
     voice.timer = clearTimeout(voice.timer);
     makeVoice();
     return p;

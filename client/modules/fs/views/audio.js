@@ -56,14 +56,20 @@ module.exports.widget = function (src) {
     }
 
   , loadVoices: function (src) {
-      var self   = this
-        , player = this.player = $.modules.sound.player(src)
-        , bar    = getControl('ProgressBar_Background');
+      var self     = this
+        , player   = this.player = $.modules.sound.player(src)
+        , button   = getControl('Button')
+        , bar      = getControl('ProgressBar_Background')
+        , barFg    = getControl('ProgressBar_Foreground')
+        , position = getControl('Position')
+        , duration = null;;
 
-      player.onupdate = progress;
+      player.onupdate = function (pos, dur) {
+        duration = dur;
+        progress(pos, dur);
+      }
+
       bar.onmousedown = scrubStart;
-
-      var button = getControl('Button')
       button.classList.remove('playing');
       button.onclick = play;
 
@@ -80,8 +86,8 @@ module.exports.widget = function (src) {
       }
 
       function progress (pos, dur) {
-        getControl('ProgressBar_Foreground').style.width = pos / dur * 100 + '%';
-        getControl('Position').innerText =
+        barFg.style.width = pos / dur * 100 + '%';
+        position.innerText =
           $.lib.formatTime(pos)       + "\n" +
           $.lib.formatTime(dur - pos) + "\n" +
           $.lib.formatTime(dur);
@@ -101,7 +107,8 @@ module.exports.widget = function (src) {
       function scrub (event) {
         var bg   = getControl('ProgressBar_Background')
           , rect = bg.getBoundingClientRect()
-        progress(event.clientX - rect.left, rect.width);
+          , pos  = (event.clientX - rect.left) / rect.width
+        progress(pos * duration, duration);
       }
 
       function getControl (cls) {

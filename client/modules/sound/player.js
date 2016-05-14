@@ -1,27 +1,33 @@
 (function (src) {
 
-  var voice1    = $.modules.sound.voice(src)
-    , voice2    = $.modules.sound.voice(src)
-    , startFrom = 0
-    , player    = { play:  play
-                  , pause: pause
-                  , cue:   cue };
+  var player = {};
+
+  player.voices = [ $.modules.sound.voice(src) ];
+  player.position = null;
+  player.duration = null;
+  player.cuePoint = 0;
+  player.play = play;
+  player.stop = stop;
+  player.seek = seek;
 
   return player;
 
   function play () {
-    voice1(0, startFrom)
-    voice1.onupdate = update;
+    var voice = player.voices[0];
+    player.voices[0].onupdate = update;
+    player.voices[0](0, player.cuePoint);
   }
 
   function pause () {
-    startFrom = voice1.stop();
-    voice1 = voice2;
-    voice2 = $.modules.sound.voice(src)
+    var voice = player.voices.shift();
+    player.cuePoint = voice.stop();
+    player.voices.push($.modules.sound.voice(src));
   }
 
-  function cue (t) {
-    startFrom = t;
+  function seek (t) {
+    pause();
+    player.cuePoint = t;
+    play();
   }
 
   function update (voice) {

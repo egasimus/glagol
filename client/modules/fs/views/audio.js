@@ -60,7 +60,7 @@ module.exports.widget = function (src) {
         , voice = $.modules.sound.voice;
       this.voice1 = voice(src);
       this.voice2 = voice(src);
-      this.voice1.update = this.voice2.update = update;
+      this.voice1.onupdate = this.voice2.onupdate = update;
       var button   = getControl('Button')
       button.classList.remove('playing');
       button.onclick = play;
@@ -70,7 +70,8 @@ module.exports.widget = function (src) {
       }
 
       function play () {
-        self.voice1(0, self.startFrom || 0);
+        self.startFrom = self.startFrom || 0
+        self.voice1(0, self.startFrom);
         button.classList.add('Playing');
         button.onclick = pause;
       }
@@ -79,13 +80,13 @@ module.exports.widget = function (src) {
         self.startFrom = self.voice1.stop();
         self.voice1 = self.voice2;
         self.voice2 = $.modules.sound.voice(src);
-        self.voice2.update = update;
+        self.voice2.onupdate = update;
         button.classList.remove('Playing');
         button.onclick = play;
       }
 
       function update (voice) {
-        var pos = App.Model.Sound.context().currentTime - voice.startedAt
+        var pos = App.Model.Sound.context().currentTime - voice.startedAt + self.startFrom || 0
           , dur = voice.buffer.duration
           , position = getControl('Position')
           , progress = getControl('ProgressBar_Foreground');

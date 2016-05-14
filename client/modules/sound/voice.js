@@ -15,7 +15,7 @@
   voice.source    = null
   voice.startedAt = null
   voice.timer     = null;
-  voice.update    = undefined;
+  voice.onupdate  = undefined;
   voice.updateFps = 30;
   voice.stop      = stop;
 
@@ -45,8 +45,8 @@
   }
 
   function update () {
-    if (voice.update)    voice.update(voice);
-    if (voice.updateFps) voice.timer = setTimeout(update, voice.updateFps);
+    if (voice.onupdate)  voice.onupdate(voice);
+    if (voice.updateFps) voice.timer = setTimeout(update, 1000 / voice.updateFps);
   }
 
 })

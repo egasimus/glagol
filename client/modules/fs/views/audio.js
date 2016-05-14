@@ -80,7 +80,7 @@ module.exports.widget = function (src) {
       }
 
       function pause () {
-        self.player.pause();
+        self.player.stop();
         button.classList.remove('Playing');
         button.onclick = play;
       }

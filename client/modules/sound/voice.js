@@ -2,26 +2,29 @@
 
   var ctx = App.Model.Sound.context();
 
-  var voice = function voice () {
+  var voice = function voice (at, from, dur) {
     if (!voice.source) throw Error("can't play yet: no data loaded");
-    voice.startedAt = ctx.currentTime;
-    if (voice.updateFps) voice.timer = setTimeout(update, 1000 / voice.updateFps);
     try {
-      voice.source.start.apply(voice.source, arguments);
+      voice.source.start(at, from, dur);
     } catch (e) {
-      console.warn("can't start: already spent")
+      console.warn("can't start voice: already spent")
+      return;
     }
+    voice.startedAt   = ctx.currentTime;
+    voice.startedFrom = from;
+    if (voice.updateFps) voice.timer = setTimeout(update, 1000 / voice.updateFps);
     voice.source.onended = makeVoice;
   }
 
-  voice.src       = src;
-  voice.buffer    = null
-  voice.source    = null
-  voice.startedAt = null
-  voice.timer     = null;
-  voice.onupdate  = undefined;
-  voice.updateFps = 30;
-  voice.stop      = stop;
+  voice.src         = src;
+  voice.buffer      = null;
+  voice.source      = null;
+  voice.startedAt   = null;
+  voice.startedFrom = null;
+  voice.timer       = null;
+  voice.onupdate    = undefined;
+  voice.updateFps   = 30;
+  voice.stop        = stop;
 
   _.buffer(src).then(function (buffer) {
     voice.buffer = buffer;
@@ -45,7 +48,7 @@
     try {
       voice.source.stop();
     } catch (e) {
-      console.warn("can't stop: not started")
+      console.warn("can't stop voice: never been started")
     }
     voice.timer = clearTimeout(voice.timer);
     makeVoice();

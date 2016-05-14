@@ -18,7 +18,7 @@
     player.voices[0](0, player.cuePoint);
   }
 
-  function pause () {
+  function stop () {
     var voice = player.voices.shift();
     player.cuePoint = voice.stop();
     player.voices.push($.modules.sound.voice(src));
@@ -31,8 +31,8 @@
   }
 
   function update (voice) {
-    var ctx = App.Model.Sound.context()
-      , pos = ctx.currentTime - voice.startedAt + startFrom
+    var ctx = voice.source.context
+      , pos = ctx.currentTime - voice.startedAt + voice.startedFrom
       , dur = voice.buffer.duration;
     if (player.onupdate) player.onupdate(pos, dur);
   }

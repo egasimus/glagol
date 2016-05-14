@@ -6,13 +6,16 @@ module.exports = function (state) {
 
 module.exports.widget = function (src) {
   return {
+
     type: "Widget"
+
   , init: function () {
       console.debug('init audio player', src, this);
       this.controls = this.render()
-      this.load('//localhost:1615/file?path='+src);
+      this.loadVoices('//localhost:1615/file?path=' + src);
       return this.controls;
     }
+
   , render: function () {
       return create(
         h('.AudioPlayer',
@@ -28,13 +31,13 @@ module.exports.widget = function (src) {
             [ h('.AudioPlayer_Cues_Toolbar',
               [ h('.AudioPlayer_Cues_Add', $.lib.icon('map-marker')) ])
             , h('.AudioPlayer_Cues_List',
-              [ cue('1', 'Fade in',     '00:00:11')
-              , cue('2', 'First beat',  '00:00:42')
-              , cue('3', 'Theme',       '00:01:01')
-              , cue('4', 'Verse',       '00:01:08')
-              , cue('5', 'Chorus',      '00:01:11')
-              , cue('6', 'Breakdown',   '00:01:31')
-              , cue('7', 'Phrase',      '00:02:44')
+              [ cue('1', 'Fade in',    '00:11.111')
+              , cue('2', 'First beat', '00:42.424')
+              , cue('3', 'Theme',      '01:01.010')
+              , cue('4', 'Verse',      '01:08.080')
+              , cue('5', 'Chorus',     '01:11.111')
+              , cue('6', 'Breakdown',  '01:31.313')
+              , cue('7', 'Phrase',     '02:44.444')
               ])
             ])
           , h('.AudioPlayer_Info',
@@ -52,15 +55,13 @@ module.exports.widget = function (src) {
       }
     }
 
-  , load: function (src) {
+  , loadVoices: function (src) {
       var self  = this
         , voice = $.modules.sound.voice;
       this.voice1 = voice(src);
       this.voice2 = voice(src);
       this.voice1.update = this.voice2.update = update;
       var button   = getControl('Button')
-        , position = getControl('Position')
-        , progress = getControl('ProgressBar_Foreground');
       button.classList.remove('playing');
       button.onclick = play;
 
@@ -78,6 +79,7 @@ module.exports.widget = function (src) {
         self.voice1.stop();
         self.voice1 = self.voice2;
         self.voice2 = $.modules.sound.voice(src);
+        self.voice2.update = update;
         button.classList.remove('Playing');
         button.onclick = play;
       }
@@ -85,10 +87,12 @@ module.exports.widget = function (src) {
       function update (voice) {
         var pos = App.Model.Sound.context().currentTime - voice.startedAt
           , dur = voice.buffer.duration
+          , position = getControl('Position')
+          , progress = getControl('ProgressBar_Foreground');
         position.innerText =
-          $.lib.formatTime(pos) + "\n" +
-          $.lib.formatTime(dur) + "\n" +
-          $.lib.formatTime(dur - pos);
+          $.lib.formatTime(pos)       + "\n" +
+          $.lib.formatTime(dur - pos) + "\n" +
+          $.lib.formatTime(dur);
         progress.style.width = pos / dur * 100 + '%';
       }
 

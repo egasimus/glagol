@@ -19,22 +19,12 @@
   voice.updateFps = 30;
   voice.stop      = stop;
 
-  voice.request = new XMLHttpRequest();
-  voice.request.open('GET', src, true);
-  voice.request.responseType = 'arraybuffer';
-  voice.request.onload = dataLoaded;
-  voice.request.send();
-
-  return voice;
-
-  function dataLoaded () {
-    ctx.decodeAudioData(voice.request.response).then(dataDecoded);
-  }
-
-  function dataDecoded (buffer) {
+  _.buffer(src).then(function (buffer) {
     voice.buffer = buffer;
     makeVoice();
-  }
+  })
+
+  return voice;
 
   function makeVoice () {
     if (!voice.source) {

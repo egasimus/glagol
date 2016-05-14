@@ -70,13 +70,13 @@ module.exports.widget = function (src) {
       }
 
       function play () {
-        self.voice1();
+        self.voice1(0, self.startFrom || 0);
         button.classList.add('Playing');
         button.onclick = pause;
       }
 
       function pause () {
-        self.voice1.stop();
+        self.startFrom = self.voice1.stop();
         self.voice1 = self.voice2;
         self.voice2 = $.modules.sound.voice(src);
         self.voice2.update = update;

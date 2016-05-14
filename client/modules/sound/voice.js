@@ -6,7 +6,7 @@
     if (!voice.source) throw Error("can't play yet: no data loaded");
     voice.startedAt = ctx.currentTime;
     if (voice.updateFps) voice.timer = setTimeout(update, 1000 / voice.updateFps);
-    voice.source.start(0, 0);
+    voice.source.start.apply(voice.source, arguments);
     voice.source.onended = makeVoice;
   }
 
@@ -37,9 +37,11 @@
   }
 
   function stop () {
+    var p = ctx.currentTime - voice.startedAt;
     voice.source.stop();
     voice.timer = clearTimeout(voice.timer);
     makeVoice();
+    return p;
   }
 
   function update () {

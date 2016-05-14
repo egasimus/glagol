@@ -56,12 +56,20 @@ module.exports.widget = function (src) {
     }
 
   , loadVoices: function (src) {
-      var self  = this
-        , voice = $.modules.sound.voice;
-      this.voice1 = voice(src);
-      this.voice2 = voice(src);
-      this.voice1.onupdate = this.voice2.onupdate = update;
-      var button   = getControl('Button')
+      var self   = this
+        , player = this.player = $.modules.sound.player(src);
+
+      player.onupdate = function (pos, dur) {
+        console.log(pos, dur)
+        getControl('Position').innerText =
+          $.lib.formatTime(pos)       + "\n" +
+          $.lib.formatTime(dur - pos) + "\n" +
+          $.lib.formatTime(dur);
+        getControl('ProgressBar_Foreground').style.width =
+          pos / dur * 100 + '%';
+      }
+
+      var button = getControl('Button')
       button.classList.remove('playing');
       button.onclick = play;
 
@@ -70,31 +78,15 @@ module.exports.widget = function (src) {
       }
 
       function play () {
-        self.startFrom = self.startFrom || 0
-        self.voice1(0, self.startFrom);
+        self.player.play();
         button.classList.add('Playing');
         button.onclick = pause;
       }
 
       function pause () {
-        self.startFrom = self.voice1.stop();
-        self.voice1 = self.voice2;
-        self.voice2 = $.modules.sound.voice(src);
-        self.voice2.onupdate = update;
+        self.player.pause();
         button.classList.remove('Playing');
         button.onclick = play;
-      }
-
-      function update (voice) {
-        var pos = App.Model.Sound.context().currentTime - voice.startedAt + self.startFrom || 0
-          , dur = voice.buffer.duration
-          , position = getControl('Position')
-          , progress = getControl('ProgressBar_Foreground');
-        position.innerText =
-          $.lib.formatTime(pos)       + "\n" +
-          $.lib.formatTime(dur - pos) + "\n" +
-          $.lib.formatTime(dur);
-        progress.style.width = pos / dur * 100 + '%';
       }
 
     }
@@ -103,13 +95,12 @@ module.exports.widget = function (src) {
       console.debug('update', prev, el);
       this.canvas   = this.canvas   || prev.canvas;
       this.controls = this.controls || prev.controls;
-      this.data     = this.data     || prev.data;
-      this.audio    = this.audio    || prev.audio;
+      this.player   = this.player   || prev.player;
     }
 
   , destroy: function (el) {
       console.debug('destroy', el);
-      if (this.audio && this.timer) this.audio.stop();
+      if (this.player) this.player.pause();
     }
 
   }

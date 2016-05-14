@@ -24,10 +24,10 @@ module.exports.widget = function (src) {
           , h('.AudioPlayer_ProgressBar',
               h('.AudioPlayer_ProgressBar_Background',
                 h('.AudioPlayer_ProgressBar_Foreground')))
-          , h('.AudioPlayer_CueSection',
-            [ h('.AudioPlayer_CueSection_Toolbar',
-              [ h('.AudioPlayer_AddCue', $.lib.icon('map-marker')) ])
-            , h('.AudioPlayer_CueList',
+          , h('.AudioPlayer_Cues',
+            [ h('.AudioPlayer_Cues_Toolbar',
+              [ h('.AudioPlayer_Cues_Add', $.lib.icon('map-marker')) ])
+            , h('.AudioPlayer_Cues_List',
               [ cue('1', 'Fade in',     '00:00:11')
               , cue('2', 'First beat',  '00:00:42')
               , cue('3', 'Theme',       '00:01:01')
@@ -37,7 +37,10 @@ module.exports.widget = function (src) {
               , cue('7', 'Phrase',      '00:02:44')
               ])
             ])
-            , h('canvas.AudioPlayer_Spectrogram')
+          , h('.AudioPlayer_Info',
+            [ h('.AudioPlayer_Info_Toolbar',
+              [ h('.AudioPlayer_Info_Toggle', $.lib.icon('info-circle')) ])])
+            //, h('canvas.AudioPlayer_Spectrogram')
             ]));
 
         function cue (number, label, time) {

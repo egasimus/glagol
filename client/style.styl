@@ -754,17 +754,23 @@ button()
     height 100px
   &_Spectrogram
     margin 6px
-  &_CueSection
+  &_Cues
     display flex
     flex-direction row
     width 100%
     padding 6px
     &_Toolbar
       flex-shrink 0
-  &_CueList
-    display flex
-    flex-direction column
-    width 100%
+    &_Add
+      button()
+      width 36px
+      padding 6px
+      text-align center
+      margin-bottom 6px
+    &_List
+      display flex
+      flex-direction column
+      width 100%
   &_Cue
     line-height 18px
     display flex
@@ -785,12 +791,11 @@ button()
         background #777
     &_Time
       padding 0 3px
-  &_AddCue
-    button()
-    width 36px
+      letter-spacing 1px
+  &_Info
     padding 6px
-    text-align center
-    margin-bottom 6px
+    &_Toggle
+      button()
 
 .CodeMirror
   background rgba(33,33,33,0.8)

@@ -21,6 +21,7 @@
     _.buffer(src).then(function (buffer) {
       var voice = ctx.createBufferSource();
       voice.buffer = buffer;
+      voice.connect(ctx.destination);
       player.voices.push(voice);
       player.duration = buffer.duration;
       player.status = 'stopped';
@@ -35,7 +36,11 @@
   }
 
   function stop () {
-    player.cuePoint = player.voices.shift().stop();
+    try {
+      player.cuePoint = player.voices.shift().stop();
+    } catch (e) {
+      console.warn("can't stop:", e);
+    }
     init();
   }
 
@@ -46,10 +51,9 @@
   }
 
   function update (voice) {
-    var ctx = voice.source.context
-      , pos = ctx.currentTime - voice.startedAt + voice.startedFrom
-      , dur = voice.buffer.duration;
-    if (player.onupdate) player.onupdate(pos, dur);
+    //var pos = ctx.currentTime - voice.startedAt + voice.startedFrom
+      //, dur = voice.buffer.duration;
+    //if (player.onupdate) player.onupdate(pos, dur);
   }
 
 })

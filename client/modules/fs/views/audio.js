@@ -19,11 +19,10 @@ module.exports.widget = function (src) {
   , render: function () {
       return create(
         h('.AudioPlayer',
-          [
-          //, h('.AudioPlayer_Waveform')
-            h('.AudioPlayer_Button', '⏯')
+          [ h('.AudioPlayer_Button_Play', '⏯')
+          , h('.AudioPlayer_Button_Cue', 'CUE')
           , h('.AudioPlayer_Title', require('path').basename(src))
-          , h('.AudioPlayer_Position', 'paused')
+          , h('.AudioPlayer_Position', 'stopped')
           , h('.AudioPlayer_ProgressBar',
               h('.AudioPlayer_ProgressBar_Background',
                 h('.AudioPlayer_ProgressBar_Foreground')))
@@ -58,7 +57,7 @@ module.exports.widget = function (src) {
   , loadVoices: function (src) {
       var self     = this
         , player   = this.player = $.modules.sound.player(src)
-        , button   = getControl('Button')
+        , button   = getControl('Button_Play')
         , bar      = getControl('ProgressBar_Background')
         , barFg    = getControl('ProgressBar_Foreground')
         , position = getControl('Position')
@@ -127,7 +126,7 @@ module.exports.widget = function (src) {
 
   , destroy: function (el) {
       console.debug('destroy', el);
-      if (this.player) this.player.pause();
+      if (this.player) this.player.stop();
     }
 
   }

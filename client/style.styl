@@ -707,33 +707,40 @@ button()
     display block
     width 100%
     height 72px
+  &_Title, &_Position, &_Button_Play, &_Button_Cue
+    line-height 42px
+    height 42px
+    margin-left 6px
+    margin-bottom 6px
   &_Title
-    margin 0 3px
     font-size 18px
     font-weight bold
     flex-grow 1
   &_Position
-    margin 0 6px
-    padding 0 3px
+    margin-right 6px
     flex-shrink 0
     text-align center
     white-space pre
     font-family monospace
     letter-spacing 1px
   &_Button
-    button()
-    margin 0 6px 6px
-    font-size 30px
-    width 42px
-    text-align center
-    &.Playing
-      background #ccaa26
-      color white
-      //border-top 1px solid #ddcc37
-      //border-bottom 1px solid #aa8810
-      &:hover
-        text-shadow 0 0 3px white, 0 0 3px white
-        //background #ddcc37
+    &_Play, &_Cue
+      button()
+      width 42px
+      text-align center
+      font-size 30px
+      line-height 32px
+    &_Play
+      &.Playing
+        background #ccaa26
+        color white
+        &:hover
+          text-shadow 0 0 3px white, 0 0 3px white
+    &_Cue
+      font-size 1.2em
+      line-height 36px
+      letter-spacing 1px
+      font-weight bold
   &_ProgressBar
     width 100%
     height 42px

@@ -76,9 +76,8 @@ module.exports.widget = function (src) {
 
       function pause () {
         self.voice1.stop();
-        var v = self.voice1;
         self.voice1 = self.voice2;
-        self.voice2 = v;
+        self.voice2 = $.modules.sound.voice(src);
         button.classList.remove('playing');
         button.onclick = play;
       }

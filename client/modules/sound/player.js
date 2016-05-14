@@ -2,16 +2,16 @@
 
   var voice1    = $.modules.sound.voice(src)
     , voice2    = $.modules.sound.voice(src)
-    , startFrom = 0;
+    , startFrom = 0
+    , player    = { play:  play
+                  , pause: pause
+                  , cue:   cue };
 
-  return {
-    play:  play,
-    pause: pause,
-    cue:   cue
-  }
+  return player;
 
   function play () {
     voice1(0, startFrom)
+    voice1.onupdate = update;
   }
 
   function pause () {

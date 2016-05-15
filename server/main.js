@@ -39,17 +39,25 @@
     $.log("responding to http request", req.url);
     var query = require('url').parse(req.url, true).query;
     $.log("query", query.path)
-    require('fs').readFile(query.path, function (err, data) {
+    try {
+      require('fs').readFile(query.path, fileRead);
+    } catch (err) {
+      sendError(err);
+    }
+    function fileRead (err, data) {
       if (err) {
-        require('send-data/error')(req, res,
-          { body:    err 
-          , headers: { 'Access-Control-Allow-Origin': '*' }})
+        sendError(err);
       } else {
         require('send-data')(req, res,
           { body:    data
           , headers: { 'Access-Control-Allow-Origin': '*' }})
       }
-    })
+    }
+    function sendError (err) {
+      require('send-data/error')(req, res,
+        { body:    err
+        , headers: { 'Access-Control-Allow-Origin': '*' }})
+    }
   }
 
   function connect (socket) {

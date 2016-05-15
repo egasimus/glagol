@@ -1,4 +1,5 @@
-var create = require('virtual-dom/create-element');
+var path = require('path')
+  , vdom = require('virtual-dom');
 
 module.exports = function (state) {
   return require('vdom-thunk')(module.exports.widget, state);
@@ -11,16 +12,17 @@ module.exports.widget = function (src) {
 
   , init: function () {
       console.debug('init audio player', src, this);
-      this.controls = this.render()
+      this.element = vdom.create(this.render(this.model()));
+      this.model(this.patch.bind(this));
       this.loadVoices('//localhost:1615/file?path=' + src);
-      return this.controls;
+      return this.element;
     }
 
   , update: function (prev, el) {
       console.debug('update', prev, el);
-      this.canvas   = this.canvas   || prev.canvas;
-      this.controls = this.controls || prev.controls;
-      this.player   = this.player   || prev.player;
+      this.canvas  = this.canvas  || prev.canvas;
+      this.element = this.element || prev.element;
+      this.player  = this.player  || prev.player;
     }
 
   , destroy: function (el) {
@@ -28,34 +30,45 @@ module.exports.widget = function (src) {
       if (this.player) this.player.stop();
     }
 
-  , render: function () {
-      return create(
-        h('.AudioPlayer',
-          [ h('.AudioPlayer_Button_Play', '⏯')
-          , h('.AudioPlayer_Button_Cue', 'CUE')
-          , h('.AudioPlayer_Title', require('path').basename(src))
-          , h('.AudioPlayer_Position', 'loading')
-          , h('.AudioPlayer_ProgressBar',
-              h('.AudioPlayer_ProgressBar_Background',
-                h('.AudioPlayer_ProgressBar_Foreground')))
-          , h('.AudioPlayer_Cues',
-            [ h('.AudioPlayer_Cues_Toolbar',
-              [ h('.AudioPlayer_Cues_Add', $.lib.icon('map-marker')) ])
-            , h('.AudioPlayer_Cues_List',
-              [ cue('1', 'Fade in',    '00:11.111')
-              , cue('2', 'First beat', '00:42.424')
-              , cue('3', 'Theme',      '01:01.010')
-              , cue('4', 'Verse',      '01:08.080')
-              , cue('5', 'Chorus',     '01:11.111')
-              , cue('6', 'Breakdown',  '01:31.313')
-              , cue('7', 'Phrase',     '02:44.444')
-              ])
+  , model: $.lib.model(
+    { state:    'playing'
+    , title:    path.basename(src)
+    , position: null
+    , cues:     []
+    , info:     {} })
+
+  , patch: function (state) {
+      this.element = vdom.patch(this.element,
+        vdom.diff(this._vdom, this.render(state)));
+    }
+
+  , render: function (state) {
+      return this._vdom = h('.AudioPlayer',
+        [ h('.AudioPlayer_Button_Play', '⏯')
+        , h('.AudioPlayer_Button_Cue', 'CUE')
+        , h('.AudioPlayer_Title', require('path').basename(src))
+        , h('.AudioPlayer_Position', 'loading')
+        , h('.AudioPlayer_ProgressBar',
+            h('.AudioPlayer_ProgressBar_Background',
+              h('.AudioPlayer_ProgressBar_Foreground')))
+        , h('.AudioPlayer_Cues',
+          [ h('.AudioPlayer_Cues_Toolbar',
+            [ h('.AudioPlayer_Cues_Add', $.lib.icon('map-marker')) ])
+          , h('.AudioPlayer_Cues_List',
+            [ cue('1', 'Fade in',    '00:11.111')
+            , cue('2', 'First beat', '00:42.424')
+            , cue('3', 'Theme',      '01:01.010')
+            , cue('4', 'Verse',      '01:08.080')
+            , cue('5', 'Chorus',     '01:11.111')
+            , cue('6', 'Breakdown',  '01:31.313')
+            , cue('7', 'Phrase',     '02:44.444')
             ])
-          , h('.AudioPlayer_Info',
-            [ h('.AudioPlayer_Info_Toolbar',
-              [ h('.AudioPlayer_Info_Toggle', $.lib.icon('info-circle')) ])])
-            //, h('canvas.AudioPlayer_Spectrogram')
-            ]));
+          ])
+        , h('.AudioPlayer_Info',
+          [ h('.AudioPlayer_Info_Toolbar',
+            [ h('.AudioPlayer_Info_Toggle', $.lib.icon('info-circle')) ])])
+          //, h('canvas.AudioPlayer_Spectrogram')
+          ]);
 
         function cue (number, label, time) {
           return h('.AudioPlayer_Cue',
@@ -122,7 +135,7 @@ module.exports.widget = function (src) {
       }
 
       function getControl (cls) {
-        return self.controls.getElementsByClassName('AudioPlayer_' + cls)[0];
+        return self.element.getElementsByClassName('AudioPlayer_' + cls)[0];
       }
 
     }
@@ -160,10 +173,10 @@ function drawSpectrogram (canvas, buffer) {
 
 function renderWaveform () {
   setTimeout(function () {
-    var opts   = { width: self.controls.offsetWidth, height: 72, samples: self.controls.offsetWidth
+    var opts   = { width: self.element.offsetWidth, height: 72, samples: self.element.offsetWidth
                  , colors: { waveform: '#ccc', waveformHover: '#ccc' }}
       , viewer = require('waveform-viewer')(opts);
-    viewer.appendTo(self.controls.firstChild);
+    viewer.appendTo(self.element.firstChild);
     viewer.load(self.data);
   }, 1)
 }

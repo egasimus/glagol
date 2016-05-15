@@ -93,12 +93,12 @@ module.exports.widget = function (src) {
       function scrubStart (event) {
         bar.onmousemove = scrub;
         bar.onmouseup = scrubStop;
-        scrub(event);
+        player.seek(scrub(event));
       }
 
       function scrubStop (event) {
         bar.onmousemove = bar.onmouseup = null;
-        scrub(event);
+        player.seek(scrub(event));
       }
 
       function scrub (event) {
@@ -106,7 +106,7 @@ module.exports.widget = function (src) {
           , rect = bg.getBoundingClientRect()
           , pos  = (event.clientX - rect.left) / rect.width
         progress(pos * player.duration, player.duration);
-        player.seek(pos * player.duration);
+        return pos * player.duration;
       }
 
       function getControl (cls) {

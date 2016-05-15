@@ -2,55 +2,63 @@
 
   var ctx = App.Model.Sound.context();
 
-  var player = {};
+  var player =
+    { status: 'loading'
+    , position: null
+    , duration: null
+    , cuePoint: 0
 
-  player.voices = [];
-  init();
+    , startedAt:   null
+    , startedFrom: null
 
-  player.status = 'loading';
+    , updateTimer: null
+    , updateFPS:   30
 
-  player.position = null;
-  player.duration = null;
-  player.cuePoint = 0;
+    , voices: [ newVoice().then(init) ]
 
-  player.play = play;
-  player.stop = stop;
-  player.seek = seek;
-
-  player.startedAt   = null;
-  player.startedFrom = null;
-  player.updateTimer = null;
-  player.updateFPS   = 30;
+    , play: play
+    , stop: stop
+    , seek: seek };
 
   return player;
 
-  function init () {
-    _.buffer(src).then(function (buffer) {
-      var voice = ctx.createBufferSource();
-      voice.buffer = buffer;
-      voice.connect(ctx.destination);
-      player.voices.push(voice);
-      player.duration = buffer.duration;
-      player.status = 'stopped';
-      update();
-    });
+  function newVoice () {
+    return _.buffer(src).then(function (buffer) {
+      var v = ctx.createBufferSource();
+      v.buffer = buffer;
+      v.connect(ctx.destination);
+      return v;
+    })
+  }
+
+  function init (voice) {
+    player.duration = voice.buffer.duration;
+    player.status = 'stopped';
+    update();
+    return voice;
   }
 
   function play () {
-    player.voices[0].start(0, player.cuePoint);
-    player.status = 'playing';
-    player.startedAt = ctx.currentTime;
-    update();
+    player.voices[0].then(function (voice) {
+      voice.start(0, player.cuePoint);
+      player.status      = 'playing';
+      player.startedAt   = ctx.currentTime;
+      player.startedFrom = player.cuePoint;
+      update();
+      return voice;
+    });
   }
 
   function stop () {
-    try {
-      player.cuePoint = player.voices.shift().stop();
-    } catch (e) {
-      console.warn("can't stop:", e);
-    }
-    player.updateTimer = clearTimeout(player.updateTimer);
-    init();
+    player.voices.shift().then(function (voice) {
+      voice.stop();
+      player.voices.push(newVoice());
+      player.status      = 'stopped';
+      player.cuePoint    = player.position;
+      player.updateTimer = clearTimeout(player.updateTimer);
+      update();
+      return voice;
+    })
   }
 
   function seek (t) {

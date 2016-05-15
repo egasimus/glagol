@@ -39,7 +39,7 @@
   }
 
   function play () {
-    player.voices[0].then(function (voice) {
+    return player.voices[0].then(function (voice) {
       voice.start(0, player.cuePoint);
       player.status      = 'playing';
       player.startedAt   = ctx.currentTime;
@@ -50,7 +50,7 @@
   }
 
   function stop () {
-    player.voices.shift().then(function (voice) {
+    return player.voices.shift().then(function (voice) {
       voice.stop();
       player.voices.push(newVoice());
       player.status      = 'stopped';
@@ -62,9 +62,11 @@
   }
 
   function seek (t) {
-    stop();
-    player.cuePoint = t;
-    play();
+    if (player.status === 'playing') {
+      stop().then(function () { player.cuePoint = t }).then(play);
+    } else {
+      player.cuePoint = t;
+    }
   }
 
   function update () {

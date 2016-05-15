@@ -8,6 +8,6 @@
     }
   })
 
-  App.Model.Workspace.put("frames", require('riko-mvc/model')(newState.frames));
+  App.Model.Workspace.put("frames", $.lib.model(newState.frames));
 
 })

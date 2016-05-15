@@ -6,7 +6,7 @@
 
     console.info('adding', type, '(empty)');
 
-    App.Model.Workspace.frames.push(require('riko-mvc/model')(
+    App.Model.Workspace.frames.push($.lib.model(
       { type:    type
       , address: null
       , status:  'empty' }))

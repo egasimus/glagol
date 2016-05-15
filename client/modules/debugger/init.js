@@ -1,7 +1,7 @@
 (function (index, address) {
 
   return function () {
-    App.model.frames.get(index).put('collapsed', require('riko-mvc/model')([]))
+    App.model.frames.get(index).put('collapsed', $.lib.model([]))
     var socket = App.model.sockets[address].socket();
     socket.addEventListener('message', onmessage);
     socket.send('subscribe');

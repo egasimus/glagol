@@ -16,6 +16,18 @@ module.exports.widget = function (src) {
       return this.controls;
     }
 
+  , update: function (prev, el) {
+      console.debug('update', prev, el);
+      this.canvas   = this.canvas   || prev.canvas;
+      this.controls = this.controls || prev.controls;
+      this.player   = this.player   || prev.player;
+    }
+
+  , destroy: function (el) {
+      console.debug('destroy', el);
+      if (this.player) this.player.stop();
+    }
+
   , render: function () {
       return create(
         h('.AudioPlayer',
@@ -113,18 +125,6 @@ module.exports.widget = function (src) {
         return self.controls.getElementsByClassName('AudioPlayer_' + cls)[0];
       }
 
-    }
-
-  , update: function (prev, el) {
-      console.debug('update', prev, el);
-      this.canvas   = this.canvas   || prev.canvas;
-      this.controls = this.controls || prev.controls;
-      this.player   = this.player   || prev.player;
-    }
-
-  , destroy: function (el) {
-      console.debug('destroy', el);
-      if (this.player) this.player.stop();
     }
 
   }

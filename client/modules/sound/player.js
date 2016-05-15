@@ -51,7 +51,7 @@
 
   function stop () {
     return player.voices.shift().then(function (voice) {
-      voice.stop();
+      try { voice.stop() } catch (e) {}
       player.voices.push(newVoice());
       player.status      = 'stopped';
       player.cuePoint    = player.position;

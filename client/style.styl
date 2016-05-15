@@ -461,7 +461,8 @@ button()
     display inline-block
     background none
     border none
-    padding 3px
+    padding 9px 3px
+    margin-left 3px
     //border-bottom 1px dotted #000
     transition background 0.2s
     &:hover, &:focus
@@ -645,6 +646,12 @@ button()
   .FrameBody > &
     flex-grow 1
     overflow auto
+  &_PathFragment
+    margin      0 0 0 6px
+    padding     6px 9px
+    background  rgba(255,255,255,0.2)
+    font-weight bold
+    text-shadow 0 0 3px black
   &Empty
     font-size 1.2em
     font-weight bold
@@ -656,13 +663,15 @@ button()
       line-height 24px
       vertical-align middle
       margin-right 6px
+  .FrameHeader
+    height 48px
   &Toolbar
-    padding 0 3px
+    padding 3px
     display flex
     flex-direction column
+    flex-shrink 0
     button
       button()
-      margin-top 0
   &Entry
     font-size 1.2em
     display flex

@@ -4,9 +4,12 @@
 
   return [
     h('.DirectoryToolbar',
-      [ when(frame.address !== '/',
+      [ h('button', $.lib.icon('chevron-left'))
+      , h('button', { onclick: refresh }, $.lib.icon('refresh'))
+      , h('button', $.lib.icon('chevron-right'))
+      , when(frame.address !== '/',
           h('button', { onclick: goUp }, $.lib.icon('chevron-up')))
-      , h('button', { onclick: refresh }, $.lib.icon('refresh')) ]),
+       ]),
     h('.Directory', directory ? directoryBody() : noData()),
     ]
 
@@ -18,8 +21,26 @@
   function directoryBody () {
     return directory.items.length === 0
       ? h('.DirectoryEmpty', [ $.lib.icon('info-circle'), 'This directory is empty.' ])
-      : [ directory.items.map(dir)
-        , directory.items.map(file) ];
+      : [ h('header.FrameHeader',
+          [ $.lib.icon('folder-open.fa-2x')
+          , h('input.FrameAddress',
+            { onchange: changeAddress
+            , value:    frame.address })
+          , h('.FrameClose', { onclick: remove }, '×')
+          ])
+        , h('.DirectoryBody',
+          [ directory.items.map(dir)
+          , directory.items.map(file) ]) ];
+  }
+
+  function changeAddress (event) {
+    event.preventDefault();
+    API('change', index, 'address', event.target.value);
+  }
+
+  function remove (event) {
+    event.preventDefault();
+    __.remove(index);
   }
 
   function noData () {

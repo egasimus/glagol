@@ -16,20 +16,20 @@
   function installDir (name) {
     try {
       var dir = modules.nodes[name].nodes['views'];
-      install(dir);
+      install(dir, name);
     } catch (e) {
       console.warn('could not prepare view globals for "' + name + '"',
         'because of', e);
     }
   }
 
-  function install (views) {
+  function install (views, name) {
     views.options = require('extend')(views.options, {
       globals: function (file) { return {
         emit: function () { return __.util.emit.apply(null, arguments) },
         h:    function () { return __.util.h.apply(null, arguments) } } } })
     views.events.onAny(update); // live reload
-    console.info('prepared view globals for', views.name)
+    console.info('prepared views for', name)
   }
 
   function render (state) {

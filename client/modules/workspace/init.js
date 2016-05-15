@@ -14,8 +14,9 @@
   }
 
   socket.onmessage = function (message) {
-    console.debug("Session update", message.data)
-    $.modules.workspace.update(JSON.parse(message.data))
+    var data = JSON.parse(message.data);
+    console.debug("Workspace update", data);
+    $.modules.workspace.update(data);
   }
 
   window.addEventListener('keyup', function (event) { _.onKey(event) })

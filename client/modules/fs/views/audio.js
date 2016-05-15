@@ -5,37 +5,31 @@ module.exports = function (state) {
   return require('vdom-thunk')(module.exports.widget, state);
 }
 
-module.exports.widget = function (src) {
+module.exports.widget = function (id) {
+
   return {
 
     type: "Widget"
 
   , init: function () {
-      console.debug('init audio player', src, this);
+      this.model = App.Model.Sound.players()[id] || (function () {});
       this.element = vdom.create(this.render(this.model()));
-      this.model(this.patch.bind(this));
-      this.loadVoices('//localhost:1615/file?path=' + src);
+      //this.model(this.patch.bind(this));
+      //this.loadVoices(src);
       return this.element;
     }
 
   , update: function (prev, el) {
       console.debug('update', prev, el);
-      this.canvas  = this.canvas  || prev.canvas;
       this.element = this.element || prev.element;
-      this.player  = this.player  || prev.player;
+      this.model   = this.model   || prev.model;
     }
 
   , destroy: function (el) {
       console.debug('destroy', el);
-      if (this.player) this.player.stop();
+      //var player = this.model().player;
+      //if (player) player.stop();
     }
-
-  , model: $.lib.model(
-    { state:    'playing'
-    , title:    path.basename(src)
-    , position: null
-    , cues:     []
-    , info:     {} })
 
   , patch: function (state) {
       this.element = vdom.patch(this.element,
@@ -43,10 +37,13 @@ module.exports.widget = function (src) {
     }
 
   , render: function (state) {
+
+      var self = this;
+
       return this._vdom = h('.AudioPlayer',
         [ h('.AudioPlayer_Button_Play', '⏯')
         , h('.AudioPlayer_Button_Cue', 'CUE')
-        , h('.AudioPlayer_Title', require('path').basename(src))
+        , h('.AudioPlayer_Title', require('path').basename('src'))
         , h('.AudioPlayer_Position', 'loading')
         , h('.AudioPlayer_ProgressBar',
             h('.AudioPlayer_ProgressBar_Background',
@@ -70,12 +67,16 @@ module.exports.widget = function (src) {
           //, h('canvas.AudioPlayer_Spectrogram')
           ]);
 
-        function cue (number, label, time) {
-          return h('.AudioPlayer_Cue',
-            [ h('.AudioPlayer_Cue_Label',
-              [ h('.AudioPlayer_Cue_Number', number)
-            , label ])
-          , h('.AudioPlayer_Cue_Time', time) ])
+      function play () {
+        self.model.player().play();
+      }
+
+      function cue (number, label, time) {
+        return h('.AudioPlayer_Cue',
+          [ h('.AudioPlayer_Cue_Label',
+            [ h('.AudioPlayer_Cue_Number', number)
+          , label ])
+        , h('.AudioPlayer_Cue_Time', time) ])
       }
     }
 

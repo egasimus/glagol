@@ -2,14 +2,12 @@
 
   console.info("FS read", node.type, node.path, node);
 
-  if (node.type === 'file') {
+  var type = node.type === 'file'      ? 'files'
+           : node.type === 'directory' ? 'directories'
+           : null;
 
-    App.Model.FS.files.put(node.path, $.lib.model(node))
+  if (type === null) throw Error('unknown type: ' + node.type);
 
-  } else if (node.type === 'directory') {
-
-    App.Model.FS.directories.put(node.path, $.lib.model(node))
-
-  }
+  App.Model.FS[type].put(node.path, $.lib.model(node));
 
 })

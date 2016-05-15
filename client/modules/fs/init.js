@@ -3,8 +3,9 @@
   var socket  = new WebSocket('ws://localhost:1615')
 
   socket.onmessage = function (message) {
-    console.debug("FS update", message.data)
-    $.modules.fs.update(JSON.parse(message.data));
+    var data = JSON.parse(message.data)
+    console.debug("FS update", data)
+    $.modules.fs.update(data);
   }
 
   App.FS = require('riko-api2')(socket);

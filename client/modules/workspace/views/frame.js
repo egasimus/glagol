@@ -2,7 +2,7 @@
 
   return h('section.Frame' + (frame.error ? '.FrameWithError' : ''),
     { dataset: { type: frame.type, address: frame.address } },
-    h('.FrameBody', __.getViewForType(frame.type, { frame: frame, index: index })));
+    __.getViewForType(frame.type, { frame: frame, index: index }));
     //[ _.frameHeader(frame, index)
     //, _.frameError(frame, index)
     //, h('.FrameBody', __.getViewForType(frame.type, { frame: frame, index: index}))

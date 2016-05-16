@@ -421,7 +421,7 @@ button()
 
 .Frame
   //box-shadow 0 0 6px black, 0 0 2px black
-  color #333
+  color #f0f0f0
   display flex
   flex-direction column
   border-top 1px solid #555
@@ -436,6 +436,8 @@ button()
     background rgba(0,0,0,0.7)
   &[data-type="directory"]
     flex-grow 1
+    display flex
+    flex-direction row
   &Header
     display flex
     align-items center
@@ -465,6 +467,7 @@ button()
     margin-left 3px
     //border-bottom 1px dotted #000
     transition background 0.2s
+    font-size 1.2em
     &:hover, &:focus
       background #111
     &:focus
@@ -643,16 +646,20 @@ button()
       color #555
 
 .Directory
+  .FrameHeader
+    height 48px
   .FrameBody > &
     flex-grow 1
     overflow auto
+
   &_PathFragment
     margin      0 0 0 6px
     padding     6px 9px
     background  rgba(255,255,255,0.2)
     font-weight bold
     text-shadow 0 0 3px black
-  &Empty
+
+  &_Empty
     font-size 1.2em
     font-weight bold
     font-style italic
@@ -663,16 +670,16 @@ button()
       line-height 24px
       vertical-align middle
       margin-right 6px
-  .FrameHeader
-    height 48px
-  &Toolbar
+
+  &_Toolbar
     padding 3px
     display flex
     flex-direction column
     flex-shrink 0
     button
       button()
-  &Entry
+
+  &_Entry
     font-size 1.2em
     display flex
     justify-content space-between
@@ -681,18 +688,18 @@ button()
     cursor pointer
     &:hover
       background #555
-    &Name
+    &_Name
       flex-grow 1
-    &Size, &Type
+    &_Size, &_Type
       margin-left 6px
       overflow hidden
       text-overflow ellipsis
       text-align right
-    &Size
+    &_Size
       width 7em
-    &Type
+    &_Type
       width 100px
-    &Label
+    &_Label
       display inline-block
       padding 2px 4px
       background #777

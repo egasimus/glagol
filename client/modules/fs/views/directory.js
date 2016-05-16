@@ -3,7 +3,7 @@
   var directory = App.Model.FS.directories()[frame.address];;
 
   return [
-    h('.DirectoryToolbar',
+    h('.Directory_Toolbar',
       [ h('button', $.lib.icon('chevron-left'))
       , h('button', { onclick: refresh }, $.lib.icon('refresh'))
       , h('button', $.lib.icon('chevron-right'))
@@ -20,7 +20,7 @@
 
   function directoryBody () {
     return directory.items.length === 0
-      ? h('.DirectoryEmpty', [ $.lib.icon('info-circle'), 'This directory is empty.' ])
+      ? h('.Directory_Empty', [ $.lib.icon('info-circle'), 'This directory is empty.' ])
       : [ h('header.FrameHeader',
           [ $.lib.icon('folder-open.fa-2x')
           , h('input.FrameAddress',
@@ -28,7 +28,7 @@
             , value:    frame.address })
           , h('.FrameClose', { onclick: remove }, '×')
           ])
-        , h('.DirectoryBody',
+        , h('.Directory_Body',
           [ directory.items.map(dir)
           , directory.items.map(file) ]) ];
   }
@@ -44,19 +44,19 @@
   }
 
   function noData () {
-    return h('.DirectoryEmpty', [ $.lib.icon('exclamation-circle'), "This directory's contents have not been loaded. Hit 'Reload' to try again." ]);
+    return h('.Directory_Empty', [ $.lib.icon('exclamation-circle'), "This directory's contents have not been loaded. Hit 'Reload' to try again." ]);
   }
 
   function entry (onclick, body) {
-    return h('tr.DirectoryEntry', { onclick: onclick }, body);
+    return h('tr.Directory_Entry', { onclick: onclick }, body);
   }
 
   function file (data) {
     if (!!(data.stat.mode & 0040000)) return;
     return entry(open(data.name_, false),
-      [ h('.DirectoryEntryName', data.name_)
-      , h('.DirectoryEntryType', data.type)
-      , h('.DirectoryEntrySize', data.stat.size + ' B') ])
+      [ h('.Directory_Entry_Name', data.name_)
+      , h('.Directory_Entry_Type', data.type)
+      , h('.Directory_Entry_Size', data.stat.size + ' B') ])
   }
 
   function dir (data) {

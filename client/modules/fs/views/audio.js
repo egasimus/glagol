@@ -45,7 +45,8 @@ module.exports.widget = function (id) {
           [ h('button.AudioPlayer_Button_Play', '⏯')
           , h('button.AudioPlayer_Button_Cue', 'CUE') ])
         , h('.AudioPlayer_Header', { style: { display: 'flex' } },
-            [ h('.AudioPlayer_Title', require('path').basename('src'))
+            [ $.lib.icon('volume-up.fa-2x')
+            , h('.AudioPlayer_Title', require('path').basename('src'))
             , h('.AudioPlayer_Position', '\nloading\n')
             , h('.AudioPlayer_ProgressBar',
                 h('.AudioPlayer_ProgressBar_Background',

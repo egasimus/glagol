@@ -41,13 +41,15 @@ module.exports.widget = function (id) {
       var self = this;
 
       return this._vdom = h('.AudioPlayer',
-        [ h('.AudioPlayer_Button_Play', '⏯')
-        , h('.AudioPlayer_Button_Cue', 'CUE')
-        , h('.AudioPlayer_Title', require('path').basename('src'))
-        , h('.AudioPlayer_Position', 'loading')
-        , h('.AudioPlayer_ProgressBar',
-            h('.AudioPlayer_ProgressBar_Background',
-              h('.AudioPlayer_ProgressBar_Foreground')))
+        [ h('.AudioPlayer_Toolbar',
+          [ h('button.AudioPlayer_Button_Play', '⏯')
+          , h('button.AudioPlayer_Button_Cue', 'CUE') ])
+        , h('.AudioPlayer_Header', { style: { display: 'flex' } },
+            [ h('.AudioPlayer_Title', require('path').basename('src'))
+            , h('.AudioPlayer_Position', '\nloading\n')
+            , h('.AudioPlayer_ProgressBar',
+                h('.AudioPlayer_ProgressBar_Background',
+                  h('.AudioPlayer_ProgressBar_Foreground'))) ])
         , h('.AudioPlayer_Cues',
           [ h('.AudioPlayer_Cues_Toolbar',
             [ h('.AudioPlayer_Cues_Add', $.lib.icon('map-marker')) ])

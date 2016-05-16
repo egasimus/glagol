@@ -646,8 +646,23 @@ button()
       color #555
 
 .Directory
+  flex-grow 1
+
   .FrameHeader
+    position absolute
+    top 0
+    left 0
+    right 0
     height 48px
+
+  &_Body
+    position absolute
+    top 48px
+    left 0
+    right 0
+    bottom 0
+    overflow auto
+
   .FrameBody > &
     flex-grow 1
     overflow auto
@@ -706,7 +721,7 @@ button()
       color #ddd
       font-weight bold
       margin -2px 3px
-      .DirectoryEntry:hover &
+      .Directory_Entry:hover &
         color #fff
 
 .File

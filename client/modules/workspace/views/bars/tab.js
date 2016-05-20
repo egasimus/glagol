@@ -1,8 +1,8 @@
 (function (state) {
 
   return h('.TabBar',
-    Object.keys(state.sessions).map(function (id) {
-      var session = state.sessions[id] || {}
+    Object.keys(state.visibleFrames).map(function (id) {
+      var session = state.visibleFrames[id] || {}
         , address = String(session.address);
       return h('.Tab.Active',
         { dataset: { address: address }

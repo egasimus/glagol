@@ -2,12 +2,13 @@
 
   console.debug("update", newState);
 
-  newState.frames.forEach(function (frame, i) {
-    if (frame.type === 'directory' || frame.type === 'file') {
-      App.FS('read', frame.address);
+  Object.keys(newState.windows).forEach(function (id) {
+    var w = newState.windows[id]
+    if (w.type === 'directory' || w.type === 'file') {
+      App.FS('read', w.address);
     }
   })
 
-  App.Model.Workspace.put("frames", $.lib.model(newState.frames));
+  App.Model.Workspace.put("windows", $.lib.model(newState.windows));
 
 })

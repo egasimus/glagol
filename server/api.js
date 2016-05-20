@@ -13,8 +13,10 @@ module.exports = function (state) {
     add:
       function (type, address) {
         address = getAddress(type, address);
-        $.model.frames.push(require('riko-mvc/model')({ type: type, address: address }));
-        $.log('added', type, 'at', address);
+        var id = $.lib.makeId()
+          , w  = $.lib.model({ id: id, type: type, address: address });
+        $.model.windows.put(id, w)
+        $.log('added window', id, type, 'at', address);
         this.refresh();
       },
 

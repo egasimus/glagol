@@ -25,12 +25,13 @@
         _.lib.bundler.updater.connected(_.routes, socket);
       }
       if (msg.data === "riko") {
-        var state = { id: _.lib.shortid(), socket: socket }
+        var state = { id: _.lib.makeId(), socket: socket, windows: [] }
         $.log("opened client connection", state.id);
         _.model.users.put(state.id, state);
         socket.onmessage = require('riko-api2')($.api)(state);
         socket.onclose = function () {
           $.log('closed client connection', state.id)
+          delete _.model.users[state.id];
         }
       }
     }

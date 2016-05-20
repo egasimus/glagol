@@ -11,7 +11,8 @@
         , h('.MainView',
             [ //bar('left')
             , h('.Workspace',
-                state.Workspace.frames.map(_.frame))
+                Object.keys(state.Workspace.windows).map(
+                  function (id) { return _.frame(state.Workspace.windows[id]) }))
             ])
         , _.bars.bottom(state)
         ]);

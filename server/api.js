@@ -15,8 +15,8 @@ module.exports = function (state) {
         address = getAddress(type, address);
         var id = $.lib.makeId()
           , w  = $.lib.model({ id: id, type: type, address: address });
-        $.model.windows.put(id, w)
-        $.log('added window', id, type, 'at', address);
+        $.model.frames.put(id, w)
+        $.log('added frame', id, type, 'at', address);
         this.refresh();
       },
 

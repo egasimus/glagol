@@ -12,7 +12,7 @@
     "glagol": "./bin/glagol"
   },
   "scripts": {
-    "test": "node_modules/jasmine/bin/jasmine.js"
+    "test": "node test/index.js"
   },
   "author": "Adam Avramov <fallenblood@gmail.com> (http://github.com/egasimus)",
   "license": "GPL-3.0",
@@ -23,7 +23,8 @@
     "extend": "^3.0.0",
     "glob": "^7.0.0",
     "require-like": "^0.1.2",
-    "source-map-support": "^0.4.0"
+    "source-map-support": "^0.4.0",
+    "tape": "^4.5.1"
   },
   "testDependencies": {
     "jasmine": "^2.3.2"

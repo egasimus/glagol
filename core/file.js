@@ -148,13 +148,12 @@ function getFormat () {
 }
 
 function getOptions () {
-  var baseOptions = {};
-  if (this.parent) baseOptions = this.parent.options;
-  return extend(true, baseOptions, this._options);
+  return this._options;
 }
 
 function setOptions (v) {
-  this._options = v;
+  var baseOptions = this.parent ? this.parent.options : {};
+  this._options = extend(true, baseOptions, v);
   this.reset();
   return v;
 }

@@ -113,6 +113,7 @@ function add (node) {
   }
 
   node.parent = this;
+  node.options = node.options; // :(( let setter handle this
   this.nodes[node.name] = node;
 
   return this;
@@ -202,15 +203,14 @@ function get (location) {
 }
 
 function getOptions () {
-  var baseOptions = {};
-  if (this.parent) baseOptions = this.parent.options;
-  return extend(true, baseOptions, this._options);
+  return this._options;
 }
 
 function setOptions (v) {
-  this._options = v;
+  var baseOptions = this.parent ? this.parent.options : {};
+  this._options = extend(true, baseOptions, v);
   this.reset();
-  return this._options;
+  return v;
 }
 
 function getTree (node) {

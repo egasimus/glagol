@@ -16,6 +16,8 @@
   $.log(bold('is starting with options:\n '),
     args.join("\n  "));
 
+  args.forEach($.task.start.bind(null, tasks()));
+
   function printEnv (key) {
     return blue(key) + ' ' + process.env[key];
   }

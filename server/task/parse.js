@@ -29,4 +29,12 @@ module.exports._extraGlobals =
       }
     }
 
+  , process:
+    function (executable) {
+      return function (task) {
+        task.processes = task.processes || [];
+        task.processes.push(executable);
+      }
+    }
+
   }

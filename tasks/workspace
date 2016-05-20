@@ -1,2 +1,3 @@
 (service "Workspace"
-  (description "HTML5 GUI"))
+  (description "is an HTML5-based desktop environment")
+  (process "/opt/glagol/workspace/workspace"))

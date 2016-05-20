@@ -1,4 +1,10 @@
-(function main (tasks) {
+(function main () {
+
+  var options = require('../../options.js');
+  $.log(options);
+
+  var tasks = require('glagol')(require('path').resolve(__dirname, '../../tasks'),
+    { formats: { null: server().task.parse } });
 
   var args = Array.prototype.slice.call(process.argv, 2)
     , bold = $.util.colors.bold
@@ -16,7 +22,11 @@
   $.log(bold('is starting with options:\n '),
     args.join("\n  "));
 
-  args.forEach($.task.start.bind(null, tasks()));
+  args.forEach(parseOption);
+
+  function parseOption (option) {
+    $.task.start(tasks(), option);
+  }
 
   function printEnv (key) {
     return blue(key) + ' ' + process.env[key];

@@ -1,8 +1,8 @@
 {
-  "name": "glagol-inspector",
+  "name": "glagol-workspace",
   "version": "0.0.0",
   "description": "",
-  "main": "inspector",
+  "main": "workspace",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

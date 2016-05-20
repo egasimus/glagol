@@ -1,0 +1,2 @@
+(service "nginx"
+  (description "is an HTTP server"))

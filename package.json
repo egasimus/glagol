@@ -7,5 +7,12 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "colors": "^1.1.2",
+    "eslisp": "^0.7.4",
+    "eslisp-camelify": "^0.3.0",
+    "eslisp-dotify": "^0.1.3",
+    "eslisp-propertify": "^0.2.1"
+  }
 }

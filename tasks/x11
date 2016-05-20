@@ -1,0 +1,2 @@
+(service "X session"
+  (description "is the classic graphics server"))

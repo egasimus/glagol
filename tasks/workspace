@@ -1,0 +1,2 @@
+(service "Workspace"
+  (description "HTML5 GUI"))

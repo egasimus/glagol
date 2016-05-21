@@ -34,7 +34,7 @@
       info.exitCode   = error.code;
       info.exitSignal = error.signal;
     }
-    $.write(node._sourcePath, info);
+    $.util.write(node._sourcePath, info);
   }
 
 })

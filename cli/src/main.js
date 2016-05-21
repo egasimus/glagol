@@ -108,7 +108,7 @@
   function printJob (key) {
     var job   = state.get(key)
       , procs = Object.keys(job.nodes).filter(isDir);
-    return blue(key) + ' ' + JSON.parse(job().info).state +
+    return blue(key) + ' ' + JSON.parse(job().info).status +
       (procs ? '\n    ' : '') + procs.map(printProcess).join('\n    ');
 
     function isDir (node) {

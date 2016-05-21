@@ -1,0 +1,10 @@
+
+Glagol Supervisor CLI
+
+status
+tasks
+start <TASK>
+stop  <ID>
+sleep <ID>
+wake  <ID>
+info  <TASK|ID>

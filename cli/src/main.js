@@ -21,6 +21,7 @@
     return;
   }
 
+  $.util.mkdir(options.pids);
   var state = require('glagol')(options.pids);
 
   if (args[0] === 'status') {
@@ -51,7 +52,7 @@
     $.log("spawning task", blue(id), '\n ',
       Object.keys(taskData).map(printTaskData).join('\n  '));
     fs.mkdirSync(dir());
-    var taskState = { id: id, task: taskData, state: 'spawning' };
+    var taskState = { id: id, task: taskData };
     fs.writeFileSync(dir('info'), JSON.stringify(taskState), 'utf8');
     return;
   }

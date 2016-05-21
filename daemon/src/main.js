@@ -1,6 +1,6 @@
 (function () {
 
-  require('mkdir-p').sync($.options.pids);
+  $.util.mkdir($.options.pids);
 
   var glagol = require('glagol')
     , state  = glagol($.options.pids);

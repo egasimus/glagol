@@ -7,7 +7,7 @@
 
   var glagol = require('glagol')
     , state  = glagol(options.pids);
-  state.events.onAny(function (node) { _.update(this.event, node); });
+  state.events.onAny(function (node) { _.task[this.event](node); });
 
   process.stdin.resume();
 

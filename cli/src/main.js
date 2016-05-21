@@ -3,8 +3,9 @@
   var options = require('../../options.js');
   $.log(options);
 
-  var tasks = require('glagol')(require('path').resolve(__dirname, '../../tasks'),
-    { formats: { null: server().task.parse } });
+  var tasks = require('../../tasks/index.js');
+  console.log(tasks);
+  return;
 
   var args = Array.prototype.slice.call(process.argv, 2)
     , bold = $.util.colors.bold

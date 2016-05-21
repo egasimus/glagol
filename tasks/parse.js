@@ -11,6 +11,8 @@ module.exports.globals = function () {
     module.exports._extraGlobals);
 }
 
+module.exports.name = 'Glagol Supervisor Task (Eslisp)'
+
 module.exports._extraGlobals = 
 
   { service:

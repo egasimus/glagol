@@ -209,7 +209,13 @@ function getOptions () {
 function setOptions (v) {
   var baseOptions = this.parent ? this.parent.options : {};
   this._options = extend(true, baseOptions, v);
-  this.reset();
+
+  var nodes = this.nodes;
+  Object.keys(nodes).forEach(function (id) {
+    nodes[id].reset();
+    nodes[id].options = nodes[id].options; // calls setter
+  });
+
   return v;
 }
 

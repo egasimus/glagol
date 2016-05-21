@@ -13,7 +13,8 @@
     , blue    = $.util.colors.blue
     , red     = $.util.colors.red;
 
-  $.log(bold('options:\n '), Object.keys(options).map(printOption).join('\n  '));
+  $.log(bold('options:\n '),
+    Object.keys(options).map($.util.printOption.bind(null, options)).join('\n  '));
 
   if (args[0] === 'tasks') {
     $.log(bold('available tasks:\n '),
@@ -96,10 +97,6 @@
 
   function printEnv (key) {
     return blue(key) + ' ' + process.env[key];
-  }
-
-  function printOption (key) {
-    return blue(key) + ' ' + options[key];
   }
 
   function printTask (key) {

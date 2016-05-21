@@ -1,5 +1,8 @@
 (function () {
 
+  $.log($.util.colors.bold('options:\n '),
+    Object.keys($.options).map($.util.printOption.bind(null, $.options)).join('\n  '));
+
   $.util.mkdir($.options.pids);
 
   var glagol = require('glagol')

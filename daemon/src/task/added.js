@@ -1,11 +1,17 @@
 (function (node) {
 
-  if (node._glagol.type === 'File') {
-    var data = JSON.parse(node());
-    if (data.state === 'spawning') {
-      
-    }
-    console.log('added', data, data.state);
+  if (node._glagol.type !== 'File') return;
+
+  var path = require('path')
+    , fs   = require('fs');
+
+  var data = JSON.parse(node());
+  console.log('added', node._sourcePath);
+  if (data.state === 'spawning') {
+    // TODO: kill preexisting processes
+    data.state = 'alive';
+    fs.writeFileSync(node._sourcePath, JSON.stringify(data), 'utf8');
+    return;
   }
 
   return;

@@ -31,11 +31,11 @@ module.exports._extraGlobals =
       }
     }
 
-  , process:
-    function (executable) {
+  , command:
+    function (cmd) {
       return function (task) {
-        task.processes = task.processes || [];
-        task.processes.push(executable);
+        task.commands = task.commands || [];
+        task.commands.push(cmd);
       }
     }
 

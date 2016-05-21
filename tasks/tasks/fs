@@ -1,3 +1,3 @@
 (service "Filesystem proxy"
   (description "provides remote access to a local filesystem")
-  (process "/opt/glagol/file-manager/file-manager"))
+  (command "/opt/glagol/file-manager/file-manager"))

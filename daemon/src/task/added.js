@@ -15,9 +15,9 @@
 
   $.log("starting", taskName, "\n" + JSON.stringify(task))
 
-  var processes = task.processes || [];
+  var commands = task.commands || [];
 
-  processes.forEach(spawn);
+  commands.forEach(spawn);
 
   function spawn (executable) {
     $.log("spawning", executable);

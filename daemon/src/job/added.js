@@ -21,7 +21,11 @@
     $.log('spawning', command, 'for', job.id, 'as', id);
     $.util.mkdir(path.join(node.parent._sourcePath, id));
     fs.writeFileSync(path.join(node.parent._sourcePath, id, 'info'),
-      JSON.stringify({ id: id, parent: job.id, command: command }))
+      JSON.stringify(
+        { id: id
+        , status: 'starting'
+        , parent: job.id
+        , command: command }))
   }
 
 })

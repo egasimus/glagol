@@ -26,8 +26,8 @@
 
   if (args[0] === 'status') {
     var keys = Object.keys(state.nodes);
-    $.log(bold('running tasks:\n '),
-      keys.length > 0 ? keys.map(printState).join("\n  ") : "(none)");
+    $.log(bold('running jobs:\n '),
+      keys.length > 0 ? keys.map(printJob).join("\n  ") : "(none)");
     return;
   }
 
@@ -109,8 +109,19 @@
       (task.name || '') + ' ' + (task.description || '');
   }
 
-  function printState (key) {
-    return blue(key) + ' ' + JSON.parse(state.get(key)().info).state;
+  function printJob (key) {
+    var job   = state.get(key)
+      , procs = Object.keys(job.nodes).filter(isDir);
+    return blue(key) + ' ' + JSON.parse(job().info).state +
+      (procs ? '\n    ' : '') + procs.map(printProcess).join('\n    ');
+
+    function isDir (node) {
+      return job.nodes[node]._glagol.type === 'Directory';
+    }
+
+    function printProcess (id) {
+      return blue(job.nodes[id].name);
+    }
   }
 
   function printTaskData (key) {

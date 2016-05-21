@@ -49,7 +49,7 @@
     var taskData = task();
     taskData.source = task._sourcePath;
     $.log("spawning task", blue(id), '\n ',
-      Object.keys(taskData).map(printTask).join('\n  '));
+      Object.keys(taskData).map(printTaskData).join('\n  '));
     fs.mkdirSync(dir());
     var taskState = { id: id, task: taskData, state: 'spawning' };
     fs.writeFileSync(dir('info'), JSON.stringify(taskState), 'utf8');
@@ -112,8 +112,8 @@
     return blue(key) + ' ' + state.get(key)();
   }
 
-  function printTask (key) {
-    return blue(key) + ' ' + task[key];
+  function printTaskData (key) {
+    return blue(key) + ' ' + taskData[key];
   }
 
 })

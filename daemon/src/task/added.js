@@ -1,7 +1,5 @@
 (function (node) {
 
-  console.log(node.source)
-
   return;
 
   var task = tasks[taskName]

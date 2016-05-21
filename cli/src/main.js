@@ -47,7 +47,7 @@
     var id  = name + '.' + _.util.id()
       , dir = path.join.bind(null, options.pids, id)
     task = task();
-    $.log("starting task", blue(id), '\n ',
+    $.log("spawning task", blue(id), '\n ',
       Object.keys(task).map(printTask).join('\n  '));
     fs.mkdirSync(dir());
     fs.writeFileSync(dir('info'), JSON.stringify({task:name}), 'utf8');
@@ -65,7 +65,10 @@
       $.log("can't kill unknown task", red(id));
       return;
     }
-
+    task = task();
+    $.log("killing task", blue(id), '\n ',
+      Object.keys(task).map(printTask).join('\n '));
+    require('rimraf').sync(path.join(options.pids, id));
   }
 
   return;

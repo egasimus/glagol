@@ -117,7 +117,8 @@
     }
 
     function printProcess (id) {
-      return blue(job.nodes[id].name);
+      var proc = JSON.parse(job.nodes[id]().info);
+      return blue(proc.id) + ' ' + proc.status;
     }
   }
 

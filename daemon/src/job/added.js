@@ -1,9 +1,11 @@
 (function (node) {
 
   var path = require('path')
-    , fs   = require('fs');
+    , fs   = require('fs')
+    , bold = $.util.colors.bold
+    , blue = $.util.colors.blue;
 
-  var job = JSON.parse(node());
+  var job = $.cache.jobs[node.path] = JSON.parse(node());
 
   if (!job.state) {
     if (!job.task) {
@@ -18,7 +20,7 @@
 
   function spawnCommand (job, command) {
     var id = path.basename(command) + '.' + $.util.id();
-    $.log('spawning', command, 'for', job.id, 'as', id);
+    $.log('spawning', blue(command), 'for', blue(job.id), 'as', blue(id));
     $.util.mkdir(path.join(node.parent._sourcePath, id));
     fs.writeFileSync(path.join(node.parent._sourcePath, id, 'info'),
       JSON.stringify(

@@ -9,6 +9,7 @@
   "license": "ISC",
   "dependencies": {
     "colors": "^1.1.2",
+    "deep-diff": "^0.3.4",
     "eslisp": "^0.7.4",
     "eslisp-camelify": "^0.3.0",
     "eslisp-dotify": "^0.1.3",

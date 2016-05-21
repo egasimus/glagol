@@ -46,11 +46,12 @@
     }
     var id  = name + '.' + _.util.id()
       , dir = path.join.bind(null, options.pids, id)
-    task = task();
+    var taskData = task();
+    taskData.source = task._sourcePath;
     $.log("spawning task", blue(id), '\n ',
-      Object.keys(task).map(printTask).join('\n  '));
+      Object.keys(taskData).map(printTask).join('\n  '));
     fs.mkdirSync(dir());
-    var taskState = { id: id, task: task, state: 'spawning' };
+    var taskState = { id: id, task: taskData, state: 'spawning' };
     fs.writeFileSync(dir('info'), JSON.stringify(taskState), 'utf8');
     return;
   }

@@ -10,7 +10,8 @@
   var options = require('../../options.js')
     , tasks   = require('../../tasks/index.js')
     , bold    = $.util.colors.bold
-    , blue    = $.util.colors.blue;
+    , blue    = $.util.colors.blue
+    , red     = $.util.colors.red;
 
   $.log(bold('options:\n '), Object.keys(options).map(printOption).join('\n  '));
 
@@ -26,6 +27,28 @@
     var keys = Object.keys(state.nodes);
     $.log(bold('running tasks:\n '),
       keys.length > 0 ? keys.map(printState).join("\n  ") : "(none)");
+    return;
+  }
+
+  var path = require('path')
+    , fs   = require('fs');
+
+  if (args[0] === 'start') {
+    var name = args[1]
+    if (!name) {
+      $.log("please specify a task name to start");
+      return;
+    }
+    var task = tasks.get(name);
+    if (!task) {
+      $.log("can't start unknown task", red(name));
+      return;
+    }
+    var id = name + '.' + _.util.id();
+    task = task();
+    $.log("starting task", blue(id), '\n ',
+      Object.keys(task).map(printTask).join('\n  '));
+    fs.mkdirSync(path.join(options.pids, id));
   }
 
   return;
@@ -63,7 +86,11 @@
   }
 
   function printState (key) {
-    return blue(key) + ' ' + state.get(key);
+    return blue(key) + ' ' + state.get(key)();
+  }
+
+  function printTask (key) {
+    return blue(key) + ' ' + task[key];
   }
 
 })

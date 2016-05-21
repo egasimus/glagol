@@ -5,16 +5,25 @@
   var path = require('path')
     , fs   = require('fs');
 
-  var data = JSON.parse(node());
+  var task = JSON.parse(node());
   console.log('added', node._sourcePath);
-  if (data.state === 'spawning') {
-    // TODO: kill preexisting processes
-    data.state = 'alive';
-    fs.writeFileSync(node._sourcePath, JSON.stringify(data), 'utf8');
+  if (task.state === 'spawning') {
+    if (!task.task) {
+      $.log("can't spawn", task.id, ": no task data")
+    } else {
+      (task.task.commands || []).forEach(spawnCommand.bind(null, task));
+      task.state = 'alive';
+      //fs.writeFileSync(node._sourcePath, JSON.stringify(task), 'utf8');
+    }
     return;
   }
 
   return;
+
+  function spawnCommand (task, executable) {
+    var id = path.basename(executable) + '.' + $.util.id();
+    $.log('spawning', executable, 'for', task.id, 'as', id)
+  }
 
   var task = tasks[taskName]
     , exec = require('child_process').execFile;

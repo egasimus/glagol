@@ -67,9 +67,9 @@
       $.log("can't kill unknown task", red(id));
       return;
     }
-    task = task();
+    var taskData = task();
     $.log("killing task", blue(id), '\n ',
-      Object.keys(task).map(printTask).join('\n '));
+      Object.keys(JSON.parse(taskData.info)).map(printTaskData).join('\n '));
     require('rimraf').sync(path.join(options.pids, id));
     return;
   }
@@ -109,7 +109,7 @@
   }
 
   function printState (key) {
-    return blue(key) + ' ' + state.get(key)();
+    return blue(key) + ' ' + JSON.parse(state.get(key)().info).state;
   }
 
   function printTaskData (key) {

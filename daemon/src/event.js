@@ -11,7 +11,8 @@
     , parent3 = parent2 ? parent2.parent : null
 
   if (dir && parent._sourcePath === $.options.pids) {
-    $.log(event, bold('job root'), blue(node.path));
+    $.log(event, bold('job root'), blue(node.path),
+      '\n  ' + Object.keys(node.nodes).join('\n  '));
     return;
   }
 
@@ -27,6 +28,7 @@
 
   if (file && parent3 && name === 'info') {
     $.log(event, bold('process info'), blue(node.path))
+    $.proc[event](node);
     return;
   }
 

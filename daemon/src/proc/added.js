@@ -1,3 +1,11 @@
+(function (node) {
+
+  var proc = node.parent
+    , info = JSON.parse(node());
+
+  console.log(info);
+
+  return;
 
   var task = tasks[taskName]
     , exec = require('child_process').execFile;
@@ -21,3 +29,4 @@
     }
   }
 
+})

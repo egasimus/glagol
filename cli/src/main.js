@@ -50,7 +50,8 @@
     $.log("spawning task", blue(id), '\n ',
       Object.keys(task).map(printTask).join('\n  '));
     fs.mkdirSync(dir());
-    fs.writeFileSync(dir('info'), JSON.stringify({task:name}), 'utf8');
+    var taskState = { id: id, task: task, state: 'spawning' };
+    fs.writeFileSync(dir('info'), JSON.stringify(taskState), 'utf8');
     return;
   }
 
@@ -69,6 +70,7 @@
     $.log("killing task", blue(id), '\n ',
       Object.keys(task).map(printTask).join('\n '));
     require('rimraf').sync(path.join(options.pids, id));
+    return;
   }
 
   return;

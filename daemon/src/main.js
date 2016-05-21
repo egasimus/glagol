@@ -7,6 +7,7 @@
 
   var glagol = require('glagol')
     , state  = glagol(options.pids);
+  //state.options.formats = { null: require('glagol/formats/json') };
   state.events.onAny(function (node) { _.task[this.event](node); });
 
   process.stdin.resume();

@@ -1,5 +1,13 @@
 (function (node) {
 
+  if (node._glagol.type === 'File') {
+    var data = JSON.parse(node());
+    if (data.state === 'spawning') {
+      
+    }
+    console.log('added', data, data.state);
+  }
+
   return;
 
   var task = tasks[taskName]

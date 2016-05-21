@@ -15,7 +15,7 @@
   if (data.state === 'spawning') {
     // TODO: kill preexisting processes
     data.state = 'alive';
-    fs.writeFileSync(node._sourcePath, JSON.stringify(data), 'utf8');
+    $.util.write(node._sourcePath, data);
     return;
   }
 

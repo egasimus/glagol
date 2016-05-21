@@ -32,8 +32,7 @@
     return;
   }
 
-  var path = require('path')
-    , fs   = require('fs');
+  var path = require('path');
 
   if (args[0] === 'spawn') {
     var name = args[1];
@@ -52,9 +51,9 @@
     taskData.source = task._sourcePath;
     $.log("spawning task", blue(id), '\n ',
       Object.keys(taskData).map(printTaskData).join('\n  '));
-    fs.mkdirSync(dir());
+    $.util.mkdir(dir());
     var taskState = { id: id, task: taskData };
-    fs.writeFileSync(dir('info'), JSON.stringify(taskState), 'utf8');
+    $.util.write(dir('info'), taskState);
     return;
   }
 

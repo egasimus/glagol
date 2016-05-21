@@ -33,22 +33,39 @@
   var path = require('path')
     , fs   = require('fs');
 
-  if (args[0] === 'start') {
-    var name = args[1]
+  if (args[0] === 'spawn') {
+    var name = args[1];
     if (!name) {
       $.log("please specify a task name to start");
       return;
     }
     var task = tasks.get(name);
     if (!task) {
-      $.log("can't start unknown task", red(name));
+      $.log("can't spawn unknown task", red(name));
       return;
     }
-    var id = name + '.' + _.util.id();
+    var id  = name + '.' + _.util.id()
+      , dir = path.join.bind(null, options.pids, id)
     task = task();
     $.log("starting task", blue(id), '\n ',
       Object.keys(task).map(printTask).join('\n  '));
-    fs.mkdirSync(path.join(options.pids, id));
+    fs.mkdirSync(dir());
+    fs.writeFileSync(dir('info'), JSON.stringify({task:name}), 'utf8');
+    return;
+  }
+
+  if (args[0] === 'kill') {
+    var id = args[1];
+    if (!id) {
+      $.log("please specify a task id to kill");
+      return;
+    }
+    var task = state.get(id);
+    if (!id) {
+      $.log("can't kill unknown task", red(id));
+      return;
+    }
+
   }
 
   return;

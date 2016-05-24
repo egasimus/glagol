@@ -13,4 +13,17 @@ libs.map(function (lib) {
 
 // start, or export
 module.exports = app;
-if (module === require.main) app().main();
+if (module === require.main) {
+  app().main();
+  if (process.versions.electron) {
+    console.log('starting electron...')
+    var electron = require('electron')
+      , w;
+    electron.app.on('ready', function () {
+      w = new (require('electron').BrowserWindow)({ frame: false })
+      w.loadURL('http://localhost:1617');
+      console.log("---->", w)
+      w.on('closed', function () { w = null })
+    })
+  }
+}

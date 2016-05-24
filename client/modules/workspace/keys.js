@@ -17,5 +17,6 @@ function go (by) {
 }
 
 function toggleLauncher () {
+  console.log(" blob")
   App.Model.Workspace.bars.top.show.set(!App.Model.Workspace.bars.top.show());
 }

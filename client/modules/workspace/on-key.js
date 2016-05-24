@@ -1,17 +1,26 @@
-(function (event) {
+module.exports = onKey;
 
-  console.debug(event);
+function onKey (direction, event) {
 
-  var keys = _.keys;
+  console.debug(direction, event);
 
-  if (event.superKey) keys = keys.Super || {};
-  if (event.ctrlKey)  keys = keys.Ctrl  || {};
-  if (event.altKey)   keys = keys.Alt   || {};
-  if (event.shiftKey) keys = keys.Shift || {};
-
-  if (keys[event.code]) {
+  if (event.code === 'Backslash') {
     event.preventDefault();
-    keys[event.code]();
+    App.Model.Workspace.bars.top.show.set(!App.Model.Workspace.bars.top.show());
+  } else if (App.Model.Workspace.bars.top.show()) {
+    return;
   }
 
-})
+  //var keys = _.keys;
+
+  //if (event.superKey) keys = keys.Super || {};
+  //if (event.ctrlKey)  keys = keys.Ctrl  || {};
+  //if (event.altKey)   keys = keys.Alt   || {};
+  //if (event.shiftKey) keys = keys.Shift || {};
+
+  //if (keys[event.code]) {
+    //event.preventDefault();
+    //keys[event.code]();
+  //}
+
+}

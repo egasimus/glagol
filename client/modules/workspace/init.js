@@ -1,26 +1,31 @@
 (function init (App) {
 
-  var socket = new WebSocket('ws://localhost:1617')
-    , API    = require('riko-api2')(socket);
+  // connect to server-side persistence backend
+  var socket = require('xtend')(
+    new WebSocket('ws://localhost:1617'),
+    { onopen:
+        function () {
+          socket.onopen = null;
+          socket.send('riko');
+          App.Workspace('refresh');
+        }
+    , onclose:
+        function () {
+          window.location.reload();
+        }
+    , onmessage:
+        function (message) {
+          var data = JSON.parse(message.data);
+          console.debug("Workspace update", data);
+          $.modules.workspace.update(data);
+        }
+    });
 
-  socket.onopen = function () {
-    socket.onopen = null;
-    socket.send('riko');
-    API('refresh');
-  }
+  // expose workspace api
+  App.Workspace = require('riko-api2')(socket);
 
-  socket.onclose = function () {
-    window.location.reload()
-  }
-
-  socket.onmessage = function (message) {
-    var data = JSON.parse(message.data);
-    console.debug("Workspace update", data);
-    $.modules.workspace.update(data);
-  }
-
-  window.addEventListener('keyup', function (event) { _.onKey(event) })
-
-  App.Workspace = API;
+  // bind keyboard listener
+  window.addEventListener('keyup',   function (event) { _.onKey('up',   event) });
+  window.addEventListener('keydown', function (event) { _.onKey('down', event) });
 
 })

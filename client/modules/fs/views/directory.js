@@ -28,7 +28,7 @@
             , value:    frame.address })
           , h('.FrameClose', { onclick: remove }, '×')
           ])
-        , h('.Directory_Body',
+        , h('table.Directory_Body',
           [ directory.items.map(dir)
           , directory.items.map(file) ]) ];
   }
@@ -40,7 +40,7 @@
 
   function remove (event) {
     event.preventDefault();
-    __.remove(index);
+    $.modules.workspace.remove(index);
   }
 
   function noData () {

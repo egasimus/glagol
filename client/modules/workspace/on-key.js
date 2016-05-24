@@ -2,14 +2,21 @@ module.exports = onKey;
 
 function onKey (direction, event) {
 
-  console.debug(direction, event);
+  var up    = direction === 'up'
+    , down  = direction === 'down'
+    , model = App.Model.Workspace.bars.top;
+
+  //console.debug(direction, event);
 
   if (event.code === 'Backslash') {
-    event.preventDefault();
-    App.Model.Workspace.bars.top.show.set(!App.Model.Workspace.bars.top.show());
-  } else if (App.Model.Workspace.bars.top.show()) {
+    if (!model.show()) event.preventDefault();
+    model.show.set(down || (model.input().length > 0));
+  } else if (model.show()) {
+    if (_.commands.Keys[event.code]) _.commands.Keys[event.code]();
     return;
   }
+
+  //---------------------------------------------------------------
 
   //var keys = _.keys;
 

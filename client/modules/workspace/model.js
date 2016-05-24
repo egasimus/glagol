@@ -10,7 +10,7 @@ module.exports = { Workspace:
 
     { top:
       { show:   false
-      , input:  ''
+      , input:  []
       , output: [] }
 
     , left:

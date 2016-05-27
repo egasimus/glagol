@@ -1,5 +1,7 @@
 (function (state) {
 
+  return;
+
   return h('.TabBar',
     Object.keys(state.visibleFrames).map(function (id) {
       var session = state.visibleFrames[id] || {}

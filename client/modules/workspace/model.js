@@ -1,5 +1,5 @@
 module.exports = { Workspace:
-  { loading:
+  { isLoading:
     true
 
   , Launcher:

@@ -2,19 +2,19 @@
 
   state = state || {};
 
-  if (state.Workspace.loading) return _.loading(state);
+  if (state.Workspace.isLoading) return _.loading(state);
 
   return state.Workspace.loading
     ? _.loading(state)
     : h('.App',
-        [ _.bars.top(state)
+        [ _.launcher(state)
         , h('.MainView',
-            [ //bar('left')
+            [ _.switcher(state)
             , h('.Workspace',
-                Object.keys(state.Workspace.frames).map(
+                Object.keys(state.Workspace.Frames).map(
                   function (id) { return _.frame(state.Workspace.frames[id]) }))
             ])
-        //, _.bars.bottom(state)
+        , _.statusBar(state)
         ]);
 
 })

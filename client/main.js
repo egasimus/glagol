@@ -19,19 +19,19 @@
   // furthermore does not automatically invalidate evaluation caches.
   // These things need to be fixed in Glagol core.
   //
-  var App = window.App = $.lib.gui.init(Glagol);
+  var App = window.App = $.lib.gui.init(Glagol)
+    , Workspace = App.Model.Workspace;
 
   [ 'workspace'
   , 'fs'
   , 'sound' ].forEach(initModule);
 
-  App.Model.Workspace.loading.set(false);
-  App.Model.Workspace.bars.bottom.text.set("Ready.");
+  Workspace.isLoading.set(false);
+  Workspace.StatusBar.set("Ready.");
 
   return App;
 
   function initModule (moduleName) {
-    App.Model.Workspace.bars.bottom.text.set('initializing ' + moduleName);
     var module = $.modules[moduleName];
     try {
       module.init(App);

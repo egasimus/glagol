@@ -1,10 +1,10 @@
 (function (state) {
 
-  var state = state.Workspace.bars.top
+  var state = state.Workspace.Launcher;
 
   if (!state.show) return h('.TopBar.Hidden');
 
-  var model = App.Model.Workspace.bars.top
+  var model = App.Model.Workspace.Laucher
     , contents;
 
   switch (state.input[0]) {

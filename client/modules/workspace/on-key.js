@@ -4,8 +4,6 @@ var modHeld = false;
 
 function onKey (state, direction, event) {
 
-  state = state.Workspace.bars.top;
-
   console.log(state, direction, event.code);
 
   var up    = direction === 'up'

@@ -2,7 +2,7 @@
 
   var state = state.Workspace.Launcher;
 
-  if (!state.visible) return h('.TopBar.Hidden');
+  if (!state.visible) return h('.Launcher.Hidden');
 
   var Launcher = App.Model.Workspace.Launcher
     , contents;
@@ -22,11 +22,11 @@
       , item('&K') ]
   }
 
-  return h('.TopBar.Visible', contents);
+  return h('.Launcher.Visible', contents);
 
   function item (text) {
     var split = text.split('&');
-    return h('.TopBar_Item',
+    return h('.Launcher_Item',
       [ split[0]
       , h('strong', h('u', (split[1] || '')[0]))
       , (split[1] || '').slice(1) ])
@@ -34,8 +34,8 @@
 
   function prompt (text) {
     return [
-      h('.TopBar_Label', text),
-      h('input.TopBar_Input',
+      h('.Launcher_Label', text),
+      h('input.Launcher_Input',
         { type:      'text'
         , value:     state.input
         , onblur:    hide
@@ -50,16 +50,15 @@
 
   function update (event) {
     if (event.code === 'Escape') {
-      blur();
+      hide();
       return;
     }
 
-    var el = document.getElementsByClassName('TopBar_Input')[0]
+    var el = document.getElementsByClassName('Launcher_Input')[0]
+
     if (event.code === 'Enter') {
       console.info('Entered command:', el.value);
-      //__.__.command(el.value);
-      el.blur();
-      Launcher.input.set('');
+      hide();
       return;
     }
 
@@ -69,11 +68,11 @@
 
   // ------------------------------------
 
-  //return h('.TopBar', state.Workspace.frames.map(function (frame, i) {
+  //return h('.Launcher', state.Workspace.frames.map(function (frame, i) {
     //var icon =
       //frame.type === 'directory' ? $.lib.icon('folder-open-o') :
       //frame.type === 'file'      ? $.lib.icon('music') : '???'
-    //return h('.TopBar_Button',
+    //return h('.Launcher_Button',
       //[ icon, ' '
       //, require('path').basename(frame.address) ]);
   //}))

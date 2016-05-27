@@ -6,7 +6,8 @@ function onKey (state, direction, event) {
 
   var up        = direction === 'up'
     , down      = direction === 'down'
-    , Workspace = App.Model.Workspace;
+    , Workspace = App.Model.Workspace
+    , Launcher  = Workspace.Launcher;
 
   if (isModifierKey(event)) {
 
@@ -20,13 +21,16 @@ function onKey (state, direction, event) {
 
         switch (event.code) {
           case 'KeyO':
-            var visible = Workspace.Launcher.visible();
-            if (!visible) {
-              Workspace.Launcher.visible.set(true);
-              Workspace.Launcher.focused.set(true);
-              Workspace.Launcher.mode.set('Open');
+          case 'KeyR':
+            var visible = Launcher.visible()
+              , mode    = { KeyO:'Open', KeyR:'Run' }[event.code];
+            if (visible && mode === Launcher.mode()) {
+              Launcher.visible.set(false);
             } else {
-              Workspace.Launcher.visible.set(false);
+              Launcher.visible.set(true);
+              Launcher.focused.set(true);
+              Launcher.mode.set(mode);
+              Launcher.input.set('');
             }
             break;
         }
@@ -41,9 +45,9 @@ function onKey (state, direction, event) {
 
       switch (event.code) {
         case 'Escape':
-          if (Workspace.Launcher.focused()) {
-            Workspace.Launcher.visible.set(false);
-            Workspace.Launcher.focused.set(false);
+          if (Launcher.focused()) {
+            Launcher.visible.set(false);
+            Launcher.focused.set(false);
           }
           break;
       }

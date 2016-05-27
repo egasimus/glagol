@@ -37,7 +37,7 @@
       h('.TopBar_Label', text),
       h('input.TopBar_Input',
         { type:      'text'
-        , value:     state.input[1]
+        , value:     state.input
         , onblur:    hide
         , onkeyup:   update
         , hookFocus: require('focus-hook')() })
@@ -45,7 +45,7 @@
   }
 
   function hide () {
-    model.show.set(false);
+    Launcher.visible.set(false);
   }
 
   function update (event) {
@@ -59,11 +59,11 @@
       console.info('Entered command:', el.value);
       //__.__.command(el.value);
       el.blur();
-      model.input.set('');
+      Launcher.input.set('');
       return;
     }
 
-    model.input.set(el.value);
+    Launcher.input.set(el.value);
 
   }
 

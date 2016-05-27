@@ -1,43 +1,65 @@
 module.exports = onKey;
 
-var modHeld = false;
+var modifierKey = false;
 
 function onKey (state, direction, event) {
 
-  console.log(state, direction, event.code);
+  var up        = direction === 'up'
+    , down      = direction === 'down'
+    , Workspace = App.Model.Workspace;
 
-  var up    = direction === 'up'
-    , down  = direction === 'down'
-    , model = App.Model.Workspace.bars.top;
+  if (isModifierKey(event)) {
 
-  //console.debug(direction, event);
+    modifierKey = down;
 
-  var isMod = event.code === 'Backslash' ||
-    (process.versions.electron &&
-      (event.code === 'AltLeft' || event.code === 'AltRight'))
+  } else {
 
-  console.log(isMod, down);
+    if (modifierKey) {
 
-  if (isMod) {
-    modHeld = down;
-    if (!modHeld) event.preventDefault();
-  } else if (modHeld) {
-    if (down && _.commands.Keys[event.code]) _.commands.Keys[event.code]();
-    return;
+      if (down) {
+
+        switch (event.code) {
+          case 'KeyO':
+            var visible = Workspace.Launcher.visible();
+            if (!visible) {
+              Workspace.Launcher.visible.set(true);
+              Workspace.Launcher.focused.set(true);
+              Workspace.Launcher.mode.set('Open');
+            } else {
+              Workspace.Launcher.visible.set(false);
+            }
+            break;
+        }
+
+      } else if (up) {
+
+        // keyup handlers
+
+      }
+
+    } else {
+
+      switch (event.code) {
+        case 'Escape':
+          if (Workspace.Launcher.focused()) {
+            Workspace.Launcher.visible.set(false);
+            Workspace.Launcher.focused.set(false);
+          }
+          break;
+      }
+
+    }
+
   }
 
-  //---------------------------------------------------------------
+}
 
-  //var keys = _.keys;
-
-  //if (event.superKey) keys = keys.Super || {};
-  //if (event.ctrlKey)  keys = keys.Ctrl  || {};
-  //if (event.altKey)   keys = keys.Alt   || {};
-  //if (event.shiftKey) keys = keys.Shift || {};
-
-  //if (keys[event.code]) {
-    //event.preventDefault();
-    //keys[event.code]();
-  //}
-
+function isModifierKey (event) {
+  return (event.code === 'Backslash')
+    ? true
+    : process.versions.electron
+      ? (event.code === 'AltLeft' || event.code === 'AltRight')
+        ? true
+        : false
+      : false;
 }

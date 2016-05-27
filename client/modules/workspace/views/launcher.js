@@ -2,15 +2,15 @@
 
   var state = state.Workspace.Launcher;
 
-  if (!state.show) return h('.TopBar.Hidden');
+  if (!state.visible) return h('.TopBar.Hidden');
 
-  var model = App.Model.Workspace.Laucher
+  var Launcher = App.Model.Workspace.Launcher
     , contents;
 
-  switch (state.input[0]) {
+  switch (state.mode) {
     case 'Open':
     case 'Run':
-      contents = prompt(state.input[0]);
+      contents = prompt(state.mode);
       break;
     default:
       contents =

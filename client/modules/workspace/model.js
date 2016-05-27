@@ -2,31 +2,23 @@ module.exports = { Workspace:
   { loading:
     true
 
-  , command:
-    { focused: false
-    , query:   "" }
+  , Launcher:
+    { visible: false
+    , focused: false 
+    , mode:    'menu'
+    , input:   '' }
 
-  , bars:
+  , Switcher:
+    { visible: false }
 
-    { top:
-      { show:   false
-      , input:  []
-      , output: [] }
+  , StatusBar:
+    { visible: true
+    , text:    '' }
 
-    , left:
-      { show: false }
-
-    , bottom:
-      { show: true
-      , text: '' } }
-
-  , frames:
+  , Frames:
     []
 
   , focusedFrame:
     0
-
-  , focusedSession:
-    null
 
   } }

@@ -403,9 +403,13 @@ button()
   &.Hidden
     transform translateY(-24px)
 
-  &_Item
+  &_Item, &_Label
     font-size 1em
     padding 0 6px
+  &_Label
+    font-weight bold
+    background #555
+    margin-right 6px
 
   &_Button
     white-space nowrap
@@ -416,13 +420,14 @@ button()
     &:hover
       background black
 
-  &_Input
+  > input[type=text]
     flex-grow   1
     background  none
     color       white
     border      none
     font-size   1.2em
     line-height 24px
+    text-align  left
     &:focus
       outline none
 

@@ -14,7 +14,7 @@
                 Object.keys(state.Workspace.frames).map(
                   function (id) { return _.frame(state.Workspace.frames[id]) }))
             ])
-        , _.bars.bottom(state)
+        //, _.bars.bottom(state)
         ]);
 
 })

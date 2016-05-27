@@ -1,6 +1,12 @@
 module.exports = onKey;
 
-function onKey (direction, event) {
+var modHeld = false;
+
+function onKey (state, direction, event) {
+
+  state = state.Workspace.bars.top;
+
+  console.log(state, direction, event.code);
 
   var up    = direction === 'up'
     , down  = direction === 'down'
@@ -8,11 +14,17 @@ function onKey (direction, event) {
 
   //console.debug(direction, event);
 
-  if (event.code === 'Backslash') {
-    if (!model.show()) event.preventDefault();
-    model.show.set(down || (model.input().length > 0));
-  } else if (model.show()) {
-    if (_.commands.Keys[event.code]) _.commands.Keys[event.code]();
+  var isMod = event.code === 'Backslash' ||
+    (process.versions.electron &&
+      (event.code === 'AltLeft' || event.code === 'AltRight'))
+
+  console.log(isMod, down);
+
+  if (isMod) {
+    modHeld = down;
+    if (!modHeld) event.preventDefault();
+  } else if (modHeld) {
+    if (down && _.commands.Keys[event.code]) _.commands.Keys[event.code]();
     return;
   }
 

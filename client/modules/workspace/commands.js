@@ -25,7 +25,10 @@ var Keys =
   , Digit5: nop('workspace switching')
 
   , KeyO: function () {
-      App.Model.Workspace.bars.top.input.set(['open']);
+      App.Model.Workspace.bars.top.input.set(['Open']);
+    },
+    KeyR: function () {
+      App.Model.Workspace.bars.top.input.set(['Run']);
     }
   , KeyS: function () { console.log('save') }
   , KeyH: go(-1)

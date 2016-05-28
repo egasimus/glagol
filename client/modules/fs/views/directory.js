@@ -63,12 +63,12 @@
   function dir (data) {
     if (!(data.stat.mode & 0040000)) return;
     return entry(open(data.name_, true),
-      [ h('strong.DirectoryEntryName', data.name_ + '/')
-      , h('.DirectoryEntryType',
-          [ when(data.package, h('span.DirectoryEntryLabel', 'npm'))
-          , when(data.git,     h('span.DirectoryEntryLabel', 'git'))
+      [ h('strong.Directory_Entry_Name', data.name_ + '/')
+      , h('.Directory_Entry_Type',
+          [ when(data.package, h('span.Directory_Entry_Label', 'npm'))
+          , when(data.git,     h('span.Directory_Entry_Label', 'git'))
           , h('em', 'directory') ])
-      , h('.DirectoryEntrySize', data.files + ' files')
+      , h('.Directory_Entry_Size', data.files + ' files')
       ])
   }
 

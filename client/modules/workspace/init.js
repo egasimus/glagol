@@ -1,7 +1,7 @@
 (function init (App) {
 
   // connect to server-side persistence backend
-  var socket = require('xtend')(
+  var socket = require('extend')(
     new WebSocket('ws://localhost:1617'),
     { onopen:
         function () {

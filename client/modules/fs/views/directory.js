@@ -1,6 +1,6 @@
 (function (frame, index) {
 
-  var directory = App.Model.FS.directories()[frame.address];;
+  var directory = App.Model.FS.Directories()[frame.address];
 
   return [
     h('.Directory_Toolbar',
@@ -10,41 +10,42 @@
       , when(frame.address !== '/',
           h('button', { onclick: goUp }, $.lib.icon('chevron-up')))
        ]),
-    h('.Directory', directory ? directoryBody() : noData()),
-    ]
+    h('.Directory', directory
+      ? directory.items.length > 0
+        ? [ header(), body() ]
+        : empty()
+      : noData()),
+    ];
 
-  function refresh (event) {
-    event.preventDefault();
-    $.modules.fs.refresh(frame, index);
-  }
+  // fragments
 
-  function directoryBody () {
-    return directory.items.length === 0
-      ? h('.Directory_Empty', [ $.lib.icon('info-circle'), 'This directory is empty.' ])
-      : [ h('header.FrameHeader',
-          [ $.lib.icon('folder-open.fa-2x')
-          , h('input.FrameAddress',
-            { onchange: changeAddress
-            , value:    frame.address })
-          , h('.FrameClose', { onclick: remove }, '×')
-          ])
-        , h('table.Directory_Body',
-          [ directory.items.map(dir)
-          , directory.items.map(file) ]) ];
-  }
-
-  function changeAddress (event) {
-    event.preventDefault();
-    API('change', index, 'address', event.target.value);
-  }
-
-  function remove (event) {
-    event.preventDefault();
-    $.modules.workspace.remove(index);
+  function empty () {
+    return h('.Directory_Empty',
+      [ $.lib.icon('info-circle')
+      , 'This directory is empty.' ])
   }
 
   function noData () {
-    return h('.Directory_Empty', [ $.lib.icon('exclamation-circle'), "This directory's contents have not been loaded. Hit 'Reload' to try again." ]);
+    return h('.Directory_Empty',
+      [ $.lib.icon('exclamation-circle')
+      , "This directory's contents have not been loaded. "
+      , "Hit 'Reload' to try again." ]);
+  }
+
+  function header () {
+    h('header.FrameHeader',
+     [ $.lib.icon('folder-open.fa-2x')
+     , h('input.FrameAddress',
+       { onchange: changeAddress
+       , value:    frame.address })
+     , h('.FrameClose', { onclick: remove }, '×')
+     ])
+  }
+
+  function body () {
+    h('table.Directory_Body',
+      [ directory.items.map(dir)
+      , directory.items.map(file) ])
   }
 
   function entry (onclick, body) {
@@ -71,6 +72,23 @@
       ])
   }
 
+  // handlers
+
+  function refresh (event) {
+    event.preventDefault();
+    $.modules.fs.refresh(frame, index);
+  }
+
+  function changeAddress (event) {
+    event.preventDefault();
+    API('change', index, 'address', event.target.value);
+  }
+
+  function remove (event) {
+    event.preventDefault();
+    $.modules.workspace.remove(index);
+  }
+
   function goUp (event) {
     event.preventDefault();
     var location = require('path').dirname(frame.address);
@@ -88,6 +106,8 @@
       }
     }
   }
+
+  // helpers
 
   function when (what, then) {
     return what ? then : null;

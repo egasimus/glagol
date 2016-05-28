@@ -3,37 +3,68 @@ var path = require('path')
   , os   = require('os')
 
 module.exports = function (state) {
+
   return {
 
     refresh:
       function () {
+
         state.socket.send(serialize($.model()));
+
       },
 
     add:
       function (type, address) {
-        address = getAddress(type, address);
-        var id = $.lib.makeId()
-          , w  = $.lib.model({ id: id, type: type, address: address });
+
+        var addr = getAddress(type, address)
+          , id   = $.lib.makeId()
+          , w    = $.lib.model({ id: id, type: type, address: addr });
         $.model.frames.put(id, w)
-        $.log('added frame', id, type, 'at', address);
+        $.log('added frame', id, type, 'at', addr);
+
         this.refresh();
+
       },
 
     remove:
       function (index) {
+
         $.log('remove', index);
         $.model.frames.splice(index, 1);
+
         this.refresh();
+
       },
 
     change:
       function (id, key, val) {
+
         $.model.frames.get(id).put(key, val);
+
         this.refresh();
+
+      },
+
+    run:
+      function (command) {
+
+        var split = command.split(' ')
+          , cmd   = split[0]
+          , args  = split.slice(1)
+          , id    = $.lib.makeId()
+          , proc  = require('child_process').spawn(cmd, args);
+
+        $.model.processes.put(id,
+          { id:      id
+          , command: command
+          , proc:    proc });
+
+        this.refresh();
+
       }
 
   }
+
 };
 
 function serialize (data) {

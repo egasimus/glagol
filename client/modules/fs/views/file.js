@@ -1,6 +1,6 @@
 (function (frame, index) {
 
-  var file = App.Model.FS.files()[frame.address] || {};
+  var file = App.Model.FS.Files()[frame.address] || {};
 
   var body;
 

@@ -1,4 +1,4 @@
 module.exports =
   { FS:
-    { directories: {}
-    , files: {} } }
+    { Directories: {}
+    , Files: {} } }

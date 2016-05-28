@@ -4,4 +4,6 @@ module.exports = require('riko-mvc').M({
 
   frames: {},
 
+  processes: {},
+
 })

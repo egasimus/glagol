@@ -1,7 +1,7 @@
 (function (frame, index) {
 
   var type = frame.type === 'file'
-    ? (App.Model.FS.files()[frame.address] || {}).type || 'file'
+    ? (App.Model.FS.Files()[frame.address] || {}).type || 'file'
     : frame.type
 
   return h('header.FrameHeader',

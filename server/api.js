@@ -16,11 +16,13 @@ module.exports = function (state) {
     add:
       function (type, address) {
 
-        var addr = getAddress(type, address)
+        var user = state.id
+          , addr = getAddress(type, address)
           , id   = $.lib.makeId()
           , w    = $.lib.model({ id: id, type: type, address: addr });
         $.model.frames.put(id, w)
-        $.log('added frame', id, type, 'at', addr);
+        $.model.users.get(user).frames.push(id);
+        $.log(user, 'added frame', id, type, 'at', addr);
 
         this.refresh();
 

@@ -33,7 +33,7 @@
   }
 
   function header () {
-    h('header.FrameHeader',
+    return h('header.FrameHeader',
      [ $.lib.icon('folder-open.fa-2x')
      , h('input.FrameAddress',
        { onchange: changeAddress
@@ -43,7 +43,7 @@
   }
 
   function body () {
-    h('table.Directory_Body',
+    return h('table.Directory_Body',
       [ directory.items.map(dir)
       , directory.items.map(file) ])
   }

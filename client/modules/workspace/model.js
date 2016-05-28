@@ -1,5 +1,8 @@
 module.exports = { Workspace:
-  { isLoading:
+  { userId:
+    null
+
+  , isLoading:
     true
 
   , Launcher:

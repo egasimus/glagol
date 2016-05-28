@@ -1,6 +1,17 @@
 (function (newState) {
 
-  console.debug("update", newState);
+  console.debug("Update workspace", newState);
+
+  var Workspace = App.Model.Workspace
+    , newFrames = [];
+
+  newState.users[Workspace.userId()].frames.forEach(function (id) {
+    var frame = newState.frames[id];
+    newFrames.push(frame);
+    if (['directory', 'file'].indexOf(frame.type) > -1) {
+      App.FS('read', frame.address);
+    }
+  })
 
   Object.keys(newState.frames).forEach(function (id) {
     var frame = newState.frames[id]
@@ -9,6 +20,6 @@
     }
   })
 
-  App.Model.Workspace.put("frames", $.lib.model(newState.frames));
+  App.Model.Workspace.put("Frames", $.lib.model(newFrames));
 
 })

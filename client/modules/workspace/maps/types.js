@@ -1,10 +1,10 @@
-module.exports = require('xtend')(
-  require('riko-route')(
-    [ [ 'iframe',    _.views.frames.iframe    ] 
-    , [ 'file',      __.fs.views.file         ]
-    , [ 'directory', __.fs.views.directory    ]
-    , [ 'glagol',    __.debugger.views.glagol ]
-    ] ),
-  { handler: function (match, input, data) {
-      return match(data.frame, data.index); } });
+module.exports = require('riko-route')(
+  [ [ 'iframe',    __.views.frames.iframe      ]
+  , [ 'file',      __.__.fs.views.file         ]
+  , [ 'directory', __.__.fs.views.directory    ]
+  , [ 'glagol',    __.__.debugger.views.glagol ]
+  ] ),
 
+module.exports.handler = function (match, input, data) {
+  return match(data.frame, data.index);
+}

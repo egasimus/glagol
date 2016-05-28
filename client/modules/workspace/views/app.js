@@ -12,7 +12,7 @@
             [ _.switcher(state)
             , h('.Workspace',
                 Object.keys(state.Workspace.Frames).map(
-                  function (id) { return _.frame(state.Workspace.frames[id]) }))
+                  function (id) { return _.frame(state.Workspace.Frames[id]) }))
             ])
         , _.statusBar(state)
         ]);

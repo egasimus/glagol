@@ -28,3 +28,5 @@ function go (by) {
     Model.focusedFrame.set(nextFrame);
   }
 }
+
+function nop (op) { return function () { console.info(op, 'not implemented') } };

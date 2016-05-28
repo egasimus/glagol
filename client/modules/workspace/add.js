@@ -6,7 +6,7 @@
 
     console.info('adding', type, '(empty)');
 
-    App.Model.Workspace.frames.push($.lib.model(
+    App.Model.Workspace.Frames.push($.lib.model(
       { type:    type
       , address: null
       , status:  'empty' }))
@@ -17,14 +17,14 @@
 
     console.info('adding', type, 'at', address);
 
-    var index = App.Model.Workspace.frames().length;
+    var index = App.Model.Workspace.Frames().length;
 
     var frame = require('riko-mvc/model')(
       { type:    type
       , address: address
       , status:  'loading' })
 
-    App.Model.Workspace.frames.put(index, frame);
+    App.Model.Workspace.Frames.put(index, frame);
 
     App.Workspace('add', type, address);
     if (type === 'file' || type === 'directory') App.FS('read', address);

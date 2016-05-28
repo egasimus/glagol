@@ -4,25 +4,17 @@
 
   if (!state.visible) return h('.Launcher.Hidden');
 
-  var Launcher = App.Model.Workspace.Launcher
-    , contents;
+  var Launcher = App.Model.Workspace.Launcher;
 
-  switch (state.mode) {
-    case 'Open':
-    case 'Run':
-      contents = prompt(state.mode);
-      break;
-    default:
-      contents =
-      [ item('&Open')
-      , item('&Run')
-      , item('&H')
-      , item('&L')
-      , item('&J')
-      , item('&K') ]
-  }
-
-  return h('.Launcher.Visible', contents);
+  return h('.Launcher.Visible',
+    [ h('.Launcher_Label', state.mode)
+    , h('input.Launcher_Input',
+        { type:      'text'
+        , value:     state.input
+        , onblur:    hide
+        , onkeyup:   update
+        , hookFocus: require('focus-hook')() })
+    ]);
 
   function item (text) {
     var split = text.split('&');
@@ -30,18 +22,6 @@
       [ split[0]
       , h('strong', h('u', (split[1] || '')[0]))
       , (split[1] || '').slice(1) ])
-  }
-
-  function prompt (text) {
-    return [
-      h('.Launcher_Label', text),
-      h('input.Launcher_Input',
-        { type:      'text'
-        , value:     state.input
-        , onblur:    hide
-        , onkeyup:   update
-        , hookFocus: require('focus-hook')() })
-    ];
   }
 
   function hide () {
@@ -57,8 +37,18 @@
     var el = document.getElementsByClassName('Launcher_Input')[0]
 
     if (event.code === 'Enter') {
-      console.info('Entered command:', el.value);
+
+      console.info(state.mode, el.value);
       hide();
+
+      switch (state.mode) {
+        case 'Open':
+          __.maps.opener(el.value)
+          break;
+        case 'Run':
+          break;
+      }
+
       return;
     }
 

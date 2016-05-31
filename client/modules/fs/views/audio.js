@@ -1,18 +1,18 @@
 var path = require('path')
   , vdom = require('virtual-dom');
 
-module.exports = function (state) {
-  return require('vdom-thunk')(module.exports.widget, state);
+module.exports = function (src) {
+  return require('vdom-thunk')(module.exports.widget, src);
 }
 
-module.exports.widget = function (id) {
+module.exports.widget = function (src) {
 
   return {
 
     type: "Widget"
 
   , init: function () {
-      this.model = App.Model.Sound.players()[id] || (function () {});
+      this.model = App.Model.Sound.players[src] || (function () {});
       this.element = vdom.create(this.render(this.model()));
       //this.model(this.patch.bind(this));
       //this.loadVoices(src);
@@ -46,7 +46,7 @@ module.exports.widget = function (id) {
           , h('button.AudioPlayer_Button_Cue', 'CUE') ])
         , h('.AudioPlayer_Header', { style: { display: 'flex' } },
             [ $.lib.icon('volume-up.fa-2x')
-            , h('.AudioPlayer_Title', require('path').basename('src'))
+            , h('.AudioPlayer_Title', require('path').basename(src))
             , h('.AudioPlayer_Position', '\nloading\n')
             , h('.AudioPlayer_ProgressBar',
                 h('.AudioPlayer_ProgressBar_Background',

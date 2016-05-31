@@ -10,6 +10,9 @@
       break;
     case 'audio/mpeg':
     case 'audio/x-wav':
+      if (!App.Model.Sound.players()[file.path]) {
+        App.Model.Sound.players.put(file.path, $.modules.sound.player(file.path))
+      }
       body = _.audio(file.path);
       break;
     case 'image/png':

@@ -18,7 +18,9 @@
 
     , play: play
     , stop: stop
-    , seek: seek };
+    , seek: seek
+
+    , constructor: true }; // fool is-plain-object
 
   console.trace(player.voices)
 

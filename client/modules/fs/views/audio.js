@@ -12,7 +12,7 @@ module.exports.widget = function (src) {
     type: "Widget"
 
   , init: function () {
-      this.model = App.Model.Sound.players[src] || (function () {});
+      this.model = App.Model.Sound.players.get(src) || (function () {});
       this.element = vdom.create(this.render(this.model()));
       //this.model(this.patch.bind(this));
       //this.loadVoices(src);
@@ -42,8 +42,8 @@ module.exports.widget = function (src) {
 
       return this._vdom = h('.AudioPlayer',
         [ h('.AudioPlayer_Toolbar',
-          [ h('button.AudioPlayer_Button_Play', '⏯')
-          , h('button.AudioPlayer_Button_Cue', 'CUE') ])
+          [ h('button.AudioPlayer_Button_Play', { onclick: play }, '⏯')
+          , h('button.AudioPlayer_Button_Cue', { onclick: stop }, 'CUE') ])
         , h('.AudioPlayer_Header', { style: { display: 'flex' } },
             [ $.lib.icon('volume-up.fa-2x')
             , h('.AudioPlayer_Title', require('path').basename(src))
@@ -71,7 +71,12 @@ module.exports.widget = function (src) {
           ]);
 
       function play () {
-        self.model.player().play();
+        console.log(self, self.model())
+        self.model().play();
+      }
+
+      function stop () {
+        self.model().stop();
       }
 
       function cue (number, label, time) {

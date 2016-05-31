@@ -19,8 +19,8 @@ module.exports = function (state) {
         var user = state.id
           , addr = getAddress(type, address)
           , id   = $.lib.makeId()
-          , w    = $.lib.model({ id: id, type: type, address: addr });
-        $.model.frames.put(id, w)
+          , fr   = { id: id, type: type, address: addr };
+        $.model.frames.put(id, $.lib.model(fr))
         $.model.users.get(user).frames.push(id);
         $.log(user, 'added frame', id, type, 'at', addr);
 

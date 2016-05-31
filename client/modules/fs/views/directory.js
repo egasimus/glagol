@@ -3,21 +3,23 @@
   var directory = App.Model.FS.Directories()[frame.address];
 
   return [
-    h('.Directory_Toolbar',
+    toolbar(),
+    h('.Directory',
+      [ header()
+      , directory ? directory.items.length > 0 ? body() : empty() : noData()])
+  ];
+
+  // fragments
+
+  function toolbar () {
+    return h('.Directory_Toolbar',
       [ h('button', $.lib.icon('chevron-left'))
       , h('button', { onclick: refresh }, $.lib.icon('refresh'))
       , h('button', $.lib.icon('chevron-right'))
       , when(frame.address !== '/',
           h('button', { onclick: goUp }, $.lib.icon('chevron-up')))
-       ]),
-    h('.Directory', directory
-      ? directory.items.length > 0
-        ? [ header(), body() ]
-        : empty()
-      : noData()),
-    ];
-
-  // fragments
+       ]);
+  }
 
   function empty () {
     return h('.Directory_Empty',
@@ -55,20 +57,20 @@
   function file (data) {
     if (!!(data.stat.mode & 0040000)) return;
     return entry(open(data.name_, false),
-      [ h('.Directory_Entry_Name', data.name_)
-      , h('.Directory_Entry_Type', data.type)
-      , h('.Directory_Entry_Size', data.stat.size + ' B') ])
+      [ h('td.Directory_Entry_Name', data.name_)
+      , h('td.Directory_Entry_Type', data.type)
+      , h('td.Directory_Entry_Size', data.stat.size + ' B') ])
   }
 
   function dir (data) {
     if (!(data.stat.mode & 0040000)) return;
     return entry(open(data.name_, true),
-      [ h('strong.Directory_Entry_Name', data.name_ + '/')
-      , h('.Directory_Entry_Type',
+      [ h('td.Directory_Entry_Name.is-dir', data.name_ + '/')
+      , h('td.Directory_Entry_Type',
           [ when(data.package, h('span.Directory_Entry_Label', 'npm'))
           , when(data.git,     h('span.Directory_Entry_Label', 'git'))
           , h('em', 'directory') ])
-      , h('.Directory_Entry_Size', data.files + ' files')
+      , h('td.Directory_Entry_Size', data.files ? (data.files + ' items') : 'access denied')
       ])
   }
 
@@ -81,7 +83,7 @@
 
   function changeAddress (event) {
     event.preventDefault();
-    API('change', index, 'address', event.target.value);
+    App.Workspace('change', frame.id, 'address', event.target.value);
   }
 
   function remove (event) {
@@ -92,7 +94,7 @@
   function goUp (event) {
     event.preventDefault();
     var location = require('path').dirname(frame.address);
-    App.Workspace('change', index, 'address', location);
+    App.Workspace('change', frame.id, 'address', location);
   }
 
   function open (name, isDir) {
@@ -100,9 +102,9 @@
       event.preventDefault();
       var location = require('path').join(frame.address, name);
       if (isDir) {
-        App.Workspace('change', index, 'address', location);
+        App.Workspace('change', frame.id, 'address', location);
       } else {
-        $.modules.workspace.add('file', location);
+        App.Workspace('add', 'file', location);
       }
     }
   }

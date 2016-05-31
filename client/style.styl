@@ -667,6 +667,7 @@ frame-toolbar()
 
 .Directory
   flex-grow 1
+  overflow auto
 
   &_Toolbar
     frame-toolbar()
@@ -678,18 +679,6 @@ frame-toolbar()
     right 0
     height 48px
 
-  &_Body
-    position absolute
-    top 48px
-    left 0
-    right 0
-    bottom 0
-    overflow auto
-
-  .FrameBody > &
-    flex-grow 1
-    overflow auto
-
   &_PathFragment
     margin      0 0 0 6px
     padding     6px 9px
@@ -697,7 +686,17 @@ frame-toolbar()
     font-weight bold
     text-shadow 0 0 3px black
 
+  &_Body,
   &_Empty
+    position absolute
+    top 48px
+    left 0
+    overflow auto
+
+  &_Empty
+    right 6px
+    background rgba(255,255,255,0.1);
+    padding 12px
     font-size 1.2em
     font-weight bold
     font-style italic
@@ -708,6 +707,14 @@ frame-toolbar()
       line-height 24px
       vertical-align middle
       margin-right 6px
+
+  &_Body
+    right 0
+    bottom 0
+
+  .FrameBody > &
+    flex-grow 1
+    overflow auto
 
   &_Entry
     font-size 1.2em
@@ -721,6 +728,8 @@ frame-toolbar()
       background #555
     &_Name
       flex-grow 1
+      &.is-dir
+        font-weight bold
     &_Size, &_Type
       margin-left 6px
       overflow hidden

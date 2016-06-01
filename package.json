@@ -12,6 +12,7 @@
     "audio-spectrum": "^1.0.0",
     "codemirror": "^5.13.4",
     "colors": "^1.1.2",
+    "cookie": "^0.3.1",
     "extend": "^3.0.0",
     "focus-hook": "^1.0.0",
     "glagol": "egasimus/glagol#9765f89e3ed1c2ffd2d2097a223b374c02bcbec2",

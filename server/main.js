@@ -36,24 +36,28 @@
   }
 
   function respond (req, res) {
-    $.log("responding to http request", req.url);
-    var query = require('url').parse(req.url, true).query;
-    $.log("query", query.path)
+    var file = decodeURIComponent(require('url').parse(req.url, true).path)
+    $.log("requested", file);
+
     try {
-      require('fs').readFile(query.path, fileRead);
+      require('fs').readFile(file, fileRead);
     } catch (err) {
       sendError(err);
     }
+
     function fileRead (err, data) {
       if (err) {
         sendError(err);
       } else {
+        $.log("serving", file);
         require('send-data')(req, res,
           { body:    data
           , headers: { 'Access-Control-Allow-Origin': '*' }})
       }
     }
+
     function sendError (err) {
+      $.log("can't serve", file, err);
       require('send-data/error')(req, res,
         { body:    err
         , headers: { 'Access-Control-Allow-Origin': '*' }})

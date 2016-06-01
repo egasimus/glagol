@@ -26,7 +26,9 @@
   , 'fs'
   , 'sound' ].forEach(initModule);
 
-  Workspace.userId.set(require('cookie').parse(document.cookie)['user-id']);
+  var id = require('cookie').parse(document.cookie)['user-id'];
+  console.log("User ID:", id);
+  Workspace.userId.set(id);
   Workspace.isLoading.set(false);
   Workspace.StatusBar.set("Ready.");
 

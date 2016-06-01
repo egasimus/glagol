@@ -15,14 +15,9 @@
         }
     , onmessage:
         function (message) {
-          App.Model.Workspace.userId.set(message.data);
-          socket.onmessage = onmessage;
+          $.modules.workspace.update(JSON.parse(message.data));
         }
     });
-
-  function onmessage (message) {
-    $.modules.workspace.update(JSON.parse(message.data));
-  }
 
   // expose workspace api
   App.Workspace = require('riko-api2')(socket);

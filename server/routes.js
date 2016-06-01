@@ -11,7 +11,11 @@ module.exports =
       function (req, res) {
         var cookies = require('cookie').parse(req.headers.cookie || '')
           , id      = cookies['user-id'];
-        if (!id) res.setHeader('Set-Cookie', 'user-id=' + _.lib.makeId());
+        if (!id) {
+          id = _.lib.makeId();
+          res.setHeader('Set-Cookie', 'user-id=' + id);
+          _.model.users.put(id, { id: id, frames: [] })
+        }
         return client(req, res);
       }),
   , route(

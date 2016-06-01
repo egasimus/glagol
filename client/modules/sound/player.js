@@ -22,8 +22,6 @@
 
     , constructor: true }; // fool is-plain-object
 
-  console.trace(player.voices)
-
   return player;
 
   function newVoice () {
@@ -43,7 +41,6 @@
   }
 
   function play () {
-    console.trace(player.voices)
     return player.voices[0].then(function (voice) {
       voice.start(0, player.cuePoint);
       player.status      = 'playing';

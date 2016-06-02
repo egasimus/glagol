@@ -1,18 +1,21 @@
 var path = require('path')
   , vdom = require('virtual-dom');
 
-module.exports = function (src) {
-  return require('vdom-thunk')(module.exports.widget, src);
+module.exports = function (id, src) {
+  return require('vdom-thunk')(module.exports.widget, id, src);
 }
 
-module.exports.widget = function (src) {
+module.exports.widget = function (id, src) {
+
+  var playerId = id + '_' + src;
 
   return {
 
     type: "Widget"
 
   , init: function () {
-      this.model = App.Model.Sound.players.get(src) || (function () {});
+      this.playerId = frame.id + '_' + file.path;
+      this.model = App.Model.Sound.Players.get(src) || (function () {});
       this.element = vdom.create(this.render(this.model()));
       //this.model(this.patch.bind(this));
       //this.loadVoices(src);
@@ -48,6 +51,7 @@ module.exports.widget = function (src) {
             [ $.lib.icon('volume-up.fa-2x')
             , h('.AudioPlayer_Title', require('path').basename(src))
             , h('.AudioPlayer_Position', '\nloading\n')
+            , h('.FrameClose', { onclick: remove }, '×')
             , h('.AudioPlayer_ProgressBar',
                 h('.AudioPlayer_ProgressBar_Background',
                   h('.AudioPlayer_ProgressBar_Foreground'))) ])
@@ -71,12 +75,12 @@ module.exports.widget = function (src) {
           ]);
 
       function play () {
-        var model = App.Model.Sound.players.get(src);
+        var model = App.Model.Sound.Players.get(src);
         if (model) model().play();
       }
 
       function stop () {
-        var model = App.Model.Sound.players.get(src);
+        var model = App.Model.Sound.Players.get(src);
         if (model) model().play();
       }
 
@@ -86,6 +90,10 @@ module.exports.widget = function (src) {
             [ h('.AudioPlayer_Cue_Number', number)
           , label ])
         , h('.AudioPlayer_Cue_Time', time) ])
+      }
+
+      function remove () {
+        $.modules.workspace.remove(index);
       }
     }
 

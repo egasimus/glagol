@@ -10,12 +10,13 @@
       break;
     case 'audio/mpeg':
     case 'audio/x-wav':
-      if (!App.Model.Sound.players()[file.path]) {
+      var playerId = frame.id + '_' + file.path;
+      if (!App.Model.Sound.Players()[playerId]) {
         setTimeout(function () {
-          App.Model.Sound.players.put(file.path, $.modules.sound.player(file.path))
+          App.Model.Sound.Players.put(playerId, $.modules.sound.player(file.path))
         }, 0);
       }
-      body = _.audio(file.path);
+      body = _.audio(frame.id, file.path);
       break;
     case 'image/png':
     case 'image/jpeg':

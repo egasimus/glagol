@@ -6,7 +6,7 @@
           , player = _.player(src);
         player.id = id;
         console.log("add player", id, src, player)
-        App.Model.Sound.players.put(id, player)
+        App.Model.Sound.Players.put(id, player)
       }}
 
   App.Sound = function () {

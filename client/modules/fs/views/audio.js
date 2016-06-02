@@ -38,12 +38,26 @@ module.exports.widget = function (id, src) {
 
   , render: function (state) {
 
-      var self = this;
+      var self   = this
+        , player = state.Players ? state.Players[playerId] : null;
+
+      console.warn(playerId, player);
+
+      if (!player) {
+        return this._vdom = h('.AudioPlayer_Missing',
+          [ 'No player'
+          , h('em', playerId)
+          ]);
+      }
 
       return this._vdom = h('.AudioPlayer',
         [ h('.AudioPlayer_Toolbar',
-          [ h('button.AudioPlayer_Button_Play', { onclick: play }, '⏯')
-          , h('button.AudioPlayer_Button_Cue', { onclick: stop }, 'CUE') ])
+          [ h('button.AudioPlayer_Button_Play',
+              { onclick: play },
+              '⏯')
+          , h('button.AudioPlayer_Button_Cue',
+              { onclick: stop },
+              'CUE') ])
         , h('.AudioPlayer_Header', { style: { display: 'flex' } },
             [ $.lib.icon('volume-up.fa-2x')
             , h('.AudioPlayer_Title', require('path').basename(src))

@@ -7,14 +7,14 @@ module.exports = function (id, src) {
 
 module.exports.widget = function (id, src) {
 
-  var Sound = App.Model.Sound;
+  var Sound    = App.Model.Sound
+    , playerId = id + '_' + src;
 
   return {
 
     type: "Widget"
 
   , init: function () {
-      this.playerId = id + '_' + src;
       this.element = vdom.create(this.render(Sound()));
       Sound(this.patch.bind(this));
       return this.element;
@@ -23,12 +23,11 @@ module.exports.widget = function (id, src) {
   , update: function (prev, el) {
       console.debug('update', prev, el);
       this.element  = this.element  || prev.element;
-      this.playerId = this.playerId || prev.playerId;
     }
 
   , destroy: function (el) {
       console.debug('destroy', el);
-      var player = Sound.Players.get(this.playerId);
+      var player = Sound.Players.get(playerId);
       if (player) player.stop();
     }
 
@@ -73,20 +72,20 @@ module.exports.widget = function (id, src) {
           ]);
 
       function play () {
-        var player = Model.Players.get(this.playerId);
+        var player = Sound.Players.get(playerId);
         if (player && player()) {
           player().play();
         } else {
-          console.warn("can not play", this.playerId);
+          console.warn("can not play", playerId);
         }
       }
 
       function stop () {
-        var player = App.Model.Sound.Players.get(src);
+        var player = Sound.Players.get(src);
         if (player && player()) {
           player().stop();
         } else {
-          console.warn("can not play", this.playerId);
+          console.warn("can not play", playerId);
         }
       }
 

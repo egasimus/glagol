@@ -7,31 +7,29 @@ module.exports = function (id, src) {
 
 module.exports.widget = function (id, src) {
 
-  var playerId = id + '_' + src;
+  var Sound = App.Model.Sound;
 
   return {
 
     type: "Widget"
 
   , init: function () {
-      this.playerId = frame.id + '_' + file.path;
-      this.model = App.Model.Sound.Players.get(src) || (function () {});
-      this.element = vdom.create(this.render(this.model()));
-      //this.model(this.patch.bind(this));
-      //this.loadVoices(src);
+      this.playerId = id + '_' + src;
+      this.element = vdom.create(this.render(Sound()));
+      Sound(this.patch.bind(this));
       return this.element;
     }
 
   , update: function (prev, el) {
       console.debug('update', prev, el);
-      this.element = this.element || prev.element;
-      this.model   = this.model   || prev.model;
+      this.element  = this.element  || prev.element;
+      this.playerId = this.playerId || prev.playerId;
     }
 
   , destroy: function (el) {
       console.debug('destroy', el);
-      //var player = this.model().player;
-      //if (player) player.stop();
+      var player = Sound.Players.get(this.playerId);
+      if (player) player.stop();
     }
 
   , patch: function (state) {
@@ -75,13 +73,21 @@ module.exports.widget = function (id, src) {
           ]);
 
       function play () {
-        var model = App.Model.Sound.Players.get(src);
-        if (model) model().play();
+        var player = Model.Players.get(this.playerId);
+        if (player && player()) {
+          player().play();
+        } else {
+          console.warn("can not play", this.playerId);
+        }
       }
 
       function stop () {
-        var model = App.Model.Sound.Players.get(src);
-        if (model) model().play();
+        var player = App.Model.Sound.Players.get(src);
+        if (player && player()) {
+          player().stop();
+        } else {
+          console.warn("can not play", this.playerId);
+        }
       }
 
       function cue (number, label, time) {

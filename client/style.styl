@@ -378,9 +378,6 @@ button()
   height 100%
   transform translateY(0)
   transition transform 0.2s
-  .Launcher.Visible + &
-    position relative
-    transform translateY(24px)
 
 .Launcher
   position absolute
@@ -404,6 +401,9 @@ button()
   transition transform 0.2s
   &.Hidden
     transform translateY(-24px)
+  &.Visible + .MainView
+    position relative
+    transform translateY(24px)
 
   &_Item, &_Label
     font-size 1em
@@ -432,6 +432,50 @@ button()
     text-align  left
     &:focus
       outline none
+
+.Switcher
+  position absolute
+  left 0
+  top 0
+  bottom 0
+  z-index 10
+  width 200px
+
+  overflow-x hidden
+  background black
+  flex-shrink 0
+  display flex
+  flex-direction column
+  background rgba(0,0,0,0.5)
+  background linear-gradient(to right, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.65) 100%)
+  color white
+  text-shadow 0 0 12px rgba(0,0,0,0.8)
+
+  transition transform 0.2s
+  &.Hidden
+    transform translateX(-200px)
+  &.Visible + .Workspace
+    position relative
+    transform translateX(200px)
+
+  &_Frame
+    padding 6px
+
+.Workspace
+  flex-grow 1
+  display flex
+  @media screen and (orientation:portrait)
+    flex-direction column
+  @media screen and (orientation:landscape)
+    flex-direction row
+  overflow auto
+  & > *
+    flex-shrink 0
+  &Toolbar
+    background #ddd
+    width 24px
+    display flex
+    flex-direction column-reverse
 
 .Frame
   //box-shadow 0 0 6px black, 0 0 2px black
@@ -546,22 +590,6 @@ button()
       left 0
       width 100%
       height 100%
-
-.Workspace
-  flex-grow 1
-  display flex
-  @media screen and (orientation:portrait)
-    flex-direction column
-  @media screen and (orientation:landscape)
-    flex-direction row
-  overflow auto
-  & > *
-    flex-shrink 0
-  &Toolbar
-    background #ddd
-    width 24px
-    display flex
-    flex-direction column-reverse
 
 .Blank
   background rgba(255,255,255,0.9)

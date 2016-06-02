@@ -65,9 +65,9 @@
 
   function seek (t) {
     if (player.status === 'playing') {
-      stop().then(function () { player.cuePoint = t }).then(play);
+      stop().then(function () { player.cuePoint = player.position = t }).then(play);
     } else {
-      player.cuePoint = t;
+      player.cuePoint = player.position = t;
     }
   }
 

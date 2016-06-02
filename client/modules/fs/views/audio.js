@@ -21,12 +21,12 @@ module.exports.widget = function (id, src) {
     }
 
   , update: function (prev, el) {
-      console.debug('update', prev, el);
+      console.debug('player update', prev, el);
       this.element  = this.element  || prev.element;
     }
 
   , destroy: function (el) {
-      console.debug('destroy', el);
+      console.debug('player destroy', el);
       var player = Sound.Players.get(playerId);
       if (player) player.stop();
     }
@@ -52,7 +52,7 @@ module.exports.widget = function (id, src) {
 
       return this._vdom = h('.AudioPlayer',
         [ h('.AudioPlayer_Toolbar',
-          [ h('button.AudioPlayer_Button_Play',
+          [ h('button.AudioPlayer_Button_Play' + (player.status === 'playing' ? '.Playing' : ''),
               { onclick: play },
               '⏯')
           , h('button.AudioPlayer_Button_Cue',
@@ -89,7 +89,8 @@ module.exports.widget = function (id, src) {
         var player = Sound.Players.get(playerId);
         if (player && player()) {
           player = player();
-          player[player.status === 'playing' ? 'stop' : 'play']();
+          player[player.status === 'playing' ? 'stop' : 'play']()
+            .then(function () { Sound.Players.put(playerId, player) });
         } else {
           console.warn("can not play", playerId);
         }
@@ -99,7 +100,10 @@ module.exports.widget = function (id, src) {
         var player = Sound.Players.get(playerId);
         if (player && player()) {
           player = player();
-          player.stop().then(function () { player.seek(0) })
+          player
+            .stop()
+            .then(function () { player.seek(0) })
+            .then(function () { Sound.Players.put(playerId, player) })
         } else {
           console.warn("can not stop", playerId);
         }

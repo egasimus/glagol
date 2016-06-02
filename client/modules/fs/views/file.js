@@ -11,7 +11,9 @@
     case 'audio/mpeg':
     case 'audio/x-wav':
       if (!App.Model.Sound.players()[file.path]) {
-        App.Model.Sound.players.put(file.path, $.modules.sound.player(file.path))
+        setTimeout(function () {
+          App.Model.Sound.players.put(file.path, $.modules.sound.player(file.path))
+        }, 0);
       }
       body = _.audio(file.path);
       break;

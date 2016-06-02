@@ -71,12 +71,13 @@ module.exports.widget = function (src) {
           ]);
 
       function play () {
-        console.log(self, self.model())
-        self.model().play();
+        var model = App.Model.Sound.players.get(src);
+        if (model) model().play();
       }
 
       function stop () {
-        self.model().stop();
+        var model = App.Model.Sound.players.get(src);
+        if (model) model().play();
       }
 
       function cue (number, label, time) {

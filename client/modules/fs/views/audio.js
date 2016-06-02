@@ -75,6 +75,7 @@ module.exports.widget = function (id, src) {
                   $.lib.formatTime(player.duration))
             , h('.FrameClose', { onclick: remove }, '×')
             , h('.AudioPlayer_ProgressBar',
+                { onmousedown: seek },
                 h('.AudioPlayer_ProgressBar_Background',
                   h('.AudioPlayer_ProgressBar_Foreground',
                     { style: { width:
@@ -134,6 +135,20 @@ module.exports.widget = function (id, src) {
               update() });
         } else {
           console.warn("can not stop", playerId);
+        }
+      }
+
+      function seek (event) {
+        var player = Sound.Players.get(playerId);
+        if (player && player()) {
+          player = player();
+          var cls  = 'AudioPlayer_ProgressBar_Background'
+            , bg   = event.currentTarget.getElementsByClassName(cls)[0]
+            , rect = bg.getBoundingClientRect()
+            , pos  = (event.clientX - rect.left) / rect.width;
+          player
+            .seek(pos * player.duration)
+            .then(update);
         }
       }
 

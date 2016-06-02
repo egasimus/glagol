@@ -75,11 +75,7 @@ module.exports.widget = function (id, src) {
         var player = Sound.Players.get(playerId);
         if (player && player()) {
           player = player();
-          if (player.status === 'playing') {
-            player.stop();
-          } else {
-            player.play();
-          }
+          player[player.status === 'playing' ? 'stop' : 'play']();
         } else {
           console.warn("can not play", playerId);
         }

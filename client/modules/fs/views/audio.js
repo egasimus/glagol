@@ -23,12 +23,14 @@ module.exports.widget = function (id, src) {
   , update: function (prev, el) {
       console.debug('player update', prev, el);
       this.element  = this.element  || prev.element;
+      this.timer    = this.timer    || prev.timer;
     }
 
   , destroy: function (el) {
       console.debug('player destroy', el);
-      var player = Sound.Players.get(playerId);
+      var player = Sound.Players()[playerId];
       if (player) player.stop();
+      if (this.timer) clearTimeout(this.timer);
     }
 
   , patch: function (state) {
@@ -90,7 +92,9 @@ module.exports.widget = function (id, src) {
         if (player && player()) {
           player = player();
           player[player.status === 'playing' ? 'stop' : 'play']()
-            .then(function () { Sound.Players.put(playerId, player) });
+            .then(function () {
+              self.timer = setTimeout(update, 10);
+              update() });
         } else {
           console.warn("can not play", playerId);
         }
@@ -103,10 +107,16 @@ module.exports.widget = function (id, src) {
           player
             .stop()
             .then(function () { player.seek(0) })
-            .then(function () { Sound.Players.put(playerId, player) })
+            .then(function () {
+              self.timer = clearTimeout(self.timer);
+              update() });
         } else {
           console.warn("can not stop", playerId);
         }
+      }
+
+      function update () {
+        Sound.Players.put(playerId, Sound.Players()[playerId]);
       }
 
       function cue (number, label, time) {

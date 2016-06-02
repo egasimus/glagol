@@ -82,6 +82,8 @@ button()
     color #eee
     text-shadow 0 0 3px white, 0 0 3px white
     box-shadow 0 0 12px rgba(0,0,0,0.8)
+  &:focus
+    outline 1px solid black
 
 .Button
   button()
@@ -666,6 +668,7 @@ frame-toolbar()
     button()
 
 .Directory
+  min-width 240px
   flex-grow 1
   overflow auto
 

@@ -30,7 +30,7 @@ module.exports.widget = function (id, src) {
       console.debug('player destroy', el);
       var player = Sound.Players()[playerId];
       if (player) player.stop();
-      if (this.timer) clearTimeout(this.timer);
+      if (this.timer) clearInterval(this.timer);
     }
 
   , patch: function (state) {
@@ -52,6 +52,10 @@ module.exports.widget = function (id, src) {
           ]);
       }
 
+      //function progress (pos, dur) {
+        //barFg.style.width = pos / dur * 100 + '%';
+      //}
+
       return this._vdom = h('.AudioPlayer',
         [ h('.AudioPlayer_Toolbar',
           [ h('button.AudioPlayer_Button_Play' + (player.status === 'playing' ? '.Playing' : ''),
@@ -63,11 +67,20 @@ module.exports.widget = function (id, src) {
         , h('.AudioPlayer_Header', { style: { display: 'flex' } },
             [ $.lib.icon('volume-up.fa-2x')
             , h('.AudioPlayer_Title', require('path').basename(src))
-            , h('.AudioPlayer_Position', '\nloading\n')
+            , h('.AudioPlayer_Position',
+                player.status === 'loading'
+                ? '\nloading\n'
+                : $.lib.formatTime(player.position)                   + "\n" +
+                  $.lib.formatTime(player.duration - player.position) + "\n" +
+                  $.lib.formatTime(player.duration))
             , h('.FrameClose', { onclick: remove }, '×')
             , h('.AudioPlayer_ProgressBar',
                 h('.AudioPlayer_ProgressBar_Background',
-                  h('.AudioPlayer_ProgressBar_Foreground'))) ])
+                  h('.AudioPlayer_ProgressBar_Foreground',
+                    { style: { width:
+                      (player.position && player.duration)
+                      ? player.position / player.duration * 100 + '%'
+                      : 0 }}))) ])
         , h('.AudioPlayer_Cues',
           [ h('.AudioPlayer_Cues_Toolbar',
             [ h('.AudioPlayer_Cues_Add', $.lib.icon('map-marker')) ])
@@ -91,10 +104,19 @@ module.exports.widget = function (id, src) {
         var player = Sound.Players.get(playerId);
         if (player && player()) {
           player = player();
-          player[player.status === 'playing' ? 'stop' : 'play']()
-            .then(function () {
-              self.timer = setTimeout(update, 10);
-              update() });
+          if (player.status === 'playing') {
+            player
+              .stop()
+              .then(function () {
+                self.timer = clearInterval(self.timer);
+                update(); })
+          } else {
+            player
+              .play()
+              .then(function () {
+                self.timer = setInterval(update, 1000 / 30);
+                update() });
+          }
         } else {
           console.warn("can not play", playerId);
         }
@@ -106,9 +128,9 @@ module.exports.widget = function (id, src) {
           player = player();
           player
             .stop()
-            .then(function () { player.seek(0) })
             .then(function () {
-              self.timer = clearTimeout(self.timer);
+              self.timer = clearInterval(self.timer);
+              player.seek(0);
               update() });
         } else {
           console.warn("can not stop", playerId);

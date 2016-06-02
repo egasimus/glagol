@@ -74,18 +74,24 @@ module.exports.widget = function (id, src) {
       function play () {
         var player = Sound.Players.get(playerId);
         if (player && player()) {
-          player().play();
+          player = player();
+          if (player.status === 'playing') {
+            player.stop();
+          } else {
+            player.play();
+          }
         } else {
           console.warn("can not play", playerId);
         }
       }
 
       function stop () {
-        var player = Sound.Players.get(src);
+        var player = Sound.Players.get(playerId);
         if (player && player()) {
-          player().stop();
+          player = player();
+          player.stop().then(function () { player.seek(0) })
         } else {
-          console.warn("can not play", playerId);
+          console.warn("can not stop", playerId);
         }
       }
 

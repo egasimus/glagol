@@ -1,5 +1,13 @@
 (function (state) {
 
+  if (!state.Workspace.Switcher.visible) return h('.Switcher.Hidden');
+
+  var Switcher = App.Model.Workspace.Switcher;
+
+  return h('.Switcher.Visible', state.Workspace.Frames.map(function (frame, i) {
+    return h('.Switcher_Frame', [ i, frame.id, frame.type, frame.address ])
+  }))
+
   return;
 
   return h('.TabBar',

@@ -7,7 +7,8 @@ function onKey (state, direction, event) {
   var up        = direction === 'up'
     , down      = direction === 'down'
     , Workspace = App.Model.Workspace
-    , Launcher  = Workspace.Launcher;
+    , Launcher  = Workspace.Launcher
+    , Switcher  = Workspace.Switcher;
 
   if (isModifierKey(event)) {
 
@@ -23,7 +24,7 @@ function onKey (state, direction, event) {
           case 'KeyO':
           case 'KeyR':
             var visible = Launcher.visible()
-              , mode    = { KeyO:'Open', KeyR:'Run' }[event.code];
+              , mode    = { KeyO: 'Open', KeyR: 'Run' }[event.code];
             if (visible && mode === Launcher.mode()) {
               Launcher.visible.set(false);
             } else {
@@ -33,11 +34,17 @@ function onKey (state, direction, event) {
               Launcher.input.set('');
             }
             break;
+
+          case 'Tab':
+            Switcher.visible.set(true);
         }
 
       } else if (up) {
 
-        // keyup handlers
+        switch (event.code) {
+          case 'Tab':
+            Switcher.visible.set(false);
+        }
 
       }
 

@@ -29,10 +29,10 @@ module.exports = function (state) {
       },
 
     remove:
-      function (index) {
+      function (id) {
 
-        $.log('remove', index);
-        $.model.frames.splice(index, 1);
+        $.log('remove frame', id);
+        $.model.frames.delete(id);
 
         this.refresh();
 

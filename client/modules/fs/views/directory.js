@@ -88,7 +88,7 @@
 
   function remove (event) {
     event.preventDefault();
-    $.modules.workspace.remove(index);
+    App.Workspace('remove', frame.id);
   }
 
   function goUp (event) {

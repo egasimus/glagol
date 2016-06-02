@@ -7,6 +7,7 @@
 
   newState.users[Workspace.userId()].frames.forEach(function (id) {
     var frame = newState.frames[id];
+    if (!frame) return;
     newFrames.push(frame);
     if (['directory', 'file'].indexOf(frame.type) > -1) {
       App.FS('read', frame.address);

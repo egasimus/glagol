@@ -100,7 +100,7 @@ module.exports.widget = function (id, src) {
       }
 
       function remove () {
-        $.modules.workspace.remove(index);
+        App.Workspace('remove', id);
       }
     }
 

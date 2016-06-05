@@ -1,22 +1,15 @@
 var route = _.lib.server.route
   , app   = _.lib.bundler.app
 
+// prepare to bundle gui client code to execute in browser
 var glagol = require('glagol')
   , opts   = { formats: { '.styl': require('glagol-stylus')() } }
   , gui    = app(opts, rel('core/client'));
 
-var modules = glagol.Directory('modules');
-gui.tracked.add(modules);
+// load client modules
+gui.tracked.add($.lib.loadModules(rel, 'client'));
 
-require('fs').readdirSync(rel('modules')).forEach(function (module) {
-  try {
-    modules.add(glagol(rel('modules/' + module + '/client')))
-  } catch (e) {
-    log('could not load module', modulePath);
-    log(e);
-  }
-});
-
+// TODO convert to riko-route
 module.exports =
   [ route(
       '/',
@@ -34,6 +27,7 @@ module.exports =
       re('^/file/(.+)'),
       function (req, res) { return _.file(req, res) }) ];
 
+// helpers
 
 function re (string) {
   return function (request) {

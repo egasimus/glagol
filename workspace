@@ -7,7 +7,7 @@ require('longjohn')
 
 // load core
 var app = glagol(rel('core/server'), {})
-  , log = app.get('log.js')();
+  , log = app().log;
 ['bundler', 'server'].forEach(function (lib) {
   // TODO auto set via package.json
   var lib = app.get('lib').get(lib);
@@ -15,15 +15,7 @@ var app = glagol(rel('core/server'), {})
 
 // load modules
 var modules = glagol.Directory('modules');
-app.add(modules);
-require('fs').readdirSync(rel('modules')).forEach(function (module) {
-  try {
-    modules.add(glagol(rel('modules/' + module + '/server')))
-  } catch (e) {
-    log('could not load module', modulePath);
-    log(e);
-  }
-});
+app.add(app().lib.loadModules(rel, 'server'));
 
 // start, or export
 module.exports = app;

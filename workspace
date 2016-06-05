@@ -8,8 +8,9 @@ require('longjohn')
 // load core
 var app = glagol(rel('core/server'), {})
   , log = app.get('log.js')();
-['lib/bundler', 'lib/server'].forEach(function (lib) {
-  var lib = app.get(lib);
+['bundler', 'server'].forEach(function (lib) {
+  // TODO auto set via package.json
+  var lib = app.get('lib').get(lib);
   lib.options = lib.get('glagol-options.js')(); });
 
 // load modules

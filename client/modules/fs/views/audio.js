@@ -43,8 +43,6 @@ module.exports.widget = function (id, src) {
       var self   = this
         , player = state.Players ? state.Players[playerId] : null;
 
-      console.warn(playerId, player);
-
       if (!player) {
         return this._vdom = h('.AudioPlayer_Missing',
           [ 'No player'

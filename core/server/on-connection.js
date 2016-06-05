@@ -1,4 +1,4 @@
-(function (socket) {
+(function (App, socket) {
   // identify type of socket
   // currently we're serving both client code updates and workspace state,
   // which are mostly unrelated and should be fixed when the general system
@@ -19,14 +19,14 @@
           return;
         }
 
-        var model = _.model.users.get(id);
+        var model = $.modules.workspace.model.Users.get(id);
         if (!model) {
           $.log("can't connect to missing session", id);
           return;
         }
 
         $.log("opened client connection", id);
-        model.put('socket', socket);
+        $.modules.workspace.model.Users.put('socket', socket);
 
         socket.onmessage = require('riko-api2')($.api)(model());
         socket.onclose = function () {

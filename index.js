@@ -8,6 +8,7 @@ function glagol (source, options) {
 glagol.Loader    = require('./core/loader.js');
 glagol.File      = require('./core/file.js');
 glagol.Directory = require('./core/directory.js');
+glagol.Link      = require('./core/link.js');
 glagol.Error     = require('./core/error.js');
 
 if (process.browser) {

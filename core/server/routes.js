@@ -1,9 +1,21 @@
 var route = _.lib.server.route
   , app   = _.lib.bundler.app
-  , path  = require('path')
 
-var opts   = { formats: { '.styl': require('glagol-stylus')() } }
-  , client = app(opts, path.resolve(__dirname, '../client'));
+var glagol = require('glagol')
+  , opts   = { formats: { '.styl': require('glagol-stylus')() } }
+  , gui    = app(opts, rel('core/client'));
+
+var modules = glagol.Directory('modules');
+gui.tracked.add(modules);
+
+require('fs').readdirSync(rel('modules')).forEach(function (module) {
+  try {
+    modules.add(glagol(rel('modules/' + module + '/client')))
+  } catch (e) {
+    log('could not load module', modulePath);
+    log(e);
+  }
+});
 
 module.exports =
   [ route(
@@ -16,7 +28,7 @@ module.exports =
           res.setHeader('Set-Cookie', 'user-id=' + id);
           _.model.users.put(id, { id: id, frames: [] })
         }
-        return client(req, res);
+        return gui(req, res);
       }),
   , route(
       re('^/file/(.+)'),
@@ -30,4 +42,9 @@ function re (string) {
     $.log('match', input.trim(), 'against', r, r.test(input))
     return r.test(input);
   }
+}
+
+function rel (p) {
+  return require('path').resolve.apply(null,
+    [__dirname, '..', '..'].concat(p.split('/')));
 }

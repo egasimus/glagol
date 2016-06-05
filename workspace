@@ -1,29 +1,50 @@
 #!/usr/bin/env node
 
-// initalize core
 var glagol = require('glagol')
-  , app    = glagol(require('path').resolve(__dirname, 'server'), {})
 
-// set correct glagol options on symlinked directories
-var libs = ['lib/bundler', 'lib/server'];
-libs.map(function (lib) {
+// enable long stack traces
+require('longjohn')
+
+// load core
+var app = glagol(rel('core/server'), {})
+  , log = app.get('log.js')();
+['lib/bundler', 'lib/server'].forEach(function (lib) {
   var lib = app.get(lib);
-  lib.options = lib.get('glagol-options.js')();
-})
+  lib.options = lib.get('glagol-options.js')(); });
+
+// load modules
+var modules = glagol.Directory('modules');
+app.add(modules);
+require('fs').readdirSync(rel('modules')).forEach(function (module) {
+  try {
+    modules.add(glagol(rel('modules/' + module + '/server')))
+  } catch (e) {
+    log('could not load module', modulePath);
+    log(e);
+  }
+});
 
 // start, or export
 module.exports = app;
 if (module === require.main) {
   app().main();
-  if (process.versions.electron) {
-    console.log('starting electron...')
-    var electron = require('electron')
-      , w;
-    electron.app.on('ready', function () {
-      w = new (require('electron').BrowserWindow)({ frame: false })
-      w.loadURL('http://localhost:1617');
-      console.log("---->", w)
-      w.on('closed', function () { w = null })
-    })
-  }
+  if (process.versions.electron) initElectron();
+}
+
+// helpers
+
+function rel (p) {
+  return require('path').resolve.apply(null, [__dirname].concat(p.split('/')));
+}
+
+function initElectron () {
+  log('running in electron.');
+  var electron = require('electron')
+    , w;
+  electron.app.on('ready', function () {
+    log('electron ready, opening window');
+    w = new (require('electron').BrowserWindow)({ frame: false })
+    w.loadURL('http://localhost:1617');
+    w.on('closed', function () { w = null })
+  })
 }

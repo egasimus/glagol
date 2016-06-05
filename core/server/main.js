@@ -6,20 +6,16 @@
       server.sockets.removeListener("connection", connection);
     }
     node()(server);
-  })
+  });
 
-  server = server || _.lib.server.server("0.0.0.0", "1617",
-    function () { return _.routes });
+  server = server || _.lib.server.server("0.0.0.0", "1617", getRoutes);
   server.http.on("listening", listening);
   server.sockets.on("connection", connection);
+
   return server;
 
-  function listening () {
-    $.log("listening on 0.0.0.0:1617");
-  }
-
-  function connection (socket) {
-    _.onConnection(socket);
-  }
+  function listening  ()       { $.log("listening on 0.0.0.0:1617"); }
+  function connection (socket) { _.onConnection(socket);  }
+  function getRoutes  ()       { return _.routes }
 
 })

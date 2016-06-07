@@ -39,5 +39,5 @@ function initElectron () {
     w = new (require('electron').BrowserWindow)({ frame: false })
     w.loadURL('http://localhost:1617');
     w.on('closed', function () { w = null })
-  })
+  });
 }

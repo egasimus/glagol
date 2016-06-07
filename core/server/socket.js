@@ -8,7 +8,7 @@
 
       case "glagol":
         socket.onmessage = null;
-        _.lib.bundler.updater.connected(_.routes, socket);
+        _.lib.bundler.updater.connected(_.urls, socket);
         break;
 
       case "riko":
@@ -28,7 +28,15 @@
         $.log("opened client connection", id);
         $.modules.workspace.model.Users.put('socket', socket);
 
-        socket.onmessage = require('riko-api2')($.api)(model());
+        var api = require('riko-api2')($.api)(model());
+        socket.onmessage = function () {
+          try {
+            api.apply(this, arguments)
+          } catch (e) {
+            (console.warn || console.log)(e);
+          }
+          require('riko-api2')($.api)(model())
+        };
         socket.onclose = function () {
           $.log('closed client connection', id);
           //_.model.users.delete(id);

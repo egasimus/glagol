@@ -10,8 +10,11 @@ module.exports = function makeAPI (getCommands) {
       var data     = API.read(message)
         , commands = API.getCommands(state)
         , command  = commands[data[0]];
-      if (!command) throw Error("no command " + data[0]);
-      command.apply(commands, data[1] || []);
+      if (command) {
+        command.apply(commands, data[1] || []);
+      } else {
+        throw new Error("riko-api2: no command " + data[0]);
+      }
     }
   }
 

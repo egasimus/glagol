@@ -9,5 +9,5 @@
     "start": "node server.js"
   },
   "author": "",
-  "license": "ISC"
+  "license": "GPL-3.0"
 }

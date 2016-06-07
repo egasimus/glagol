@@ -26,7 +26,6 @@
         }
 
         $.log("opened client connection", id);
-        $.modules.workspace.model.Users.put('socket', socket);
 
         var api = require('riko-api2')($.api)(model());
         socket.onmessage = function () {
@@ -35,7 +34,6 @@
           } catch (e) {
             (console.warn || console.log)(e);
           }
-          require('riko-api2')($.api)(model())
         };
         socket.onclose = function () {
           $.log('closed client connection', id);

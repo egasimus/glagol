@@ -57,6 +57,9 @@ function onKey (state, direction, event) {
             Launcher.focused.set(false);
           }
           break;
+        case 'F5':
+          window.location.reload();
+          break;
       }
 
     }

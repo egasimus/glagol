@@ -6,8 +6,7 @@
   require('fs').readdirSync(rel('modules')).forEach(function (moduleName) {
     var modulePath = rel('modules/' + moduleName + '/' + subdir);
     try {
-      var module = glagol.Link(moduleName, glagol(modulePath));
-      modules.add(module);
+      modules.add(glagol(modulePath));
     } catch (e) {
       $.log('could not load module', modulePath);
       $.log(e);

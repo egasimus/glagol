@@ -52,16 +52,16 @@ function onKey (state, direction, event) {
 
       switch (event.code) {
         case 'Escape':
-          if (Launcher.focused()) {
+          if (down && Launcher.focused()) {
             Launcher.visible.set(false);
             Launcher.focused.set(false);
           }
           break;
         case 'F5':
-          window.location.reload();
+          if (down) window.location.reload();
           break;
         case 'F12':
-          nativeRequire('electron').remote.getCurrentWindow().toggleDevTools();
+          if (down) nativeRequire('electron').remote.getCurrentWindow().toggleDevTools();
           break;
       }
 

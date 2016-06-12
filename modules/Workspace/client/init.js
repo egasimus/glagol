@@ -6,7 +6,7 @@
     { onopen:
         function () {
           socket.onopen = null;
-          socket.send('riko');
+          socket.send('api');
           App.Workspace('refresh');
         }
     , onclose:

@@ -11,7 +11,7 @@
         _.lib.bundler.updater.connected(_.urls, socket);
         break;
 
-      case "riko":
+      case "api":
         var cookies = socket.upgradeReq.headers.cookie
           , id      = require('cookie').parse(cookies)['user-id'];
         if (!id) {

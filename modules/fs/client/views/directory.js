@@ -30,8 +30,9 @@
   function noData () {
     return h('.Directory_Empty',
       [ $.lib.icon('exclamation-circle')
-      , "This directory's contents have not been loaded. "
-      , "Hit 'Reload' to try again." ]);
+      , "We don't know what's in this directory. ", h('br'), "Hit "
+      , h('button', { onclick: refresh }, [ $.lib.icon('refresh'), "Reload" ])
+      , " to try to find out." ]);
   }
 
   function header () {

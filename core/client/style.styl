@@ -32,15 +32,6 @@ hr
   border-top 1px solid #bbb
   border-bottom none
 
-button
-  font-weight bold
-  background white
-  border 2px solid #555
-  color #111
-  margin 3px
-  padding 3px 6px
-  cursor pointer
-
 input[type=text]
   font-weight bold
   background white
@@ -80,10 +71,20 @@ button()
     font-size 30px
   &:hover
     color #eee
-    text-shadow 0 0 3px white, 0 0 3px white
+    text-shadow 0 0 2px white, 0 0 2px white
     box-shadow 0 0 12px rgba(0,0,0,0.8)
   &:focus
     outline 1px solid black
+
+button
+  button()
+  font-weight bold
+  margin 3px
+  padding 3px 6px
+  cursor pointer
+  text-transform uppercase
+  letter-spacing -1px
+  color #ddd
 
 .Button
   button()
@@ -730,14 +731,25 @@ frame-toolbar()
     padding 12px
     font-size 1.2em
     font-weight bold
-    font-style italic
     color #ccc
-    line-height 32px
-    i
-      font-size 24px
-      line-height 24px
+    line-height 18px
+    text-align center
+    & > i
+      display block
+      font-size 60px
+      line-height 60px
       vertical-align middle
       margin-right 6px
+    button i
+      font-size 18px
+      margin-right 12px
+      vertical-align middle
+      background rgba(0,0,0,0.1)
+      padding 3px 9px
+      margin -3px 6px -3px -6px
+      transition background 0.2s
+    button:hover i
+      background rgba(0,0,0,0.3)
 
   &_Body
     right 0

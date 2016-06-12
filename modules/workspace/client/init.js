@@ -22,11 +22,9 @@
   // expose workspace api
   App.Workspace = require('riko-api2')(socket);
 
-  // bind keyboard listener
-  window.addEventListener('keyup', onKey('up'));
-  window.addEventListener('keydown', onKey('down'));
-  function onKey (direction) {
-    return function (event) { _.onKey(App.Model(), direction, event) }
-  }
+  // bind keyboard listeners
+  ['up', 'down'].forEach(function (direction) {
+    window.addEventListener('key' + direction, function (event) {
+      return _.onKey(App.Model(), direction, event); }) })
 
 })

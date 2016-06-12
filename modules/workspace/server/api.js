@@ -31,8 +31,8 @@ module.exports = function (data) {
     remove:
       function (id) {
 
-        $.log('remove frame', id);
-        $.model.Frames.delete(id);
+        _.log('remove frame', id);
+        _.model.Frames.delete(id);
 
         this.refresh();
 

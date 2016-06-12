@@ -60,6 +60,9 @@ function onKey (state, direction, event) {
         case 'F5':
           window.location.reload();
           break;
+        case 'F12':
+          nativeRequire('electron').remote.getCurrentWindow().toggleDevTools();
+          break;
       }
 
     }

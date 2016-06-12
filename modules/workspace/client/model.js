@@ -2,8 +2,8 @@ module.exports = { Workspace:
   { userId:
     null
 
-  , isLoading:
-    true
+  , Status:
+    "loading"
 
   , Launcher:
     { visible: false

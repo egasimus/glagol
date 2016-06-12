@@ -29,7 +29,7 @@
   var id = require('cookie').parse(document.cookie)['user-id'];
   console.log("User ID:", id);
   Workspace.userId.set(id);
-  Workspace.isLoading.set(false);
+  Workspace.Status.set("OK");
   Workspace.StatusBar.set("Ready.");
 
   return App;

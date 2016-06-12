@@ -2,7 +2,7 @@
 
   state = state || {};
 
-  if (state.Workspace.isLoading) return _.loading(state);
+  if (state.Workspace.Status === "loading") return _.loading(state);
 
   return state.Workspace.loading
     ? _.loading(state)

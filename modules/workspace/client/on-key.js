@@ -58,10 +58,15 @@ function onKey (state, direction, event) {
           }
           break;
         case 'F5':
-          if (down) window.location.reload();
+          if (down) {
+            Workspace.Status.set('loading');
+            window.location.reload();
+          }
           break;
         case 'F12':
-          if (down) nativeRequire('electron').remote.getCurrentWindow().toggleDevTools();
+          if (down) {
+            nativeRequire('electron').remote.getCurrentWindow().toggleDevTools();
+          }
           break;
       }
 

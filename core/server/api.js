@@ -1,6 +1,6 @@
 (function (state) {
 
-  console.log("building api", arguments);
+  //console.log("building api", arguments);
 
   var api = {};
 

@@ -23,8 +23,7 @@ module.exports = function (data) {
           , fr   = { id: id, type: type, address: addr };
         _.model.Frames.put(id, require('riko-mvc/model')(fr));
         _.model.Users.get(user).Frames.push(id);
-        $.log(user, 'added frame', id, type, 'at', addr);
-
+        //$.log(user, 'added frame', id, type, 'at', addr);
         this.refresh();
 
       },

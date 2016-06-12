@@ -5,8 +5,8 @@
   var Workspace = App.Model.Workspace
     , newFrames = [];
 
-  newState.Users[Workspace.userId()].frames.forEach(function (id) {
-    var frame = newState.frames[id];
+  newState.Users[Workspace.userId()].Frames.forEach(function (id) {
+    var frame = newState.Frames[id];
     if (!frame) return;
     newFrames.push(frame);
     if (['directory', 'file'].indexOf(frame.type) > -1) {

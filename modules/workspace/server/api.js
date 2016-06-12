@@ -2,15 +2,16 @@ var path = require('path')
   , fs   = require('fs')
   , os   = require('os')
 
-module.exports = function (state) {
+module.exports = function (data) {
+
+  var state  = data.state
+    , socket = data.socket;
 
   return {
 
     refresh:
       function () {
-
-        state.socket.send(serialize($.model()));
-
+        socket.send(serialize($.model()));
       },
 
     add:
@@ -18,10 +19,10 @@ module.exports = function (state) {
 
         var user = state.id
           , addr = getAddress(type, address)
-          , id   = $.lib.makeId()
+          , id   = require('shortid').generate()
           , fr   = { id: id, type: type, address: addr };
-        $.model.frames.put(id, $.lib.model(fr))
-        $.model.users.get(user).frames.push(id);
+        _.model.Frames.put(id, require('riko-mvc/model')(fr));
+        _.model.Users.get(user).Frames.push(id);
         $.log(user, 'added frame', id, type, 'at', addr);
 
         this.refresh();
@@ -32,7 +33,7 @@ module.exports = function (state) {
       function (id) {
 
         $.log('remove frame', id);
-        $.model.frames.delete(id);
+        $.model.Frames.delete(id);
 
         this.refresh();
 
@@ -41,7 +42,7 @@ module.exports = function (state) {
     change:
       function (id, key, val) {
 
-        $.model.frames.get(id).put(key, val);
+        $.model.Frames.get(id).put(key, val);
 
         this.refresh();
 
@@ -53,7 +54,7 @@ module.exports = function (state) {
         var split = command.split(' ')
           , cmd   = split[0]
           , args  = split.slice(1)
-          , id    = $.lib.makeId()
+          , id    = require('shortid').generate()
           , proc  = require('child_process').spawn(cmd, args);
 
         $.model.processes.put(id,

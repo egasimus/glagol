@@ -27,7 +27,7 @@
 
         $.log("opened client connection", id);
 
-        var api = require('riko-api2')($.api)(model());
+        var api = require('riko-api2')($.api)({ socket: socket, state: model() });
         socket.onmessage = function () {
           try {
             api.apply(this, arguments)

@@ -5,7 +5,7 @@
   var Workspace = App.Model.Workspace
     , newFrames = [];
 
-  newState.users[Workspace.userId()].frames.forEach(function (id) {
+  newState.Users[Workspace.userId()].frames.forEach(function (id) {
     var frame = newState.frames[id];
     if (!frame) return;
     newFrames.push(frame);
@@ -14,8 +14,8 @@
     }
   })
 
-  Object.keys(newState.frames).forEach(function (id) {
-    var frame = newState.frames[id]
+  Object.keys(newState.Frames).forEach(function (id) {
+    var frame = newState.Frames[id]
     if (frame.type === 'directory' || frame.type === 'file') {
       App.FS('read', frame.address);
     }

@@ -14,7 +14,7 @@
   // add modules
   var modules = Glagol.get('modules')();
   Object.keys(modules).forEach(function (moduleName) {
-    $.log('loading module', moduleName, modules[moduleName], modules[moduleName].init);
+    $.log('loading module', moduleName);
     if (modules[moduleName].init instanceof Function) {
       modules[moduleName].init();
     }

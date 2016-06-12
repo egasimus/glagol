@@ -11,7 +11,7 @@ module.exports = function (data) {
 
     refresh:
       function () {
-        socket.send(serialize($.model()));
+        socket.send(serialize(_.model()));
       },
 
     add:

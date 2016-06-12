@@ -5,7 +5,7 @@
   socket.onmessage = function (message) {
     var data = JSON.parse(message.data)
     console.debug("FS update", data)
-    $.modules.fs.update(data);
+    _.update(data);
   }
 
   App.FS = require('riko-api2')(socket);

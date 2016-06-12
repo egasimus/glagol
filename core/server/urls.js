@@ -36,7 +36,7 @@ function serveGui (req, res) {
     id = _.lib.makeId();
     res.setHeader('Set-Cookie', 'user-id=' + id);
     console.log($.modules);
-    $.modules.workspace.model.Users.put(id, { id: id, Frames: [] })
+    $.modules.Workspace.model.Users.put(id, { id: id, Frames: [] })
   }
 
   return gui(req, res);

@@ -22,9 +22,8 @@
   var App = window.App = $.lib.gui.init(Glagol)
     , Workspace = App.Model.Workspace;
 
-  [ 'workspace'
-  , 'fs'
-  , 'sound' ].forEach(initModule);
+  // init plugins
+  Object.keys($.modules).forEach(initModule);
 
   var id = require('cookie').parse(document.cookie)['user-id'];
   console.log("User ID:", id);

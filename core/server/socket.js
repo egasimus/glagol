@@ -19,7 +19,7 @@
           return;
         }
 
-        var model = $.modules.workspace.model.Users.get(id);
+        var model = $.modules.Workspace.model.Users.get(id);
         if (!model) {
           $.log("can't connect to missing session", id);
           return;

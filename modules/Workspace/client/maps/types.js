@@ -1,8 +1,8 @@
 module.exports = require('riko-route')(
   [ [ 'iframe',    __.views.frames.iframe      ]
-  , [ 'file',      __.__.fs.views.file         ]
-  , [ 'directory', __.__.fs.views.directory    ]
-  , [ 'glagol',    __.__.inspect.views.glagol  ]
+  , [ 'file',      __.__.FS.views.file         ]
+  , [ 'directory', __.__.FS.views.directory    ]
+  , [ 'glagol',    __.__.Inspect.views.glagol  ]
   ] );
 
 module.exports.handler = function (match, input, data) {

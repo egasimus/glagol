@@ -1,1 +1,1 @@
-$.modules.workspace.views.app
+$.modules.Workspace.views.app

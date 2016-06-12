@@ -15,7 +15,7 @@
         }
     , onmessage:
         function (message) {
-          $.modules.workspace.update(JSON.parse(message.data));
+          _.update(JSON.parse(message.data));
         }
     });
 
@@ -25,6 +25,7 @@
   // bind keyboard listeners
   ['up', 'down'].forEach(function (direction) {
     window.addEventListener('key' + direction, function (event) {
+      console.log(event)
       return _.onKey(App.Model(), direction, event); }) })
 
 })

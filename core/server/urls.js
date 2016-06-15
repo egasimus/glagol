@@ -1,15 +1,7 @@
-var route = _.lib.server.route
-  , app   = _.lib.bundler.app
+var route = _.lib.server.route;
 
-// prepare to bundle gui client code to execute in browser
-var glagol = require('glagol')
-  , opts   = { formats: { '.styl': require('glagol-stylus')() } }
-  , gui    = app(opts, rel('core/client'));
-
-// load client modules
-gui.tracked.add($.lib.loadModules(rel, 'client'));
-
-module.exports = [ route('/', serveGui) ] // TODO convert to riko-route
+module.exports = // TODO convert to riko-route
+  [ route('/', serveGui) ]
 
 // helpers
 
@@ -39,6 +31,6 @@ function serveGui (req, res) {
     $.modules.Workspace.model.Users.put(id, { id: id, Frames: [] })
   }
 
-  return gui(req, res);
+  return _.gui(req, res);
 
 }

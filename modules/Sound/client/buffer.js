@@ -11,7 +11,7 @@
       win(cached);
     } else {
       request = new XMLHttpRequest();
-      request.open('GET', 'http://localhost:1615' + src, true);
+      request.open('GET', '/file?path=' + src, true);
       request.responseType = 'arraybuffer';
       request.onload = loaded;
       request.onerror = function (e) { fail(e) };

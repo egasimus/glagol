@@ -11,7 +11,7 @@ module.exports = function (data) {
 
     Refresh:
       function () {
-        socket.send({ module: 'Workspace', data: serialize(_.model()) });
+        socket.send(serialize({ module: 'Workspace', data: _.model() }));
       },
 
     Open:

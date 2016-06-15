@@ -42,7 +42,7 @@ module.exports = function (data) {
     Change:
       function (id, key, val) {
 
-        $.model.Frames.get(id).put(key, val);
+        _.model.Frames.get(id).put(key, val);
 
         this['Workspace/Refresh']();
 
@@ -57,7 +57,7 @@ module.exports = function (data) {
           , id    = require('shortid').generate()
           , proc  = require('child_process').spawn(cmd, args);
 
-        $.model.processes.put(id,
+        _.model.Processes.put(id,
           { id:      id
           , command: command
           , proc:    proc });

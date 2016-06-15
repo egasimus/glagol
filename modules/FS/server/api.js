@@ -34,7 +34,7 @@ module.exports = function (state) {
           _.model.Files[location] = data;
         }
 
-        state.socket.send(JSON.stringify(data))
+        state.socket.send({ module: 'FS', data: JSON.stringify(data) });
 
       }
 

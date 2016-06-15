@@ -3,8 +3,6 @@
   var socket = App.API.socket;
   socket.addEventListener('open',
     function () { App.API('Workspace/Refresh'); })
-  socket.addEventListener('message',
-    function (message) { _.update(JSON.parse(message.data)); });
 
   // bind keyboard listeners
   ['up', 'down'].forEach(function (direction) {

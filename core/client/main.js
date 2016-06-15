@@ -25,8 +25,9 @@
   // connect to server-side api
   var socket = require('extend')(
     new WebSocket('ws://localhost:1617'),
-    { onopen:  function () { socket.onopen = null; socket.send('api'); }
-    , onclose: function () { window.location.reload(); } });
+    { onopen:    function () { socket.onopen = null; socket.send('api'); }
+    , onclose:   function () { window.location.reload(); }
+    , onmessage: dispatchUpdate });
   App.API = require('riko-api2')(socket);
 
   // init plugins
@@ -53,6 +54,22 @@
     // reload whole page when editing module entry point
     var g = Glagol.get('modules/' + moduleName + '/init.js');
     if (g) g.events.on('changed', function () { window.location.reload() });
+  }
+
+  function dispatchUpdate (message) {
+    var data   = JSON.parse(message.data)
+      , module = data.module
+    if (!module) {
+      console.warn('Received data from server with no module:', data);
+      return;
+    }
+    var update = $.modules[module].update;
+    if (!update || typeof update !== 'function') {
+      console.warn('Can\'t update with', data, 'because', module + '.update ' +
+        'is not a function.')
+      return;
+    }
+    update(data.data);
   }
 
 })

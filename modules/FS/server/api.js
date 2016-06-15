@@ -3,11 +3,11 @@ var path = require('path')
   , os   = require('os')
   , exec = require('child_process').execFileSync;
 
-module.exports = require('riko-api2')(function (state) {
+module.exports = function (state) {
 
   return {
 
-    read:
+    Read:
       function (location) {
 
         location = resolve(location.trim());
@@ -26,12 +26,12 @@ module.exports = require('riko-api2')(function (state) {
 
         if (data.type === 'directory') {
           data.items = readDir(location);
-          $.model.directories[location] = data;
+          _.model.Directories[location] = data;
         }
 
         if (data.type === 'file') {
           data.contentType = getContentType(location);
-          $.model.files[location] = data;
+          _.model.Files[location] = data;
         }
 
         state.socket.send(JSON.stringify(data))
@@ -40,7 +40,7 @@ module.exports = require('riko-api2')(function (state) {
 
   }
 
-});
+};
 
 function resolve (location) {
   if (location === '~') {

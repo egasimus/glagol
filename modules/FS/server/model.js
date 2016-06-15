@@ -1,3 +1,3 @@
 module.exports =
-  { directories: {}
-  , files:       {} }
+  { Directories: {}
+  , Files:       {} }

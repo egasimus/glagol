@@ -22,15 +22,24 @@
   var App = window.App = $.lib.gui.init(Glagol)
     , Workspace = App.Model.Workspace;
 
+  // connect to server-side api
+  var socket = require('extend')(
+    new WebSocket('ws://localhost:1617'),
+    { onopen:  function () { socket.onopen = null; socket.send('api'); }
+    , onclose: function () { window.location.reload(); } });
+  App.API = require('riko-api2')(socket);
+
   // init plugins
   Object.keys($.modules).forEach(initModule);
 
+  // determine user id
   var id = require('cookie').parse(document.cookie)['user-id'];
   console.info("User ID:", id);
   Workspace.userId.set(id);
+
+  // we're done
   Workspace.Status.set("OK");
   Workspace.StatusBar.set("Ready.");
-
   return App;
 
   function initModule (moduleName) {

@@ -79,23 +79,23 @@
 
   function refresh (event) {
     event.preventDefault();
-    $.modules.fs.refresh(frame, index);
+    App.API('FS/Read', frame.address);
   }
 
   function changeAddress (event) {
     event.preventDefault();
-    App.Workspace('change', frame.id, 'address', event.target.value);
+    App.API('Workspace/Change', frame.id, 'address', event.target.value);
   }
 
   function remove (event) {
     event.preventDefault();
-    App.Workspace('remove', frame.id);
+    App.API('Workspace/Close', frame.id);
   }
 
   function goUp (event) {
     event.preventDefault();
     var location = require('path').dirname(frame.address);
-    App.Workspace('change', frame.id, 'address', location);
+    App.API('Workspace/Change', frame.id, 'address', location);
   }
 
   function open (name, isDir) {
@@ -103,9 +103,9 @@
       event.preventDefault();
       var location = require('path').join(frame.address, name);
       if (isDir) {
-        App.Workspace('change', frame.id, 'address', location);
+        App.API('Workspace/Change', frame.id, 'address', location);
       } else {
-        App.Workspace('add', 'file', location);
+        App.API('Workspace/Open', 'file', location);
       }
     }
   }

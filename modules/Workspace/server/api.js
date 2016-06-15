@@ -9,12 +9,12 @@ module.exports = function (data) {
 
   return {
 
-    refresh:
+    Refresh:
       function () {
         socket.send(serialize(_.model()));
       },
 
-    add:
+    Open:
       function (type, address) {
 
         var user = state.id
@@ -24,30 +24,31 @@ module.exports = function (data) {
         _.model.Frames.put(id, require('riko-mvc/model')(fr));
         _.model.Users.get(user).Frames.push(id);
         //$.log(user, 'added frame', id, type, 'at', addr);
-        this.refresh();
+
+        this['Workspace/Refresh']();
 
       },
 
-    remove:
+    Close:
       function (id) {
 
-        _.log('remove frame', id);
+        _.log('close frame', id);
         _.model.Frames.delete(id);
 
-        this.refresh();
+        this['Workspace/Refresh']();
 
       },
 
-    change:
+    Change:
       function (id, key, val) {
 
         $.model.Frames.get(id).put(key, val);
 
-        this.refresh();
+        this['Workspace/Refresh']();
 
       },
 
-    run:
+    Run:
       function (command) {
 
         var split = command.split(' ')
@@ -61,7 +62,7 @@ module.exports = function (data) {
           , command: command
           , proc:    proc });
 
-        this.refresh();
+        this['Workspace/Refresh']();
 
       }
 

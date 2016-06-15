@@ -1,7 +1,5 @@
 (function (frame, index) {
 
-  console.log(__.maps)
-
   return h('section.Frame' + (frame.error ? '.FrameWithError' : ''),
     { dataset: { type: frame.type, address: frame.address } },
     __.maps.types(frame.type, { frame: frame, index: index }));

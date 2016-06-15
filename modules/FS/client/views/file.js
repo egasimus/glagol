@@ -13,7 +13,7 @@
       var playerId = frame.id + '_' + file.path;
       if (!App.Model.Sound.Players()[playerId]) {
         setTimeout(function () {
-          App.Model.Sound.Players.put(playerId, $.modules.sound.player(file.path))
+          App.Model.Sound.Players.put(playerId, $.modules.Sound.player(file.path))
         }, 0);
       }
       body = _.audio(frame.id, file.path);

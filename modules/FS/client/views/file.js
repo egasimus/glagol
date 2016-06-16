@@ -16,7 +16,7 @@
           App.Model.Sound.Players.put(playerId, $.modules.Sound.player(file.path))
         }, 0);
       }
-      body = _.audio(frame.id, file.path);
+      body = $.modules.Sound.views.audio(frame.id, file.path);
       break;
     case 'image/png':
     case 'image/jpeg':

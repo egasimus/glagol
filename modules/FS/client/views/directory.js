@@ -4,7 +4,7 @@
 
   return [
     toolbar(),
-    h('.Directory',
+    h('.Directory_Body',
       [ header()
       , directory ? directory.items.length > 0 ? body() : empty() : noData()])
   ];
@@ -42,14 +42,14 @@
      , h('input.FrameAddress',
        { onchange: changeAddress
        , value:    frame.address })
-     , h('.FrameClose', { onclick: remove }, '×')
+     , h('.FrameClose', { onclick: close }, '×')
      ])
   }
 
   function body () {
-    return h('table.Directory_Body',
+    return h('.Directory_Entries', h('table',
       [ directory.items.map(dir)
-      , directory.items.map(file) ])
+      , directory.items.map(file) ]))
   }
 
   function entry (onclick, body) {
@@ -88,7 +88,7 @@
     App.API('Workspace/Change', frame.id, 'address', event.target.value);
   }
 
-  function remove (event) {
+  function close (event) {
     event.preventDefault();
     App.API('Workspace/Close', frame.id);
   }

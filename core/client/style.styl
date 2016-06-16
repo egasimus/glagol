@@ -715,6 +715,9 @@ frame-toolbar()
   &_Toolbar
     frame-toolbar()
 
+  &_Body
+    width 100%
+
   .FrameHeader
     position absolute
     top 0
@@ -729,7 +732,7 @@ frame-toolbar()
     font-weight bold
     text-shadow 0 0 3px black
 
-  &_Body,
+  &_Entries,
   &_Empty
     position absolute
     top 48px
@@ -762,14 +765,12 @@ frame-toolbar()
     button:hover i
       background rgba(0,0,0,0.3)
 
-  &_Body
-    width 100%
-    height 100%
+  &_Entries
+    position absolute
+    top 48px
+    left 0
     right 0
     bottom 0
-
-  .FrameBody > &
-    flex-grow 1
     overflow auto
 
   &_Entry

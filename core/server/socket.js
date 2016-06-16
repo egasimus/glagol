@@ -12,6 +12,7 @@
         break;
 
       case "api":
+        socket.onmessage = null;
         var cookies = socket.upgradeReq.headers.cookie
           , id      = require('cookie').parse(cookies)['user-id'];
         if (!id) {

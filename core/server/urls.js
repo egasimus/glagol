@@ -1,6 +1,7 @@
 var route = _.lib.server.route;
 
-module.exports = // TODO convert to riko-route
+serveGui.tracked = _.gui.tracked;
+module.exports = // TODO convert this whole mess to riko-route
   [ route('/', serveGui) ]
 
 // helpers

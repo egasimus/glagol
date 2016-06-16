@@ -71,7 +71,7 @@ module.exports.widget = function (id, src) {
                 : $.lib.formatTime(player.position)                   + "\n" +
                   $.lib.formatTime(player.duration - player.position) + "\n" +
                   $.lib.formatTime(player.duration))
-            , h('.FrameClose', { onclick: remove }, '×')
+            , h('.FrameClose', { onclick: close }, '×')
             , h('.AudioPlayer_ProgressBar',
                 { onmousedown: seek },
                 h('.AudioPlayer_ProgressBar_Background',
@@ -162,8 +162,8 @@ module.exports.widget = function (id, src) {
         , h('.AudioPlayer_Cue_Time', time) ])
       }
 
-      function remove () {
-        App.Workspace('remove', id);
+      function close () {
+        App.API('Workspace/Close', id);
       }
     }
 

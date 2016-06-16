@@ -46,12 +46,22 @@
         [ h('header.FrameHeader',
            [ $.lib.icon('file.fa-2x')
            , h('input.FrameAddress',
-             { onchange: null//changeAddress
+             { onchange: changeAddress
              , value:    file.path })
-           , h('.FrameClose', { onclick: null/*remove*/ }, '×')
+           , h('.FrameClose', { onclick: close }, '×')
            ])
         , body
         ]) ];
+
+    function changeAddress (event) {
+      event.preventDefault();
+      App.API('Workspace/Change', frame.id, 'address', event.target.value);
+    }
+
+    function close (event) {
+      event.preventDefault();
+      App.API('Workspace/Close', frame.id);
+    }
   }
 
 })

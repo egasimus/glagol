@@ -13,11 +13,12 @@
 
   function toolbar () {
     return h('.Directory_Toolbar',
-      [ h('button', $.lib.icon('chevron-left'))
-      , h('button', { onclick: refresh }, $.lib.icon('refresh'))
+      [ h('button', { onclick: refresh }, $.lib.icon('refresh'))
+      , h('button', $.lib.icon('chevron-left'))
       , h('button', $.lib.icon('chevron-right'))
       , when(frame.address !== '/',
           h('button', { onclick: goUp }, $.lib.icon('chevron-up')))
+      , h('button', $.lib.icon('eye'))
        ]);
   }
 

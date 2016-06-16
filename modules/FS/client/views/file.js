@@ -24,17 +24,27 @@
       body = addSrc(h('img'))
       break;
     case 'text/plain':
-      body = _.editor(file.path);
+      body = defaultWrappers(_.editor(file.path));
       break;
     default:
       body = 'unknown file type: ' + file.type;
   }
 
-  return h('.File', body);
+  return body;
 
   function addSrc (vnode) {
     vnode.properties.src = '/file?path=' + file.path;
     return vnode;
+  }
+
+  function defaultWrappers (body) {
+    return [
+      h('.File_Toolbar',
+        [ h('button', $.lib.icon('refresh'))
+        , h('button', $.lib.icon('save'))]),
+      h('.File_Body',
+        [ h('.File_Header')
+        , body ]) ];
   }
 
 })

@@ -43,8 +43,15 @@
         [ h('button', $.lib.icon('refresh'))
         , h('button', $.lib.icon('save'))]),
       h('.File_Body',
-        [ h('.File_Header')
-        , body ]) ];
+        [ h('header.FrameHeader',
+           [ $.lib.icon('file.fa-2x')
+           , h('input.FrameAddress',
+             { onchange: null//changeAddress
+             , value:    file.path })
+           , h('.FrameClose', { onclick: null/*remove*/ }, '×')
+           ])
+        , body
+        ]) ];
   }
 
 })

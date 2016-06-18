@@ -80,7 +80,7 @@
 
   function refresh (event) {
     event.preventDefault();
-    App.API('FS/Read', frame.address);
+    App.API('FS/GetInfo', frame.address);
   }
 
   function changeAddress (event) {

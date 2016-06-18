@@ -7,11 +7,11 @@ module.exports = function (state) {
 
   return {
 
-    Read:
+    GetInfo:
       function (location) {
 
         location = resolve(location.trim());
-        $.log("read", location);
+        _.log("GetInfo", location);
 
         var data = { path: location }
 
@@ -36,6 +36,10 @@ module.exports = function (state) {
 
         state.socket.send(JSON.stringify({ module: 'FS', data: data }));
 
+      },
+
+    ReadFile:
+      function (location) {
       }
 
   }

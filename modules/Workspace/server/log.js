@@ -1,1 +1,1 @@
-$.log.as('workspace')
+$.log.as('Workspace')

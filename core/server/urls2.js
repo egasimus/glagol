@@ -1,7 +1,7 @@
 module.exports = require('riko-route')(
   [ [ '/', serveGui ] ]);
 
-function serveGui (req, res) {
+function serveGui (route, req, res) {
 
   var cookies = require('cookie').parse(req.headers.cookie || '')
     , id      = cookies['user-id'];

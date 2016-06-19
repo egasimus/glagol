@@ -33,7 +33,7 @@
   return body;
 
   function addSrc (vnode) {
-    vnode.properties.src = '/file?path=' + file.path;
+    vnode.properties.src = '/api/FS/ReadFile?' + JSON.stringify([file.path]);
     return vnode;
   }
 

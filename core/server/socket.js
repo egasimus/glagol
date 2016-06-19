@@ -6,6 +6,7 @@
 
       case "glagol":
         socket.onmessage = null;
+        // TODO decouple updater
         _.lib.bundler.updater.connected(_.urls, socket);
         break;
 

@@ -1,6 +1,8 @@
+serveGui.tracked = _.gui.tracked;
+
 module.exports = require('riko-route')(
-  [ [ /^\/$/,   serveGui ]
-  , [ /^\/api/, serveApi ] ]);
+  [ [ /^\/$/,     serveGui ]
+  , [ /^\/api.+/, serveApi ] ]);
 
 function serveGui (route, req, res) {
 
@@ -20,6 +22,16 @@ function serveGui (route, req, res) {
 
 function serveApi (route, req, res) {
 
-  console.log('serving api')
+  var model = $.modules.Workspace.model.Users.get(id)
+    , api   = require('riko-api2')($.api)(model(), socket.send.bind(socket))
+    , url   = require('url').parse(req.url)
+    , cmd   = url.pathname.split('/').slice(2).reduce(getCommand, api)
+    , args  = JSON.parse(decodeURIComponent(require('url').parse(req.url).query));
+
+  console.log('serving api', cmd, args);
+
+  function getCommand (command, fragment) {
+    return command[fragment];
+  }
 
 }

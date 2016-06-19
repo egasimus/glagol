@@ -4,23 +4,24 @@ var Router = module.exports = function Router (routes, options) {
   router.prepare  = options.prepare  || Router.default.prepare;
   router.handler  = options.handler  || Router.default.handler;
   router.catchall = options.catchall || Router.default.catchall;
-  router.routes   = routes.map(router.prepare);
+  router.routes   = routes;
   return router;
 
-  function router (input, data) {
+  function router (input) {
 
     var result  = undefined
-      , matched = false;
+      , matched = false
+      , args    = Array.prototype.slice.call(arguments, 1);
 
-    matched = router.routes.some(function (route, i) {
+    matched = router.routes.map(router.prepare).some(function (route, i) {
       var check = route[0];
-      if (check(input, data)) {
-        result = router.handler(route[1], input, data);
+      if (check.apply(null, [input].concat(args))) {
+        result = router.handler(route[1], input, args);
         return true;
       }
     })
 
-    return matched ? result : router.catchall(input, data);
+    return matched ? result : router.catchall(input, args);
     
   }
 
@@ -28,39 +29,52 @@ var Router = module.exports = function Router (routes, options) {
 
 Router.default =
   { prepare: function (route) {
-      var newRoute = [ route[0], route[1] ];
-      if (typeof route[0] === 'string') newRoute[0] = Router.stringMatcher(route[0]);
-      if (route[0] instanceof RegExp)   newRoute[0] = Router.regExpMatcher(route[0]);
+      var newRoute =
+        [ 'string' === typeof route[0]
+            ? Router.stringMatcher(route[0])
+        : 'RegExp' === route[0].constructor.name
+            ? Router.regExpMatcher(route[0])
+        : route[0]
+        , route[1] ];
       return newRoute;
     }
-  , handler: function (route, input, data) {
-      return route(input, data);
+  , handler: function (route, input, args) {
+      return route.apply(null, [input].concat(args || []));
     }
-  , catchall: function (input, data) {
-      console.error('with (', data, ') no match for:', input);
+  , catchall: function (input, args) {
+      console.error('with (', args, ') no match for:', input);
     }
   };
 
-Router.debugHandler = function (input, data) {
-  console.info(input, 'with (', data, ') matched:', name);
+Router.debugHandler = function (input, args) {
+  debug(input, 'with (', args, ') matched:', name);
   if (router.handlers[name]) {
-    router.handlers[name](input, data);
+    router.handlers[name](input, args);
   } else {
-    console.warn('with (', data, ') no handler:', name);
+    console.warn('with (', args, ') no handler:', name);
   }
 }
 
 Router.regExpMatcher = function (string) {
   return function (input) {
     var r = new RegExp(string);
-    console.debug('match', input.trim(), 'against', r, r.test(input))
+    debug('match', input.trim(), 'against', r, r.test(input))
     return r.test(input);
   }
 }
 
 Router.stringMatcher = function (string) {
   return function (input) {
-    console.debug('match', input, 'against', string, input === string)
+    debug('match', input, 'against', string, input === string)
     return input === string;
+  }
+}
+
+function debug () {
+  return;
+  if (console.debug) {
+    console.debug.apply(console, arguments)
+  } else if (console.log) {
+    console.log.apply(console, arguments);
   }
 }

@@ -3,7 +3,7 @@ var path = require('path')
   , os   = require('os')
   , exec = require('child_process').execFileSync;
 
-module.exports = function (state) {
+module.exports = function (state, respond) {
 
   return {
 
@@ -34,7 +34,7 @@ module.exports = function (state) {
           _.model.Files[location] = data;
         }
 
-        state.socket.send(JSON.stringify({ module: 'FS', data: data }));
+        respond(JSON.stringify({ module: 'FS', data: data }));
 
       },
 

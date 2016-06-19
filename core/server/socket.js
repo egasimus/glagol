@@ -1,9 +1,7 @@
 (function (App, socket) {
-  // identify type of socket
-  // currently we're serving both client code updates and workspace state,
-  // which are mostly unrelated and should be fixed when the general system
-  // is ready
+
   socket.onmessage = function dispatch (msg) {
+    // identify type of connection needed (workspace api vs client code updates)
     switch (msg.data) {
 
       case "glagol":
@@ -28,7 +26,7 @@
 
         $.log("opened client connection", id);
 
-        var api = require('riko-api2')($.api)({ socket: socket, state: model() });
+        var api = require('riko-api2')($.api)(model(), socket.send.bind(socket));
         socket.onmessage = function () {
           try {
             api.apply(this, arguments)

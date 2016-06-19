@@ -2,16 +2,13 @@ var path = require('path')
   , fs   = require('fs')
   , os   = require('os')
 
-module.exports = function (data) {
-
-  var state  = data.state
-    , socket = data.socket;
+module.exports = function (state, respond) {
 
   return {
 
     Refresh:
       function () {
-        socket.send(serialize({ module: 'Workspace', data: _.model() }));
+        respond(serialize({ module: 'Workspace', data: _.model() }));
       },
 
     Open:

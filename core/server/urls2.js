@@ -1,5 +1,6 @@
 module.exports = require('riko-route')(
-  [ [ '/', serveGui ] ]);
+  [ [ /^\/$/,   serveGui ]
+  , [ /^\/api/, serveApi ] ]);
 
 function serveGui (route, req, res) {
 
@@ -14,5 +15,11 @@ function serveGui (route, req, res) {
   }
 
   return _.gui(req, res);
+
+}
+
+function serveApi (route, req, res) {
+
+  console.log('serving api')
 
 }

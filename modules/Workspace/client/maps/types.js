@@ -6,7 +6,7 @@ module.exports = require('riko-route')(
   ] );
 
 module.exports.handler = function (match, input, data) {
-  return match(data.frame, data.index);
+  return match(data[0].frame, data[0].index);
 };
 
 module.exports.catchall = function (input, data) {

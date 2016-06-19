@@ -19,7 +19,7 @@
       , when(frame.address !== '/',
           h('button', { onclick: goUp }, $.lib.icon('chevron-up')))
       , h('button', $.lib.icon('eye'))
-       ]);
+      ] );
   }
 
   function empty () {

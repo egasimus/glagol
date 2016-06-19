@@ -14,13 +14,6 @@
     }
   })
 
-  Object.keys(newState.Frames).forEach(function (id) {
-    var frame = newState.Frames[id]
-    if (frame.type === 'directory' || frame.type === 'file') {
-      App.API('FS/GetInfo', frame.address);
-    }
-  })
-
   App.Model.Workspace.put("Frames", $.lib.model(newFrames));
 
 })

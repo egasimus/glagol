@@ -21,7 +21,7 @@
     case 'image/png':
     case 'image/jpeg':
     case 'image/gif':
-      body = addSrc(h('img'))
+      body = h('div.ImageContainer', addSrc(h('img')))
       break;
     case 'text/plain':
       body = defaultWrappers(_.editor(file.path));

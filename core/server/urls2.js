@@ -6,8 +6,7 @@ module.exports = require('riko-route')(
 
 function serveGui (route, req, res) {
 
-  var cookies = require('cookie').parse(req.headers.cookie || '')
-    , id      = cookies['user-id'];
+  var id = authenticate(req);
 
   if (!id) {
     id = _.lib.makeId();
@@ -22,16 +21,22 @@ function serveGui (route, req, res) {
 
 function serveApi (route, req, res) {
 
-  var model = $.modules.Workspace.model.Users.get(id)
-    , api   = require('riko-api2')($.api)(model(), socket.send.bind(socket))
+  var id    = authenticate(req)
+    , model = $.modules.Workspace.model.Users.get(id)
+    , api   = $.api(model(), respond)
     , url   = require('url').parse(req.url)
-    , cmd   = url.pathname.split('/').slice(2).reduce(getCommand, api)
+    , cmd   = url.pathname.split('/').slice(2).join('/')
     , args  = JSON.parse(decodeURIComponent(require('url').parse(req.url).query));
 
-  console.log('serving api', cmd, args);
+  api[cmd].apply(null, args);
 
-  function getCommand (command, fragment) {
-    return command[fragment];
+  function respond (data) {
+    require('send-data')(req, res, { body: data });
   }
 
+}
+
+function authenticate (req) {
+  var cookies = require('cookie').parse(req.headers.cookie || '')
+  return cookies['user-id'];
 }

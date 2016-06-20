@@ -40,6 +40,10 @@ module.exports = function (state, respond) {
 
     ReadFile:
       function (location) {
+        location = resolve(location.trim());
+        _.log("ReadFile", location);
+        require('fs').readFile(location,
+          function fileRead (err, data) { respond(data) })
       }
 
   }

@@ -10,8 +10,9 @@
     if (cached) {
       win(cached);
     } else {
+      var url = '/api/FS/ReadFile?' + JSON.stringify([src]);
       request = new XMLHttpRequest();
-      request.open('GET', '/file?path=' + src, true);
+      request.open('GET', url, true);
       request.responseType = 'arraybuffer';
       request.onload = loaded;
       request.onerror = function (e) { fail(e) };

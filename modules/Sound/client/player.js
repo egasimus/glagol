@@ -30,6 +30,9 @@
       v.buffer = buffer;
       v.connect(ctx.destination);
       return v;
+    }).catch(function (error) {
+      console.error('could not create voice for', src);
+      console.log(error);
     })
   }
 

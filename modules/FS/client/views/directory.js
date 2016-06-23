@@ -17,15 +17,16 @@
       buttons = buttons.concat(
         [ h('button', $.lib.icon('chevron-left'))
         , h('button', $.lib.icon('chevron-right'))
-        , when(frame.address !== '/',
-            h('button', { onclick: goUp }, $.lib.icon('chevron-up')))
+        , frame.address === '/' ? null :
+            h('button', { onclick: goUp }, $.lib.icon('chevron-up'))
         , h('button', $.lib.icon('eye'))
-        , when(directory.git,
+        , !directory.git ? null :
             h('button' +
               (directory.git === 'unmodified' ? '.Git_Unmodified'  :
                directory.git === 'modified'   ? '.Git_Modified' : ''),
-              'GIT'))
-        , when(directory.package, h('button', 'NPM'))
+              'GIT')
+        , !directory.package ? null :
+            h('button', 'NPM')
         ]);
     }
     return h('.Directory_Toolbar', buttons);
@@ -78,13 +79,15 @@
     return entry(open(data.name_, true),
       [ h('td.Directory_Entry_Name.is-dir', data.name_ + '/')
       , h('td.Directory_Entry_Type',
-          [ when(data.package,
-              h('span.Directory_Entry_Label', 'npm'))
-          , when(data.git,
+          [ !data.package ? null :
+              h('span.Directory_Entry_Label',
+                [ 'npm '
+                , (data.package.version ? h('strong', data.package.version) : '') ])
+          , !data.git ? null :
               h('span.Directory_Entry_Label' +
                 (data.git === 'unmodified' ? '.Git_Unmodified'  :
                  data.git === 'modified'   ? '.Git_Modified' : '')
-                , 'git'))
+                , 'git')
           , h('em', 'directory') ])
       , h('td.Directory_Entry_Size', data.files ? (data.files + ' items') : 'access denied')
       ])
@@ -123,12 +126,6 @@
         App.API('Workspace/Open', 'file', location);
       }
     }
-  }
-
-  // helpers
-
-  function when (what, then) {
-    return what ? then : null;
   }
 
 })

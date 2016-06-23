@@ -480,10 +480,12 @@ button
 .Workspace
   flex-grow 1
   display flex
+  flex-wrap wrap
+  padding 3px
   @media screen and (orientation:portrait)
-    flex-direction column
-  @media screen and (orientation:landscape)
     flex-direction row
+  @media screen and (orientation:landscape)
+    flex-direction column
   overflow auto
   & > *
     flex-shrink 0
@@ -506,6 +508,7 @@ button
   transition background 0.2s
   max-width 100%
   max-height 100%
+  margin 6px
   &:hover
     background rgba(0,0,0,0.7)
   &[data-type="directory"],
@@ -518,7 +521,7 @@ button
     display flex
     align-items center
     flex-shrink 0
-    padding 0 3px
+    padding 0 6px
     color #ddd
     z-index 10
     .FrameWithError &
@@ -721,7 +724,7 @@ frame-toolbar()
 frame-blocker()
   position absolute
   top 48px
-  left 0
+  left -48px
   overflow auto
   right 6px
   //background rgba(255,255,255,0.1);

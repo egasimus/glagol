@@ -513,7 +513,7 @@ button
     flex-grow 1
     display flex
     flex-direction row
-  &Header
+  &_Header
     height 48px
     display flex
     align-items center
@@ -529,11 +529,11 @@ button
       //transition background 0.2s, opacity 0.2s
     //.Frame[data-type="file"]:hover &
       //opacity 1
-  &Title, &Address
+  &_Title, &_Address
     padding 0 3px
     margin 0
     font-weight bold
-  &Address
+  &_Address
     flex-grow 1
     color #fff
     display inline-block
@@ -549,7 +549,7 @@ button
     &:focus
       outline none
       border-bottom 1px solid #aaa
-  &Error
+  &_Error
     flex-shrink 0
     display flex
     justify-content space-between
@@ -558,9 +558,9 @@ button
     color white
     padding 0 6px
     line-height 18px
-    &Message
+    &_Message
       font-weight bold
-    &Stack
+    &_Stack
       font-family monospace
       background rgba(0,0,0,0.5)
       white-space pre
@@ -568,19 +568,19 @@ button
       padding 6px
       margin-bottom 6px
       line-height 14px
-    &Close
+    &_Close
       font-size 24px
       margin-right -3px
       padding 4px 2px
       cursor pointer
       &:hover
         background rgba(255,255,255,0.1)
-  &Status
+  &_Status
     display none
     margin 0 6px
     background #ddd
     padding 3px 6px
-  &Close
+  &_Close
     font-size 30px
     opacity 0.5
     cursor pointer
@@ -718,6 +718,36 @@ frame-toolbar()
     text-align center
     font-size  1.5em
 
+frame-blocker()
+  position absolute
+  top 48px
+  left 0
+  overflow auto
+  right 6px
+  //background rgba(255,255,255,0.1);
+  padding 6px
+  font-size 1.2em
+  font-weight bold
+  color #ccc
+  line-height 18px
+  text-align center
+  & > i
+    display block
+    font-size 60px
+    line-height 60px
+    vertical-align middle
+    margin-bottom 6px
+  button i
+    font-size 18px
+    margin-right 12px
+    vertical-align middle
+    background rgba(0,0,0,0.1)
+    padding 3px 9px
+    margin -3px 6px -3px -6px
+    transition background 0.2s
+  button:hover i
+    background rgba(0,0,0,0.3)
+
 .Directory
   min-width 240px
   flex-grow 1
@@ -729,7 +759,7 @@ frame-toolbar()
   &_Body
     width 100%
 
-  .FrameHeader
+  .Frame_Header
     position absolute
     top 0
     left 0
@@ -743,7 +773,6 @@ frame-toolbar()
     font-weight bold
     text-shadow 0 0 3px black
 
-  &_Empty,
   &_Entries
     position absolute
     top 48px
@@ -751,30 +780,7 @@ frame-toolbar()
     overflow auto
 
   &_Empty
-    right 6px
-    //background rgba(255,255,255,0.1);
-    padding 6px
-    font-size 1.2em
-    font-weight bold
-    color #ccc
-    line-height 18px
-    text-align center
-    & > i
-      display block
-      font-size 60px
-      line-height 60px
-      vertical-align middle
-      margin-bottom 6px
-    button i
-      font-size 18px
-      margin-right 12px
-      vertical-align middle
-      background rgba(0,0,0,0.1)
-      padding 3px 9px
-      margin -3px 6px -3px -6px
-      transition background 0.2s
-    button:hover i
-      background rgba(0,0,0,0.3)
+    frame-blocker()
 
   &_Entries
     position absolute
@@ -824,6 +830,8 @@ frame-toolbar()
     frame-toolbar()
   &_Body
     width 100%
+  &_Unknown
+    frame-blocker()
 
 .AudioPlayer
   flex-grow 1

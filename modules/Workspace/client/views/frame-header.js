@@ -4,12 +4,12 @@
     ? (App.Model.FS.Files()[frame.address] || {}).type || 'file'
     : frame.type
 
-  return h('header.FrameHeader',
-    [ h('.FrameTitle', type)
-    , h('input.FrameAddress',
+  return h('header.Frame_Header',
+    [ h('.Frame_Title', type)
+    , h('input.Frame_Address',
       { onchange: changeAddress
       , value:    frame.address })
-    , h('.FrameClose', { onclick: remove }, '×')]);
+    , h('.Frame_Close', { onclick: remove }, '×')]);
 
   function changeAddress (event) {
     event.preventDefault();

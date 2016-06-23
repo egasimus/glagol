@@ -47,12 +47,12 @@
   }
 
   function header () {
-    return h('header.FrameHeader',
+    return h('header.Frame_Header',
      [ $.lib.icon('folder-open.fa-2x')
-     , h('input.FrameAddress',
+     , h('input.Frame_Address',
        { onchange: changeAddress
        , value:    frame.address })
-     , h('.FrameClose', { onclick: close }, '×')
+     , h('.Frame_Close', { onclick: close }, '×')
      ])
   }
 

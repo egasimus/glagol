@@ -21,13 +21,16 @@
     case 'image/png':
     case 'image/jpeg':
     case 'image/gif':
-      body = h('div.ImageContainer', addSrc(h('img')))
+      body = defaultWrappers(h('div.ImageContainer', addSrc(h('img'))))
       break;
     case 'text/plain':
-      body = defaultWrappers(_.editor(file.path));
+      body = defaultWrappers(_.editor(file.path), true);
       break;
     default:
-      body = 'unknown file type: ' + file.type;
+      body = defaultWrappers(h('.File_Unknown',
+        [ $.lib.icon('info-circle') 
+        , 'This file has an unfamiliar type, '
+        , h('em', file.contentType) ]), false);
   }
 
   return body;
@@ -37,18 +40,18 @@
     return vnode;
   }
 
-  function defaultWrappers (body) {
+  function defaultWrappers (body, canSave) {
     return [
       h('.File_Toolbar',
         [ h('button', $.lib.icon('refresh'))
-        , h('button', $.lib.icon('save'))]),
+        , canSave ? h('button', $.lib.icon('save')) : null]),
       h('.File_Body',
-        [ h('header.FrameHeader',
+        [ h('header.Frame_Header',
            [ $.lib.icon('file.fa-2x')
-           , h('input.FrameAddress',
+           , h('input.Frame_Address',
              { onchange: changeAddress
              , value:    file.path })
-           , h('.FrameClose', { onclick: close }, '×')
+           , h('.Frame_Close', { onclick: close }, '×')
            ])
         , body
         ]) ];

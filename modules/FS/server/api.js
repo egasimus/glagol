@@ -13,7 +13,7 @@ module.exports = function (state, respond) {
         location = resolve(location.trim());
         _.log("GetInfo", location);
 
-        var data = { path: location }
+        var data = identify(location);
 
         try {
           data.stats = fs.statSync(location);
@@ -66,48 +66,47 @@ function getType (stats) {
 }
 
 function readDir (location) {
-  var items = fs.readdirSync(location);
-  return items.map(identify(location));
+  return fs.readdirSync(location)
+    .map(function (item) { return path.join(location, item) })
+    .map(identify);
 }
 
-function identify (parent) {
-  return function (name) {
-    var fullpath = path.join(parent, name)
-      , data     = { name: name }
+function identify (fullpath) {
+  var data = { name: path.basename(fullpath), path: fullpath }
 
+  if (!data.stats) {
     try {
-      data.stat = fs.statSync(fullpath)
+      data.stats = fs.statSync(fullpath)
     } catch (e) {
       console.log(e);
       return;
     }
-
-    if (data.stat.isDirectory()) {
-
-      var files;
-
-      try {
-        files = fs.readdirSync(fullpath);
-      } catch (e) {
-        data.accessDenied = true;
-        return data;
-      }
-
-      data.files = files.length;
-
-      if (files.indexOf('package.json') > -1) {
-        try {
-          data.package = JSON.parse(fs.readFileSync(path.join(fullpath, 'package.json')))
-        } catch (e) {}
-      }
-
-      if (files.indexOf('.git') > -1) {
-        data.git = true;
-      }
-
-    }
-    return data;
   }
+
+  if (data.stats.isDirectory()) {
+
+    try {
+      var files = fs.readdirSync(fullpath);
+    } catch (e) {
+      data.accessDenied = true;
+      return data;
+    }
+
+    data.files = files.length;
+
+    if (files.indexOf('package.json') > -1) {
+      try {
+        data.package = JSON.parse(fs.readFileSync(path.join(fullpath, 'package.json')))
+      } catch (e) {}
+    }
+
+    if (files.indexOf('.git') > -1) {
+      data.git = true;
+    }
+
+  }
+
+  return data;
 }
 
 function getContentType (file) {

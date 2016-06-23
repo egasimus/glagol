@@ -57,15 +57,15 @@
   }
 
   function file (data) {
-    if (!!(data.stat.mode & 0040000)) return;
+    if (!!(data.stats.mode & 0040000)) return;
     return entry(open(data.name_, false),
       [ h('td.Directory_Entry_Name', data.name_)
       , h('td.Directory_Entry_Type', data.type)
-      , h('td.Directory_Entry_Size', data.stat.size + ' B') ])
+      , h('td.Directory_Entry_Size', data.stats.size + ' B') ])
   }
 
   function dir (data) {
-    if (!(data.stat.mode & 0040000)) return;
+    if (!(data.stats.mode & 0040000)) return;
     return entry(open(data.name_, true),
       [ h('td.Directory_Entry_Name.is-dir', data.name_ + '/')
       , h('td.Directory_Entry_Type',

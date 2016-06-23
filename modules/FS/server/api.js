@@ -102,6 +102,12 @@ function identify (fullpath) {
 
     if (files.indexOf('.git') > -1) {
       data.git = true;
+      try {
+        var status = exec('git', ['status', '-z'], { cwd: fullpath });
+        data.git = status.length > 0 ? 'modified' : 'unmodified';
+      } catch (e) {
+        console.log(e);
+      }
     }
 
   }
@@ -117,4 +123,15 @@ function getContentType (file) {
     data = exec(cmd, args).toString().trim();
   } catch (e) {}
   return data;
+}
+
+function parseGitStatus (status) {
+  var separator = status.indexOf(0);
+  if (separator) {
+    console.log(
+      String(status.slice(0, separator)),
+      ' + ',
+      String(status.slice(separator)));
+  }
+  return true;
 }

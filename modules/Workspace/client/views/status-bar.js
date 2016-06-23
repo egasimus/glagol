@@ -5,7 +5,7 @@
       //h('.StatusBarNavigation',
       //[ h('a.StatusBarButton', 'Console')
       //, h('a.StatusBarButton', 'Tree') ])
-    , h('.StatusBar_Text', state.Workspace.StatusBar.text)
+    //, h('.StatusBar_Text', state.Workspace.StatusBar.text)
     , h('.StatusBar_Modules', Object.keys($.modules).map(function (moduleName) {
         return h('.StatusBar_Module', moduleName);
       }))

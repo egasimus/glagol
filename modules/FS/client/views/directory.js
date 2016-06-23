@@ -12,14 +12,23 @@
   // fragments
 
   function toolbar () {
-    return h('.Directory_Toolbar',
-      [ h('button', { onclick: refresh }, $.lib.icon('refresh'))
-      , h('button', $.lib.icon('chevron-left'))
-      , h('button', $.lib.icon('chevron-right'))
-      , when(frame.address !== '/',
-          h('button', { onclick: goUp }, $.lib.icon('chevron-up')))
-      , h('button', $.lib.icon('eye'))
-      ] );
+    var buttons = [ h('button', { onclick: refresh }, $.lib.icon('refresh')) ];
+    if (directory) {
+      buttons = buttons.concat(
+        [ h('button', $.lib.icon('chevron-left'))
+        , h('button', $.lib.icon('chevron-right'))
+        , when(frame.address !== '/',
+            h('button', { onclick: goUp }, $.lib.icon('chevron-up')))
+        , h('button', $.lib.icon('eye'))
+        , when(directory.git,
+            h('button' +
+              (directory.git === 'unmodified' ? '.Git_Unmodified'  :
+               directory.git === 'modified'   ? '.Git_Modified' : ''),
+              'GIT'))
+        , when(directory.package, h('button', 'NPM'))
+        ]);
+    }
+    return h('.Directory_Toolbar', buttons);
   }
 
   function empty () {
@@ -69,8 +78,13 @@
     return entry(open(data.name_, true),
       [ h('td.Directory_Entry_Name.is-dir', data.name_ + '/')
       , h('td.Directory_Entry_Type',
-          [ when(data.package, h('span.Directory_Entry_Label', 'npm'))
-          , when(data.git,     h('span.Directory_Entry_Label', 'git'))
+          [ when(data.package,
+              h('span.Directory_Entry_Label', 'npm'))
+          , when(data.git,
+              h('span.Directory_Entry_Label' +
+                (data.git === 'unmodified' ? '.Git_Unmodified'  :
+                 data.git === 'modified'   ? '.Git_Modified' : '')
+                , 'git'))
           , h('em', 'directory') ])
       , h('td.Directory_Entry_Size', data.files ? (data.files + ' items') : 'access denied')
       ])

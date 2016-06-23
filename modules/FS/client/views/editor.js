@@ -18,7 +18,7 @@ module.exports.widget = require('virtual-widget')(
       document.body.removeChild(this.el);
 
       var request = new XMLHttpRequest()
-        , src     = '/file?path=' + state
+        , src     = '/api/FS/ReadFile?' + JSON.stringify([state]);
       request.open('GET', src, true);
       request.onload = function () {
         this.mirror.setValue(request.response);

@@ -1,8 +1,7 @@
 (function (frame, index) {
 
-  var file = App.Model.FS.Files()[frame.address] || {};
-
-  var body;
+  var file = App.Model.FS.Files()[frame.address] || {}
+    , body;
 
   switch (file.contentType) {
     case undefined:
@@ -24,7 +23,14 @@
       body = defaultWrappers(h('div.ImageContainer', addSrc(h('img'))))
       break;
     case 'text/plain':
-      body = defaultWrappers(_.editor(file.path), true);
+      var ext = require('path').extname(file.path);
+      switch (ext) {
+        case '.m3u8':
+          body = defaultWrappers(__.__.Sound.views.playlist(frame, file));
+          break;
+        default:
+          body = defaultWrappers(_.editor(file.path), true);
+      }
       break;
     default:
       body = defaultWrappers(h('.File_Unknown',

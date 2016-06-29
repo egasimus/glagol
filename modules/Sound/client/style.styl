@@ -1,0 +1,123 @@
+@import '../../../core/client/styles/vars.styl'
+@import '../../../core/client/styles/mixins.styl'
+
+.AudioPlayer
+  flex-grow 1
+  display flex
+  flex-direction row
+  flex-wrap wrap
+  color white
+  align-items flex-start
+  &_Header
+    display flex
+    flex-wrap wrap
+    align-items center
+    flex-grow 1
+    padding 3px 6px 3px 0
+    &>i
+      margin-left 3px
+  &_Toolbar
+    frame-toolbar()
+    button
+      width 42px
+  svg.waveform
+    display block
+    width 100%
+    height 72px
+  &_Title
+    margin-left 6px
+    line-height 42px
+    height 42px
+    font-size 18px
+    font-weight bold
+    flex-grow 1
+  &_Position
+    margin 0 6px
+    height 42px
+    line-height 14px
+    flex-shrink 0
+    text-align center
+    white-space pre
+    font-family monospace
+    letter-spacing 1px
+  &_Button
+    &_Play, &_Cue
+      font-size 30px
+      line-height 30px
+    &_Play
+      &.Playing
+        background #ccaa26
+        color white
+        &:hover
+          text-shadow 0 0 3px white, 0 0 3px white
+    &_Cue
+      font-size 1.2em
+      letter-spacing 1px
+      font-weight bold
+  &_ProgressBar
+    width 100%
+    height 36px
+    margin-top 3px
+    cursor text
+    &_Background
+      background #222
+      width 100%
+      height 100%
+    &_Foreground
+      background #ccaa26
+      position absolute
+      left 0
+      top 0
+      bottom 0
+  audio
+    display none
+  &_Waveform, canvas
+    width 100%
+    height 100px
+  &_Spectrogram
+    margin 6px
+  &_Cues
+    display flex
+    flex-direction row
+    width 100%
+    padding 0 6px
+    &_Toolbar
+      flex-shrink 0
+    &_Add
+      button()
+      width 42px
+      height 36px
+    &_List
+      display flex
+      flex-direction column
+      width 100%
+  &_Cue
+    line-height 18px
+    display flex
+    flex-direction row
+    justify-content space-between
+    align-items center
+    margin-left 6px
+    &:hover
+      background rgba(255,255,255,0.2)
+    &_Number
+      padding 3px
+      font-size 1.2em
+      cursor pointer
+      margin-right 6px
+      width 36px
+      display inline-block
+      text-align center
+      &:hover
+        background rgba(255,255,255,0.2)
+    &_Time
+      font-family monospace
+      padding 0 3px
+      letter-spacing 1px
+  &_Info
+    padding 0 6px
+    &_Toggle
+      button()
+      width 42px
+      height 36px
+

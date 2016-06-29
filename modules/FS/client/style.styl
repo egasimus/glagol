@@ -1,0 +1,130 @@
+@import '../../../core/client/styles/vars.styl'
+@import '../../../core/client/styles/mixins.styl'
+
+.Directory
+  min-width 240px
+  flex-grow 1
+  overflow auto
+
+  &_Toolbar
+    frame-toolbar()
+
+  &_Body
+    width 100%
+
+  .Frame_Header
+    position absolute
+    top 0
+    left 0
+    right 0
+    height 48px
+
+  &_PathFragment
+    margin      0 0 0 6px
+    padding     6px 9px
+    background  rgba(255,255,255,0.2)
+    font-weight bold
+    text-shadow 0 0 3px black
+
+  &_Entries
+    position absolute
+    top 48px
+    left 0
+    overflow auto
+
+  &_Empty
+    frame-blocker()
+
+  &_Entries
+    position absolute
+    top 48px
+    left 0
+    right 0
+    bottom 0
+    overflow auto
+    & > table
+      width 100%
+
+  &_Entry
+    font-size 1.2em
+    display flex
+    justify-content space-between
+    white-space nowrap
+    padding 3px
+    cursor pointer
+    color white
+    &:hover
+      background #555
+    &_Name
+      flex-grow 1
+      &.is-dir
+        font-weight bold
+    &_Size, &_Type
+      margin-left 6px
+      overflow hidden
+      text-overflow ellipsis
+      text-align right
+    &_Size
+      width 7em
+    //&_Type
+      //width 100px
+    &_Label
+      display inline-block
+      padding 2px 4px
+      background #777
+      color #ddd
+      //font-weight bold
+      margin -2px 3px
+      .Directory_Entry:hover &
+        color #fff
+
+.File
+  &_Toolbar
+    frame-toolbar()
+  &_Body
+    width 100%
+  &_Unknown
+    frame-blocker()
+
+.SourceEditor
+  position absolute
+  top 48px
+  left 0
+  right 0
+  bottom 0
+  & > .CodeMirror
+    width 100%
+    height 100%
+
+.CodeMirror
+  background rgba(33,33,33,0.8)
+  transition background 0.2s
+  color #ddd
+  &-focused
+    background rgba(25,25,25,0.8)
+  &-gutters
+    background none
+    border-right 1px solid #444
+  &-cursor
+    border-left 2px solid #888
+  &-linenumber
+    color #777
+
+.ImageContainer
+  max-width 100%
+  max-height 100%
+  overflow hidden
+
+.Git, button.Git
+  &_Modified,
+  &_Unmodified
+    .Directory_Toolbar &
+      color white
+    .Directory_Entry &.Directory_Entry_Label
+      color rgba(0,0,0,0.7)
+    .Directory_Entry:hover &.Directory_Entry_Label
+      color #222
+  &_Modified
+    background #ccaa26
+  &_Unmodified
+    background #aacc26

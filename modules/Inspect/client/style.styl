@@ -1,0 +1,132 @@
+@import '../../../core/client/styles/vars.styl'
+@import '../../../core/client/styles/mixins.styl'
+
+.Node
+  transition background 0.1s linear
+  &:hover
+    background #e4e4e4
+
+  &_NameSource
+    font-family monospace
+    &_Name
+      font-size 12px
+      line-height 2em
+      white-space nowrap
+      margin-right 6px
+      cursor pointer
+
+  &_Link
+    color #777
+    white-space nowrap
+    line-height 24px
+
+  &_Name
+    font-size 12px
+    white-space pre-wrap
+    cursor default
+    font-weight bold
+    &_Name
+      white-space nowrap
+      margin-left 20px
+      line-height 15px
+
+  &_FormatCompiled
+    font-family monospace
+    white-space pre
+    &_Format
+      line-height 2em
+
+  &_FormatCompiled, &_Compiled
+    max-width 50em
+    overflow auto
+
+  &_FileCount
+    font-family sans-serif
+    line-height 19px
+    padding 6px 0 5px
+
+  &_Source, &_Compiled, &_Value
+    font-family monospace
+    white-space pre
+    border-left 1px solid #fff
+    border-top 1px solid #ddd
+    highlight()
+
+  &_Toolbar
+    font-family sans
+    line-height 2em
+    padding 3px 0
+    display flex
+    .Node_NameSource &
+      justify-content space-between
+      &_Button
+        margin-right 6px
+    &_Button
+      height 24px
+      white-space nowrap
+      line-height 1em
+      padding 6px 6px 5px
+      cursor pointer
+      border-bottom 1px solid #aaa
+      color #555
+      margin-bottom -1px
+      & + .Node_Toolbar_Button
+        margin-left 6px
+    .Node:hover &
+      &_Button
+        border-radius 3px
+        border-bottom-color #ccc
+        background #fff
+        color #333
+        &:hover
+          border-bottom-color #aaa
+
+  &_Value
+    &, &-notExpanded
+      max-width 50em
+      overflow auto
+      &_Function
+        margin-left 6px
+        @extend .Node_Toolbar_Button
+        .Node:hover &
+          @extend .Node:hover .Node_Toolbar_Button
+      &_Data
+        font-family monospace
+        white-space pre
+
+  .CodeMirror
+    max-width 50em
+    height auto
+    background none
+    margin-top -3px
+    margin-bottom 12px
+    margin-right 6px
+    &:hover
+      //background #f0f0f0
+      highlight()
+    &-focused
+      //background white
+      highlight()
+    &-gutters
+      background none
+    &-linenumber
+      color #777
+
+  &_Collapse, &_Expand
+    border-radius 50%
+    width 20px
+    height 20px
+    line-height 20px
+    text-align center
+    cursor pointer
+    position absolute
+    right 100%
+    opacity 0
+    display inline-block
+    padding 0 6px
+    margin -3px 0
+    color #777
+    .Node:hover &
+      opacity 1
+      background white
+

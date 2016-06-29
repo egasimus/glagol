@@ -31,7 +31,7 @@
   App.API = require('riko-api2')(socket);
 
   // init plugins
-  Object.keys($.modules).forEach(initModule);
+  Object.keys(Glagol.get('modules').nodes).forEach(initModule);
 
   // determine user id
   var id = require('cookie').parse(document.cookie)['user-id'];
@@ -44,11 +44,25 @@
   return App;
 
   function initModule (moduleName) {
-    var module = $.modules[moduleName];
+    var module = Glagol.get('modules').get(moduleName);
     try {
-      module.init(App);
+      module().init(App);
     } catch (e) {
       console.warn('Could not init module', moduleName, 'because of', e);
+    }
+
+    // add module css
+    var stylesheet = module.get('style.styl')
+      , styleElement;
+    if (stylesheet) {
+      styleElement = $.lib.gui.util.insertCss(stylesheet());
+      styleElement.dataset['module'] = moduleName;
+      stylesheet.events.on('changed',
+        function () {
+          styleElement.parentElement.removeChild(styleElement);
+          styleElement = $.lib.gui.util.insertCss(stylesheet());
+          styleElement.dataset['module'] = moduleName;
+        })
     }
 
     // reload whole page when editing module entry point

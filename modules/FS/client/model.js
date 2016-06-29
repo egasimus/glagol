@@ -1,4 +1,7 @@
-module.exports =
-  { FS:
-    { Directories: {}
-    , Files: {} } }
+module.exports = require('riko-mvc').M(
+
+  { Directories: {}
+
+  , Files:       {}
+
+  });

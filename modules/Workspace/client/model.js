@@ -1,27 +1,23 @@
-module.exports = { Workspace:
-  { userId:
-    null
+module.exports = require('riko-mvc').M(
 
-  , Status:
-    "loading"
+  { userId:       null
 
-  , Launcher:
-    { visible: false
-    , focused: false 
-    , mode:    'menu'
-    , input:   '' }
+  , Status:       "loading"
 
-  , Switcher:
-    { visible: false }
+  , Launcher:     { visible: false
+                  , focused: false
+                  , mode:    'menu'
+                  , input:   ''
+                  }
 
-  , StatusBar:
-    { visible: true
-    , text:    '' }
+  , Switcher:     { visible: false }
 
-  , Frames:
-    []
+  , StatusBar:    { visible: true
+                  , text:    ''
+                  }
 
-  , focusedFrame:
-    0
+  , Frames:       []
 
-  } }
+  , focusedFrame: 0
+
+  })

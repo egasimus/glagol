@@ -1,0 +1,63 @@
+highlight()
+  background linear-gradient(to right, #f0f0f0 0%, rgba(255,255,255,0.15) 33%, transparent 100%);
+
+button()
+  padding 3px 6px
+  border 0
+  background rgba(255,255,255,0.2)
+  color #ccc
+  transition text-shadow 0.1s, box-shadow 0.2s
+  text-shadow 0 1px 2px black
+  cursor pointer
+  text-align center
+  i
+    font-size 30px
+  &:hover
+    color #eee
+    text-shadow 0 0 2px white, 0 0 2px white
+    box-shadow 0 0 12px rgba(0,0,0,0.8)
+  &:focus
+    outline 1px solid black
+
+frame-toolbar()
+  padding 3px
+  display flex
+  flex-direction column
+  flex-shrink 0
+  button
+    button()
+    width      42px
+    height     36px
+    padding    0
+    text-align center
+    font-size  1.5em
+
+frame-blocker()
+  position absolute
+  top 48px
+  left -48px
+  overflow auto
+  right 6px
+  //background rgba(255,255,255,0.1);
+  padding 6px
+  font-size 1.2em
+  font-weight bold
+  color #ccc
+  line-height 18px
+  text-align center
+  & > i
+    display block
+    font-size 60px
+    line-height 60px
+    vertical-align middle
+    margin-bottom 6px
+  button i
+    font-size 18px
+    margin-right 12px
+    vertical-align middle
+    background rgba(0,0,0,0.1)
+    padding 3px 9px
+    margin -3px 6px -3px -6px
+    transition background 0.2s
+  button:hover i
+    background rgba(0,0,0,0.3)

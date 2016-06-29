@@ -20,20 +20,25 @@
     case 'image/png':
     case 'image/jpeg':
     case 'image/gif':
-      body = defaultWrappers(h('div.ImageContainer', addSrc(h('img'))))
+      body = defaultLayout(h('div.ImageContainer', addSrc(h('img'))))
       break;
     case 'text/plain':
       var ext = require('path').extname(file.path);
       switch (ext) {
         case '.m3u8':
-          body = defaultWrappers(__.__.Sound.views.playlist(frame, file));
+          body = defaultLayout(
+            __.__.Sound.views.playlist(frame, file),
+            h('.File_Toolbar',
+              [ h('button', $.lib.icon('refresh'))
+              , h('button', $.lib.icon('save')),
+              , h('button', $.lib.icon('eye')) ]));
           break;
         default:
-          body = defaultWrappers(_.editor(file.path), true);
+          body = defaultLayout(_.editor(file.path), true);
       }
       break;
     default:
-      body = defaultWrappers(h('.File_Unknown',
+      body = defaultLayout(h('.File_Unknown',
         [ $.lib.icon('info-circle') 
         , 'This file has an unfamiliar type, '
         , h('em', file.contentType) ]), false);
@@ -46,9 +51,9 @@
     return vnode;
   }
 
-  function defaultWrappers (body, canSave) {
+  function defaultLayout (body, toolbar) {
     return [
-      h('.File_Toolbar',
+      toolbar || h('.File_Toolbar',
         [ h('button', $.lib.icon('refresh'))
         , canSave ? h('button', $.lib.icon('save')) : null]),
       h('.File_Body',

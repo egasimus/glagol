@@ -17,13 +17,10 @@ module.exports.widget = require('virtual-widget')(
         , lineNumbers: true });
       document.body.removeChild(this.el);
 
-      var request = new XMLHttpRequest()
-        , src     = '/api/FS/ReadFile?' + JSON.stringify([state]);
-      request.open('GET', src, true);
-      request.onload = function () {
-        this.mirror.setValue(request.response);
-      }.bind(this);
-      request.send();
+      __.getFile(state, function (err, data) {
+        if (err) throw err;
+        this.mirror.setValue(data)
+      });
 
       return this.el;
     }

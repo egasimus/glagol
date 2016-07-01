@@ -96,11 +96,13 @@ module.exports.widget = function (id, src) {
             ])
           ])
 
-        , h('.AudioPlayer_Info',
+        , h('.AudioPlayer_Section',
+          { style: { flexWrap: 'nowrap' } },
           [ h('.AudioPlayer_Info_Toolbar',
-            [ h('.AudioPlayer_Info_Toggle', $.lib.icon('info-circle')) ])
+            [ h('.AudioPlayer_Info_Toggle'
+            , $.lib.icon('info-circle')) ])
           , h('table.AudioPlayer_Info_Table',
-              Object.keys(model.Metadata[src] || {}).map(tag))])
+              Object.keys(model.Metadata()[src] || {}).map(tag))])
 
         ,
           //, h('canvas.AudioPlayer_Spectrogram')
@@ -170,8 +172,11 @@ module.exports.widget = function (id, src) {
       }
 
       function tag (id) {
-        var val = model.Metadata[src][id];
-        return h('tr', h('td', id), h('td', val))
+        var val = (model.Metadata()[src] || {})[id] || '';
+        return h('tr',
+          [ h('td', { style: { fontWeight:   'bold'
+                             , paddingRight: '12px' } }, id)
+          , h('td', { style: { whiteSpace: 'nowrap' } }, val) ])
       }
 
       function close () {

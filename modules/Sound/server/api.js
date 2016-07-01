@@ -10,6 +10,8 @@ module.exports = function (state, respond) {
         _.log('GetMetadata', location);
         id3.read(location, function (err, data) {
           if (err) throw err;
+          delete data.attached_picture;
+          delete data.private_frame;
           respond(JSON.stringify({ module: 'Sound', data: data }));
         })
       },

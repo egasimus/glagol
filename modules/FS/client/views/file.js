@@ -51,8 +51,7 @@
   function defaultLayout (body, toolbar) {
     return [
       toolbar || h('.File_Toolbar',
-        [ h('button', $.lib.icon('refresh'))
-        , canSave ? h('button', $.lib.icon('save')) : null]),
+        [ h('button', $.lib.icon('refresh')) ]),
       h('.File_Body',
         [ h('header.Frame_Header',
            [ $.lib.icon('file.fa-2x')

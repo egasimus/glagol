@@ -7,7 +7,7 @@ module.exports = function (id, src) {
 
 module.exports.widget = function (id, src) {
 
-  var Sound    = App.Model.Sound
+  var model    = App.Model.Sound
     , playerId = id + '_' + src;
 
   return {
@@ -15,8 +15,8 @@ module.exports.widget = function (id, src) {
     type: "Widget"
 
   , init: function () {
-      this.element = vdom.create(this.render(Sound()));
-      Sound(this.patch.bind(this));
+      this.element = vdom.create(this.render(model()));
+      model(this.patch.bind(this));
       return this.element;
     }
 
@@ -28,7 +28,7 @@ module.exports.widget = function (id, src) {
 
   , destroy: function (el) {
       console.debug('player destroy', el);
-      var player = Sound.Players()[playerId];
+      var player = model.Players()[playerId];
       if (player) player.stop();
       if (this.timer) clearInterval(this.timer);
     }
@@ -98,14 +98,16 @@ module.exports.widget = function (id, src) {
 
         , h('.AudioPlayer_Info',
           [ h('.AudioPlayer_Info_Toolbar',
-            [ h('.AudioPlayer_Info_Toggle', $.lib.icon('info-circle')) ])])
+            [ h('.AudioPlayer_Info_Toggle', $.lib.icon('info-circle')) ])
+          , h('table.AudioPlayer_Info_Table',
+              Object.keys(model.Metadata[src] || {}).map(tag))])
 
         ,
           //, h('canvas.AudioPlayer_Spectrogram')
           ]);
 
       function play () {
-        var player = Sound.Players.get(playerId);
+        var player = model.Players.get(playerId);
         if (player && player()) {
           player = player();
           if (player.status === 'playing') {
@@ -127,7 +129,7 @@ module.exports.widget = function (id, src) {
       }
 
       function stop () {
-        var player = Sound.Players.get(playerId);
+        var player = model.Players.get(playerId);
         if (player && player()) {
           player = player();
           player
@@ -142,7 +144,7 @@ module.exports.widget = function (id, src) {
       }
 
       function seek (event) {
-        var player = Sound.Players.get(playerId);
+        var player = model.Players.get(playerId);
         if (player && player()) {
           player = player();
           var cls  = 'AudioPlayer_ProgressBar_Background'
@@ -156,7 +158,7 @@ module.exports.widget = function (id, src) {
       }
 
       function update () {
-        Sound.Players.put(playerId, Sound.Players()[playerId]);
+        model.Players.put(playerId, model.Players()[playerId]);
       }
 
       function cue (number, label, time) {
@@ -165,6 +167,11 @@ module.exports.widget = function (id, src) {
             [ h('.AudioPlayer_Cue_Number', number)
           , label ])
         , h('.AudioPlayer_Cue_Time', time) ])
+      }
+
+      function tag (id) {
+        var val = model.Metadata[src][id];
+        return h('tr', h('td', id), h('td', val))
       }
 
       function close () {

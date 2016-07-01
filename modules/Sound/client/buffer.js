@@ -4,7 +4,7 @@
 
   return new Promise(function (win, fail) {
 
-    var cached = model.buffers()[src]
+    var cached = model.Buffers()[src]
       , request;
 
     if (cached) {
@@ -24,7 +24,7 @@
     }
 
     function decoded (data) {
-      model.buffers.put(src, data);
+      model.Buffers.put(src, data);
       win(data);
     }
 

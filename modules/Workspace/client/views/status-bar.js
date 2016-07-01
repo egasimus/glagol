@@ -1,8 +1,9 @@
 (function (state) {
 
   return h('.StatusBar',
-    [ h('button.StatusBar_Module', $.lib.icon('plus'))
-    , h('button.StatusBar_Module', $.lib.icon('info'))
+    [ h('button.StatusBar_Module', [ $.lib.icon('plus'), ' open' ])
+    , h('button.StatusBar_Module', [ $.lib.icon('info'), ' help' ])
+
       //h('.StatusBarNavigation',
       //[ h('a.StatusBarButton', 'Console')
       //, h('a.StatusBarButton', 'Tree') ])

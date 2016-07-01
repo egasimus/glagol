@@ -21,6 +21,7 @@
     "glagol-web-bundler": "^0.1.0",
     "glagol-web-client": "^0.1.1",
     "glagol-web-server": "^0.1.0",
+    "id3_reader": "^1.0.1",
     "json-align": "^0.1.0",
     "longjohn": "^0.2.11",
     "mime-types": "^2.1.10",

@@ -22,7 +22,7 @@ function serveGui (route, req, res) {
 function serveApi (route, req, res) {
 
   var id    = authenticate(req)
-    , model = $.modules.Workspace.model.Users.get(id)
+    , model = $.modules.Workspace.model.Users.get(id) || (function(){})
     , api   = $.api(model(), respond)
     , url   = require('url').parse(req.url)
     , cmd   = url.pathname.split('/').slice(2).join('/')

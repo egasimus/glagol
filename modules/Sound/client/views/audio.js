@@ -55,31 +55,33 @@ module.exports.widget = function (id, src) {
       //}
 
       return this._vdom = h('.AudioPlayer',
-        [ h('.AudioPlayer_Toolbar',
+        [ h('.AudioPlayer_Section',
           [ h('button.AudioPlayer_Button_Play' + (player.status === 'playing' ? '.Playing' : ''),
-              { onclick: play },
-              '⏯')
+              { onclick: play }, '⏯')
           , h('button.AudioPlayer_Button_Cue',
-              { onclick: stop },
-              'CUE') ])
-        , h('.AudioPlayer_Header', { style: { display: 'flex' } },
-            [ $.lib.icon('volume-up.fa-2x')
-            , h('.AudioPlayer_Title', require('path').basename(src))
-            , h('.AudioPlayer_Position',
-                player.status === 'loading'
-                ? '\nloading\n'
-                : $.lib.formatTime(player.position)                   + "\n" +
-                  $.lib.formatTime(player.duration - player.position) + "\n" +
-                  $.lib.formatTime(player.duration))
-            , h('.FrameClose', { onclick: close }, '×')
-            , h('.AudioPlayer_ProgressBar',
-                { onmousedown: seek },
-                h('.AudioPlayer_ProgressBar_Background',
-                  h('.AudioPlayer_ProgressBar_Foreground',
-                    { style: { width:
-                      (player.position && player.duration)
-                      ? player.position / player.duration * 100 + '%'
-                      : 0 }}))) ])
+              { onclick: stop }, 'CUE')
+          , h('.AudioPlayer_Title', require('path').basename(src))
+          , h('.AudioPlayer_Position',
+              player.status === 'loading'
+              ? '\nloading\n'
+              : $.lib.formatTime(player.position)                   + "\n" +
+                $.lib.formatTime(player.duration - player.position) + "\n" +
+                $.lib.formatTime(player.duration))
+          , h('.Frame_Close', { onclick: close }, '×')
+          ])
+
+        , h('.AudioPlayer_Section',
+          [ h('.AudioPlayer_ProgressBar',
+              { onmousedown: seek },
+              h('.AudioPlayer_ProgressBar_Background',
+                h('.AudioPlayer_ProgressBar_Foreground',
+                  { style: { width:
+                    (player.position && player.duration)
+                    ? player.position / player.duration * 100 + '%'
+                    : 0 }})))
+          ])
+          //, h('.AudioPlayer_Waveform') ])
+
         , h('.AudioPlayer_Cues',
           [ h('.AudioPlayer_Cues_Toolbar',
             [ h('.AudioPlayer_Cues_Add', $.lib.icon('map-marker')) ])
@@ -93,9 +95,12 @@ module.exports.widget = function (id, src) {
             , cue('7', 'Phrase',     '02:44.444')
             ])
           ])
+
         , h('.AudioPlayer_Info',
           [ h('.AudioPlayer_Info_Toolbar',
             [ h('.AudioPlayer_Info_Toggle', $.lib.icon('info-circle')) ])])
+
+        ,
           //, h('canvas.AudioPlayer_Spectrogram')
           ]);
 

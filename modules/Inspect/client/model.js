@@ -1,4 +1,4 @@
-module.exports = require('riko-mvc').M(
+module.exports = $.lib.model(
 
   { sockets:        {}
 

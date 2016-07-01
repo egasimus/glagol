@@ -62,35 +62,47 @@
       , directory.items.map(file) ]))
   }
 
-  function entry (onclick, body) {
-    return h('tr.Directory_Entry', { onclick: onclick }, body);
+  function entry (body, onclick, fade) {
+    return h('tr.Directory_Entry' + (fade ? '.Faded' : ''),
+      { onclick: onclick },
+      body);
   }
 
   function file (data) {
     if (!!(data.stats.mode & 0040000)) return;
-    return entry(open(data.name_, false),
+    return entry(
       [ h('td.Directory_Entry_Name', data.name_)
       , h('td.Directory_Entry_Type', data.type)
-      , h('td.Directory_Entry_Size', data.stats.size + ' B') ])
+      , h('td.Directory_Entry_Size', data.stats.size + ' B') ],
+      open(data.name_, false),
+      data.name_[0] === '.');
   }
 
   function dir (data) {
     if (!(data.stats.mode & 0040000)) return;
-    return entry(open(data.name_, true),
+    return entry(
       [ h('td.Directory_Entry_Name.is-dir', data.name_ + '/')
       , h('td.Directory_Entry_Type',
+
           [ !data.package ? null :
               h('span.Directory_Entry_Label',
                 [ 'npm '
-                , (data.package.version ? h('strong', data.package.version) : '') ])
+                , (data.package.version
+                  ? h('strong', data.package.version)
+                  : '') ])
+
           , !data.git ? null :
               h('span.Directory_Entry_Label' +
                 (data.git === 'unmodified' ? '.Git_Unmodified'  :
-                 data.git === 'modified'   ? '.Git_Modified' : '')
-                , 'git')
+                 data.git === 'modified'   ? '.Git_Modified'    : ''),
+                'git')
+
           , h('em', 'directory') ])
-      , h('td.Directory_Entry_Size', data.files ? (data.files + ' items') : 'access denied')
-      ])
+
+      , h('td.Directory_Entry_Size',
+        data.files ? (data.files + ' items') : 'access denied') ],
+      open(data.name_, true),
+      data.name_[0] === '.');
   }
 
   // handlers

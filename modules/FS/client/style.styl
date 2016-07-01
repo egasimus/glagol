@@ -46,13 +46,15 @@
       width 100%
 
   &_Entry
+    &.Faded
+      opacity 0.65
     font-size 1.2em
     display flex
     justify-content space-between
     white-space nowrap
     padding 3px
     cursor pointer
-    color white
+    color #e2e2e2
     &:hover
       background #555
     &_Name
@@ -69,12 +71,13 @@
     //&_Type
       //width 100px
     &_Label
+      border-radius 9px
       display inline-block
       padding 2px 4px
-      background #777
+      background #555
       color #ddd
       //font-weight bold
-      margin -2px 3px
+      margin -2px 12px -2px 0
       .Directory_Entry:hover &
         color #fff
 

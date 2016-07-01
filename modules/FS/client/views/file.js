@@ -10,11 +10,8 @@
     case 'audio/mpeg':
     case 'audio/x-wav':
       var playerId = frame.id + '_' + file.path;
-      if (!App.Model.Sound.Players()[playerId]) {
-        setTimeout(function () {
-          App.Model.Sound.Players.put(playerId, $.modules.Sound.player(file.path))
-        }, 0);
-      }
+      if (!App.Model.Sound.Players()[playerId])   loadAudioPlayer(file.path);
+      if (!App.Model.Sound.Metadata()[file.path]) loadAudioMetadata(file.path);
       body = $.modules.Sound.views.audio(frame.id, file.path);
       break;
     case 'image/png':
@@ -76,6 +73,28 @@
       event.preventDefault();
       App.API('Workspace/Close', frame.id);
     }
+  }
+
+  function loadAudioPlayer (src) {
+    setTimeout(function () {
+      App.Model.Sound.Players.put(playerId, $.modules.Sound.player(src))
+    }, 0);
+  }
+
+  function loadAudioMetadata (src) {
+    setTimeout(function () {
+      App.Model.Sound.Metadata.put(src, 'loading');
+      var url = '/api/Sound/GetMetadata?' + JSON.stringify([src])
+        , xhr = new XMLHttpRequest();
+      xhr.open('GET', url, true);
+      xhr.onload = function () {
+        App.Model.Sound.Metadata.put(src, JSON.parse(xhr.response).data);
+      }
+      xhr.onerror = function () {
+        App.Model.Sound.Metadata.put(src, 'failed');
+      }
+      xhr.send();
+    })
   }
 
 })

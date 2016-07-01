@@ -60,13 +60,13 @@ module.exports.widget = function (id, src) {
               { onclick: play }, '⏯')
           , h('button.AudioPlayer_Button_Cue',
               { onclick: stop }, 'CUE')
-          , h('.AudioPlayer_Title', require('path').basename(src))
           , h('.AudioPlayer_Position',
               player.status === 'loading'
               ? '\nloading\n'
               : $.lib.formatTime(player.position)                   + "\n" +
                 $.lib.formatTime(player.duration - player.position) + "\n" +
                 $.lib.formatTime(player.duration))
+          , h('.AudioPlayer_Title', require('path').basename(src))
           , h('.Frame_Close', { onclick: close }, '×')
           ])
 

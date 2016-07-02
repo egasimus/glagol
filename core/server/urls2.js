@@ -2,7 +2,7 @@ serveGui.tracked = _.gui.tracked;
 
 module.exports = require('riko-route')(
   [ [ /^\/$/,     serveGui ]
-  , [ /^\/api.+/, serveApi ] ]);
+  , [ /^\/api.?/, serveApi ] ]);
 
 function serveGui (route, req, res) {
 
@@ -26,9 +26,13 @@ function serveApi (route, req, res) {
     , api   = $.api(model(), respond)
     , url   = require('url').parse(req.url)
     , cmd   = url.pathname.split('/').slice(2).join('/')
-    , args  = JSON.parse(decodeURIComponent(require('url').parse(req.url).query));
 
-  api[cmd].apply(null, args);
+  if (cmd.length === 0) {
+    respond(JSON.stringify(Object.keys(api)));
+  } else {
+    var args = JSON.parse(decodeURIComponent(require('url').parse(req.url).query));
+    api[cmd].apply(null, args);
+  }
 
   function respond (data) {
     require('send-data')(req, res, { body: data });

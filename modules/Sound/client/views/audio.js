@@ -82,29 +82,31 @@ module.exports.widget = function (id, src) {
           ])
           //, h('.AudioPlayer_Waveform') ])
 
-        , h('.AudioPlayer_Cues',
-          [ h('.AudioPlayer_Cues_Toolbar',
-            [ h('.AudioPlayer_Cues_Add', $.lib.icon('map-marker')) ])
-          , h('.AudioPlayer_Cues_List',
-            [ cue('1', 'Fade in',    '00:11.111')
-            , cue('2', 'First beat', '00:42.424')
-            , cue('3', 'Theme',      '01:01.010')
-            , cue('4', 'Verse',      '01:08.080')
-            , cue('5', 'Chorus',     '01:11.111')
-            , cue('6', 'Breakdown',  '01:31.313')
-            , cue('7', 'Phrase',     '02:44.444')
-            ])
-          ])
-
         , h('.AudioPlayer_Section',
           { style: { flexWrap: 'nowrap' } },
-          [ h('.AudioPlayer_Info_Toolbar',
-            [ h('.AudioPlayer_Info_Toggle'
-            , $.lib.icon('info-circle')) ])
-          , h('table.AudioPlayer_Info_Table',
-              Object.keys(model.Metadata()[src] || {}).map(tag))])
+          [ h('.AudioPlayer_Cues',
+            [ h('.AudioPlayer_Cues_Toolbar',
+              [ h('.AudioPlayer_Cues_Add', $.lib.icon('map-marker')) ])
+            , h('.AudioPlayer_Cues_List',
+              [ cue('1', 'Fade in',    '00:11.111')
+              , cue('2', 'First beat', '00:42.424')
+              , cue('3', 'Theme',      '01:01.010')
+              , cue('4', 'Verse',      '01:08.080')
+              , cue('5', 'Chorus',     '01:11.111')
+              , cue('6', 'Breakdown',  '01:31.313')
+              , cue('7', 'Phrase',     '02:44.444')
+              ])
+            ])
 
-        ,
+          , h('.AudioPlayer_Info',
+            [ h('.AudioPlayer_Info_Toolbar',
+              [ h('.AudioPlayer_Info_Toggle'
+              , $.lib.icon('info-circle')) ])
+            , h('table.AudioPlayer_Info_Table',
+                Object.keys(model.Metadata()[src] || {}).sort().map(tag))])
+
+          ])
+
           //, h('canvas.AudioPlayer_Spectrogram')
           ]);
 

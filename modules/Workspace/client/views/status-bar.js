@@ -1,7 +1,11 @@
 (function (state) {
 
   return h('.StatusBar',
-    [ h('button.StatusBar_Module', [ $.lib.icon('plus'), ' open' ])
+    [ h('.StatusBar_Group',
+      [ h('button.StatusBar_Module', [ $.lib.icon('folder-open'), ' ', h('strong', 'o'), 'pen' ])
+      , h('button.StatusBar_Module', [ $.lib.icon('rocket'),      ' ', h('strong', 'r'), 'un'  ])
+      , h('button.StatusBar_Module', [ $.lib.icon('plus'),        ' ', h('strong', 'a'), 'dd'  ])
+      ])
     , h('button.StatusBar_Module', [ $.lib.icon('info'), ' help' ])
 
       //h('.StatusBarNavigation',

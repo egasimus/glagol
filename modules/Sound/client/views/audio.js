@@ -16,7 +16,7 @@ module.exports.widget = function (id, src) {
 
   , init: function () {
       this.element = vdom.create(this.render(model()));
-      model(this.patch.bind(this));
+      model(this.patch.bind(this)); // TODO centralize to prevent hanging references
       return this.element;
     }
 
@@ -162,6 +162,7 @@ module.exports.widget = function (id, src) {
       }
 
       function update () {
+        // trigger update via model
         model.Players.put(playerId, model.Players()[playerId]);
       }
 

@@ -35,6 +35,10 @@ function onKey (state, direction, event) {
             }
             break;
 
+          case 'KeyS':
+            App.API('Workspace/Open', 'sequencer')
+            break;
+
           case 'Tab':
             Switcher.visible.set(true);
         }

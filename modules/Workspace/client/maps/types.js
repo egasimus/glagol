@@ -2,6 +2,7 @@ module.exports = require('riko-route')(
   [ [ 'iframe',    __.views.frames.iframe      ]
   , [ 'file',      __.__.FS.views.file         ]
   , [ 'directory', __.__.FS.views.directory    ]
+  , [ 'sequencer', __.__.Sound.views.sequencer ]
   , [ 'glagol',    __.__.Inspect.views.glagol  ]
   ] );
 

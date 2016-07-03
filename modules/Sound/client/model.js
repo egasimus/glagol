@@ -1,15 +1,17 @@
 module.exports = $.lib.model(
 
-  { context:   new AudioContext()
+  { context:    new AudioContext()
 
-  , Players:   {}
+  , Players:    {}
 
-  , Metadata:  {}
+  , Metadata:   {}
 
-  , Waveforms: {}
+  , Waveforms:  {}
 
-  , Buffers:   {}
+  , Buffers:    {}
 
-  , Chains:    {}
+  , Chains:     {}
+
+  , Sequencers: {}
 
   });

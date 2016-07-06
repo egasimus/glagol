@@ -41,7 +41,8 @@ module.exports.widget = function (id, src) {
   , render: function (state) {
 
       var self   = this
-        , player = state.Players ? state.Players[playerId] : null;
+        , player = state.Players ? state.Players[playerId] : null
+        , cues   = state.Cues    ? state.Cues[src] || []   : [];
 
       if (!player) {
         return this._vdom = h('.AudioPlayer_Missing',
@@ -86,16 +87,12 @@ module.exports.widget = function (id, src) {
           { style: { flexWrap: 'nowrap' } },
           [ h('.AudioPlayer_Cues',
             [ h('.AudioPlayer_Cues_Toolbar',
-              [ h('.AudioPlayer_Cues_Add', $.lib.icon('map-marker')) ])
+              [ h('.AudioPlayer_Cues_Add',
+                  { onclick: addCue },
+                  $.lib.icon('map-marker')) ])
             , h('.AudioPlayer_Cues_List',
-              [ cue('1', 'Fade in',    '00:11.111')
-              , cue('2', 'First beat', '00:42.424')
-              , cue('3', 'Theme',      '01:01.010')
-              , cue('4', 'Verse',      '01:08.080')
-              , cue('5', 'Chorus',     '01:11.111')
-              , cue('6', 'Breakdown',  '01:31.313')
-              , cue('7', 'Phrase',     '02:44.444')
-              ])
+                cues.map(function (c, i) {
+                  return cue(i+1, c.name, c.time); }))
             ])
 
           , h('.AudioPlayer_Info',
@@ -169,9 +166,19 @@ module.exports.widget = function (id, src) {
       function cue (number, label, time) {
         return h('.AudioPlayer_Cue',
           [ h('.AudioPlayer_Cue_Label',
-            [ h('.AudioPlayer_Cue_Number', number)
-          , label ])
-        , h('.AudioPlayer_Cue_Time', time) ])
+            [ h('.AudioPlayer_Cue_Number', String(number))
+            , label ])
+        , h('.AudioPlayer_Cue_Time', String(time)) ])
+      }
+
+      function addCue () {
+        var cues   = model.Cues()[src]
+          , newCue = { label: 'New Cue', time: player.position }
+        if (cues) {
+          model.Cues[src].push($.lib.model(newCue));
+        } else {
+          model.Cues.put(src, $.lib.model([ newCue ]))
+        }
       }
 
       function tag (id) {

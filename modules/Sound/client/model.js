@@ -6,6 +6,8 @@ module.exports = $.lib.model(
 
   , Metadata:   {}
 
+  , Cues:       {}
+
   , Waveforms:  {}
 
   , Buffers:    {}

@@ -66,6 +66,7 @@
     cursor text
     &_Background
       background #222
+      background rgba(255,255,255,0.05)
       width 100%
       height 100%
     &_Foreground
@@ -149,4 +150,21 @@
     border 1px solid #888
   &_Sequence
     flex-grow 1
-    border 1px solid #888
+    border-top 1px solid rgba(0,0,0,0.5)
+    margin 0 3px 6px
+    background rgba(0,0,0,0.1)
+  &_Track
+    height 23px
+    border-bottom 1px solid rgba(0,0,0,0.5)
+    display flex
+    &_Label
+      background rgba(0,0,0,0.2)
+      line-height 23px
+      padding 0 8px
+  &_Grid
+    border-right 1px solid rgba(0,0,0,0.9)
+    &:nth-child(2n-1)
+      border-right 1px solid rgba(0,0,0,0.3)
+  &_Track, &_Grid
+    &:hover
+      background rgba(255,255,255,0.05)

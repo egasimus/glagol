@@ -44,10 +44,10 @@ module.exports.widget = function (id) {
           [ h('button.Sequencer_Button_Play', 'play')
           , h('button.Sequencer_Button_Stop', 'stop')
           , h('button.Sequencer_Position', '00:00:00')
-          , h('.Sequencer_Title', 'Sequencer')
+          , h('.Sequencer_Title', 'Sequence 1')
           , h('.Frame_Close', { onclick: close }, '×') ])
         , h('.Sequencer_Section',
-          [ h('.Sequencer_Patterns',
+          [ /*h('.Sequencer_Patterns',
             [ h('.Sequencer_Pattern', 'Pattern 1')
             , h('.Sequencer_Pattern', 'Pattern 2')
             , h('.Sequencer_Pattern', 'Pattern 3')
@@ -55,13 +55,10 @@ module.exports.widget = function (id) {
             , h('.Sequencer_Pattern', 'Pattern 5')
             , h('.Sequencer_Pattern', 'Pattern 6')
             , h('.Sequencer_Pattern', 'Pattern 7')
-            , h('.Sequencer_Pattern', 'Pattern 8') ])
-          , h('.Sequencer_Sequence') ])
+            , h('.Sequencer_Pattern', 'Pattern 8') ])*/
+          , h('.Sequencer_Sequence',
+              [1,2,3,4,5,6,7,8].map(track)) ])
         ]);
-
-      function close () {
-        App.API('Workspace/Close', id);
-      }
 
       if (!sequencer) {
         return this._vdom = h('.Sequencer_Missing',
@@ -71,6 +68,18 @@ module.exports.widget = function (id) {
       }
 
       return this._vdom = h('.Sequencer');
+
+      function close () {
+        App.API('Workspace/Close', id);
+      }
+
+      function track () {
+        var grid = [ h('.Sequencer_Track_Label', 'track') ]
+          , n    = 16
+        for (var i = 0; i < n; i++) grid.push(
+          h('.Sequencer_Grid', { style: { width: (100/n) + '%' } }))
+        return h('.Sequencer_Track', grid);
+      }
 
     }
 

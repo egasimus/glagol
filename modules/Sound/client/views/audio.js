@@ -92,7 +92,7 @@ module.exports.widget = function (id, src) {
                   $.lib.icon('map-marker')) ])
             , h('.AudioPlayer_Cues_List',
                 cues.map(function (c, i) {
-                  return cue(i+1, c.name, c.time); }))
+                  return cue(i+1, c.label, c.time); }))
             ])
 
           , h('.AudioPlayer_Info',
@@ -168,7 +168,7 @@ module.exports.widget = function (id, src) {
           [ h('.AudioPlayer_Cue_Label',
             [ h('.AudioPlayer_Cue_Number', String(number))
             , label ])
-        , h('.AudioPlayer_Cue_Time', String(time)) ])
+        , h('.AudioPlayer_Cue_Time', $.lib.formatTime(time)) ])
       }
 
       function addCue () {

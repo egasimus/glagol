@@ -166,9 +166,14 @@ module.exports.widget = function (id, src) {
       function cue (number, label, time) {
         return h('.AudioPlayer_Cue',
           [ h('.AudioPlayer_Cue_Label',
-            [ h('.AudioPlayer_Cue_Number', String(number))
+            [ h('.AudioPlayer_Cue_Number', { onclick: jump }, String(number))
             , label ])
         , h('.AudioPlayer_Cue_Time', $.lib.formatTime(time)) ])
+
+        function jump () {
+          player.seek(time);
+          update();
+        }
       }
 
       function addCue () {

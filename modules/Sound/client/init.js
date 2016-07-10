@@ -1,4 +1,4 @@
-(function init () {
+(function init (App) {
 
   var commands =
     { add: function (src) {

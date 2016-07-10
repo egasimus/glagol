@@ -1,4 +1,4 @@
-(function (newState) {
+(function (App, newState) {
 
   console.debug("Update workspace", newState);
 

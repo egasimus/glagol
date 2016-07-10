@@ -1,4 +1,4 @@
-(function (node) {
+(function (App, node) {
 
   console.info("FS read", node.type, node.path, node);
 

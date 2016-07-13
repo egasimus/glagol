@@ -2,6 +2,8 @@ Glagol.events.once('changed', _.reload(__filename));
 
 module.exports = function main () {
 
+  _.util.insertCssLive(Glagol.get('styles').get('reset.styl'), 'Core');
+
   var App = {};
 
   App.Model = require('riko-mvc/model')({});

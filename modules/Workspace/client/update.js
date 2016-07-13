@@ -1,6 +1,10 @@
-Glagol.events.on('changed', reload)
+Glagol.events.once('changed', reload)
+
+var _App;
 
 module.exports = function (App, newState) {
+
+  _App = App;
 
   console.debug("Update workspace", newState);
 
@@ -22,6 +26,6 @@ module.exports = function (App, newState) {
 function reload () {
 
   console.debug('edited workspace updater');
-  App.API('Workspace/Refresh');
+  if (_App) _App.API('Workspace/Refresh');
 
 }

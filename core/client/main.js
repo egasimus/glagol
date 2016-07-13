@@ -2,7 +2,8 @@ Glagol.events.once('changed', _.reload(__filename));
 
 module.exports = function main () {
 
-  _.util.insertCssLive(Glagol.get('styles').get('reset.styl'), 'Core');
+  _.util.insertCssLive(Glagol.get('styles/reset.styl'),   'Core');
+  _.util.insertCssLive(Glagol.get('styles/default.styl'), 'Core');
 
   var App = {};
 

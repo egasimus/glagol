@@ -1,6 +1,6 @@
 module.exports = function (reason) {
   return function () {
-    console.log('Reloading (' + reason + ')');
+    console.log(reason + ', reloading');
     window.location.reload()
   }
 }

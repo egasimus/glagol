@@ -6,12 +6,13 @@ module.exports = function (App) {
 
     var moduleRoot = Glagol.get('modules').get(name);
 
-    // views directory is special
+    // make views directory special
     var views = moduleRoot.get('views');
     if (views) {
       // globals for easier templating. maybe just remove
       views.options = require('extend')(views.options, {
         globals: function (file) { return {
+          App:  App,
           emit: function () { return _.util.emit.apply(null, arguments) },
           h:    function () { return _.util.h.apply(null, arguments) } } } })
 
@@ -21,6 +22,11 @@ module.exports = function (App) {
       })
     }
 
+    // make model globally accessible via App.Model
+    var model = moduleRoot().model;
+    if (model) App.Model.put(name, model);
+
+    // execute entry point
     var entryPoint = moduleRoot.get('init.js');
     if (entryPoint && entryPoint()) {
       console.debug('running', name + '/init');

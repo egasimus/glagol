@@ -14,7 +14,7 @@
                 Object.keys(state.Workspace.Frames).map(
                   function (id) { return _.frame(state.Workspace.Frames[id]) }))
             ])
-        //, _.statusBar(state)
+        , _.taskbar(state)
         ]);
 
 })

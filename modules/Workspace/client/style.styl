@@ -117,57 +117,6 @@
     background #aaa
     border-radius 24px
 
-.StatusBar
-  flex-shrink 0
-  display flex
-  flex-direction row
-  height 30px
-  padding-bottom 6px
-  //background linear-gradient(to top, rgba(11,11,11,0.5), rgba(33,33,33,0.7))
-  color #fff
-  justify-content space-between
-  &_Text
-    flex-grow 1
-    text-align center
-    line-height 24px
-    font-size 1.2em
-    text-shadow 0 1px 2px black
-  &_Module
-    cursor pointer
-    display inline-block
-    background #000
-    line-height 18px
-    padding 3px 9px
-    margin 0 6px 0 6px
-    font-weight normal
-    border-radius 12px
-    text-transform uppercase
-    letter-spacing 1px
-    min-width 30px
-    color rgba(255,255,255,0.5)
-    background rgba(0,0,0,0.5)
-    text-shadow none
-    &:hover
-      background rgba(0,0,0,0.5)
-  &Navigation, &Presentation
-    display flex
-    flex-direction row
-  &Button
-    cursor pointer
-    margin-top 2px
-    margin-bottom 2px
-    line-height 18px
-    padding 1px 6px
-    background #eee
-    border-radius 3px
-    font-size 0.9em
-  &Navigation > &Button
-    margin-left 6px
-    margin-right 0
-  &Presentation > &Button
-    margin-left 0
-    margin-right 6px
-
 .MainView
   background-size  cover
   display flex
@@ -454,3 +403,24 @@
       vertical-align middle
     &:hover
       background rgba(33,33,33,0.5)
+
+.Taskbar
+  height 48px
+  background #333
+  display flex
+  flex-direction row
+  justify-content space-between
+  &_Group
+    display flex
+    flex-direction row
+  &_Button, &_Clock
+    background none
+    overflow hidden
+    cursor pointer
+    &:hover
+      color #ccaa26
+    &>i
+      font-size 48px
+  &_Clock
+    font-size 14px
+    line-height 24px

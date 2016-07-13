@@ -18,7 +18,7 @@ module.exports = function (App) {
 
       // live reload when editing views
       views.events.onAny(function () {
-        App.View.Update(App.Model());
+        App.View.update(App.Model());
       })
     }
 

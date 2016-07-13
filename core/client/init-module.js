@@ -26,6 +26,19 @@ module.exports = function (App) {
     var model = moduleRoot().model;
     if (model) App.Model.put(name, model);
 
+    // if module has stylesheet, add it to the document head
+    // TODO custom auto-updating format for stylesheets
+    var style = moduleRoot.get('style.styl') || moduleRoot.get('style.css');
+    if (style) {
+      var cssNode = $.util.insertCss(style());
+      cssNode.dataset.module = name;
+      style.events.on('changed', function () {
+        cssNode.parentElement.removeChild(cssNode);
+        cssNode = $.util.insertCss(style());
+        cssNode.dataset.module = name;
+      });
+    }
+
     // execute entry point
     var entryPoint = moduleRoot.get('init.js');
     if (entryPoint && entryPoint()) {

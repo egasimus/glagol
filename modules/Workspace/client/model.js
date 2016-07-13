@@ -1,8 +1,6 @@
 module.exports = $.lib.model(
 
-  { userId:       null
-
-  , Status:       "loading"
+  { Status:       "loading"
 
   , Launcher:     { visible: false
                   , focused: false

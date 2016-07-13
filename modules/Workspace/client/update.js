@@ -11,7 +11,7 @@ module.exports = function (App, newState) {
   var newFrames = [];
 
   console.log(newState.Users, _.model())
-  newState.Users[_.model.userId()].Frames.forEach(function (id) {
+  newState.Users[__.Auth.model().UserId].Frames.forEach(function (id) {
     var frame = newState.Frames[id];
     if (!frame) return;
     newFrames.push(frame);

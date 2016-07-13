@@ -12,7 +12,8 @@ module.exports = function main () {
   _.moduleOrder.forEach(initModule);
 
   function initModule (name) {
-    var entryPoint = Glagol.get('modules/' + name + '/init.js');
+    var rootDir    = Glagol.get('modules').get(name)
+      , entryPoint = rootDir.get('init.js');
     if (entryPoint && entryPoint()) {
       console.debug('running', name + '/init');
       entryPoint.events.on('changed', _.reload(name + ' entry point'));

@@ -10,6 +10,7 @@ module.exports = function (App, newState) {
 
   var newFrames = [];
 
+  console.log(newState.Users, _.model())
   newState.Users[_.model.userId()].Frames.forEach(function (id) {
     var frame = newState.Frames[id];
     if (!frame) return;
@@ -19,7 +20,7 @@ module.exports = function (App, newState) {
     }
   })
 
-  App.Model.Workspace.put("Frames", $.lib.model(newFrames));
+  _.model.put("Frames", $.lib.model(newFrames));
 
 }
 

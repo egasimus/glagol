@@ -14,6 +14,9 @@ module.exports = function main () {
     return views[loaded ? 'app' : 'loading'](state);
   });
 
+  document.body.innerHTML = "";
+  document.body.appendChild(App.View.target);
+
   _.modules.Workspace.model.Status.set('OK'); // HACK
 
 }

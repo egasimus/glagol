@@ -1,11 +1,12 @@
-(function (App, newState) {
+Glagol.events.on('changed', reload)
+
+module.exports = function (App, newState) {
 
   console.debug("Update workspace", newState);
 
-  var Workspace = App.Model.Workspace
-    , newFrames = [];
+  var newFrames = [];
 
-  newState.Users[Workspace.userId()].Frames.forEach(function (id) {
+  newState.Users[_.model.userId()].Frames.forEach(function (id) {
     var frame = newState.Frames[id];
     if (!frame) return;
     newFrames.push(frame);
@@ -16,4 +17,11 @@
 
   App.Model.Workspace.put("Frames", $.lib.model(newFrames));
 
-})
+}
+
+function reload () {
+
+  console.debug('edited workspace updater');
+  App.API('Workspace/Refresh');
+
+}

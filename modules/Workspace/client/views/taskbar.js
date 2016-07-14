@@ -7,8 +7,12 @@ module.exports = function (state) {
 
   return h('.Taskbar',
     [ h('.Taskbar_Group',
-      [ h('button.Taskbar_Button', $.lib.icon('th'))
-      ])
+      [ h('button.Taskbar_Button' + (state.Workspace.MainMenu.visible ? '.active' : ''),
+          { onclick: toggle('MainMenu') },
+          $.lib.icon('th')) ])
+    , __.model.MainMenu.visible()
+      ? h('.Taskbar_MainMenu')
+      : null
     , h('.Taskbar_Group',
       [ h('button.Taskbar_Button', $.lib.icon('cloud'))
       , h('button.Taskbar_Button', $.lib.icon('volume-up'))
@@ -18,4 +22,10 @@ module.exports = function (state) {
       ])
     ])
 
+}
+
+function toggle (component) {
+  return function () {
+    __.model[component].visible.set(!__.model[component].visible());
+  }
 }

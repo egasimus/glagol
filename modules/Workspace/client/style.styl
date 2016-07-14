@@ -411,16 +411,44 @@
   flex-direction row
   justify-content space-between
   &_Group
+    &:first-child > :first-child
+      padding-left 12px
+    &:last-child > :last-child
+      padding-right 12px
     display flex
     flex-direction row
   &_Button, &_Clock
     background none
     overflow hidden
     cursor pointer
+    &>i
+      font-size 24px
     &:hover
       color #ccaa26
-    &>i
-      font-size 48px
+    &:active
+      color white
+    &:focus
+      outline none
+      text-shadow 0 -1px 0 #555
+    &.active
+      color #ccaa26
+      &:hover
+        color white
   &_Clock
     font-size 14px
-    line-height 24px
+    line-height 18px
+  &_MainMenu
+    position absolute
+    left 0
+    bottom 46px
+    height 50vh
+    width 400px
+    background #333
+    &:after
+      content ''
+      position absolute
+      left 100%
+      top 0
+      bottom 0
+      width 6px
+      background linear-gradient(to right, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%)

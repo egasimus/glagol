@@ -3,6 +3,7 @@ module.exports = require('riko-route')(
   , [ 'file',      __.__.FS.views.file         ]
   , [ 'directory', __.__.FS.views.directory    ]
   , [ 'sequencer', __.__.Sound.views.sequencer ]
+  , [ 'mixer',     __.__.Sound.views.mixer     ]
   , [ 'glagol',    __.__.Inspect.views.glagol  ]
   ] );
 

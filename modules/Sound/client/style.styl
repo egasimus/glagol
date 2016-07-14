@@ -167,3 +167,38 @@
   &_Track, &_Grid
     &:hover
       background rgba(255,255,255,0.05)
+
+.Mixer
+  &_Channels
+    display flex
+    flex-direction row
+  &_Channel
+    margin 0 0 0 6px
+  &_Knob, &_Fader
+    cursor pointer
+    font-size 0
+    width 36px
+    background #333
+    margin 0 0 6px
+    border 1px solid #555
+    box-shadow 0 1px 2px #000
+    &:after
+      content ''
+      background #555
+      position absolute
+  &_Knob
+    height 36px
+    border-radius 36px
+    &:after
+      top 3px
+      height 50%
+      left 50%
+      right 50%
+      margin 0 -2px
+  &_Fader
+    height 120px
+    &:after
+      top 20%
+      height 24px
+      left 3px
+      right 3px

@@ -411,9 +411,9 @@
   flex-direction row
   justify-content space-between
   &_Group
-    &:first-child > :first-child
-      padding-left 12px
+    &:first-child > :first-child,
     &:last-child > :last-child
+      padding-left 12px
       padding-right 12px
     display flex
     flex-direction row
@@ -432,6 +432,7 @@
       text-shadow 0 -1px 0 #555
     &.active
       color #ccaa26
+      background #222
       &:hover
         color white
   &_Clock
@@ -441,9 +442,8 @@
     position absolute
     left 0
     bottom 46px
-    height 50vh
     width 400px
-    background #333
+    background #222
     &:after
       content ''
       position absolute
@@ -452,3 +452,14 @@
       bottom 0
       width 6px
       background linear-gradient(to right, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%)
+    &_Item
+      padding 6px 12px
+      color white
+      font-size 1.4em
+      line-height 24px
+      cursor pointer
+      &:hover
+        color #ccaa26
+        background #181818
+        &>strong
+          color #eecc48

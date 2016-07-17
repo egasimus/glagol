@@ -62,10 +62,7 @@ function onKey (state, direction, event) {
           }
           break;
         case 'F5':
-          if (down) {
-            Workspace.Status.set('loading');
-            window.location.reload();
-          }
+          if (down) _.reload();
           break;
         case 'F12':
           if (down) {

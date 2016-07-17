@@ -40,9 +40,9 @@ module.exports.widget = function (id) {
         , sequencer = state.Sequencers ? state.Sequencers[id] : null;
 
       return this._vdom = h('.Sequencer',
-        [ h('.Sequencer_Section',
-          [ h('button.Sequencer_Button_Play', 'play')
-          , h('button.Sequencer_Button_Stop', 'stop')
+        [ h('.Frame_Header',
+          [ h('button.Sequencer_Button_Play', '⏯')
+          , h('button.Sequencer_Button_Stop', $.lib.icon('stop'))
           , h('button.Sequencer_Position', '00:00:00')
           , h('.Sequencer_Title', 'Sequence 1')
           , h('.Frame_Close', { onclick: close }, '×') ])

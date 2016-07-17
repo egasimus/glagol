@@ -56,7 +56,7 @@ module.exports.widget = function (id, src) {
       //}
 
       return this._vdom = h('.AudioPlayer',
-        [ h('.AudioPlayer_Section',
+        [ h('.Frame_Header',
           [ h('button.AudioPlayer_Button_Play' + (player.status === 'playing' ? '.Playing' : ''),
               { onclick: play }, '⏯')
           , h('button.AudioPlayer_Button_Cue',

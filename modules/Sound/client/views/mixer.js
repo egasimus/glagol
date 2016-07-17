@@ -40,7 +40,10 @@ module.exports.widget = function (id) {
         , mixer = state.Mixers ? state.Mixers[id] : null;
 
       return this._vdom = h('.Mixer',
-        [ h('.Mixer_Toolbar', 'Mix 1')
+        [ h('.Frame_Header.Mixer_Toolbar',
+            [ $.lib.icon('sliders.fa-2x')
+            , h('select.Mixer_Selector', [ h('option', 'Mix 1') ])
+            , h('.Frame_Close', { onclick: close }, '×') ])
         , h('.Mixer_Channels', [1,2,3,4,5,6,7,8].map(channel)) ]);
 
       if (!mixer) {

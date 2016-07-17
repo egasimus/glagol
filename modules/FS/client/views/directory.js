@@ -57,9 +57,11 @@
   }
 
   function body () {
-    return h('.Directory_Entries', h('table',
-      [ directory.items.map(dir)
-      , directory.items.map(file) ]))
+    return h('.Directory_Entries',
+      { hookScroll: $.lib.scrollHook() },
+      h('table',
+        [ directory.items.map(dir)
+        , directory.items.map(file) ]))
   }
 
   function entry (body, onclick, fade) {

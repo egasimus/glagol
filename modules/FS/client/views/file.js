@@ -36,9 +36,18 @@
       break;
     default:
       body = defaultLayout(h('.File_Unknown',
-        [ $.lib.icon('info-circle') 
-        , 'This file has an unfamiliar type, '
-        , h('em', file.contentType) ]), false);
+        [ $.lib.icon('info-circle')
+        , h('em.File_Unknown_Title', file.path)
+        , h('br')
+        , 'has an unfamiliar type, '
+        , h('em', file.contentType)
+        , h('br')
+        , 'Open as: '
+        , h('button', 'Plaintext')
+        , ' '
+        , h('button', 'Image')
+        , ' '
+        , h('button', 'Audio')]), false);
   }
 
   return body;

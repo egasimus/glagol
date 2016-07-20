@@ -9,48 +9,69 @@
       break;
     case 'audio/mpeg':
     case 'audio/x-wav':
-      var playerId = frame.id + '_' + file.path;
-      if (!App.Model.Sound.Players()[playerId])   loadAudioPlayer(file.path);
-      if (!App.Model.Sound.Metadata()[file.path]) loadAudioMetadata(file.path);
-      body = $.modules.Sound.views.audio(frame.id, file.path);
+      renderAudio();
       break;
     case 'image/png':
     case 'image/jpeg':
     case 'image/gif':
-      body = defaultLayout(h('div.ImageContainer', addSrc(h('img'))))
+      renderImage();
       break;
     case 'text/plain':
-      var ext = require('path').extname(file.path);
-      switch (ext) {
-        case '.m3u8':
-          body = defaultLayout(
-            __.__.Sound.views.playlist(frame, file),
-            h('.File_Toolbar',
-              [ h('button', $.lib.icon('refresh'))
-              , h('button', $.lib.icon('save')),
-              , h('button', $.lib.icon('eye')) ]));
-          break;
-        default:
-          body = defaultLayout(_.editor(file.path), true);
-      }
+      renderPlaintext();
       break;
     default:
-      body = defaultLayout(h('.File_Unknown',
-        [ $.lib.icon('info-circle')
-        , h('em.File_Unknown_Title', file.path)
-        , h('br')
-        , 'has an unfamiliar type, '
-        , h('em', file.contentType)
-        , h('br')
-        , 'Open as: '
-        , h('button', 'Plaintext')
-        , ' '
-        , h('button', 'Image')
-        , ' '
-        , h('button', 'Audio')]), false);
+      unknownType();
   }
 
   return body;
+
+  function renderPlaintext () {
+    var ext = require('path').extname(file.path);
+    switch (ext) {
+      case '.m3u8':
+        body = defaultLayout(
+          __.__.Sound.views.playlist(frame, file),
+          h('.File_Toolbar',
+            [ h('button', $.lib.icon('refresh'))
+            , h('button', $.lib.icon('save')),
+            , h('button', $.lib.icon('eye')) ]));
+        break;
+      default:
+        body = defaultLayout(_.editor(file.path), true);
+    }
+  }
+  
+  function renderAudio () {
+    var playerId = frame.id + '_' + file.path;
+    if (!App.Model.Sound.Players()[playerId])   loadAudioPlayer(file.path);
+    if (!App.Model.Sound.Metadata()[file.path]) loadAudioMetadata(file.path);
+    body = $.modules.Sound.views.audio(frame.id, file.path);
+  }
+
+  function renderImage () {
+    body = defaultLayout(h('div.ImageContainer', addSrc(h('img'))))
+  }
+
+  function unknownType () {
+    body = defaultLayout(h('.File_Unknown',
+      [ $.lib.icon('info-circle')
+      , h('em.File_Unknown_Title', file.path)
+      , h('br')
+      , 'has an unfamiliar type, '
+      , h('em', file.contentType)
+      , h('br')
+      , 'Open as: '
+      , h('button', { onclick: setType('plaintext')  }, 'Plaintext')
+      , ' '
+      , h('button', { onclick: setType('hexeditor')  }, 'Binary')
+      , ' '
+      , h('button', { onclick: setType('selecttype') }, 'Other type...') ]), false);
+  }
+
+  function setType (type) {
+    return function () {
+    }
+  }
 
   function addSrc (vnode) {
     vnode.properties.src = '/api/FS/ReadFile?' + JSON.stringify([file.path]);

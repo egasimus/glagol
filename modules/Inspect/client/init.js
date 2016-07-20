@@ -13,4 +13,7 @@
     }
   };
 
+  __.Workspace.maps.types.collection.push(
+    [ 'glagol', _.views.glagol ]);
+
 })

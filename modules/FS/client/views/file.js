@@ -45,7 +45,7 @@
     var playerId = frame.id + '_' + file.path;
     if (!App.Model.Sound.Players()[playerId])   loadAudioPlayer(file.path);
     if (!App.Model.Sound.Metadata()[file.path]) loadAudioMetadata(file.path);
-    body = $.modules.Sound.views.audio(frame.id, file.path);
+    body = _.sound(frame.id, file.path);
   }
 
   function renderImage () {

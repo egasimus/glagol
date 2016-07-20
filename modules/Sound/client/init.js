@@ -13,4 +13,10 @@
     commands[arguments[0]].apply(
       null, Array.prototype.slice.call(arguments, 1)) };
 
+  __.Workspace.maps.types.collection.push(
+    [ 'sequencer', _.views.sequencer ])
+
+  __.Workspace.maps.types.collection.push(
+    [ 'mixer', _.views.mixer ])
+
 })

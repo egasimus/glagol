@@ -1,11 +1,8 @@
-module.exports = require('riko-route')(
-  [ [ 'iframe',    __.views.frames.iframe      ]
-  , [ 'file',      __.__.FS.views.file         ]
-  , [ 'directory', __.__.FS.views.directory    ]
-  , [ 'sequencer', __.__.Sound.views.sequencer ]
-  , [ 'mixer',     __.__.Sound.views.mixer     ]
-  , [ 'glagol',    __.__.Inspect.views.glagol  ]
-  ] );
+var collection = [];
+
+module.exports = require('riko-route')(collection);
+
+module.exports.collection = collection;
 
 module.exports.handler = function (match, input, data) {
   return match(data[0].frame, data[0].index);

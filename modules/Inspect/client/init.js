@@ -13,7 +13,6 @@
     }
   };
 
-  __.Workspace.maps.types.collection.push(
-    [ 'glagol', _.views.glagol ]);
+  App.Workspace.registerFrameType('glagol', _.views.glagol);
 
 })

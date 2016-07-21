@@ -1,11 +1,5 @@
 (function init (App) {
 
-  App.Workspace = {
-    registerFrameType: function (id, cb) {
-      _.maps.types.collection.push([ id, cb ])
-    }
-  }
-
   console.log(123,App.Workspace);
 
   // first request data

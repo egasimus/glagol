@@ -19,7 +19,7 @@ module.exports = function (state) {
       , h('button.Taskbar_Button', $.lib.icon('volume-up'))
       , h('button.Taskbar_Button', $.lib.icon('battery-half'))
       , h('button.Taskbar_Button', $.lib.icon('cogs'))
-      , h('button.Taskbar_Clock', [ 'Foo', h('br'), 'Bar' ])
+      , _.clock()
       ])
     ])
 

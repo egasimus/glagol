@@ -1,32 +1,24 @@
-Glagol.events.once('changed', reload)
-
 var _App;
+
+Glagol.events.once('changed', function () {
+  console.debug('edited workspace updater');
+  if (_App) _App.API('Workspace/Refresh');
+});
 
 module.exports = function (App, newState) {
 
   _App = App;
 
-  console.debug("Update workspace", newState);
+  console.debug("updating workspace:", newState);
 
-  var newFrames = [];
-
-  console.log(newState.Users, _.model())
-  newState.Users[__.Auth.model().UserId].Frames.forEach(function (id) {
+  var newFrames = []
+    , userId    = __.Auth.model().UserId
+    , user      = newState.Users[userId];
+  user.Frames.forEach(function (id) {
     var frame = newState.Frames[id];
-    if (!frame) return;
-    newFrames.push(frame);
-    if (['directory', 'file'].indexOf(frame.type) > -1) {
-      App.API('FS/GetInfo', frame.address);
-    }
+    if (frame) newFrames.push(frame);
   })
 
   _.model.put("Frames", $.lib.model(newFrames));
-
-}
-
-function reload () {
-
-  console.debug('edited workspace updater');
-  if (_App) _App.API('Workspace/Refresh');
 
 }

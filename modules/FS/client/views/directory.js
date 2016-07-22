@@ -2,6 +2,11 @@
 
   var directory = App.Model.FS.Directories()[frame.address];
 
+  if (!directory) {
+    App.API('FS/GetInfo', frame.address)
+    return 'loading...';
+  }
+
   return [
     toolbar(),
     h('.Directory_Body',

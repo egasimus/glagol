@@ -1,12 +1,13 @@
 (function (frame, index) {
 
-  var file = App.Model.FS.Files()[frame.address] || {}
-    , body;
+  var file = App.Model.FS.Files()[frame.address]
+
+  if (!file) {
+    App.API('FS/GetInfo', frame.address)
+    return 'loading...'
+  }
 
   switch (file.contentType) {
-    case undefined:
-      body = 'loading...';
-      break;
     case 'audio/mpeg':
     case 'audio/x-wav':
       renderAudio();

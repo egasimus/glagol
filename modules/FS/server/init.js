@@ -1,5 +1,1 @@
-(function (App) {
-
-  $.log('init fs')
-
-})
+module.exports = function (App) {};

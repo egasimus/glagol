@@ -1,1 +1,1 @@
-$.log.as('FS')
+module.exports = $.log.as('FS')

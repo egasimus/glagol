@@ -9,16 +9,16 @@
     , h('input.Frame_Address',
       { onchange: changeAddress
       , value:    frame.address })
-    , h('.Frame_Close', { onclick: remove }, '×')]);
+    , h('.Frame_Close', { onclick: close }, '×')]);
 
   function changeAddress (event) {
     event.preventDefault();
     API('change', index, 'address', event.target.value);
   }
 
-  function remove (event) {
+  function close (event) {
     event.preventDefault();
-    __.remove(index);
+    __.close(index);
   }
 
 })

@@ -1,9 +1,12 @@
 (function init (App) {
 
-  App.Workspace = {
-    registerFrameType: function (id, cb) {
-      _.maps.types.collection.push([ id, cb ])
-    }
+  App.Workspace =
+    { registerFrameType: function (id, cb) {
+        _.maps.types.collection.push([ id, cb ])
+      }
+    , registerMenuItem: function (label, cb) {
+        _.views.mainMenu.items.push([ label, cb ]);
+      }
   }
 
   // first request data

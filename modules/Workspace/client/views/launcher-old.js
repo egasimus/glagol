@@ -55,7 +55,7 @@
   function add(type) {
     return function (event) {
       event.preventDefault();
-      $.modules.workspace.add(type);
+      __.open(type);
     }
   }
 

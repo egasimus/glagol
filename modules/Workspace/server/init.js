@@ -1,5 +1,1 @@
-(function (App) {
-
-  $.log('init workspace')
-
-})
+module.exports = function (App) {}

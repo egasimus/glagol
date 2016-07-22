@@ -1,1 +1,1 @@
-$.log.as('Workspace')
+module.exports = $.log.as('Workspace');

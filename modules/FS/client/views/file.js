@@ -37,7 +37,7 @@
             , h('button', $.lib.icon('eye')) ]));
         break;
       default:
-        body = defaultLayout(_.textEditor(file.path), true);
+        body = defaultLayout(_.textEditor(file.path));
     }
   }
   

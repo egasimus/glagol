@@ -6,8 +6,6 @@
     }
   }
 
-  console.log(123,App.Workspace);
-
   // first request data
   App.API.socket.addEventListener('open',
     function () { App.API('Workspace/Refresh'); })

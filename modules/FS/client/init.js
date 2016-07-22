@@ -5,6 +5,6 @@
   App.Workspace.registerFrameType('image',       _.views.image);
   App.Workspace.registerFrameType('textEditor',  _.views.textEditor);
   App.Workspace.registerFrameType('hexEitor',    _.views.hexEditor);
-  App.Workspace.registerFrameType('unknownFile', _.views.unknownFile);
+  App.Workspace.registerFrameType('file',        _.views.file);
 
 })

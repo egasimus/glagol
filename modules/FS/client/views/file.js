@@ -37,13 +37,13 @@
             , h('button', $.lib.icon('eye')) ]));
         break;
       default:
-        body = defaultLayout(_.editor(file.path), true);
+        body = defaultLayout(_.textEditor(file.path), true);
     }
   }
   
   function renderAudio () {
     var playerId = frame.id + '_' + file.path;
-    if (!App.Model.Sound.Players()[playerId])   loadAudioPlayer(file.path);
+    if (!App.Model.Sound.Players()[playerId])   loadAudioPlayer(file.path, playerId);
     if (!App.Model.Sound.Metadata()[file.path]) loadAudioMetadata(file.path);
     body = _.sound(frame.id, file.path);
   }
@@ -61,15 +61,16 @@
       , h('em', file.contentType)
       , h('br')
       , 'Open as: '
-      , h('button', { onclick: setType('plaintext')  }, 'Plaintext')
+      , h('button', { onclick: setType('textEditor')  }, 'Plaintext')
       , ' '
-      , h('button', { onclick: setType('hexeditor')  }, 'Binary')
+      , h('button', { onclick: setType('hexEditor')   }, 'Binary')
       , ' '
-      , h('button', { onclick: setType('selecttype') }, 'Other type...') ]), false);
+      , h('button', { onclick: setType('selecttype')  }, 'Other type...') ]), false);
   }
 
   function setType (type) {
     return function () {
+      App.API('Workspace/Change', frame.id, 'type', type);
     }
   }
 
@@ -104,7 +105,7 @@
     }
   }
 
-  function loadAudioPlayer (src) {
+  function loadAudioPlayer (src, playerId) {
     setTimeout(function () {
       App.Model.Sound.Players.put(playerId, $.modules.Sound.player(src))
     }, 0);

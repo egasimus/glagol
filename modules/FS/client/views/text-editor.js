@@ -20,7 +20,7 @@ module.exports.widget = require('virtual-widget')(
       __.getFile(state, function (err, data) {
         if (err) throw err;
         this.mirror.setValue(data)
-      });
+      }.bind(this));
 
       return this.el;
     }

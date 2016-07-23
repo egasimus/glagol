@@ -14,6 +14,7 @@ module.exports = function (state) {
       , h('button.Taskbar_Button', { onclick: function () { App.View.update(App.Model()) } }, $.lib.icon('refresh')) 
       ])
     , __.model.MainMenu.visible() ? _.mainMenu(state) : null
+    , h('.Taskbar_Group', taskbarButtons(state.Workspace.Frames))
     , h('.Taskbar_Group',
       [ h('button.Taskbar_Button', $.lib.icon('cloud'))
       , h('button.Taskbar_Button', $.lib.icon('volume-up'))
@@ -23,6 +24,22 @@ module.exports = function (state) {
       ])
     ])
 
+}
+
+var ICONS =
+  { 'directory':   'folder-open'
+  , 'machineList': 'server'
+  , 'serviceList': 'th-large' };
+
+function taskbarButtons (frames) {
+  var types = {}
+    , buttons = [];
+  frames.forEach(function (f) { types[f.type] = (types[f.type] || 0) + 1 });
+  buttons = Object.keys(types).map(function (type) {
+    var label = ICONS[type] ? $.lib.icon(ICONS[type]) : type;
+    return h('button.Taskbar_Button', [ label, ' ', types[type] ])
+  });
+  return buttons;
 }
 
 function toggle (component) {

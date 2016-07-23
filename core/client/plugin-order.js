@@ -1,4 +1,4 @@
-Glagol.events.once('changed', _.reload(__filename));
+Glagol.events.once('changed', _.lib.reload(__filename));
 
 module.exports =
   [ 'API'

@@ -10,7 +10,7 @@ module.exports = function (style, pluginName) {
   });
 
   function insert () {
-    cssNode = $.util.insertCss(style());
+    cssNode = _.insertCss(style());
     if (pluginName) cssNode.dataset.plugin = pluginName;
   }
 

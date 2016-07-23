@@ -1,15 +1,15 @@
-Glagol.events.once('changed', _.reload(__filename));
+Glagol.events.once('changed', _.lib.reload(__filename));
 
 module.exports = function main () {
 
-  _.util.insertCssLive(Glagol.get('styles/reset.styl'),   'Core');
-  _.util.insertCssLive(Glagol.get('styles/default.styl'), 'Core');
+  _.lib.insertCssLive(Glagol.get('styles/reset.styl'),   'Core');
+  _.lib.insertCssLive(Glagol.get('styles/default.styl'), 'Core');
 
   var App = {};
 
   App.Model = require('riko-mvc/model')({});
 
-  _.pluginOrder.forEach(_.initPlugin(App));
+  _.pluginOrder.forEach(_.lib.initPlugin(App));
 
   App.View = require('riko-mvc/view')(App.Model, function render (state) {
     var views  = _.plugins.Workspace.views

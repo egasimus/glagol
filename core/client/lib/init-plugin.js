@@ -13,8 +13,8 @@ module.exports = function (App) {
       views.options = require('extend')(views.options, {
         globals: function (file) { return {
           App:  App,
-          emit: function () { return _.util.emit.apply(null, arguments) },
-          h:    function () { return _.util.h.apply(null, arguments) } } } })
+          emit: function () { return _.emit.apply(null, arguments) },
+          h:    function () { return _.h.apply(null, arguments) } } } })
 
       // live reload when editing views
       views.events.onAny(function () {
@@ -29,7 +29,7 @@ module.exports = function (App) {
     // if plugin has stylesheet, add it to the document head
     // TODO custom auto-updating format for stylesheets
     var style = pluginRoot.get('style.styl') || pluginRoot.get('style.css');
-    if (style) _.util.insertCssLive(style, name);
+    if (style) _.insertCssLive(style, name);
 
     // execute entry point
     var entryPoint = pluginRoot.get('init.js');

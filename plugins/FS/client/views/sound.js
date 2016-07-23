@@ -201,7 +201,7 @@ module.exports.widget = function (id, src) {
 
   , loadVoices: function (src) {
       var self     = this
-        , player   = this.player = $.modules.sound.player(src)
+        , player   = this.player = $.plugins.sound.player(src)
         , button   = getControl('Button_Play')
         , bar      = getControl('ProgressBar_Background')
         , barFg    = getControl('ProgressBar_Foreground')

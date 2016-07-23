@@ -8,7 +8,7 @@ module.exports = function (state, respond) {
 
     Refresh:
       function () {
-        respond(serialize({ module: 'Workspace', data: _.model() }));
+        respond(serialize({ plugin: 'Workspace', data: _.model() }));
       },
 
     Open:

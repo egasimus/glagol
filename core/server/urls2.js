@@ -11,8 +11,7 @@ function serveGui (route, req, res) {
   if (!id) {
     id = _.lib.makeId();
     res.setHeader('Set-Cookie', 'user-id=' + id);
-    console.log($.modules);
-    $.modules.Workspace.model.Users.put(id, { id: id, Frames: [] })
+    $.plugins.Workspace.model.Users.put(id, { id: id, Frames: [] })
   }
 
   return _.gui(req, res);
@@ -22,7 +21,7 @@ function serveGui (route, req, res) {
 function serveApi (route, req, res) {
 
   var id    = authenticate(req)
-    , model = $.modules.Workspace.model.Users.get(id) || (function(){})
+    , model = $.plugins.Workspace.model.Users.get(id) || (function(){})
     , api   = $.api(model(), respond)
     , url   = require('url').parse(req.url)
     , cmd   = url.pathname.split('/').slice(2).join('/')

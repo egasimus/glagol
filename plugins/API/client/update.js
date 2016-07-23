@@ -1,14 +1,14 @@
 module.exports = function (App) {
   return function (message) {
     var data   = JSON.parse(message.data)
-      , module = data.module
-    if (!module) {
-      console.warn('Received data from server with no module:', data);
+      , plugin = data.plugin
+    if (!plugin) {
+      console.warn('Received data from server with no plugin:', data);
       return;
     }
-    var update = $.modules[module].update;
+    var update = $.plugins[plugin].update;
     if (!update || typeof update !== 'function') {
-      console.warn('Can\'t update with', data, 'because', module + '.update ' +
+      console.warn('Can\'t update with', data, 'because', plugin + '.update ' +
         'is not a function.')
       return;
     }

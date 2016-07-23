@@ -9,17 +9,17 @@ module.exports = function main () {
 
   App.Model = require('riko-mvc/model')({});
 
-  _.moduleOrder.forEach(_.initModule(App));
+  _.pluginOrder.forEach(_.initPlugin(App));
 
   App.View = require('riko-mvc/view')(App.Model, function render (state) {
-    var views  = _.modules.Workspace.views
-      , loaded = _.modules.Workspace.model().Status === 'OK'
+    var views  = _.plugins.Workspace.views
+      , loaded = _.plugins.Workspace.model().Status === 'OK'
     return views[loaded ? 'app' : 'loading'](state);
   });
 
   document.body.innerHTML = "";
   document.body.appendChild(App.View.target);
 
-  _.modules.Workspace.model.Status.set('OK'); // HACK
+  _.plugins.Workspace.model.Status.set('OK'); // HACK
 
 }

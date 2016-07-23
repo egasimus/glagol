@@ -3,8 +3,8 @@ module.exports = _.lib.bundler.app(
   { formats: { '.styl': require('glagol-stylus')() } },
   rel('core/client'));
 
-// add client-side parts of modules
-module.exports.tracked.add($.lib.loadModules(rel, 'client'));
+// add client-side parts of plugins
+module.exports.tracked.add($.lib.loadPlugins(rel, 'client'));
 
 // helper
 function rel (p) {

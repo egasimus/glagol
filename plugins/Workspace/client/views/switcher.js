@@ -32,7 +32,7 @@
     $.commands.connect(address).then(function (socket) {
       socket.addEventListener('message', function (message) {
         if (message.data.indexOf('update%') === 0)
-          $.modules.workspace.update(
+          $.plugins.workspace.update(
             address, JSON.parse(message.data.slice(7))) });
       socket.send('subscribe'); }); }
 

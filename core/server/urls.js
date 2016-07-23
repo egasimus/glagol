@@ -28,8 +28,8 @@ function serveGui (req, res) {
   if (!id) {
     id = _.lib.makeId();
     res.setHeader('Set-Cookie', 'user-id=' + id);
-    console.log($.modules);
-    $.modules.Workspace.model.Users.put(id, { id: id, Frames: [] })
+    console.log($.plugins);
+    $.plugins.Workspace.model.Users.put(id, { id: id, Frames: [] })
   }
 
   return _.gui(req, res);

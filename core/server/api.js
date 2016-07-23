@@ -2,12 +2,12 @@
 
   var API = {};
 
-  Object.keys($.modules).forEach(function (moduleName) {
-    var module = $.modules[moduleName];
-    if (!module || typeof module.api !== 'function') return;
-    var moduleApi = module.api(state, respond);
-    Object.keys(moduleApi).forEach(function (key) {
-      API[moduleName + '/' + key] = moduleApi[key];
+  Object.keys($.plugins).forEach(function (pluginName) {
+    var plugin = $.plugins[pluginName];
+    if (!plugin || typeof plugin.api !== 'function') return;
+    var pluginApi = plugin.api(state, respond);
+    Object.keys(pluginApi).forEach(function (key) {
+      API[pluginName + '/' + key] = pluginApi[key];
     })
   })
 

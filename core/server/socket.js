@@ -1,4 +1,4 @@
-(function (App, socket) {
+module.exports = function (App, socket) {
 
   socket.onmessage = function dispatch (msg) {
     // identify type of connection needed (workspace api vs client code updates)
@@ -19,7 +19,7 @@
           return;
         }
 
-        var model = $.modules.Workspace.model.Users.get(id);
+        var model = $.plugins.Workspace.model.Users.get(id);
         if (!model) {
           $.log("can't connect to missing session", id);
           return;
@@ -45,4 +45,5 @@
         $.log("unidentified flying message:", msg.data);
     }
   }
-})
+
+}

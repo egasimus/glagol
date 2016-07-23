@@ -12,7 +12,7 @@ module.exports = function (state, respond) {
           if (err) throw err;
           delete data.attached_picture;
           delete data.private_frame;
-          respond(JSON.stringify({ module: 'Sound', data: data }));
+          respond(JSON.stringify({ plugin: 'Sound', data: data }));
         })
       },
 
@@ -21,7 +21,7 @@ module.exports = function (state, respond) {
         location = resolve(location.trim());
         _.log('GetWaveform', location);
         data = null;
-        respond(JSON.stringify({ module: 'Sound', data: data }))
+        respond(JSON.stringify({ plugin: 'Sound', data: data }))
       }
   
   }

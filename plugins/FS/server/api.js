@@ -34,7 +34,7 @@ module.exports = function (state, respond) {
           _.model.Files[location] = data;
         }
 
-        respond(JSON.stringify({ module: 'FS', data: data }));
+        respond(JSON.stringify({ plugin: 'FS', data: data }));
 
       },
 

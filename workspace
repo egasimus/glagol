@@ -10,9 +10,9 @@ var app = glagol(rel('core/server'), {})
   , log = app().log.as('init');
 ['bundler', 'server'].forEach(fixLibOptions);
 
-// load modules
-var modules = glagol.Directory('modules');
-app.add(app().lib.loadModules(rel, 'server'));
+// load plugins
+var plugins = glagol.Directory('plugins');
+app.add(app().lib.loadPlugins(rel, 'server'));
 
 // start, or export
 module.exports = app;

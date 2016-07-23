@@ -9,7 +9,7 @@
 
   function onmessage (message) {
     if (message.data.indexOf('update%') === 0) {
-      $.modules.workspace.update(index, JSON.parse(message.data.slice(7)))
+      $.plugins.Workspace.update(index, JSON.parse(message.data.slice(7)))
     }
   };
 

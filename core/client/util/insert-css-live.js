@@ -1,4 +1,4 @@
-module.exports = function (style, moduleName) {
+module.exports = function (style, pluginName) {
 
   var cssNode;
 
@@ -11,7 +11,7 @@ module.exports = function (style, moduleName) {
 
   function insert () {
     cssNode = $.util.insertCss(style());
-    if (moduleName) cssNode.dataset.module = moduleName;
+    if (pluginName) cssNode.dataset.plugin = pluginName;
   }
 
 }

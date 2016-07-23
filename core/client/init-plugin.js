@@ -4,10 +4,10 @@ module.exports = function (App) {
 
   return function (name) {
 
-    var moduleRoot = Glagol.get('modules').get(name);
+    var pluginRoot = Glagol.get('plugins').get(name);
 
     // make views directory special
-    var views = moduleRoot.get('views');
+    var views = pluginRoot.get('views');
     if (views) {
       // globals for easier templating. maybe just remove
       views.options = require('extend')(views.options, {
@@ -23,16 +23,16 @@ module.exports = function (App) {
     }
 
     // make model globally accessible via App.Model
-    var model = moduleRoot().model;
+    var model = pluginRoot().model;
     if (model) App.Model.put(name, model);
 
-    // if module has stylesheet, add it to the document head
+    // if plugin has stylesheet, add it to the document head
     // TODO custom auto-updating format for stylesheets
-    var style = moduleRoot.get('style.styl') || moduleRoot.get('style.css');
+    var style = pluginRoot.get('style.styl') || pluginRoot.get('style.css');
     if (style) _.util.insertCssLive(style, name);
 
     // execute entry point
-    var entryPoint = moduleRoot.get('init.js');
+    var entryPoint = pluginRoot.get('init.js');
     if (entryPoint && entryPoint()) {
       console.debug('running', name + '/init');
       entryPoint.events.on('changed', _.reload(name + ' entry point'));

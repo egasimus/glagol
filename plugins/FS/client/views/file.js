@@ -108,7 +108,7 @@
 
   function loadAudioPlayer (src, playerId) {
     setTimeout(function () {
-      App.Model.Sound.Players.put(playerId, $.modules.Sound.player(src))
+      App.Model.Sound.Players.put(playerId, $.plugins.Sound.player(src))
     }, 0);
   }
 

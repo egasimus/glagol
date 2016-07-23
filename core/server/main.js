@@ -19,12 +19,12 @@
   App.Ws.on("connection", connection);
   function connection () { _.socket(App, arguments[0]) }
 
-  // add modules
-  var modules = Glagol.get('modules')();
-  Object.keys(modules).forEach(function (moduleName) {
-    $.log('loading module', moduleName);
-    if (modules[moduleName].init instanceof Function) {
-      modules[moduleName].init();
+  // add plugins
+  var plugins = Glagol.get('plugins')();
+  Object.keys(plugins).forEach(function (pluginName) {
+    $.log('loading plugin', pluginName);
+    if (plugins[pluginName].init instanceof Function) {
+      plugins[pluginName].init();
     }
   })
 

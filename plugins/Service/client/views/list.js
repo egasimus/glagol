@@ -7,7 +7,7 @@ module.exports = function (state, index) {
 
   return h('.ServiceList',
     [ h('.Frame_Header',
-      [ $.lib.icon('server.fa-2x')
+      [ $.lib.icon('th-large.fa-2x')
       , h('strong', 'Service List' )
       , h('.Frame_Close', { onclick: close }, '×')
       ])

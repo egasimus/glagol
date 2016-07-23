@@ -30,7 +30,16 @@ module.exports = function (App) {
     // if plugin has stylesheet, add it to the document head
     // TODO custom auto-updating format for stylesheets
     var style = pluginRoot.get('style.styl') || pluginRoot.get('style.css');
-    if (style) _.insertCssLive(style, name);
+    if (style) {
+      _.insertCssLive(style, name);
+    } else {
+      pluginRoot.events.on('added', function installCss (node) {
+        if (node.name === 'style.styl' || node.name === 'style.css') {
+          _.insertCssLive(style, name);
+          pluginRoot.events.off('added', installCss);
+        }
+      })
+    }
 
     // execute entry point
     var entryPoint = pluginRoot.get('init.js');

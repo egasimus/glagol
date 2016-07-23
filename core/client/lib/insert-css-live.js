@@ -9,6 +9,10 @@ module.exports = function (style, pluginName) {
     insert();
   });
 
+  style.events.on('removed', function () {
+    cssNode.parentElement.removeChild(cssNode);
+  })
+
   function insert () {
     cssNode = _.insertCss(style());
     if (pluginName) cssNode.dataset.plugin = pluginName;

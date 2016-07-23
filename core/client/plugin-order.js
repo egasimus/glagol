@@ -9,9 +9,9 @@ module.exports =
   , 'Workspace'
   , 'Terminal'
 
-  , 'Machines'
-  , 'Devices'
-  , 'Services'
+  , 'Machine'
+  , 'Device'
+  , 'Service'
   , 'FS'
 
   , 'CodeMirror'

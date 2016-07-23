@@ -4,7 +4,8 @@ module.exports = function (App) {
 
   return function (name) {
 
-    var pluginRoot = Glagol.get('plugins').get(name);
+    var pluginRoot = Glagol.get('../plugins').get(name);
+    if (!pluginRoot) return console.warn('no plugin', name);
 
     // make views directory special
     var views = pluginRoot.get('views');

@@ -1,8 +1,16 @@
 @import '../../../core/client/styles/vars.styl'
 @import '../../../core/client/styles/mixins.styl'
 
+.Frame
+  &[data-type="directory"],
+  &[data-type="file"]
+    display flex
+    flex-direction row
+  &[data-type="directory"]
+    min-width 38%
+    min-height 38%
+
 .Directory
-  min-width 240px
   flex-grow 1
   overflow auto
 

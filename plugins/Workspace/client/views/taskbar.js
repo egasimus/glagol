@@ -29,15 +29,18 @@ module.exports = function (state) {
 var ICONS =
   { 'directory':   'folder-open'
   , 'machineList': 'server'
-  , 'serviceList': 'th-large' };
+  , 'deviceList':  'database'
+  , 'serviceList': 'th-large' 
+  , 'terminal':    'terminal'};
 
 function taskbarButtons (frames) {
   var types = {}
     , buttons = [];
   frames.forEach(function (f) { types[f.type] = (types[f.type] || 0) + 1 });
   buttons = Object.keys(types).map(function (type) {
-    var label = ICONS[type] ? $.lib.icon(ICONS[type]) : type;
-    return h('button.Taskbar_Button', [ label, ' ', types[type] ])
+    var label = ICONS[type] ? $.lib.icon(ICONS[type]) : type
+      , count = types[type]
+    return h('button.Taskbar_Button', [ label, count > 1 ? ' ' + count : '' ])
   });
   return buttons;
 }

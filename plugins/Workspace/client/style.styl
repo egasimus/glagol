@@ -248,14 +248,16 @@
   &[data-type="directory"]
     flex-grow 1
   &_Header
+    width 100%
     height 42px
     display flex
     align-items center
     flex-shrink 0
-    padding 0 6px
+    padding 0 3px
     color #ddd
     z-index 10
     font-size 12px
+    justify-content space-between
     .FrameWithError &
       background #c0392b
     //.Frame[data-type="file"] &
@@ -264,6 +266,8 @@
       //transition background 0.2s, opacity 0.2s
     //.Frame[data-type="file"]:hover &
       //opacity 1
+  &_Section
+    padding 3px
   &_Title, &_Address
     padding 0 3px
     margin 0

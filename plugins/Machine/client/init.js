@@ -1,8 +1,11 @@
 module.exports = function (App) {
 
-  App.Workspace.registerFrameType('machineList',   _.views.list);
-  App.Workspace.registerFrameType('machineDetail', _.views.detail);
+  App.Workspace.registerFrameType('machineList',
+    function () { return _.views.list.apply(null, arguments) });
+  App.Workspace.registerFrameType('machineDetail',
+    function () { return _.views.detail.apply(null, arguments) });
 
-  App.Workspace.registerMenuItem('Machine list', 'machineList');
+  App.Workspace.registerMenuItem('Machine list',
+    function () { App.API('Workspace/Open', 'machineList') });
 
 }

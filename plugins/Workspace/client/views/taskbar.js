@@ -34,7 +34,9 @@ var ICONS =
   , 'terminal':    'terminal'
   , 'sequencer':   'clock-o'
   , 'file':        'file'
-  , 'mixer':       'sliders' };
+  , 'mixer':       'sliders'
+  , 'sound':       'play-circle'
+  , 'textEditor':  'pencil-square'};
 
 function taskbarButtons (frames) {
   var types = {}

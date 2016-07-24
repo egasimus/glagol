@@ -1,5 +1,4 @@
 module.exports = function (App, message) {
-  console.log("UPDATE", App, message)
   var data   = JSON.parse(message.data)
     , plugin = data.plugin
   if (!plugin) {

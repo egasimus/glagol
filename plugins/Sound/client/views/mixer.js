@@ -47,9 +47,9 @@ module.exports.widget = function (mixer) {
 
   , animate: function animate (self) {
       return function (t) {
-        console.log(mixer.channels.map(function (channel) {
-          return channel.meter.volume;
-        }))
+        //console.log(mixer.channels.map(function (channel) {
+          //return channel.meter.volume;
+        //}))
         self.animation = requestAnimationFrame(animate(self));
       }
     }

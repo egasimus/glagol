@@ -4,7 +4,7 @@ module.exports = function (id) {
     , mixer =
       { id:       id
       , context:  context
-      , channels: [1,2,3,4].map(mixerChannel)
+      , channels: [0,1,2,3].map(mixerChannel)
       , master:   context.createGain() }
 
   mixer.channels.forEach(function (channel) {
@@ -46,4 +46,3 @@ module.exports = function (id) {
   }
 
 }
-

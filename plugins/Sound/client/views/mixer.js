@@ -1,12 +1,60 @@
 var vdom = require('virtual-dom');
 
-module.exports = function (state) {
-  return require('vdom-thunk')(module.exports.widget, state.id);
+module.exports = function (frame, index) {
+
+  var mixer = App.Model.Sound.Mixers()[frame.id]
+
+  if (mixer) return require('vdom-thunk')(module.exports.widget, mixer);
+
+  setTimeout(function () {
+    App.Model.Sound.Mixers.put(frame.id, makeMixer(frame.id))
+  }, 0);
+  return 'loading...'
 }
 
-module.exports.widget = function (id) {
+function makeMixer (id) {
 
-  var model = App.Model.Sound;
+  var context = __.model().context
+    , mixer =
+      { id:       id
+      , context:  context
+      , channels: [1,2,3,4].map(mixerChannel)
+      , master:   context.createGain() }
+
+  mixer.channels.forEach(function (channel) {
+    channel.fader.connect(mixer.master);
+  })
+
+  return mixer;
+
+  function mixerChannel (i) {
+
+    var channelId = id + '/' + i
+      , channel =
+        { id:      channelId
+        , gain:    context.createGain()
+        , pan:     context.createStereoPanner()
+        , high:    context.createBiquadFilter()
+        , midHigh: context.createBiquadFilter()
+        , midLow:  context.createBiquadFilter()
+        , low:     context.createBiquadFilter()
+        , fader:   context.createGain() };
+
+    ['gain', 'pan', 'high', 'midHigh', 'midLow', 'low', 'fader'].reduce(
+      function (previous, current) {
+        if (previous) channel[previous].connect(channel[current]);
+      })
+
+    return channel;
+
+  }
+
+}
+
+module.exports.widget = function (mixer) {
+
+  var id = mixer.id
+    , model = App.Model.Sound;
 
   return {
 
@@ -36,9 +84,6 @@ module.exports.widget = function (id) {
 
   , render: function (state) {
 
-      var mixer     = state.Mixers ? state.Mixers[id] : null
-        , channels  = [1,2,3,4]
-
       return this._vdom = h('.Mixer',
         [ h('.Frame_Header.Mixer_Toolbar',
             [ $.lib.icon('sliders.fa-2x')
@@ -46,9 +91,9 @@ module.exports.widget = function (id) {
             , h('.Frame_Close', { onclick: close }, '×') ])
         , h('.Mixer_Channels',
           [ h('.Mixer_Sidebar',
-              [ channels.map(sidebarChannel)
+              [ mixer.channels.map(sidebarChannel)
               , h('.Mixer_Sidebar_Channel_Add', '+ add channel') ])
-          , channels.map(channelStrip)
+          , mixer.channels.map(channelStrip)
           , h('.Mixer_ChannelStrip_Master',
               h('.Mixer_Knob_Group_WithFader',
                 h('.Mixer_FaderAndMeter',

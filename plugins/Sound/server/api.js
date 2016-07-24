@@ -9,10 +9,10 @@ module.exports = function (state, respond) {
         location = resolve(location.trim());
         _.log('GetMetadata', location);
         id3.read(location, function (err, data) {
-          if (err) throw err;
+          if (err) return console.log(err);
           delete data.attached_picture;
           delete data.private_frame;
-          respond(JSON.stringify({ plugin: 'Sound', data: data }));
+          update(data);
         })
       },
 
@@ -20,10 +20,13 @@ module.exports = function (state, respond) {
       function (location) {
         location = resolve(location.trim());
         _.log('GetWaveform', location);
-        data = null;
-        respond(JSON.stringify({ plugin: 'Sound', data: data }))
+        update(null);
       }
   
+  }
+
+  function update (data) {
+    respond(JSON.stringify({ plugin: 'Sound', data: data }))
   }
 
 }

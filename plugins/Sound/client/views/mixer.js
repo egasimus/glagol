@@ -46,7 +46,9 @@ module.exports.widget = function (id) {
             , h('select.Mixer_Selector', [ h('option', 'Mix 1') ])
             , h('.Frame_Close', { onclick: close }, '×') ])
         , h('.Mixer_Channels',
-          [ h('.Mixer_Sidebar', channels.map(sidebarChannel))
+          [ h('.Mixer_Sidebar',
+              [ channels.map(sidebarChannel)
+              , h('.Mixer_Sidebar_Channel_Add', '+ add channel') ])
           , channels.map(channelStrip) ]) ]);
 
       if (!mixer) {
@@ -68,7 +70,8 @@ module.exports.widget = function (id) {
 
       function channelStrip () {
         return h('.Mixer_Channel_Strip',
-          [ h('.Mixer_Knob_Group', knob('gain'))
+          [ h('.Mixer_Knob_Group', h('select', [ h('option', 'input')]))
+          , h('.Mixer_Knob_Group', knob('gain'))
           , h('.Mixer_Knob_Group', knob('hi'))
           , h('.Mixer_Knob_Group',
             [ knob('hi mid')

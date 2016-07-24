@@ -24,22 +24,34 @@ module.exports.widget = function (mixer) {
   , init: function () {
       this.element = vdom.create(this.render(model()));
       model(this.patch.bind(this));
+      this.animation = requestAnimationFrame(this.animate(this))
       return this.element;
     }
 
   , update: function (prev, el) {
-      this.element  = this.element  || prev.element;
-      this.timer    = this.timer    || prev.timer;
+      this.element   = this.element   || prev.element;
+      this.animation = this.animation || prev.animation;
+      cancelAnimationFrame(this.animation);
+      this.animation = requiestAnimationFrame(this.animate(this));
     }
 
   , destroy: function (el) {
       var mixer = model.Mixers()[id];
-      if (this.timer) clearInterval(this.timer);
+      if (this.animation) cancelAnimationFrame(this.animation);
     }
 
   , patch: function (state) {
       this.element = vdom.patch(this.element,
         vdom.diff(this._vdom, this.render(state)));
+    }
+
+  , animate: function animate (self) {
+      return function (t) {
+        console.log(mixer.channels.map(function (channel) {
+          return channel.meter.volume;
+        }))
+        self.animation = requestAnimationFrame(animate(self));
+      }
     }
 
   , render: function (state) {

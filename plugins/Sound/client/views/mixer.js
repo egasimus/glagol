@@ -44,7 +44,7 @@ module.exports.widget = function (id) {
             [ $.lib.icon('sliders.fa-2x')
             , h('select.Mixer_Selector', [ h('option', 'Mix 1') ])
             , h('.Frame_Close', { onclick: close }, '×') ])
-        , h('.Mixer_Channels', [1,2,3,4,5,6,7,8].map(channel)) ]);
+        , h('.Mixer_Channels', [1].map(channel)) ]);
 
       if (!mixer) {
         return this._vdom = h('.Mixer_Missing',
@@ -61,18 +61,30 @@ module.exports.widget = function (id) {
 
       function channel () {
         return h('.Mixer_Channel',
-          [ h('.Mixer_Knob',  'gain')
-          , h('.Mixer_Knob',  'hi')
-          , h('.Mixer_Knob',  'hi mid')
-          , h('.Mixer_Knob',  'hi mid freq')
-          , h('.Mixer_Knob',  'lo mid')
-          , h('.Mixer_Knob',  'lo mid freq')
-          , h('.Mixer_Knob',  'lo')
-          , h('.Mixer_Knob',  'pan')
-          , h('.Mixer_Knob',  'aux')
-          , h('.Mixer_Fader', 'fader')
-          ]
-          );
+          [ h('.Mixer_Knob_Group', knob('gain'))
+          , h('.Mixer_Knob_Group', knob('hi'))
+          , h('.Mixer_Knob_Group',
+            [ knob('hi mid')
+            , knob('freq') ])
+          , h('.Mixer_Knob_Group',
+            [ knob('lo mid')
+            , knob('freq') ])
+          , h('.Mixer_Knob_Group', knob('lo'))
+          , h('.Mixer_Knob_Group',
+            [ knob('aux1')
+            , knob('aux2') ])
+          , h('.Mixer_Knob_Group_WithFader',
+            [ knob('pan')
+            , h('.Mixer_FaderAndMeter',
+              [ h('.Mixer_Fader')
+              , h('.Mixer_Meter')]) ])
+          ]);
+      }
+
+      function knob (label) {
+        return h('.Mixer_Knob_Label',
+          [ h('.Mixer_Knob_Label_Text', label)
+          , h('.Mixer_Knob') ])
       }
 
     }

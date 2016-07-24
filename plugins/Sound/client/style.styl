@@ -176,6 +176,7 @@
       background rgba(255,255,255,0.05)
 
 .Mixer
+  min-width 330px
   &_Toolbar
     line-height 38px
     padding 0 9px 0 12px
@@ -194,32 +195,88 @@
     flex-direction row
     margin-right 6px
   &_Channel
+    display flex
+    flex-direction column
+    flex-wrap wrap
+    height 360px
     margin 0 0 0 6px
-  &_Knob, &_Fader
+  &_Knob
     cursor pointer
-    font-size 0
-    width 36px
-    background #333
-    margin 0 0 6px
-    border 1px solid #555
-    box-shadow 0 1px 2px #000
+    &:before
+      content ''
+      width 30px
+      display block
+      background #333
+      border 1px solid #555
+      box-shadow 0 1px 2px #000
+      height 30px
+      border-radius 36px
     &:after
       content ''
       background #555
       position absolute
-  &_Knob
-    height 36px
-    border-radius 36px
-    &:after
       top 3px
       height 50%
       left 50%
       right 50%
       margin 0 -2px
+    &_Label
+      display flex
+      align-items center
+      justify-content space-between
+      background rgba(0,0,0,0.3)
+      padding 6px
+      flex-direction row-reverse
+      &_Text
+        text-align right
+        padding 0 6px
+        text-transform uppercase
+        letter-spacing 1px
+        color #aaa
+    &_Group
+      &, &_WithFader
+        margin 0 3px 3px 0
+        display flex
+        flex-direction column
+      &_WithFader
+        flex-grow 1
+      :nth-child(2n)
+        flex-direction row
+        .Mixer_Knob_Label_Text
+          text-align left
+  &_FaderAndMeter
+    flex-grow 1
+    background rgba(0,0,0,0.3)
+    display flex
+  &_Fader,
+  &_Meter
+    width 50%
   &_Fader
-    height 120px
+    &:before
+      content ''
+      position absolute
+      left 50%
+      right 50%
+      top 0
+      bottom 0
+      margin 0 -1px
+      background #1f1f1f
     &:after
+      content ''
       top 20%
-      height 24px
+      height 18px
+      position absolute
+      left 6px
+      right 6px
+      background #333
+      box-shadow 0 1px 2px #000
+      border 1px solid #555
+  &_Meter
+    &:before
+      content ''
+      background #111
+      position absolute
+      top 3px
+      bottom 3px
       left 3px
       right 3px

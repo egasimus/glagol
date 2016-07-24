@@ -44,7 +44,7 @@ module.exports.widget = function (id) {
             [ $.lib.icon('sliders.fa-2x')
             , h('select.Mixer_Selector', [ h('option', 'Mix 1') ])
             , h('.Frame_Close', { onclick: close }, '×') ])
-        , h('.Mixer_Channels', [1].map(channel)) ]);
+        , h('.Mixer_Channels', [1,2,3,4].map(channel)) ]);
 
       if (!mixer) {
         return this._vdom = h('.Mixer_Missing',

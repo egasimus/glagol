@@ -36,7 +36,7 @@ module.exports = function (id) {
     channel.low.type.value          = 'lowshelf';
     channel.low.frequency.value     = 150;
 
-    ['gain', 'pan', 'high', 'highMid', 'lowMid', 'low', 'fader'].reduce(
+    ['gain', 'pan', 'high', 'highMid', 'lowMid', 'low', 'fader', 'meter'].reduce(
       function (previous, current) {
         if (previous) channel[previous].connect(channel[current]);
       })

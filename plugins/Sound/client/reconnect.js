@@ -13,7 +13,7 @@ module.exports = function (state) {
       if (!player) return;
       player = player();
       console.log('connecting output of', player, 'into', input);
-      player.output.connect(channel.meter);
+      player.output.connect(channel.gain);
     });
   })
 }

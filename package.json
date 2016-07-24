@@ -10,7 +10,6 @@
   "license": "GPL-3.0",
   "dependencies": {
     "audio-spectrum": "^1.0.0",
-    "child_pty": "^3.0.4",
     "codemirror": "^5.13.4",
     "colors": "^1.1.2",
     "cookie": "^0.3.1",
@@ -25,17 +24,18 @@
     "json-align": "^0.1.0",
     "longjohn": "^0.2.11",
     "mime-types": "^2.1.10",
+    "pty.js": "^0.3.1",
     "q-connection": "^0.6.1",
     "send-data": "^8.0.0",
     "shortid": "^2.2.4",
     "spectrogram": "0.0.3",
-    "terminal.js": "^1.0.7",
     "vdom-thunk": "^3.0.0",
     "virtual-hook": "^1.0.1",
     "virtual-widget": "^1.3.0",
     "waveform-viewer": "^1.1.0",
     "ws": "^1.0.1",
-    "xtend": "^4.0.1"
+    "xtend": "^4.0.1",
+    "xterm": "^1.0.0"
   },
   "optionalDependencies": {
     "electron-prebuilt": "^1.1.1"

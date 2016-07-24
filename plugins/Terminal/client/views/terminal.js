@@ -1,4 +1,4 @@
-var Terminal = require('terminal.js')
+var Terminal = require('xterm')
 
 module.exports = function (frame, index) {
 
@@ -9,24 +9,44 @@ module.exports = function (frame, index) {
       , h('.Frame_Close', { onclick: close }, '×') ])
     , h('.Terminal', { hookScroll: TerminalHook(frame.id) }) ]);
 
+  function close () {}
+
 }
 
 function TerminalHook (id) {
 
   return require('virtual-hook')(
     { hook: function (element) {
+
         console.debug('attaching terminal, id', id);
+
+        var terminal = __.model()[id];
+
+        if (!terminal) {
+          console.debug('opening new terminal, id', id);
+          __.model.put(id, terminal = new Terminal());
+          terminal.write('hello planetke')
+        } else {
+          console.debug('found terminal, id', id);
+        }
+
         setTimeout(function () {
-          if (!__.model()[id]) {
-            console.debug('opening new terminal, id', id);
-            __.model.put(id, new Terminal({ cols: 80, rows: 25 }))
-          } else {
-            console.debug('found terminal, id', id);
-          }
+          terminal.open(element);
+          console.debug('attached terminal, id', id, terminal, 'to', element);
+          require('xterm/addons/fit').fit(terminal);
         }, 0);
+
       }
+
     , unhook: function (element) {
+
         console.debug('detaching terminal, id', id);
+        var terminal = __.model()[id];
+        if (terminal) {
+          terminal.destroy();
+          __.model.put(id, null)
+        }
+
       } })
 
 }

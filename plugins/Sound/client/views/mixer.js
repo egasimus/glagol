@@ -54,10 +54,18 @@ module.exports.widget = function (mixer) {
             //console.log(channel.lastVolume = volume);
             var channelNo     = channel.id.split('/')[1]
               , channelStrips = self.element.getElementsByClassName('Mixer_ChannelStrip')
-              , channelStrip  = channelStrips[channelNo];
-            channelStrip.querySelector('.Mixer_Meter_Inner').style.transform = 'translateY(' + (100 - volume * 100) + '%)';
+              , channelStrip  = channelStrips[channelNo]
+              , channelBar    = channelStrip.querySelector('.Mixer_Meter_Inner')
+            channelBar.style.transform = 'translateY(' + (100 - volume * 100) + '%)';
           }
         })
+
+        var volume = Math.max(mixer.meter.volume, 0.00001);
+        if (mixer.master.lastVolume !== volume) {
+          var masterStrip = self.element.getElementsByClassName('Mixer_ChannelStrip_Master')[0]
+            , masterBar   = masterStrip.querySelector('.Mixer_Meter_Inner');
+          masterBar.style.transform = 'translateY(' + (100 - volume * 100) + '%)';
+        }
 
         self.animation = requestAnimationFrame(animate(self));
 

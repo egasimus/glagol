@@ -1,10 +1,16 @@
-(function init () {
+module.exports = function () {
 
-  App.Workspace.registerFrameType('directory',   _.views.directory);
-  App.Workspace.registerFrameType('sound',       _.views.sound);
-  App.Workspace.registerFrameType('image',       _.views.image);
-  App.Workspace.registerFrameType('textEditor',  _.views.textEditor);
-  App.Workspace.registerFrameType('hexEditor',   _.views.hexEditor);
-  App.Workspace.registerFrameType('file',        _.views.file);
+  [ 'directory'
+  , 'sound'
+  , 'image'
+  , 'textEditor'
+  , 'hexEditor'
+  , 'file' ].forEach(registerFrameType)
 
-})
+}
+
+function registerFrameType (type) {
+  App.Workspace.registerFrameType(type, function () {
+    return _.views[type].apply(null, arguments);
+  })
+}

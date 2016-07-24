@@ -1,9 +1,3 @@
-var setContentType = require('riko-route')(
-  [ [ /audio\/.+/, 'sound'      ]
-  , [ /image\/.+/, 'image'      ]
-  , [ /text\/.+/,  'textEditor' ]
-  ], { catchall: templates.unknown })
-
 var templates =
 
   { unknown:
@@ -80,6 +74,12 @@ var templates =
       }
 
   };
+
+var setContentType = require('riko-route')(
+  [ [ /audio\/.+/, 'sound'      ]
+  , [ /image\/.+/, 'image'      ]
+  , [ /text\/.+/,  'textEditor' ]
+  ], { catchall: templates.unknown })
 
 module.exports = render;
 

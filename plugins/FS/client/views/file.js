@@ -1,24 +1,10 @@
-var setContentType
-  , render;
-
-module.exports = function (frame, index) {
-  return 'loading...!'
-  var file = App.Model.FS.Files()[frame.address]
-  if (!file) {
-    App.API('FS/GetInfo', frame.address)
-    return 'loading...'
-  }
-  setContentType(file.contentType, App.Model.Workspace.Frames.get(index));
-  return body;
-}
-
-setContentType = require('riko-route')(
+var setContentType = require('riko-route')(
   [ [ /audio\/.+/, 'sound'      ]
   , [ /image\/.+/, 'image'      ]
   , [ /text\/.+/,  'textEditor' ]
-  ], { catchall: render.unknown })
+  ], { catchall: templates.unknown })
 
-render =
+var templates =
 
   { unknown:
       function (input, frame) {
@@ -94,6 +80,19 @@ render =
       }
 
   };
+
+module.exports = render;
+
+function render (frame, index) {
+  console.log(setContentType);
+  var file = App.Model.FS.Files()[frame.address]
+  if (!file) {
+    App.API('FS/GetInfo', frame.address)
+    return 'loading...'
+  }
+  setContentType(file.contentType, App.Model.Workspace.Frames.get(index));
+  return body;
+}
 
 function setType (type) {
   return function () {

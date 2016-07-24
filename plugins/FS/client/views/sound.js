@@ -1,11 +1,52 @@
 var path = require('path')
   , vdom = require('virtual-dom');
 
-module.exports = function (id, src) {
-  return require('vdom-thunk')(module.exports.widget, id, src);
+module.exports = function (frame, index) {
+
+  var file = App.Model.FS.Files()[frame.address]
+  if (!file) {
+    App.API('FS/GetInfo', frame.address)
+    return 'loading...'
+  }
+
+  var playerId = frame.id + '_' + file.path;
+
+  if (!App.Model.Sound.Players()[playerId]) {
+    loadAudioPlayer(file.path, playerId);
+  }
+
+  if (!App.Model.Sound.Metadata()[file.path]) {
+    loadAudioMetadata(file.path);
+  }
+
+  return require('vdom-thunk')(module.exports.widget, frame.id, file.path);
 }
 
-module.exports.widget = function (id, src) {
+module.exports.widget = widget;
+
+function loadAudioPlayer (src, playerId) {
+  setTimeout(function () {
+    App.Model.Sound.Players.put(playerId, $.plugins.Sound.player(src))
+  }, 0);
+}
+
+function loadAudioMetadata (src) {
+  setTimeout(function () {
+    App.Model.Sound.Metadata.put(src, 'loading');
+    var url = '/api/Sound/GetMetadata?' + JSON.stringify([src])
+      , xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.onload = function () {
+      App.Model.Sound.Metadata.put(src, JSON.parse(xhr.response).data);
+    }
+    xhr.onerror = function () {
+      App.Model.Sound.Metadata.put(src, 'failed');
+    }
+    xhr.send();
+  })
+}
+
+function widget (id, src) {
 
   var model    = App.Model.Sound
     , playerId = id + '_' + src;

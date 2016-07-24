@@ -43,7 +43,9 @@ var templates =
 
   , image:
       function () {
-        body = defaultLayout(h('div.ImageContainer', addSrc(h('img'))))
+        return defaultLayout(
+          h('div.ImageContainer',
+            h('img', { src: '/api/FS/ReadFile?' + JSON.stringify([file.path]) })))
       }
 
   , defaultLayout:
@@ -75,9 +77,7 @@ var templates =
 
   };
 
-module.exports = render;
-
-function render (frame, index) {
+module.exports = function render (frame, index) {
   var file = App.Model.FS.Files()[frame.address]
   if (!file) {
     App.API('FS/GetInfo', frame.address)
@@ -86,39 +86,8 @@ function render (frame, index) {
   var type = __.type(file.contentType, App.Model.Workspace.Frames.get(index));
   if (!type) {
     return JSON.stringify(frame)
-  }
-  return _[type](frame, index);
-}
-
-function setType (type) {
-  return function () {
+  } else {
     App.API('Workspace/Change', frame.id, 'type', type);
+    return _[type](frame, index);
   }
-}
-
-function addSrc (vnode) {
-  vnode.properties.src = '/api/FS/ReadFile?' + JSON.stringify([file.path]);
-  return vnode;
-}
-
-function loadAudioPlayer (src, playerId) {
-  setTimeout(function () {
-    App.Model.Sound.Players.put(playerId, $.plugins.Sound.player(src))
-  }, 0);
-}
-
-function loadAudioMetadata (src) {
-  setTimeout(function () {
-    App.Model.Sound.Metadata.put(src, 'loading');
-    var url = '/api/Sound/GetMetadata?' + JSON.stringify([src])
-      , xhr = new XMLHttpRequest();
-    xhr.open('GET', url, true);
-    xhr.onload = function () {
-      App.Model.Sound.Metadata.put(src, JSON.parse(xhr.response).data);
-    }
-    xhr.onerror = function () {
-      App.Model.Sound.Metadata.put(src, 'failed');
-    }
-    xhr.send();
-  })
 }

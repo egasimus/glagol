@@ -3,10 +3,10 @@ module.exports = function (state, respond) {
   return {
 
     Spawn:
-      function () {}
+      function () {},
 
     Kill:
-      function () {}
+      function () {},
 
     Attach:
       function (id) {
@@ -37,7 +37,5 @@ function spawn () {
     { name: 'xterm-256color'
     , cols: 80
     , rows: 24
-    , cwd: process.env.PWD,
-    , env: process.env})
-  }
-}
+    , cwd: process.env.PWD
+    , env: process.env }) }

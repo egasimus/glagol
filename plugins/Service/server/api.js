@@ -8,18 +8,18 @@ module.exports = function (state, respond) {
 
     Refresh:
       function () {
-        respond(serialize({ plugin: 'Workspace', data: _.model() }));
+        respond(serialize({ plugin: 'Service', data: _.model() }));
       },
 
     GetSystemServices:
       function () {
-        _.model.put('System', exec('systemctl', ['status']));
+        _.model.put('System', String(exec('systemctl', ['status'])));
         this['Service/Refresh']();
       },
 
     GetUserServices:
       function () {
-        _.model.put('User', exec('systemctl', ['status', '--user']));
+        _.model.put('User', String(exec('systemctl', ['status', '--user'])));
         this['Service/Refresh']();
       }
 

@@ -6,7 +6,7 @@ module.exports = function (App) {
     new WebSocket(API_URL),
     { onopen: function () { socket.onopen = null; socket.send('api'); }
     , onclose: function () { $.reload('API socket closed') }
-    , onmessage: _.update(App) });
+    , onmessage: function (msg) { return _.update(App, msg) } });
 
   App.API = require('riko-api2')(socket);
 

@@ -75,23 +75,19 @@ var templates =
 
   };
 
-var setContentType = require('riko-route')(
-  [ [ /audio\/.+/, 'sound'      ]
-  , [ /image\/.+/, 'image'      ]
-  , [ /text\/.+/,  'textEditor' ]
-  ], { catchall: templates.unknown })
-
 module.exports = render;
 
 function render (frame, index) {
-  console.log(setContentType);
   var file = App.Model.FS.Files()[frame.address]
   if (!file) {
     App.API('FS/GetInfo', frame.address)
     return 'loading...'
   }
-  setContentType(file.contentType, App.Model.Workspace.Frames.get(index));
-  return body;
+  var type = __.type(file.contentType, App.Model.Workspace.Frames.get(index));
+  if (!type) {
+    return JSON.stringify(frame)
+  }
+  return _[type](frame, index);
 }
 
 function setType (type) {

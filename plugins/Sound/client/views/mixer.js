@@ -73,7 +73,6 @@ module.exports.widget = function (mixer) {
 
   , destroy: function (el) {
       var mixer = model.Mixers()[id];
-      if (mixer) mixer.stop();
       if (this.timer) clearInterval(this.timer);
     }
 
@@ -87,7 +86,7 @@ module.exports.widget = function (mixer) {
       return this._vdom = h('.Mixer',
         [ h('.Frame_Header.Mixer_Toolbar',
             [ $.lib.icon('sliders.fa-2x')
-            , h('select.Mixer_Selector', [ h('option', 'Mix 1') ])
+            , h('select.Mixer_Selector', [ h('option', mixer.id) ])
             , h('.Frame_Close', { onclick: close }, '×') ])
         , h('.Mixer_Channels',
           [ h('.Mixer_Sidebar',
@@ -113,8 +112,8 @@ module.exports.widget = function (mixer) {
         App.API('Workspace/Close', id);
       }
 
-      function sidebarChannel (i) {
-        return h('.Mixer_Sidebar_Channel', 'Channel ' + i)
+      function sidebarChannel (ch, i) {
+        return h('.Mixer_Sidebar_Channel', [ i, ' ', h('strong', ch.id) ])
       }
 
       function channelStrip (channel) {
@@ -159,9 +158,8 @@ module.exports.widget = function (mixer) {
 
       function setInput (channel) {
         return function (event) {
-          var channelId = id + '/' + channel;
-          var input = __.model.Connections[channelId]
-          if (!input) __.model.Connections.put(channelId, input = $.lib.model({}))
+          var input = __.model.Connections[channel.id]
+          if (!input) __.model.Connections.put(channel.id, input = $.lib.model({}))
           input.put(event.target.value, true)
         }
       }

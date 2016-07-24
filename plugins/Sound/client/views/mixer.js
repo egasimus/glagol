@@ -7,48 +7,9 @@ module.exports = function (frame, index) {
   if (mixer) return require('vdom-thunk')(module.exports.widget, mixer);
 
   setTimeout(function () {
-    App.Model.Sound.Mixers.put(frame.id, makeMixer(frame.id))
+    App.Model.Sound.Mixers.put(frame.id, __.devices.mixer(frame.id))
   }, 0);
   return 'loading...'
-}
-
-function makeMixer (id) {
-
-  var context = __.model().context
-    , mixer =
-      { id:       id
-      , context:  context
-      , channels: [1,2,3,4].map(mixerChannel)
-      , master:   context.createGain() }
-
-  mixer.channels.forEach(function (channel) {
-    channel.fader.connect(mixer.master);
-  })
-
-  return mixer;
-
-  function mixerChannel (i) {
-
-    var channelId = id + '/' + i
-      , channel =
-        { id:      channelId
-        , gain:    context.createGain()
-        , pan:     context.createStereoPanner()
-        , high:    context.createBiquadFilter()
-        , midHigh: context.createBiquadFilter()
-        , midLow:  context.createBiquadFilter()
-        , low:     context.createBiquadFilter()
-        , fader:   context.createGain() };
-
-    ['gain', 'pan', 'high', 'midHigh', 'midLow', 'low', 'fader'].reduce(
-      function (previous, current) {
-        if (previous) channel[previous].connect(channel[current]);
-      })
-
-    return channel;
-
-  }
-
 }
 
 module.exports.widget = function (mixer) {
@@ -99,15 +60,6 @@ module.exports.widget = function (mixer) {
                 [ h('.Mixer_Fader')
                 , h('.Mixer_Meter')]))) ]) ]);
 
-      if (!mixer) {
-        return this._vdom = h('.Mixer_Missing',
-          [ 'No mixer'
-          , h('em', id)
-          ]);
-      }
-
-      return this._vdom = h('.Mixer');
-
       function close () {
         App.API('Workspace/Close', id);
       }
@@ -121,15 +73,18 @@ module.exports.widget = function (mixer) {
           [ h('.Mixer_Knob_Group',
               h('select', { onchange: setInput(channel) },
                 [null].concat(Object.keys(state.Players)).map(inputOption(channel))))
-          , h('.Mixer_Knob_Group', knob('gain'))
-          , h('.Mixer_Knob_Group', knob('hi'))
           , h('.Mixer_Knob_Group',
-            [ knob('hi mid')
-            , knob('freq') ])
+              knob('gain',   channel.gain.gain.value))
           , h('.Mixer_Knob_Group',
-            [ knob('lo mid')
-            , knob('freq') ])
-          , h('.Mixer_Knob_Group', knob('lo'))
+              knob('hi',     channel.high.gain.value))
+          , h('.Mixer_Knob_Group',
+            [ knob('hi mid', channel.highMid.gain.value)
+            , knob('freq',   channel.highMid.frequency.value) ])
+          , h('.Mixer_Knob_Group',
+            [ knob('lo mid', channel.lowMid.gain.value)
+            , knob('freq',   channel.lowMid.frequency.value) ])
+          , h('.Mixer_Knob_Group',
+              knob('lo',     channel.low.gain.value))
           , h('.Mixer_Knob_Group',
             [ knob('aux1')
             , knob('aux2') ])
@@ -150,9 +105,11 @@ module.exports.widget = function (mixer) {
         }
       }
 
-      function knob (label) {
+      function knob (label, value) {
         return h('.Mixer_Knob_Label',
-          [ h('.Mixer_Knob_Label_Text', label)
+          [ h('.Mixer_Knob_Label_Text',
+            [ h('div', label || '')
+            , h('div', String(value || '0')) ])
           , h('.Mixer_Knob') ])
       }
 

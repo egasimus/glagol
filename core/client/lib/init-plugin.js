@@ -19,6 +19,7 @@ module.exports = function (App) {
 
       // live reload when editing views
       views.events.onAny(function () {
+        console.debug('template edited, refreshing');
         App.View.update(App.Model());
       })
     }

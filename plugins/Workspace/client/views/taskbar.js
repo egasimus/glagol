@@ -36,7 +36,8 @@ var ICONS =
   , 'file':        'file'
   , 'mixer':       'sliders'
   , 'sound':       'play-circle'
-  , 'textEditor':  'pencil-square'};
+  , 'textEditor':  'pencil-square'
+  , 'youtube':     'youtube' };
 
 function taskbarButtons (frames) {
   var types = {}

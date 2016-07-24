@@ -297,6 +297,7 @@
       box-shadow 0 1px 2px #000
       border 1px solid #555
   &_Meter
+    overflow hidden
     &:before
       content ''
       background #111
@@ -313,3 +314,11 @@
       bottom 6px
       left 6px
       right 6px
+    &_Inner
+      position absolute
+      top 0
+      bottom 0
+      left 0
+      right 0
+      background #ccaa26
+      z-index 1

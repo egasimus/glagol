@@ -51,7 +51,11 @@ module.exports.widget = function (mixer) {
         mixer.channels.forEach(function (channel) {
           var volume = Math.max(channel.meter.volume, 0.00001)
           if (channel.lastVolume !== volume) {
-            console.log(channel.lastVolume = volume);
+            //console.log(channel.lastVolume = volume);
+            var channelNo     = channel.id.split('/')[1]
+              , channelStrips = self.element.getElementsByClassName('Mixer_ChannelStrip')
+              , channelStrip  = channelStrips[channelNo];
+            channelStrip.querySelector('.Mixer_Meter_Inner').style.transform = 'translateY(' + (100 - volume * 100) + '%)';
           }
         })
 
@@ -76,7 +80,7 @@ module.exports.widget = function (mixer) {
               h('.Mixer_Knob_Group_WithFader',
                 h('.Mixer_FaderAndMeter',
                 [ h('.Mixer_Fader')
-                , h('.Mixer_Meter')]))) ]) ]);
+                , h('.Mixer_Meter', h('.Mixer_Meter_Inner')) ]))) ]) ]);
 
       function close () {
         App.API('Workspace/Close', id);
@@ -110,7 +114,7 @@ module.exports.widget = function (mixer) {
             [ knob('pan')
             , h('.Mixer_FaderAndMeter',
               [ h('.Mixer_Fader')
-              , h('.Mixer_Meter')]) ])
+              , h('.Mixer_Meter', h('.Mixer_Meter_Inner'))]) ])
           ]);
       }
 

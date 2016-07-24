@@ -20,5 +20,8 @@ module.exports = $.lib.model(
 
   , Connections: {}
 
-
   });
+
+module.exports.Connections(function (state) {
+  _.reconnect(state);
+})

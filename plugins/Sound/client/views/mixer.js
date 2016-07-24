@@ -36,8 +36,7 @@ module.exports.widget = function (id) {
 
   , render: function (state) {
 
-      var self      = this
-        , mixer     = state.Mixers ? state.Mixers[id] : null
+      var mixer     = state.Mixers ? state.Mixers[id] : null
         , channels  = [1,2,3,4]
 
       return this._vdom = h('.Mixer',
@@ -73,13 +72,11 @@ module.exports.widget = function (id) {
         return h('.Mixer_Sidebar_Channel', 'Channel ' + i)
       }
 
-      function channelStrip () {
+      function channelStrip (channel) {
         return h('.Mixer_ChannelStrip',
           [ h('.Mixer_Knob_Group',
-              h('select',
-                [ h('option', 'no input')
-                , Object.keys(state.Players).map(function (player) {
-                    return h('option', player); }) ]))
+              h('select', { onchange: setInput(channel) },
+                [null].concat(Object.keys(state.Players)).map(inputOption(channel))))
           , h('.Mixer_Knob_Group', knob('gain'))
           , h('.Mixer_Knob_Group', knob('hi'))
           , h('.Mixer_Knob_Group',
@@ -100,13 +97,32 @@ module.exports.widget = function (id) {
           ]);
       }
 
+      function inputOption (channel) {
+        return function (input) {
+          var channelId   = id + '/' + channel
+            , connections = state.Connections[channelId] || {};
+          var selected = !!connections[input];
+          return h('option', { value: input, selected: selected }, input || '(none)');
+        }
+      }
+
       function knob (label) {
         return h('.Mixer_Knob_Label',
           [ h('.Mixer_Knob_Label_Text', label)
           , h('.Mixer_Knob') ])
       }
 
+      function setInput (channel) {
+        return function (event) {
+          var channelId = id + '/' + channel;
+          var input = __.model.Connections[channelId]
+          if (!input) __.model.Connections.put(channelId, input = $.lib.model({}))
+          input.put(event.target.value, true)
+        }
+      }
+
     }
 
   }
+
 }

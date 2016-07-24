@@ -31,7 +31,10 @@ var ICONS =
   , 'machineList': 'server'
   , 'deviceList':  'database'
   , 'serviceList': 'th-large' 
-  , 'terminal':    'terminal'};
+  , 'terminal':    'terminal'
+  , 'sequencer':   'clock-o'
+  , 'file':        'file'
+  , 'mixer':       'sliders' };
 
 function taskbarButtons (frames) {
   var types = {}

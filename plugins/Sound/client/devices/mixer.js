@@ -24,7 +24,8 @@ module.exports = function (id) {
         , highMid: context.createBiquadFilter()
         , lowMid:  context.createBiquadFilter()
         , low:     context.createBiquadFilter()
-        , fader:   context.createGain() };
+        , fader:   context.createGain()
+        , meter:   _.meter(context) };
 
     channel.high.type.value         = 'highshelf';
     channel.high.frequency.value    = 10000

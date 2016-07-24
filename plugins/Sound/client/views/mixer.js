@@ -49,7 +49,12 @@ module.exports.widget = function (id) {
           [ h('.Mixer_Sidebar',
               [ channels.map(sidebarChannel)
               , h('.Mixer_Sidebar_Channel_Add', '+ add channel') ])
-          , channels.map(channelStrip) ]) ]);
+          , channels.map(channelStrip)
+          , h('.Mixer_ChannelStrip_Master',
+              h('.Mixer_Knob_Group_WithFader',
+                h('.Mixer_FaderAndMeter',
+                [ h('.Mixer_Fader')
+                , h('.Mixer_Meter')]))) ]) ]);
 
       if (!mixer) {
         return this._vdom = h('.Mixer_Missing',
@@ -69,8 +74,12 @@ module.exports.widget = function (id) {
       }
 
       function channelStrip () {
-        return h('.Mixer_Channel_Strip',
-          [ h('.Mixer_Knob_Group', h('select', [ h('option', 'input')]))
+        return h('.Mixer_ChannelStrip',
+          [ h('.Mixer_Knob_Group',
+              h('select',
+                [ h('option', 'no input')
+                , Object.keys(state.Players).map(function (player) {
+                    return h('option', player); }) ]))
           , h('.Mixer_Knob_Group', knob('gain'))
           , h('.Mixer_Knob_Group', knob('hi'))
           , h('.Mixer_Knob_Group',

@@ -3,22 +3,22 @@ module.exports = $.lib.model(
   { context:    new AudioContext()
 
 
-  , Buffers:    {}
+  , Buffers:     {}
 
-  , Chains:     {}
+  , Metadata:    {}
 
+  , Cues:        {}
 
-  , Players:    {}
-
-  , Sequencers: {}
-
-  , Mixers:     {}
+  , Waveforms:   {}
 
 
-  , Metadata:   {}
+  , Players:     {}
 
-  , Cues:       {}
+  , Sequencers:  {}
 
-  , Waveforms:  {}
+  , Mixers:      {}
+
+  , Connections: {}
+
 
   });

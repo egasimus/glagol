@@ -199,14 +199,17 @@
       background rgba(0,0,0,0.3)
       padding 6px
       margin-bottom 3px
-  &_Channel_Strip
-    display flex
-    flex-direction column
-    margin 0 0 0 3px
-    background rgba(0,0,0,0.3)
-    width 192px
-    flex-wrap wrap
-    height 368px
+  &_ChannelStrip
+    &, &_Master
+      display flex
+      flex-direction column
+      margin 0 0 0 3px
+      background rgba(0,0,0,0.3)
+      width 192px
+      flex-wrap wrap
+      height 368px
+    &_Master
+      width 100px
   &_Knob
     cursor pointer
     &:before
@@ -258,6 +261,7 @@
         height 30px
         line-height 18px
         margin 6px
+        width 90px
   &_FaderAndMeter
     min-height 100px
     flex-grow 1

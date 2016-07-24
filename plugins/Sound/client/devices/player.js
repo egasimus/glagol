@@ -15,6 +15,7 @@
     , updateFPS:   30
 
     , voices: [ newVoice().then(init) ]
+    , output: ctx.createGain()
 
     , play: play
     , stop: stop
@@ -28,7 +29,7 @@
     return _.buffer(src).then(function (buffer) {
       var v = ctx.createBufferSource();
       v.buffer = buffer;
-      v.connect(ctx.destination);
+      v.connect(player.output);
       return v;
     }).catch(function (error) {
       console.error('could not create voice for', src);

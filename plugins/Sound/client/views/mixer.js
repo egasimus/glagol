@@ -47,10 +47,16 @@ module.exports.widget = function (mixer) {
 
   , animate: function animate (self) {
       return function (t) {
-        //console.log(mixer.channels.map(function (channel) {
-          //return channel.meter.volume;
-        //}))
+
+        mixer.channels.forEach(function (channel) {
+          var volume = Math.max(channel.meter.volume, 0.00001)
+          if (channel.lastVolume !== volume) {
+            console.log(channel.lastVolume = volume);
+          }
+        })
+
         self.animation = requestAnimationFrame(animate(self));
+
       }
     }
 

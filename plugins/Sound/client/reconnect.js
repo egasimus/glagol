@@ -8,10 +8,12 @@ module.exports = function (state) {
     var mixer = _.model.Mixers()[input[0]];
     if (!mixer) return console.error('no mixer', input[0]);
     var channel = mixer.channels[input[1]];
-    console.log('here it is', state, input, state[input])
     Object.keys(connections).forEach(function (output) {
-      console.log('connecting output of', _.model.Players[output], 'into', input);
-      //.connect(channel.gain);
+      var player = _.model.Players[output];
+      if (!player) return;
+      player = player();
+      console.log('connecting output of', player, 'into', input);
+      player.output.connect(channel.meter);
     });
   })
 }

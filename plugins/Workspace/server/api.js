@@ -15,8 +15,8 @@ module.exports = function (state, respond) {
       function (type, address) {
 
         var user = state.id
-          , addr = getAddress(type, address)
           , id   = require('shortid').generate()
+          , addr = getAddress(type, id, address)
           , fr   = { id: id, type: type, address: addr };
         _.model.Frames.put(id, require('riko-mvc/model')(fr));
         _.model.Users.get(user).Frames.push(id);
@@ -74,16 +74,21 @@ function serialize (data) {
   });
 }
 
-function getAddress (type, address) {
+function getAddress (type, id, address) {
   address = address || '';
-  if (type === 'directory' || type === 'file') {
-    if (address === '~') {
-      return os.homedir();
-    }
-    if (address.indexOf('~/') === 0) {
-      return path.join(os.homedir(), address.slice(1));
-    }
+
+  switch (type) {
+    case 'directory':
+    case 'file':
+      if (address === '~') return os.homedir();
+      if (address.indexOf('~/') === 0) {
+        return path.join(os.homedir(), address.slice(1));
+      }
+      break;
+    case 'mixer':
+      return '/Sound/Mixer/' + id
   }
+
   return address;
 }
 

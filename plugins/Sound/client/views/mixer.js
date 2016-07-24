@@ -37,14 +37,17 @@ module.exports.widget = function (id) {
   , render: function (state) {
 
       var self      = this
-        , mixer = state.Mixers ? state.Mixers[id] : null;
+        , mixer     = state.Mixers ? state.Mixers[id] : null
+        , channels  = [1,2,3,4]
 
       return this._vdom = h('.Mixer',
         [ h('.Frame_Header.Mixer_Toolbar',
             [ $.lib.icon('sliders.fa-2x')
             , h('select.Mixer_Selector', [ h('option', 'Mix 1') ])
             , h('.Frame_Close', { onclick: close }, '×') ])
-        , h('.Mixer_Channels', [1,2,3,4].map(channel)) ]);
+        , h('.Mixer_Channels',
+          [ h('.Mixer_Sidebar', channels.map(sidebarChannel))
+          , channels.map(channelStrip) ]) ]);
 
       if (!mixer) {
         return this._vdom = h('.Mixer_Missing',
@@ -59,8 +62,12 @@ module.exports.widget = function (id) {
         App.API('Workspace/Close', id);
       }
 
-      function channel () {
-        return h('.Mixer_Channel',
+      function sidebarChannel (i) {
+        return h('.Mixer_Sidebar_Channel', 'Channel ' + i)
+      }
+
+      function channelStrip () {
+        return h('.Mixer_Channel_Strip',
           [ h('.Mixer_Knob_Group', knob('gain'))
           , h('.Mixer_Knob_Group', knob('hi'))
           , h('.Mixer_Knob_Group',

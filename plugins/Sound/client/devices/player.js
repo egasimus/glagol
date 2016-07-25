@@ -13,6 +13,7 @@
 
     , updateTimer: null
     , updateFPS:   30
+    , onupdate:    null
 
     , voices: [ newVoice().then(init) ]
     , output: ctx.createGain()
@@ -47,6 +48,7 @@
   function play () {
     return player.voices[0].then(function (voice) {
       voice.start(0, player.cuePoint);
+      voice.onended      = stop;
       player.status      = 'playing';
       player.startedAt   = ctx.currentTime;
       player.startedFrom = player.cuePoint;
@@ -55,8 +57,9 @@
     });
   }
 
-  function stop () {
+  function stop (unend) {
     return player.voices.shift().then(function (voice) {
+      if (unend) voice.onended = null;
       try { voice.stop() } catch (e) {}
       player.voices.push(newVoice());
       player.status      = 'stopped';
@@ -69,7 +72,7 @@
 
   function seek (t) {
     if (player.status === 'playing') {
-      return stop().then(function () { player.cuePoint = player.position = t }).then(play);
+      return stop(true).then(function () { player.cuePoint = player.position = t }).then(play);
     } else {
       return new Promise(function (win) { player.cuePoint = player.position = t; win() });
     }

@@ -96,6 +96,8 @@ function widget (id, src) {
         //barFg.style.width = pos / dur * 100 + '%';
       //}
 
+      player.onupdate = update;
+
       return this._vdom = h('.AudioPlayer',
         [ h('.Frame_Header',
           [ h('button.AudioPlayer_Button_Play' + (player.status === 'playing' ? '.Playing' : ''),
@@ -148,55 +150,31 @@ function widget (id, src) {
           //, h('canvas.AudioPlayer_Spectrogram')
           ]);
 
-      function play () {
+      function getPlayer () {
         var player = model.Players.get(playerId);
-        if (player && player()) {
-          player = player();
-          if (player.status === 'playing') {
-            player
-              .stop()
-              .then(function () {
-                self.timer = clearInterval(self.timer);
-                update(); })
-          } else {
-            player
-              .play()
-              .then(function () {
-                self.timer = setInterval(update, 1000 / 30);
-                update() });
-          }
-        } else {
-          console.warn("can not play", playerId);
-        }
+        if (player && (player = player())) return player;
+      }
+
+      function play () {
+        var player = getPlayer()
+        if (!player) return console.warn("can not play", playerId);
+        player[player.status === 'playing' ? 'stop' : 'play']().then(update);
       }
 
       function stop () {
-        var player = model.Players.get(playerId);
-        if (player && player()) {
-          player = player();
-          player
-            .stop()
-            .then(function () {
-              self.timer = clearInterval(self.timer);
-              player.seek(0);
-              update() });
-        } else {
-          console.warn("can not stop", playerId);
-        }
+        var player = getPlayer()
+        if (!player) return console.warn("can not stop", playerId);
+        player.stop().then(function () { player.seek(0); update() });
       }
 
       function seek (event) {
-        var player = model.Players.get(playerId);
-        if (player && player()) {
-          player = player();
-          var cls  = 'AudioPlayer_ProgressBar_Background'
-            , bg   = event.currentTarget.getElementsByClassName(cls)[0]
-            , rect = bg.getBoundingClientRect()
-            , pos  = (event.clientX - rect.left) / rect.width;
-          player
-            .seek(pos * player.duration)
-            .then(update);
-        }
+        var player = getPlayer()
+        if (!player) return console.warn("can not seek", playerId);
+        var cls  = 'AudioPlayer_ProgressBar_Background'
+          , bg   = event.currentTarget.getElementsByClassName(cls)[0]
+          , rect = bg.getBoundingClientRect()
+          , pos  = (event.clientX - rect.left) / rect.width;
+        player.seek(pos * player.duration).then(update);
       }
 
       function update () {

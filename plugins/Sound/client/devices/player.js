@@ -2,6 +2,9 @@
 
   var ctx = App.Model.Sound.context();
 
+  var _pitch = 0
+    , _speed = 1;
+
   var player =
     { status: 'loading'
     , position: null
@@ -22,14 +25,32 @@
     , stop: stop
     , seek: seek
 
+    , get speed ()     { return _speed }
+    , set speed (rate) { return _speed = updateAllVoices('playbackRate', rate) }
+
+    , get pitch ()     { return _pitch }
+    , set pitch (rate) { return _pitch = updateAllVoices('detune', rate) }
+
     , constructor: true }; // fool is-plain-object
 
   return player;
 
+  function updateAllVoices (param, value) {
+    player.voices.map(function (promisedVoice) {
+      promisedVoice.then(function (voice) {
+        voice[param] = value;
+      });
+    });
+    return value;
+  }
+
   function newVoice () {
     return _.buffer(src).then(function (buffer) {
       var v = ctx.createBufferSource();
-      v.buffer = buffer;
+      v.buffer       = buffer;
+      v.playbackRate = _speed;
+      v.detune       = _pitch;
+      v.onended      = stop;
       v.connect(player.output);
       return v;
     }).catch(function (error) {
@@ -48,7 +69,6 @@
   function play () {
     return player.voices[0].then(function (voice) {
       voice.start(0, player.cuePoint);
-      voice.onended      = stop;
       player.status      = 'playing';
       player.startedAt   = ctx.currentTime;
       player.startedFrom = player.cuePoint;
@@ -81,7 +101,7 @@
   function update () {
     if (player.startedAt) {
       var elapsed = ctx.currentTime - player.startedAt;
-      player.position = player.startedFrom + elapsed;
+      player.position = player.startedFrom + elapsed * _speed;
     }
     if (player.status === 'playing') {
       player.updateTimer = setTimeout(update, 1000 / player.updateFPS);

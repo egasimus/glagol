@@ -74,6 +74,8 @@ module.exports.widget = function (mixer) {
 
   , render: function (state) {
 
+      var knob = __.__.Control.views.knob;
+
       return this._vdom = h('.Mixer',
         [ h('.Frame_Header.Mixer_Toolbar',
             [ $.lib.icon('sliders.fa-2x')

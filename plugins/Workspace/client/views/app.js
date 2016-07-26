@@ -12,7 +12,8 @@
             [ _.switcher(state)
             , h('.Workspace',
                 Object.keys(state.Workspace.Frames).map(
-                  function (id) { return _.frame(state.Workspace.Frames[id]) }))
+                  function (i) {
+                    return _.frame(state.Workspace.Frames[i], i) }))
             ])
         , _.taskbar(state)
         ]);

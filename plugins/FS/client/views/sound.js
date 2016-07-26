@@ -107,8 +107,8 @@ function widget (id, src) {
           , h('.AudioPlayer_Position',
               player.status === 'loading'
               ? '\nloading\n'
-              : $.lib.formatTime(player.position)                   + "\n" +
-                $.lib.formatTime(player.duration - player.position) + "\n" +
+              : $.lib.formatTime(player.position)                                + "\n" +
+                $.lib.formatTime(Math.max(player.duration - player.position, 0)) + "\n" +
                 $.lib.formatTime(player.duration))
           , h('.AudioPlayer_Title', require('path').basename(src))
           , h('.Frame_Close', { onclick: close }, '×')
@@ -147,8 +147,21 @@ function widget (id, src) {
 
           ])
 
+        , h('.AudioPlayer_Section',
+            [ knob('Speed',  String(Math.round(player.speed * 1000) / 1000) + 'x')
+            , knob('Pitch',  String(player.pitch) + ' ct')
+            , knob('Volume', '0.00dB') ])
+
           //, h('canvas.AudioPlayer_Spectrogram')
           ]);
+
+      function knob (label, value) {
+        return h('.Mixer_Knob_Label',
+          [ h('.Mixer_Knob_Label_Text',
+            [ h('div', label || '')
+            , h('div', String(value || '0')) ])
+          , h('.Mixer_Knob') ])
+      }
 
       function getPlayer () {
         var player = model.Players.get(playerId);

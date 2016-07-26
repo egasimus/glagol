@@ -55,7 +55,7 @@ module.exports.widget = function (mixer) {
             var channelNo     = channel.id.split('/')[1]
               , channelStrips = self.element.getElementsByClassName('Mixer_ChannelStrip')
               , channelStrip  = channelStrips[channelNo]
-              , channelBar    = channelStrip.querySelector('.Mixer_Meter_Inner')
+              , channelBar    = channelStrip.querySelector('.Meter_Inner')
             channelBar.style.transform = 'translateY(' + (100 - volume * 100) + '%)';
           }
         })
@@ -63,7 +63,7 @@ module.exports.widget = function (mixer) {
         var volume = Math.max(mixer.meter.volume, 0.00001);
         if (mixer.master.lastVolume !== volume) {
           var masterStrip = self.element.getElementsByClassName('Mixer_ChannelStrip_Master')[0]
-            , masterBar   = masterStrip.querySelector('.Mixer_Meter_Inner');
+            , masterBar   = masterStrip.querySelector('.Meter_Inner');
           masterBar.style.transform = 'translateY(' + (100 - volume * 100) + '%)';
         }
 
@@ -85,10 +85,10 @@ module.exports.widget = function (mixer) {
               , h('.Mixer_Sidebar_Channel_Add', '+ add channel') ])
           , mixer.channels.map(channelStrip)
           , h('.Mixer_ChannelStrip_Master',
-              h('.Mixer_Knob_Group_WithFader',
-                h('.Mixer_FaderAndMeter',
-                [ h('.Mixer_Fader')
-                , h('.Mixer_Meter', h('.Mixer_Meter_Inner')) ]))) ]) ]);
+              h('.Knob_Group_WithFader',
+                h('.FaderAndMeter',
+                [ h('.Fader')
+                , h('.Meter', h('.Meter_Inner')) ]))) ]) ]);
 
       function close () {
         App.API('Workspace/Close', id);
@@ -100,29 +100,29 @@ module.exports.widget = function (mixer) {
 
       function channelStrip (channel) {
         return h('.Mixer_ChannelStrip',
-          [ h('.Mixer_Knob_Group',
+          [ h('.Knob_Group',
               h('select', { onchange: setInput(channel) },
                 [null].concat(Object.keys(state.Players)).map(inputOption(channel))))
-          , h('.Mixer_Knob_Group',
+          , h('.Knob_Group',
               knob('gain',   channel.gain.gain.value))
-          , h('.Mixer_Knob_Group',
+          , h('.Knob_Group',
               knob('hi',     channel.high.gain.value))
-          , h('.Mixer_Knob_Group',
+          , h('.Knob_Group',
             [ knob('hi mid', channel.highMid.gain.value)
             , knob('freq',   channel.highMid.frequency.value) ])
-          , h('.Mixer_Knob_Group',
+          , h('.Knob_Group',
             [ knob('lo mid', channel.lowMid.gain.value)
             , knob('freq',   channel.lowMid.frequency.value) ])
-          , h('.Mixer_Knob_Group',
+          , h('.Knob_Group',
               knob('lo',     channel.low.gain.value))
-          , h('.Mixer_Knob_Group',
+          , h('.Knob_Group',
             [ knob('aux1')
             , knob('aux2') ])
-          , h('.Mixer_Knob_Group_WithFader',
+          , h('.Knob_Group_WithFader',
             [ knob('pan')
-            , h('.Mixer_FaderAndMeter',
-              [ h('.Mixer_Fader')
-              , h('.Mixer_Meter', h('.Mixer_Meter_Inner'))]) ])
+            , h('.FaderAndMeter',
+              [ h('.Fader')
+              , h('.Meter', h('.Meter_Inner'))]) ])
           ]);
       }
 
@@ -136,11 +136,11 @@ module.exports.widget = function (mixer) {
       }
 
       function knob (label, value) {
-        return h('.Mixer_Knob_Label',
-          [ h('.Mixer_Knob_Label_Text',
+        return h('.Knob_Label',
+          [ h('.Knob_Label_Text',
             [ h('div', label || '')
             , h('div', String(value || '0')) ])
-          , h('.Mixer_Knob') ])
+          , h('.Knob') ])
       }
 
       function setInput (channel) {

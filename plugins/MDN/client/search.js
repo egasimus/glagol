@@ -6,7 +6,3 @@ module.exports = function (query) {
   }
   xhr.send();
 }
-
-function buildUrl (query) {
-  return 'https://developer.mozilla.org/en-US/search.json?q=' + query
-}

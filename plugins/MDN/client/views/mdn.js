@@ -1,6 +1,7 @@
 module.exports = function (frame, index) {
 
-  var query = frame.address.trim();
+  var query  = frame.address.trim()
+    , result = __.model.Searches()[query];
 
   return h('.MDNBrowser',
     [ h('.Frame_Header',
@@ -9,12 +10,42 @@ module.exports = function (frame, index) {
       , h('input.Frame_Address',
         { onchange:    search
         , value:       query
-        , placeholder: 'search MDN'})
+        , placeholder: 'search MDN' })
       , h('.Frame_Close', { onclick: close }, '×') ])
     , h('.Frame_Body',
-        { style: { minWidth: 400, minHeight: 600 } },
-        h('pre', String(__.model.Searches()[query])))
-    ])
+        result ? full() : empty() ) ]);
+
+  function full () {
+    var els = [];
+
+    els.push(h('.MDNBrowser_Results_Info',
+      [ h('strong', String(result.count))
+      , ' results for '
+      , h('strong', h('em', query))
+      , '; showing '
+      , h('strong', String(result.start))
+      , ' to '
+      , h('strong', String(result.end)) ]));
+
+    els.push(h('.MDNBrowser_Results'),
+      result.documents.map(searchResult));
+
+    console.log(result.documents.map(searchResult))
+
+    return els;
+    //return h('div',
+      //[ h('strong', 'Results: '), result.count ]),
+  }
+
+  function searchResult (result) {
+    return h('.MDNBrowser_Result',
+      [ h('strong.MDNBrowser_Result_Title', String(result.title))
+      , h('em.MDNBrowser_Result_Excerpt',   String(result.excerpt)) ])
+  }
+
+  function empty () {
+    //return 'Empty';
+  }
 
   function search (event) {
     event.preventDefault();

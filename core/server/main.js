@@ -42,8 +42,8 @@
     try {
       node()(App);
     } catch (e) {
-      $.log('Error reloading /server/main');
-      $.log(e);
+      $.log.error('Error reloading /server/main');
+      $.log.error(e);
     }
   }
 

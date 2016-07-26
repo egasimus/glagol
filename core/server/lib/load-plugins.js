@@ -12,8 +12,8 @@
       plugin.reset(); // after rename
       plugins.add(plugin);
     } catch (e) {
-      $.log('could not load plugin', pluginPath);
-      $.log(e);
+      $.log.error('could not load plugin', pluginPath);
+      $.log.error(e);
     }
   });
 

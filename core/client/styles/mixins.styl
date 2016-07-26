@@ -19,18 +19,24 @@ button()
   &:focus
     outline 1px solid black
 
-frame-toolbar()
+toolbar-button()
+  button()
+  width      42px
+  height     36px
+  padding    0
+  text-align center
+  font-size  1.5em
+
+toolbar()
   padding 3px
   display flex
-  flex-direction column
   flex-shrink 0
   button
-    button()
-    width      42px
-    height     36px
-    padding    0
-    text-align center
-    font-size  1.5em
+    toolbar-button ()
+
+frame-toolbar()
+  toolbar()
+  flex-direction column
 
 frame-blocker()
   left -24px

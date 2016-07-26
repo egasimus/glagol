@@ -16,6 +16,8 @@ module.exports =
   , 'Service'
   , 'FS'
 
+  , 'MDN'
+
   , 'CodeMirror'
 
   , 'Sound'

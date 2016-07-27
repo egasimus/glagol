@@ -29,17 +29,29 @@ module.exports = function (App) {
     if (model) App.Model.put(name, model);
 
     // if plugin has stylesheet, add it to the document head
-    // TODO custom auto-updating format for stylesheets
-    var style = pluginRoot.get('style.styl') || pluginRoot.get('style.css');
+    // if not, hope for one to appear
+    // TODO custom auto-updating format for stylesheets (??)
+    var style =
+      pluginRoot.get('style.styl') ||
+      pluginRoot.get('style.css');
+
     if (style) {
-      _.insertCssLive(style, name);
+      addStyle(style);
     } else {
-      pluginRoot.events.on('added', function installCss (node) {
-        if (node.name === 'style.styl' || node.name === 'style.css') {
-          _.insertCssLive(style, name);
-          pluginRoot.events.off('added', installCss);
-        }
-      })
+      console.debug('no stylesheet for', name)
+      pluginRoot.events.on('added', expectStyle);
+    }
+
+    function addStyle (style) {
+      console.debug('introducing stylesheet for', name, ':', style.path)
+      _.insertCssLive(style);
+    }
+
+    function expectStyle (node) {
+      if (node.name === 'style.styl' || node.name === 'style.css') {
+        addStyle(node);
+        pluginRoot.events.off('added', expectStyle);
+      }
     }
 
     // execute entry point

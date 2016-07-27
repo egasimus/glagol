@@ -23,9 +23,10 @@ function TerminalHook (id) {
         var terminal = __.model()[id];
 
         if (!terminal) {
-          console.debug('opening new terminal, id', id);
-          __.model.put(id, terminal = new Terminal());
-          terminal.write('hello planetke')
+          //console.debug('opening new terminal, id', id);
+          //__.model.put(id, terminal = new Terminal());
+          //terminal.write('hello planetke');
+          App.API('Terminal/Attach');
         } else {
           console.debug('found terminal, id', id);
         }

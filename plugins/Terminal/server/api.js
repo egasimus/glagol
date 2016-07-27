@@ -9,8 +9,8 @@ module.exports = function (state, respond) {
   , Spawn:
       function (id) {
         id = id || $.lib.makeId();
-        var pty;
-        _.model.Instances.put(id, pty = spawn());
+        var pty = spawn();;
+        _.model.Instances.put(id, pty);
         this['Terminal/Refresh']()
         return pty; }
 
@@ -20,14 +20,13 @@ module.exports = function (state, respond) {
 
   , Attach:
       function (id) {
+        id = id || $.lib.makeId();
         var pty;
         if (!(pty = _.model.Instances()[id]))
           pty = this['Terminal/Spawn'](id);
         if (!pty._glagolHandler) {
           pty.on('data', pty._glagolHandler = function (data) {
-            _.log("!!!!!", state)
-            // TODO update
-          }) }
+            _.log("!!!!!", state) }) }
         this['Terminal/Refresh']() }
 
   , Detach:
@@ -35,11 +34,7 @@ module.exports = function (state, respond) {
         var pty = _.model.Instances()[id];
         pty.off('data', pty._glagolHandler);
         delete pty._glagolHandler;
-        this['Terminal/Refresh']() }
-
-  }
-
-}
+        this['Terminal/Refresh']() } } }
 
 function spawn () {
   return require('pty.js').spawn(
@@ -49,9 +44,7 @@ function spawn () {
     , cols: 80
     , rows: 24
     , cwd: process.env.PWD
-    , env: process.env })
-}
+    , env: process.env }) }
 
 function serialize (data) {
-  return JSON.stringify(data);
-}
+  return JSON.stringify(data); }

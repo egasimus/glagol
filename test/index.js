@@ -43,16 +43,26 @@ test('browser', function (t) {
     , 'B.txt': '8'
     , 'C.d': { 'D.json': '{"foo":"bar..."}' } };
 
-  t.plan(6);
+  t.plan(11);
 
   var load = browser.loader()
     , root = load(fixture);
 
+  t.equal(root.path,                   '/');;
+  t.equal(root.get('B.txt').path,      '/B.txt');
+  t.equal(root.get('C.d/D.json').path, '/C.d/D.json');
+
   t.equal(root.get('A.js').source,       fixture['A.js']);
   t.equal(root.get('B.txt').source,      fixture['B.txt']);
   t.equal(root.get('C.d/D.json').source, fixture['C.d']['D.json']);
+
   t.equal(typeof root.get('A.js').value,       'function');
   t.equal(typeof root.get('B.txt').value,      'string');
   t.equal(typeof root.get('C.d/D.json').value, 'object');
+
+  load.add('/C.d/E.d', { 'F.js': '8', 'G.txt': 'H' });
+
+  t.equal(root.get('C.d/E.d/G.txt').source,      'H');
+  t.equal(typeof root.get('C.d/E.d/F.js').value, 'number');
 
 })

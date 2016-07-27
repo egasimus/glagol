@@ -26,46 +26,53 @@ function Loader (baseOptions) {
 
   return load;
 
-  function load (name, source, _options) {
-    if (name instanceof Object) return load("/", name, source);
-    if (load.nodes[name]) return update(name, source);
+  function load (nodePath, source, overrides) {
+    if (nodePath instanceof Object) return load("/", nodePath, source);
+    if (load.nodes[nodePath]) return update(nodePath, source);
 
-    _options = _options || {};
-    var options = extend({}, load.options, _options);
-    options.formats = extend({}, load.options.formats, _options.formats);
+    overrides = overrides || {};
+    var options = extend({}, load.options, overrides);
+    options.formats = extend({}, load.options.formats, overrides.formats);
 
     var type = source instanceof Object ? loadDirectory : loadFile
-      , node = type(name, source);
-    load.nodes[name] = node;
+      , node = type(nodePath, source);
+    load.nodes[nodePath] = node;
     return node;
 
-    function loadDirectory (name, source) {
-      var node = Directory(path.basename(name), options);
+    function loadDirectory (nodePath, source) {
+      var node = Directory(path.basename(nodePath), options);
       Object.keys(source).map(function (id) {
-        var newNode = load(path.join(name, id), source[id], options);
+        var newNode = load(path.join(nodePath, id), source[id], options);
         node.add(newNode);
       });
       return node;
     }
 
-    function loadFile (name, source) {
-      return File(path.basename(name), extend({}, options, { source: source }));
+    function loadFile (nodePath, source) {
+      return File(path.basename(nodePath), extend({}, options, { source: source }));
     }
   }
 
-  function add (name, source) {
-    var node = load.nodes[name];
-    if (node) return update(name, source);
-    node = load(name, source);
+  function add (nodePath, source) {
+    if (load.nodes[nodePath]) return update(nodePath, source);
+
+    var parent = load.nodes[path.dirname(nodePath)];
+    if (!parent) {
+      throw new Error("cannot add node " +  nodePath + " to missing parent");
+    }
+
+    var node;
+    parent.add(node = load(nodePath, source));
     load.events.emit('added', node);
     if (!Directory.is(node) && node.parent) {
       node.parent.events.emit('added', node);
     }
+
   }
 
-  function update (name, source) {
-    var node = load.nodes[name];
-    if (!node) return add(name, source);
+  function update (nodePath, source) {
+    var node = load.nodes[nodePath];
+    if (!node) return add(nodePath, source);
     node.source = source;
     load.events.emit('changed', node);
     node.events.emit('changed', node);
@@ -74,8 +81,8 @@ function Loader (baseOptions) {
     }
   }
 
-  function remove (name) {
-    var node = load.nodes[name];
+  function remove (nodePath) {
+    var node = load.nodes[nodePath];
     if (!node) return;
 
     var parent = node.parent;

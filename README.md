@@ -1,12 +1,9 @@
-# Glagol 2.0.0-WIP
+# Glagol
 
-Glagol is a JavaScript metaframework, designed from the ground up for enabling
-you to build programs that can be edited during runtime, using libraries and
-preprocessors of your choosing.
-
-Glagol reloads and processes source files on demand, so you don't need to
-set up a complicated build pipeline for compiling your stuff in advance, or
-restart your project to see your changes.
+* Next-generation module system for JavaScript and friends
+* Blazing fast live reloading of server and client source code on a per-module basis
+* Built-in support for on-demand source preprocessing. Never have to Grunt or Gulp again.
+* Easy to both integrate and extend.
 
 [![NPM](https://img.shields.io/npm/v/glagol.svg)](https://www.npmjs.com/package/glagol)
 [![David](https://img.shields.io/david/egasimus/glagol.svg)](https://david-dm.org/egasimus/glagol)

@@ -99,7 +99,7 @@ function compile () {
 
   if (this._cache.compiled) return this._cache.compiled;
   if (!this.format) return this._cache.compiled = this.source;
-  if (!this.source) return this._cache.compiled = undefined;
+  if (!this.source && this.source !== '') return this._cache.compiled = undefined;
 
   try {
     return this._cache.compiled = this.format.compile(this);

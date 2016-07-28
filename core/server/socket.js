@@ -27,14 +27,15 @@ module.exports = function (App, socket) {
 
         $.log("opened client connection", id);
 
-        var api = require('riko-api2')($.api)(model(), socket.send.bind(socket));
         socket.onmessage = function () {
           try {
+            var api = require('riko-api2')($.api)(model(), socket.send.bind(socket));
             api.apply(this, arguments)
           } catch (e) {
             (console.warn || console.log)(e);
           }
         };
+
         socket.onclose = function () {
           $.log('closed client connection', id);
           //_.model.users.delete(id);

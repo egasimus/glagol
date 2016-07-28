@@ -10,22 +10,26 @@ module.exports = function (state, respond) {
     GetInfo:
       function (location) {
 
-        location = resolve(location.trim());
-        _.log("GetInfo", location);
+        var data;
 
-        var data = identify(location);
+        _.log("GetInfo", location = resolve(location.trim()));
 
         try {
-          data.stats = fs.statSync(location);
+          data = identify(location);
         } catch (e) {
-          console.log(e);
-          return;
+          respond(JSON.stringify(
+            { plugin: 'FS'
+            , error:  true
+            , code:   e.code
+            , path:   e.path }))
         }
 
-        data.type = getType(data.stats);
+        if (!data) return;
+
+        console.log("!!!", data)
 
         if (data.type === 'directory') {
-          data.items = readDir(location);
+          data.items = readDirectoryContents(location);
           _.model.Directories[location] = data;
         }
 
@@ -59,31 +63,28 @@ function resolve (location) {
   return location;
 }
 
-function getType (stats) {
-  return stats.isFile()      ? 'file'
-       : stats.isDirectory() ? 'directory'
-                             : 'other';
-}
-
-function readDir (location) {
+function readDirectoryContents (location) {
   return fs.readdirSync(location)
     .map(function (item) { return path.join(location, item) })
     .map(identify);
 }
 
 function identify (fullpath) {
+
   var data = { name: path.basename(fullpath), path: fullpath }
 
   if (!data.stats) {
     try {
       data.stats = fs.statSync(fullpath)
     } catch (e) {
-      console.log(e);
-      return;
+      _.log.error(data.path, e.code);
+      throw e;
     }
   }
 
   if (data.stats.isDirectory()) {
+
+    data.type = 'directory';
 
     try {
       var files = fs.readdirSync(fullpath);
@@ -110,9 +111,14 @@ function identify (fullpath) {
       }
     }
 
+  } else if (data.stats.isFile()) {
+
+    data.type = 'file';
+
   }
 
   return data;
+
 }
 
 function getContentType (file) {

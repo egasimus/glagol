@@ -14,12 +14,19 @@ function makeLogger (as) {
   function _log (isError) {
     var bold = colors.bold
       , ital = colors.italic
+      , gray = colors.gray
       , red  = isError ? colors.red : function (arg) { return arg }
-      , args = Array.prototype.slice.call(arguments, 1)
-      , tag  = [ ital(bold(' glagol-workspace '))
+      , len  = ( ' workspace   ' + as + '  ' ).length
+      , tag  = [ ital(bold(' workspace '))
                , as ? red(' ' + ital(' ' + as + ' '))
-                    : isError ? ' error ' : ''];
-    args.unshift(tag.join(''));
+                    : isError ? ' error ' : ''].join('')
+      , args = Array.prototype.slice.call(arguments, 1).map(pad);
+    args.unshift(tag);
     console.log.apply(console, args);
+
+    function pad (arg) {
+      var padding = "\n" + ' '.repeat(len - 2) + (isError?red:gray)('┇') + ' ';
+      return arg.split("\n").join(padding)
+    }
   }
 }

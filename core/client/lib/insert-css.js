@@ -1,4 +1,4 @@
-(function (css, prepend) {
+module.exports = function (css, prepend) {
 
   var elem = document.createElement('style');
   elem.setAttribute('type', 'text/css');
@@ -17,4 +17,4 @@
 
   return elem;
 
-})
+}

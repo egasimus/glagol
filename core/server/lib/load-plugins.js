@@ -1,4 +1,4 @@
-(function (rel, subdir) {
+module.exports = function (rel, subdir) {
 
   var glagol  = require('glagol')
     , plugins = glagol.Directory('plugins');
@@ -12,11 +12,15 @@
       plugin.reset(); // after rename
       plugins.add(plugin);
     } catch (e) {
-      $.log.error('could not load plugin', pluginPath);
-      $.log.error(e);
+      if (e.code !== 'FILE_NOT_FOUND') {
+        $.log.error('could not find', pluginPath);
+      } else {
+        $.log.error('could not load plugin',
+          pluginPath + "\n" + e.message + "\n" + e.stack);
+      }
     }
   });
 
   return plugins;
 
-})
+}

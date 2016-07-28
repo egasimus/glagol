@@ -1,7 +1,7 @@
 var test = require('tape')
   , glagol = require('..');
 
-test('options', function (t) {
+test('option inheritance', function (t) {
 
   t.plan(8);
 
@@ -31,9 +31,9 @@ test('options', function (t) {
 
 })
 
-test('browser', function (t) {
+test('client-side loader', function (t) {
 
-  var browser =
+   var browser =
     { loader:  require('../browser/loader')
     , require: require('../browser/require')
     , vm:      require('../browser/vm') };
@@ -41,28 +41,64 @@ test('browser', function (t) {
   var fixture =
     { 'A.js':  '(function () {})'
     , 'B.txt': '8'
-    , 'C.d': { 'D.json': '{"foo":"bar..."}' } };
+    , 'C.foo': ''
+    , 'D.d':   { 'E.json': '{"foo":"bar..."}' } };
 
-  t.plan(11);
+  var dummyFormat =
+    { compile:  function (file) { return 'compiled'  }
+    , evaluate: function (file) { return 'evaluated' } };
 
-  var load = browser.loader()
+  t.plan(21);
+
+  // testing initial load
+
+  var load = browser.loader({ formats: { '.foo': dummyFormat } })
     , root = load(fixture);
 
-  t.equal(root.path,                   '/');;
-  t.equal(root.get('B.txt').path,      '/B.txt');
-  t.equal(root.get('C.d/D.json').path, '/C.d/D.json');
+  var A = root.get('A.js')
+    , B = root.get('B.txt')
+    , C = root.get('C.foo')
+    , D = root.get('D.d')
+    , E = D.get('E.json')
 
-  t.equal(root.get('A.js').source,       fixture['A.js']);
-  t.equal(root.get('B.txt').source,      fixture['B.txt']);
-  t.equal(root.get('C.d/D.json').source, fixture['C.d']['D.json']);
+  t.equal(root.path, '/');
 
-  t.equal(typeof root.get('A.js').value,       'function');
-  t.equal(typeof root.get('B.txt').value,      'string');
-  t.equal(typeof root.get('C.d/D.json').value, 'object');
+  t.equal(A.source,       fixture['A.js']);
+  t.equal(typeof A.value, 'function');
 
-  load.add('/C.d/E.d', { 'F.js': '8', 'G.txt': 'H' });
+  t.equal(B.path,         '/B.txt');
+  t.equal(B.source,       fixture['B.txt']);
+  t.equal(typeof B.value, 'string');
 
-  t.equal(root.get('C.d/E.d/G.txt').source,      'H');
-  t.equal(typeof root.get('C.d/E.d/F.js').value, 'number');
+  t.equal(C.source,       fixture['C.foo']);
+  t.equal(C.compiled,     'compiled');
+  t.equal(C.value,        'evaluated');
+
+  t.equal(E.path,         '/D.d/E.json');
+  t.equal(E.source,       fixture['D.d']['E.json']);
+  t.equal(typeof E.value, 'object');
+
+  // testing subsequent adding of nodes
+
+  load.add('/D.d/F.d',
+    { 'G.js':  '8'
+    , 'H.txt': '8'
+    , 'I.foo': '8' });
+
+  var G = root.get('D.d/F.d/G.js')
+    , H = root.get('D.d/F.d/H.txt')
+    , I = root.get('D.d/F.d/I.foo')
+
+  t.equal(G.source,   '8')
+  t.equal(G.compiled, '8')
+  t.equal(G.value,     8 )
+
+  t.equal(H.source,   '8')
+  t.equal(H.compiled, '8')
+  t.equal(H.value,    '8')
+
+  t.equal(I.source,   '8')
+  t.equal(I.compiled, 'compiled')
+  t.equal(I.value,    'evaluated')
 
 })

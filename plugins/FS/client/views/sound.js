@@ -98,10 +98,21 @@ function widget (id, src) {
 
       player.onupdate = update;
 
-      var knob = __.__.Control.views.knob;
+      var knob = __.__.Control.views.knob
+        , showCues = false
+        , showInfo = false;
 
       return this._vdom = h('.AudioPlayer',
-        [ h('.Frame_Header',
+        [ header()
+        , progressBar()
+        , controlBar()
+        , showCues ? cues() : null
+        , showInfo ? info() : null ]);
+
+      // templates
+
+      function header () {
+        return h('.Frame_Header',
           [ h('button.AudioPlayer_Button_Play' + (player.status === 'playing' ? '.Playing' : ''),
               { onclick: play }, '⏯')
           , h('button.AudioPlayer_Button_Cue',
@@ -113,10 +124,10 @@ function widget (id, src) {
                 $.lib.formatTime(Math.max(player.duration - player.position, 0)) + "\n" +
                 $.lib.formatTime(player.duration))
           , h('.AudioPlayer_Title', require('path').basename(src))
-          , h('.Frame_Close', { onclick: close }, '×')
-          ])
+          , h('.Frame_Close', { onclick: close }, '×') ]) }
 
-        , h('.AudioPlayer_Section',
+      function progressBar () {
+        return h('.AudioPlayer_Section',
           [ h('.AudioPlayer_ProgressBar',
               { onmousedown: seek },
               h('.AudioPlayer_ProgressBar_Background',
@@ -124,49 +135,38 @@ function widget (id, src) {
                   { style: { width:
                     (player.position && player.duration)
                     ? player.position / player.duration * 100 + '%'
-                    : 0 }})))
-          ])
-          //, h('.AudioPlayer_Waveform') ])
+                    : 0 }}))) ]) }
 
-        , h('.AudioPlayer_Section.AudioPlayer_ControlBar',
-            [ h('.AudioPlayer_ControlBar_Group',
-                [ knob('Speed',  String(Math.round(player.speed * 1000) / 1000) + 'x')
-                , knob('Pitch',  String(player.pitch) + ' ct') ])
-            , h('.AudioPlayer_ControlBar_Group',
-                [ h('button.AudioPlayer_Info_Toggle', $.lib.icon('info-circle'))
-                , h('button.AudioPlayer_Cues_Add', { onclick: addCue }, $.lib.icon('map-marker')) ])
-            , h('.AudioPlayer_ControlBar_Group',
-                [ knob('Volume', '0.00dB') ])
-            ])
+      function controlBar () {
+        return h('.AudioPlayer_Section.AudioPlayer_ControlBar',
+          [ h('.AudioPlayer_ControlBar_Group',
+              [ knob('Speed',  String(Math.round(player.speed * 1000) / 1000) + 'x')
+              , knob('Pitch',  String(player.pitch) + ' ct') ])
+          , h('.AudioPlayer_ControlBar_Group',
+              [ h('button.AudioPlayer_Info_Toggle', $.lib.icon('info-circle'))
+              , h('button.AudioPlayer_Cues_Add', { onclick: addCue }, $.lib.icon('map-marker')) ])
+          , h('.AudioPlayer_ControlBar_Group',
+              [ knob('Volume', '0.00dB') ]) ]) }
 
-        //, h('.AudioPlayer_Section',
-          //{ style: { flexWrap: 'nowrap' } },
-          //[ h('.AudioPlayer_Cues',
-            //[ h('.AudioPlayer_Cues_Toolbar',
-              //[ h('.AudioPlayer_Cues_Add',
-                  //{ onclick: addCue },
-                  //$.lib.icon('map-marker')) ])
-            //, h('.AudioPlayer_Cues_List',
-                //cues.map(function (c, i) {
-                  //return cue(i+1, c.label, c.time); }))
-            //])
+      function cues () {
+        return h('.AudioPlayer_Section.AudioPlayer_Cues',
+          h('.AudioPlayer_Cues_List',
+            cues.map(function (c, i) {
+              return cue(i+1, c.label, c.time); }))) }
 
-          //, h('.AudioPlayer_Info',
-            //[ h('.AudioPlayer_Info_Toolbar',
-              //[ h('.AudioPlayer_Info_Toggle'
-                //, $.lib.icon('info-circle')) ])
-            //, h('table.AudioPlayer_Info_Table',
-                //Object.keys(model.Metadata()[src] || {}).sort().map(tag))])
+      function info () {
+        return h('.AudioPlayer_Info',
+          h('table.AudioPlayer_Info_Table',
+            Object.keys(model.Metadata()[src] || {}).sort().map(tag))) }
 
-          //])
-
-          //, h('canvas.AudioPlayer_Spectrogram')
-          ]);
+      // utilities
 
       function getPlayer () {
         var player = model.Players.get(playerId);
         if (player && (player = player())) return player;
       }
+
+      // actions
 
       function play () {
         var player = getPlayer()

@@ -63,7 +63,7 @@ function Loader (baseOptions) {
     // load the node. if it's a directory, its contents are recursively loaded.
     // the initial loading pass is done synchronously; can't wait for
     // the watcher to detect and add files when we add directories to it.
-    console.log(rootPath.bold);
+    console.log(' glagol '.italic, rootPath.bold);
     return loadNode(rootPath, { depth: -1 });
 
     function loadNode (location, state) {

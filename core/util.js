@@ -26,7 +26,7 @@ function printIgnored (f, state, i, a) {
 function printTreeNode (depth, dir, name) {
   //var chars = printTreeNode._treeCharacters;
   console.log(
-    '┇ '.gray + Array(depth).join('  ') +
+    '       ┇   '.gray + Array(depth).join('  ') +
     name); }
 
 //printTreeNode._treeCharacters = [ '│', '┕', '└', '┝', '├', '╸' , '╴'].map(function (c) { return " " })

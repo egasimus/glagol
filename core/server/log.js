@@ -22,6 +22,10 @@ function makeLogger (as) {
                     : isError ? ' error ' : ''].join('')
       , args = Array.prototype.slice.call(arguments, 1).map(pad);
     args.unshift(tag);
+    // TODO in centralized log receiver/printer
+    //args.unshift(tag === console._lastTag
+      //? ' '.repeat(len - 1)
+      //: console._lastTag = tag)
     console.log.apply(console, args);
 
     function pad (arg) {

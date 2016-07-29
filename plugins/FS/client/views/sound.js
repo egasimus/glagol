@@ -98,6 +98,8 @@ function widget (id, src) {
 
       player.onupdate = update;
 
+      var knob = __.__.Control.views.knob;
+
       return this._vdom = h('.AudioPlayer',
         [ h('.Frame_Header',
           [ h('button.AudioPlayer_Button_Play' + (player.status === 'playing' ? '.Playing' : ''),
@@ -126,42 +128,40 @@ function widget (id, src) {
           ])
           //, h('.AudioPlayer_Waveform') ])
 
-        , h('.AudioPlayer_Section',
-          { style: { flexWrap: 'nowrap' } },
-          [ h('.AudioPlayer_Cues',
-            [ h('.AudioPlayer_Cues_Toolbar',
-              [ h('.AudioPlayer_Cues_Add',
-                  { onclick: addCue },
-                  $.lib.icon('map-marker')) ])
-            , h('.AudioPlayer_Cues_List',
-                cues.map(function (c, i) {
-                  return cue(i+1, c.label, c.time); }))
+        , h('.AudioPlayer_Section.AudioPlayer_ControlBar',
+            [ h('.AudioPlayer_ControlBar_Group',
+                [ knob('Speed',  String(Math.round(player.speed * 1000) / 1000) + 'x')
+                , knob('Pitch',  String(player.pitch) + ' ct') ])
+            , h('.AudioPlayer_ControlBar_Group',
+                [ h('button.AudioPlayer_Info_Toggle', $.lib.icon('info-circle'))
+                , h('button.AudioPlayer_Cues_Add', { onclick: addCue }, $.lib.icon('map-marker')) ])
+            , h('.AudioPlayer_ControlBar_Group',
+                [ knob('Volume', '0.00dB') ])
             ])
 
-          , h('.AudioPlayer_Info',
-            [ h('.AudioPlayer_Info_Toolbar',
-              [ h('.AudioPlayer_Info_Toggle'
-              , $.lib.icon('info-circle')) ])
-            , h('table.AudioPlayer_Info_Table',
-                Object.keys(model.Metadata()[src] || {}).sort().map(tag))])
+        //, h('.AudioPlayer_Section',
+          //{ style: { flexWrap: 'nowrap' } },
+          //[ h('.AudioPlayer_Cues',
+            //[ h('.AudioPlayer_Cues_Toolbar',
+              //[ h('.AudioPlayer_Cues_Add',
+                  //{ onclick: addCue },
+                  //$.lib.icon('map-marker')) ])
+            //, h('.AudioPlayer_Cues_List',
+                //cues.map(function (c, i) {
+                  //return cue(i+1, c.label, c.time); }))
+            //])
 
-          ])
+          //, h('.AudioPlayer_Info',
+            //[ h('.AudioPlayer_Info_Toolbar',
+              //[ h('.AudioPlayer_Info_Toggle'
+                //, $.lib.icon('info-circle')) ])
+            //, h('table.AudioPlayer_Info_Table',
+                //Object.keys(model.Metadata()[src] || {}).sort().map(tag))])
 
-        , h('.AudioPlayer_Section',
-            [ knob('Speed',  String(Math.round(player.speed * 1000) / 1000) + 'x')
-            , knob('Pitch',  String(player.pitch) + ' ct')
-            , knob('Volume', '0.00dB') ])
+          //])
 
           //, h('canvas.AudioPlayer_Spectrogram')
           ]);
-
-      function knob (label, value) {
-        return h('.Mixer_Knob_Label',
-          [ h('.Mixer_Knob_Label_Text',
-            [ h('div', label || '')
-            , h('div', String(value || '0')) ])
-          , h('.Mixer_Knob') ])
-      }
 
       function getPlayer () {
         var player = model.Players.get(playerId);

@@ -24,6 +24,23 @@
     padding 0
     button
       width 42px
+  &_ControlBar
+    display flex
+    &_Group
+      flex-grow 1
+      display flex
+      margin 0 1px
+      .Knob_Label, button
+        margin 0 1px
+      &, .Knob_Label, button
+        &:first-child
+          margin-left 0
+        &:last-child
+          margin-right 0
+      button
+        margin 0 1px
+        height 48px
+        background rgba(0,0,0,0.3)
   svg.waveform
     display block
     width 100%

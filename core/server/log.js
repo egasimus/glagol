@@ -1,4 +1,7 @@
-var colors = require('colors/safe');
+var colors = require('colors/safe')
+  , ital   = colors.italic
+  , gray   = colors.gray
+  , dim    = colors.dim;
 
 module.exports = makeLogger('core');
 
@@ -12,12 +15,9 @@ function makeLogger (as) {
   return log;
 
   function _log (isError) {
-    var bold = colors.bold
-      , ital = colors.italic
-      , gray = colors.gray
-      , red  = isError ? colors.red : function (arg) { return arg }
+    var red  = isError ? colors.red : function (arg) { return arg }
       , len  = ( ' workspace   ' + as + '  ' ).length
-      , tag  = [ ital(bold(' workspace '))
+      , tag  = [ red(ital(' workspace '))
                , as ? red(' ' + ital(' ' + as + ' '))
                     : isError ? ' error ' : ''].join('')
       , args = Array.prototype.slice.call(arguments, 1).map(pad);
@@ -25,7 +25,7 @@ function makeLogger (as) {
     console.log.apply(console, args);
 
     function pad (arg) {
-      var padding = "\n" + ' '.repeat(len - 2) + (isError?red:gray)('┇') + ' ';
+      var padding = "\n" + ' '.repeat(len - 2) + red('┇') + ' ';
       return arg.split("\n").join(padding)
     }
   }

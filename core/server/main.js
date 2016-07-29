@@ -11,24 +11,35 @@
   App.Http.on("listening", listening);
   App.Http.on("request", respond);
   App.Http.listen(1617);
-  function listening () { $.log("listening on 0.0.0.0:1617") }
-  function respond (req, res) { _.urls2(req.url, req, res) }
 
   // add socket server
   App.Ws = App.Ws || new (require('ws').Server)({ server: App.Http });
-  App.Ws.on("connection", connection);
-  function connection () { _.socket(App, arguments[0]) }
+  App.Ws.on("connection", connect);
 
   // add plugins
   var plugins = Glagol.get('plugins')();
-  Object.keys(plugins).forEach(function (pluginName) {
+  Object.keys(plugins).forEach(loadPlugin);
+
+  return App;
+
+  function listening () {
+    $.log("listening on 0.0.0.0:1617")
+  }
+
+  function respond (req, res) {
+    _.urls2(req.url, req, res)
+  }
+
+  function connect () {
+    _.socket(App, arguments[0])
+  }
+
+  function loadPlugin (pluginName) {
     $.log('loading plugin', pluginName);
     if (plugins[pluginName].init instanceof Function) {
       plugins[pluginName].init();
     }
-  })
-
-  return App;
+  }
 
   function reload (node) {
     $.log('Restarting server...');

@@ -18,7 +18,7 @@
     left 50%
     right 50%
     margin 0 -2px
-  &_Label
+  &_WithLabel
     cursor pointer
     display flex
     align-items center
@@ -27,14 +27,15 @@
     padding 8px 6px
     flex-direction row-reverse
     color #aaa
+    -webkit-user-select none
     &:hover
       color #ccc
-    &_Text
-      text-align right
-      padding 0 6px
-      text-transform uppercase
-      letter-spacing 1px
-      line-height 14px
+  &_Label
+    text-align right
+    padding 0 6px
+    text-transform uppercase
+    letter-spacing 1px
+    line-height 14px
     &+.Mixer_Knob_Label
       padding-top 0
   &_Group

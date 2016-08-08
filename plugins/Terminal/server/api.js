@@ -48,7 +48,7 @@ function spawn () {
 
 function serialize (data) {
   return JSON.stringify(data, function (k, v) {
-    var allow = ['Object', 'String', 'Terminal']
+    var allow = ['Object', 'String', 'Number', 'Boolean', 'Terminal']
       , hide  = v !== data && v.constructor && allow.indexOf(v.constructor.name) < 0
     return hide ? undefined : v;
   });

@@ -30,7 +30,7 @@ function makeLogger (as) {
 
     function pad (arg) {
       var padding = "\n" + ' '.repeat(len - 2) + red('┇') + ' ';
-      return arg.split("\n").join(padding)
+      return String(arg).split("\n").join(padding)
     }
   }
 }

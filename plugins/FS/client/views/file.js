@@ -2,7 +2,7 @@ var templates =
 
   { unknown:
       function (input, frame) {
-        returndefaultLayout(h('.File_Unknown',
+        return defaultLayout(h('.File_Unknown',
         [ $.lib.icon('info-circle')
         , h('em.File_Unknown_Title', file.path)
         , h('br')

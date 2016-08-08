@@ -9,7 +9,7 @@ module.exports = function (state, respond) {
   , Spawn:
       function (id) {
         id = id || $.lib.makeId();
-        var pty = spawn();;
+        var pty = spawn();
         _.model.Instances.put(id, pty);
         this['Terminal/Refresh']()
         return pty; }
@@ -47,4 +47,8 @@ function spawn () {
     , env: process.env }) }
 
 function serialize (data) {
-  return JSON.stringify(data); }
+  return JSON.stringify(data, function (key, val) {
+    if (val.constructor && val.constructor.name === 'Terminal') return undefined;
+    return val;
+  });
+}

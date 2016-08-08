@@ -4,7 +4,7 @@ module.exports = function (state, respond) {
 
   { Refresh:
       function () {
-        respond(serialize({ plugin: 'Terminal', data: _.model() })); }
+        respond(serialize({ plugin: 'Terminal', data: _.model() })) }
 
   , Spawn:
       function (id) {
@@ -42,13 +42,14 @@ function spawn () {
     [],
     { name: 'xterm-256color'
     , cols: 80
-    , rows: 24
+    , rows: 25
     , cwd: process.env.PWD
     , env: process.env }) }
 
 function serialize (data) {
-  return JSON.stringify(data, function (key, val) {
-    if (val.constructor && val.constructor.name === 'Terminal') return undefined;
-    return val;
+  return JSON.stringify(data, function (k, v) {
+    var allow = ['Object', 'String', 'Terminal']
+      , hide  = v !== data && v.constructor && allow.indexOf(v.constructor.name) < 0
+    return hide ? undefined : v;
   });
 }

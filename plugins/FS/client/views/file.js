@@ -1,74 +1,3 @@
-var templates =
-
-  { unknown:
-      function (frame, index, file) {
-        return templates.defaultLayout(frame, index, file,
-          h('.File_Unknown',
-            [ $.lib.icon('info-circle')
-            , h('em.File_Unknown_Title', file.path)
-            , h('br')
-            , 'has an unfamiliar type, '
-            , h('em', file.contentType)
-            , h('br')
-            , 'Open as: '
-            , h('button', 'Plaintext')
-            , ' '
-            , h('button', 'Binary')
-            , ' '
-            , h('button', 'Other type...') ]), false); }
-
-  , textEditor:
-      function () {
-        var ext = require('path').extname(file.path);
-        switch (ext) {
-          case '.m3u8':
-            body = defaultLayout(
-              __.__.Sound.views.playlist(frame, file),
-              h('.File_Toolbar',
-                [ h('button', $.lib.icon('refresh'))
-                , h('button', $.lib.icon('save')),
-                , h('button', $.lib.icon('eye')) ]));
-            break;
-          default:
-            body = defaultLayout(_.textEditor(file.path));
-        }
-      }
-
-  , sound:  
-      function () {
-        var playerId = frame.id + '_' + file.path;
-        if (!App.Model.Sound.Players()[playerId])   loadAudioPlayer(file.path, playerId);
-        if (!App.Model.Sound.Metadata()[file.path]) loadAudioMetadata(file.path);
-        body = _.sound(frame.id, file.path);
-      }
-
-  , image:
-      function () {
-        return defaultLayout(
-          h('div.ImageContainer',
-            h('img', { src: '/api/FS/ReadFile?' + JSON.stringify([file.path]) })))
-      }
-
-  , defaultLayout:
-      function (frame, index, file, body, toolbar) {
-        return [
-          $.plugins.Workspace.views.frameHeader(frame, index),
-          h('.File_Body', body)
-        ]
-
-        function changeAddress (event) {
-          event.preventDefault();
-          App.API('Workspace/Change', frame.id, 'address', event.target.value);
-        }
-
-        function close (event) {
-          event.preventDefault();
-          App.API('Workspace/Close', frame.id);
-        }
-      }
-
-  };
-
 module.exports = function render (frame, index) {
   var file = App.Model.FS.Files()[frame.address]
   if (!file) {
@@ -77,7 +6,7 @@ module.exports = function render (frame, index) {
   }
   var type = __.type(file.contentType, App.Model.Workspace.Frames.get(index));
   if (!type) {
-    return templates.unknown(frame, index, file);
+    return _.unknown(frame, index);
   } else {
     App.API('Workspace/Change', frame.id, 'type', type);
     return _[type](frame, index);

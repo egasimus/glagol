@@ -1,20 +1,21 @@
 var templates =
 
   { unknown:
-      function (input, frame) {
-        return defaultLayout(h('.File_Unknown',
-        [ $.lib.icon('info-circle')
-        , h('em.File_Unknown_Title', file.path)
-        , h('br')
-        , 'has an unfamiliar type, '
-        , h('em', file.contentType)
-        , h('br')
-        , 'Open as: '
-        , h('button', { onclick: setType('textEditor')  }, 'Plaintext')
-        , ' '
-        , h('button', { onclick: setType('hexEditor')   }, 'Binary')
-        , ' '
-        , h('button', { onclick: setType('selecttype')  }, 'Other type...') ]), false); }
+      function (frame, index, file) {
+        return templates.defaultLayout(frame, index, file,
+          h('.File_Unknown',
+            [ $.lib.icon('info-circle')
+            , h('em.File_Unknown_Title', file.path)
+            , h('br')
+            , 'has an unfamiliar type, '
+            , h('em', file.contentType)
+            , h('br')
+            , 'Open as: '
+            , h('button', 'Plaintext')
+            , ' '
+            , h('button', 'Binary')
+            , ' '
+            , h('button', 'Other type...') ]), false); }
 
   , textEditor:
       function () {
@@ -49,20 +50,11 @@ var templates =
       }
 
   , defaultLayout:
-      function (body, toolbar) {
+      function (frame, index, file, body, toolbar) {
         return [
-          toolbar || h('.File_Toolbar',
-            [ h('button', $.lib.icon('refresh')) ]),
-          h('.File_Body',
-            [ h('header.Frame_Header',
-               [ $.lib.icon('file.fa-2x')
-               , h('input.Frame_Address',
-                 { onchange: changeAddress
-                 , value:    file.path })
-               , h('.Frame_Close', { onclick: close }, '×')
-               ])
-            , body
-            ]) ];
+          $.plugins.Workspace.views.frameHeader(frame, index),
+          h('.File_Body', body)
+        ]
 
         function changeAddress (event) {
           event.preventDefault();
@@ -85,7 +77,7 @@ module.exports = function render (frame, index) {
   }
   var type = __.type(file.contentType, App.Model.Workspace.Frames.get(index));
   if (!type) {
-    return JSON.stringify(frame)
+    return templates.unknown(frame, index, file);
   } else {
     App.API('Workspace/Change', frame.id, 'type', type);
     return _[type](frame, index);

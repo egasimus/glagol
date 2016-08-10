@@ -3,9 +3,10 @@
   var directory = App.Model.FS.Directories()[frame.address];
 
   return [
-    toolbar(),
+    //toolbar(),
+    $.plugins.Workspace.views.frameHeader(frame, index),
     h('.Directory_Body',
-      [ header()
+      [ toolbar()
       , directory ? directory.items.length > 0 ? body() : empty() : noData()])
   ];
 

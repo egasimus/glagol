@@ -1,31 +1,14 @@
 var path = require('path')
   , vdom = require('virtual-dom');
 
-module.exports = function (frame, index) {
-
-        //var playerId = frame.id + '_' + file.path;
-        //if (!App.Model.Sound.Players()[playerId])   loadAudioPlayer(file.path, playerId);
-        //if (!App.Model.Sound.Metadata()[file.path]) loadAudioMetadata(file.path);
-        //body = _.sound(frame.id, file.path);
-
-  var file = App.Model.FS.Files()[frame.address]
-  if (!file) {
-    App.API('FS/GetInfo', frame.address)
-    return 'loading...'
-  }
-
+module.exports = _.loading(function (frame, index, file) {
   var playerId = frame.id + '_' + file.path;
-
-  if (!App.Model.Sound.Players()[playerId]) {
-    loadAudioPlayer(file.path, playerId);
-  }
-
-  if (!App.Model.Sound.Metadata()[file.path]) {
-    loadAudioMetadata(file.path);
-  }
-
+  if (!App.Model.Sound.Players()[playerId])   loadAudioPlayer(file.path, playerId);
+  if (!App.Model.Sound.Metadata()[file.path]) loadAudioMetadata(file.path);
+  //if (!App.Model.Sound.Spectrograms()[file.path]) loadSpectrogram(file.path);
+  //if (!App.Model.Sound.Waveforms()[file.path])    loadWaveform(file.path);
   return require('vdom-thunk')(module.exports.widget, frame.id, file.path);
-}
+});
 
 module.exports.widget = widget;
 
@@ -92,14 +75,10 @@ function widget (id, src) {
 
       if (!player) {
         return this._vdom = h('.AudioPlayer_Missing',
-          [ 'No player'
+          [ 'No player '
           , h('em', playerId)
           ]);
       }
-
-      //function progress (pos, dur) {
-        //barFg.style.width = pos / dur * 100 + '%';
-      //}
 
       player.onupdate = update;
 

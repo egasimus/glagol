@@ -1,4 +1,4 @@
-(function (src) {
+module.exports = function (src) {
 
   var model = App.Model.Sound;
 
@@ -20,6 +20,7 @@
     }
 
     function loaded () {
+      var context = model.context();
       model.context().decodeAudioData(request.response).then(decoded)
     }
 
@@ -30,4 +31,4 @@
 
   })
 
-})
+}

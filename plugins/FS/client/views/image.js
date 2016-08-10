@@ -1,4 +1,5 @@
 module.exports = function (frame, index) {
+  var file = App.Model.FS.Files()[frame.address];
   return [
     $.plugins.Workspace.views.frameHeader(frame, index),
     h('div.ImageContainer',

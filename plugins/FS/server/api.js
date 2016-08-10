@@ -78,7 +78,8 @@ function identify (fullpath) {
       data.stats = fs.statSync(fullpath)
     } catch (e) {
       _.log.error(data.path, e.code);
-      throw e;
+      data.stats = {};
+      return data;
     }
   }
 

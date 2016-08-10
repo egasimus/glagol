@@ -16,7 +16,10 @@
       margin-bottom 3px
 
   &_Body
+    flex-grow 1
     width 100%
+    display flex
+    flex-direction row
 
   .Frame_Header
     position absolute
@@ -33,11 +36,7 @@
     text-shadow 0 0 3px black
 
   &_Entries
-    position absolute
-    top 38px
-    left 3px
-    right 6px
-    bottom 0
+    width 100%
     table
       table-layout fixed
       border-spacing 0
@@ -56,6 +55,7 @@
 
   &_Empty
     frame-blocker()
+    width 100%
 
   &_Entry
     font-size 1.1em

@@ -13,7 +13,7 @@
   // fragments
 
   function toolbar () {
-    var buttons = [ h('button', { onclick: refresh }, $.lib.icon('refresh')) ];
+    var buttons = [];
     if (directory) {
       buttons = buttons.concat(
         [ h('button', $.lib.icon('chevron-left'))

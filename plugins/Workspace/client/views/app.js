@@ -8,6 +8,7 @@
     ? _.loading(state)
     : h('.App',
         [ _.launcher(state)
+        , _.taskbar(state)
         , h('.MainView',
             [ _.switcher(state)
             , h('.Workspace',
@@ -15,7 +16,6 @@
                   function (i) {
                     return _.frame(state.Workspace.Frames[i], i) }))
             ])
-        , _.taskbar(state)
         ]);
 
 })

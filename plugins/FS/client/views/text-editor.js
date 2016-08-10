@@ -17,7 +17,7 @@ module.exports.widget = require('virtual-widget')(
         , lineNumbers: true });
       document.body.removeChild(this.el);
 
-      __.getFile(state.address, function (err, data) {
+      __.readFile(state.address, function (err, data) {
         if (err) throw err;
         this.mirror.setValue(data)
       }.bind(this));

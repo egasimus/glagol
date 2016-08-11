@@ -12,8 +12,8 @@ module.exports = function (rel, subdir) {
       plugin.reset(); // after rename
       plugins.add(plugin);
     } catch (e) {
-      if (e.code !== 'FILE_NOT_FOUND') {
-        $.log.error('could not find', pluginPath);
+      if (e.code === 'FILE_NOT_FOUND') {
+        $.log.warn('could not find', pluginPath);
       } else {
         $.log.error('could not load plugin',
           pluginPath + "\n" + e.message + "\n" + e.stack);

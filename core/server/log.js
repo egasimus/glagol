@@ -9,17 +9,20 @@ module.exports.as = makeLogger;
 
 function makeLogger (as) {
 
-  var log = _log.bind(null, false)
-  log.error = _log.bind(null, true);
+  var log   = _log.bind(null, function(x){return x})
+  log.warn  = _log.bind(null, colors.yellow)
+  log.error = _log.bind(null, colors.red);
 
   return log;
 
-  function _log (isError) {
-    var red  = isError ? colors.red : function (arg) { return arg }
+  function _log (level) {
+    var red  = level ? colors.red : function (arg) { return arg }
       , len  = ( ' workspace   ' + as + '  ' ).length
-      , tag  = [ red(ital(' workspace '))
-               , as ? red(' ' + ital(' ' + as + ' '))
-                    : isError ? ' error ' : ''].join('')
+      , tag  = [ level(ital(' workspace '))
+               , as ? level(' ' + ital(' ' + as + ' '))
+                    : (level === colors.red)    ? ' error '
+                    : (level === colors.yellow) ? ' warning '
+                    : ''].join('')
       , args = Array.prototype.slice.call(arguments, 1).map(pad);
     args.unshift(tag);
     // TODO in centralized log receiver/printer

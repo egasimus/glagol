@@ -55,23 +55,25 @@
     flex-grow 1
   &_Position
     margin-left 6px
-    height 42px
-    line-height 12px
+    height 48px
+    line-height 14px
     padding 3px 0
     flex-shrink 0
     text-align center
     white-space pre
     letter-spacing 1px
-    font-size 11px
+    font-size 13px
   &_Button
     &_Play, &_Cue
       margin-right 3px
-      width 42px
+      width 48px
+      height 48px
       font-size 30px
       line-height 30px
     &_Play
       &.Playing
-        background #ccaa26
+        background rgba(255,255,255,0.4)
+        animation pulse 1s infinite
         color white
         &:hover
           text-shadow 0 0 3px white, 0 0 3px white
@@ -81,16 +83,17 @@
       font-weight bold
   &_ProgressBar
     flex-grow 10
-    height 36px
+    height 48px
     cursor text
     margin 0 2px
     &_Background
       background #222
-      background rgba(255,255,255,0.05)
+      background rgba(255,255,255,0.1)
       width 100%
       height 100%
     &_Foreground
-      background #ccaa26
+      background rgba(255,255,255,0.25)
+      //background #ccaa26
       position absolute
       left 0
       top 0

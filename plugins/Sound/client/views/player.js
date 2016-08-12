@@ -103,12 +103,6 @@ function widget (frame, index, file) {
               { onclick: play }, '⏯')
           , h('button.AudioPlayer_Button_Cue',
               { onclick: stop }, 'CUE')
-          , h('.AudioPlayer_Position',
-              player.status === 'loading'
-              ? '\nloading\n'
-              : $.lib.formatTime(player.position)                                + "\n" +
-                $.lib.formatTime(Math.max(player.duration - player.position, 0)) + "\n" +
-                $.lib.formatTime(player.duration))
           , h('.AudioPlayer_Title', require('path').basename(src))
           , h('.Frame_Close', { onclick: close }, '×') ]) }
 
@@ -123,7 +117,14 @@ function widget (frame, index, file) {
                   { style: { width:
                     (player.position && player.duration)
                     ? player.position / player.duration * 100 + '%'
-                    : 0 }}))) ]) }
+                    : 0 }})))
+          , h('.AudioPlayer_Position',
+              player.status === 'loading'
+              ? '\nloading\n'
+              : $.lib.formatTime(player.position)                                + "\n" +
+                $.lib.formatTime(Math.max(player.duration - player.position, 0)) + "\n" +
+                $.lib.formatTime(player.duration))
+          ]) }
 
       function controlBar () {
         return h('.AudioPlayer_Section.AudioPlayer_ControlBar',

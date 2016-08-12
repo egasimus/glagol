@@ -1,7 +1,7 @@
 var path = require('path')
   , vdom = require('virtual-dom');
 
-module.exports = _.loading(function (frame, index, file) {
+module.exports = $.plugins.FS.views.loading(function (frame, index, file) {
   var playerId = frame.id + '_' + file.path;
   if (!App.Model.Sound.Players()[playerId])   loadAudioPlayer(file.path, playerId);
   if (!App.Model.Sound.Metadata()[file.path]) loadAudioMetadata(file.path);

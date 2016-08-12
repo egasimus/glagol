@@ -23,4 +23,7 @@
   App.Workspace.registerMenuItem('&Mixer',
     function () { App.API('Workspace/Open', 'mixer') });
 
+  App.Workspace.registerFrameType('sound',
+    function () { return _.views.player.apply(null, arguments) });
+
 })

@@ -1,7 +1,6 @@
 module.exports = function () {
 
   [ 'directory'
-  , 'sound'
   , 'image'
   , 'textEditor'
   , 'hexEditor'

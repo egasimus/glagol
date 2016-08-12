@@ -6,6 +6,7 @@ module.exports = function (frame, index) {
     [ h('.Frame_Header',
       [ $.lib.icon('terminal.fa-2x')
       , h('strong', 'Terminal' )
+      , h('select.Terminal_Selector', [ h('option', frame.id) ])
       , h('.Frame_Close', { onclick: close }, '×') ])
     , h('.Terminal', { hookScroll: TerminalHook(frame.id) }) ]);
 

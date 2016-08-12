@@ -7,7 +7,7 @@ module.exports = $.plugins.FS.views.loading(function (frame, index, file) {
   if (!App.Model.Sound.Metadata()[file.path]) loadAudioMetadata(file.path);
   //if (!App.Model.Sound.Spectrograms()[file.path]) loadSpectrogram(file.path);
   //if (!App.Model.Sound.Waveforms()[file.path])    loadWaveform(file.path);
-  return require('vdom-thunk')(module.exports.widget, frame.id, file.path);
+  return require('vdom-thunk')(module.exports.widget, frame, index, file);
 });
 
 module.exports.widget = widget;
@@ -34,9 +34,11 @@ function loadAudioMetadata (src) {
   })
 }
 
-function widget (id, src) {
+function widget (frame, index, file) {
 
-  var model    = App.Model.Sound
+  var id       = frame.id
+    , src      = file.path
+    , model    = App.Model.Sound
     , playerId = id + '_' + src;
 
   return {
@@ -87,7 +89,7 @@ function widget (id, src) {
         , showInfo = false;
 
       return this._vdom = h('.AudioPlayer',
-        [ header()
+        [ $.plugins.Workspace.views.frameHeader(frame, index)//header()
         , progressBar()
         , controlBar()
         , showCues ? cues() : null
@@ -112,7 +114,9 @@ function widget (id, src) {
 
       function progressBar () {
         return h('.AudioPlayer_Section',
-          [ h('.AudioPlayer_ProgressBar',
+          [ h('button.AudioPlayer_Button_Cue',
+              { onclick: stop }, 'CUE')
+          , h('.AudioPlayer_ProgressBar',
               { onmousedown: seek },
               h('.AudioPlayer_ProgressBar_Background',
                 h('.AudioPlayer_ProgressBar_Foreground',
@@ -123,7 +127,9 @@ function widget (id, src) {
 
       function controlBar () {
         return h('.AudioPlayer_Section.AudioPlayer_ControlBar',
-          [ h('.AudioPlayer_ControlBar_Group',
+          [ h('button.AudioPlayer_Button_Play' + (player.status === 'playing' ? '.Playing' : ''),
+              { onclick: play }, '⏯')
+          , h('.AudioPlayer_ControlBar_Group',
               [ knob('Speed',  String(Math.round(player.speed * 1000) / 1000) + 'x')
               , knob('Pitch',  String(player.pitch) + ' ct') ])
           , h('.AudioPlayer_ControlBar_Group',

@@ -1,7 +1,10 @@
 module.exports = function (frame, index) {
 
   return h('header.Frame_Header',
-    [ h('a', frame.type)
+    [ h('a',
+        __.icons[frame.type]
+          ? $.lib.icon(__.icons[frame.type] + '.fa-2x')
+          : h('em', type))
     , h('input.Frame_Address',
         { onchange: changeAddress
         , value:    frame.address })

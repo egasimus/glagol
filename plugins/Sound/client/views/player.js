@@ -84,27 +84,16 @@ function widget (frame, index, file) {
 
       player.onupdate = update;
 
-      var knob = __.__.Control.views.knob
-        , showCues = false
-        , showInfo = false;
+      var knob = __.__.Control.views.knob;
 
       return this._vdom = h('.AudioPlayer',
         [ $.plugins.Workspace.views.frameHeader(frame, index)//header()
         , progressBar()
         , controlBar()
-        , showCues ? cues() : null
-        , showInfo ? info() : null ]);
+        , frame.showCues ? cuesView() : null
+        , frame.showInfo ? infoView() : null ]);
 
       // templates
-
-      function header () {
-        return h('.Frame_Header',
-          [ h('button.AudioPlayer_Button_Play' + (player.status === 'playing' ? '.Playing' : ''),
-              { onclick: play }, '⏯')
-          , h('button.AudioPlayer_Button_Cue',
-              { onclick: stop }, 'CUE')
-          , h('.AudioPlayer_Title', require('path').basename(src))
-          , h('.Frame_Close', { onclick: close }, '×') ]) }
 
       function progressBar () {
         return h('.AudioPlayer_Section',
@@ -134,18 +123,18 @@ function widget (frame, index, file) {
               [ knob('Speed',  String(Math.round(player.speed * 1000) / 1000) + 'x')
               , knob('Pitch',  String(player.pitch) + ' ct') ])
           , h('.AudioPlayer_ControlBar_Group',
-              [ h('button.AudioPlayer_Info_Toggle', $.lib.icon('info-circle'))
-              , h('button.AudioPlayer_Cues_Add', { onclick: addCue }, $.lib.icon('map-marker')) ])
+              [ h('button.AudioPlayer_Info_Toggle', { onclick: toggleInfo }, $.lib.icon('info-circle'))
+              , h('button.AudioPlayer_Cues_Add',    { onclick: toggleCues }, $.lib.icon('map-marker')) ])
           , h('.AudioPlayer_ControlBar_Group',
               [ knob('Volume', '0.00dB') ]) ]) }
 
-      function cues () {
+      function cuesView () {
         return h('.AudioPlayer_Section.AudioPlayer_Cues',
           h('.AudioPlayer_Cues_List',
             cues.map(function (c, i) {
               return cue(i+1, c.label, c.time); }))) }
 
-      function info () {
+      function infoView () {
         return h('.AudioPlayer_Info',
           h('table.AudioPlayer_Info_Table',
             Object.keys(model.Metadata()[src] || {}).sort().map(tag))) }
@@ -184,6 +173,14 @@ function widget (frame, index, file) {
       function update () {
         // trigger update via model
         model.Players.put(playerId, model.Players()[playerId]);
+      }
+
+      function toggleInfo () {
+        App.Model.Workspace.Frames.get(index).put('showInfo', !frame.showInfo)
+      }
+
+      function toggleCues () {
+        App.Model.Workspace.Frames.get(index).put('showCues', !frame.showCues)
       }
 
       function cue (number, label, time) {

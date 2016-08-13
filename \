@@ -481,7 +481,7 @@
     background #222
     z-index 1
     padding 6px 3px
-    font-size 1.2em
+    font-size 1.1em
     &_Item
       color white
       padding 0 6px

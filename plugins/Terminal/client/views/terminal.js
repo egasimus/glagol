@@ -16,39 +16,34 @@ module.exports = function (frame, index) {
 
 function TerminalHook (id) {
 
-  return require('virtual-hook')(
-    { hook: function (element) {
+  return $.lib.hook(hook, unhook);
 
-        console.debug('attaching terminal, id', id);
+  function hook (element) {
+    console.debug('attaching terminal, id', id);
+    var terminal;
+    if (!(terminal = __.model()[id])) {
+      //console.debug('opening new terminal, id', id);
+      //__.model.put(id, terminal = new Terminal());
+      //terminal.write('hello planetke');
+      App.API('Terminal/Attach');
+    } else {
+      console.debug('found terminal, id', id);
+    }
 
-        var terminal = __.model()[id];
+    setTimeout(function () {
+      terminal.open(element);
+      console.debug('attached terminal, id', id, terminal, 'to', element);
+      require('xterm/addons/fit').fit(terminal);
+    }, 0);
+  }
 
-        if (!terminal) {
-          //console.debug('opening new terminal, id', id);
-          //__.model.put(id, terminal = new Terminal());
-          //terminal.write('hello planetke');
-          App.API('Terminal/Attach');
-        } else {
-          console.debug('found terminal, id', id);
-        }
-
-        setTimeout(function () {
-          terminal.open(element);
-          console.debug('attached terminal, id', id, terminal, 'to', element);
-          require('xterm/addons/fit').fit(terminal);
-        }, 0);
-
-      }
-
-    , unhook: function (element) {
-
-        console.debug('detaching terminal, id', id);
-        var terminal = __.model()[id];
-        if (terminal) {
-          terminal.destroy();
-          __.model.put(id, null)
-        }
-
-      } })
+  function unhook (element) {
+    console.debug('detaching terminal, id', id);
+    var terminal = __.model()[id];
+    if (terminal) {
+      terminal.destroy();
+      __.model.put(id, null)
+    }
+  }
 
 }

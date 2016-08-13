@@ -7,7 +7,7 @@ module.exports = function DragHook (dragDirection) {
     , maxValue = 135
     , value    = 0
 
-  return require('virtual-hook')({ hook: hook, unhook: unhook });
+  return $.lib.hook(hook, unhook);
   
   function hook (el) {
     setTimeout(function () {

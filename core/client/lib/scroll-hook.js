@@ -1,6 +1,6 @@
 module.exports = function ScrollHook () {
 
-  return require('virtual-hook')({ hook: function (outer) {
+  return $.lib.hook(function (outer) {
 
     setTimeout(installScrollbars, 0);
 
@@ -43,6 +43,6 @@ module.exports = function ScrollHook () {
       function hideScrollbar () {}
     }
 
-  }})
+  })
 
 }

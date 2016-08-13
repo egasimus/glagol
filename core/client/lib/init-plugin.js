@@ -4,6 +4,8 @@ module.exports = function (App) {
 
   return function (name) {
 
+    console.groupCollapsed('loading plugin', name);
+
     var pluginRoot = Glagol.get('../plugins').get(name);
     if (!pluginRoot) return console.warn('no plugin', name);
 
@@ -61,6 +63,8 @@ module.exports = function (App) {
       entryPoint.events.on('changed', _.reload(name + ' entry point'));
       entryPoint()(App);
     }
+
+    console.groupEnd();
 
   }
 

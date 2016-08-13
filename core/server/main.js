@@ -37,7 +37,10 @@
   function loadPlugin (pluginName) {
     $.log('loading plugin', pluginName);
     if (plugins[pluginName].init instanceof Function) {
-      plugins[pluginName].init();
+      try {
+        plugins[pluginName].init();
+      } catch (e) {
+      }
     }
   }
 

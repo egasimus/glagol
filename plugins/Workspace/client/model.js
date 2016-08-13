@@ -1,14 +1,15 @@
 module.exports = $.lib.model(
 
-  { Status:       "loading"
+  { Status:        "loading"
 
-  , MainMenu:     { visible: false }
+  , MainMenu:      { visible: false }
 
-  , Launcher:     { visible: false
-                  , focused: false
-                  , mode:    'menu'
-                  , input:   ''
-                  }
+  , ModuleManager: { visible: false }
+
+  , Launcher:      { visible: false
+                   , focused: false
+                   , mode:    'menu'
+                   , input:   '' }
 
   , Switcher:     { visible: false }
 

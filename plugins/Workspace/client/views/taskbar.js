@@ -5,25 +5,33 @@ module.exports = function (state) {
     tasks[frame.type] = tasks[frame.type] ? tasks[frame.type] + 1 : 1
   });
 
-  return h('.Taskbar',
-    [ h('.Taskbar_Group',
-      [ h('button.Taskbar_Button' + (state.Workspace.MainMenu.visible ? '.active' : ''),
-          { onclick: toggle('MainMenu') },
-          $.lib.icon('th'))
-      , h('button.Taskbar_Button', { onclick: __.reload  }, [$.lib.icon('refresh'), ' reload' ])
-      , h('button.Taskbar_Button', { onclick: refresh    }, [$.lib.icon('refresh'), ' refresh']) 
-      ])
-    , __.model.MainMenu.visible() ? _.mainMenu(state) : null
-    , h('.Taskbar_Group', taskbarButtons(state.Workspace.Frames))
-    , h('.Taskbar_Group',
-      [ h('button.Taskbar_Button', $.lib.icon('cloud'))
-      , h('button.Taskbar_Button', $.lib.icon('volume-up'))
-      , h('button.Taskbar_Button', $.lib.icon('battery-half'))
-      , h('button.Taskbar_Button', $.lib.icon('cogs'))
-      , _.clock()
-      ])
-    ])
+  var left =
+    [ h('button.Taskbar_Button' + (state.Workspace.MainMenu.visible ? '.active' : ''),
+        { onclick: toggle('MainMenu') },
+        $.lib.icon('th'))
+    , button([ $.lib.icon('refresh'), ' reload'  ], __.reload)
+    , button([ $.lib.icon('refresh'), ' refresh' ],    refresh) ];
 
+  var middle =
+    taskbarButtons(state.Workspace.Frames);
+
+  var right =
+    [ button($.lib.icon('cloud'))
+    , button($.lib.icon('volume-up'))
+    , button($.lib.icon('battery-half'))
+    , button($.lib.icon('cogs'))
+    , _.clock() ];
+
+  return h('.Taskbar',
+    [ h('.Taskbar_Group', left)
+    , __.model.MainMenu.visible() ? _.mainMenu(state) : null
+    , h('.Taskbar_Group', middle)
+    , h('.Taskbar_Group', right) ])
+
+}
+
+function button (body, onclick) {
+  return h('button.Taskbar_Button', { onclick: onclick }, body);
 }
 
 function taskbarButtons (frames) {
@@ -33,7 +41,7 @@ function taskbarButtons (frames) {
   buttons = Object.keys(types).map(function (type) {
     var label = __.icons[type] ? $.lib.icon(__.icons[type]) : type
       , count = types[type]
-    return h('button.Taskbar_Button', [ label, count > 1 ? ' ' + count : '' ])
+    return button([ label, count > 1 ? ' ' + count : '' ])
   });
   return buttons;
 }

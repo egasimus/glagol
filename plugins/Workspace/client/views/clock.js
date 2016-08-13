@@ -23,13 +23,15 @@ function ClockHook () {
 
 function getClockValue () {
   var now = new Date()
-  return now.getYear()       +
-    '-' + pad(now.getMonth()) +
-    '-' + pad(now.getDate())  +
-    '<br>' + pad(now.getHours()) +
-    ':' + pad(now.getMinutes()) +
-    ':' + pad(now.getSeconds()) +
-    '.' + pad(now.getMilliseconds(), 3)
+  return '' +
+    '<strong>' + now.getFullYear()   +
+    '-'    + pad(now.getMonth(), 2) +
+    '-'    + pad(now.getDate(), 2) +
+    '</strong>'                   +
+    '<br>' + pad(now.getHours(), 2) +
+    ':'    + pad(now.getMinutes(), 2) +
+    ':'    + pad(now.getSeconds(),   2) +
+    '.'    + pad(now.getMilliseconds(), 3)
 }
 
 function pad (value, n) {

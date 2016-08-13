@@ -4,21 +4,23 @@ module.exports = $.lib.model(
 
   , MainMenu:      { visible: false }
 
-  , PluginManager: { visible: false }
+  , PluginManager: { visible: false
+                   , plugins: [] }
 
   , Launcher:      { visible: false
                    , focused: false
                    , mode:    'menu'
-                   , input:   '' }
+                   , input:   ''
+                   }
 
-  , Switcher:     { visible: false }
+  , Switcher:      { visible: false }
 
-  , StatusBar:    { visible: true
-                  , text:    ''
-                  }
+  , StatusBar:     { visible: true
+                   , text:    ''
+                   }
 
-  , Frames:       []
+  , Frames:        []
 
-  , focusedFrame: 0
+  , focusedFrame:  0
 
   })

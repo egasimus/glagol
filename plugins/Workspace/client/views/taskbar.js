@@ -1,37 +1,42 @@
+var icon = $.lib.icon;
+
 module.exports = function (state) {
 
-  var tasks = {};
-  state.Workspace.Frames.forEach(function (frame) {
-    tasks[frame.type] = tasks[frame.type] ? tasks[frame.type] + 1 : 1
-  });
+  var tasks = state.Workspace.Frames.reduce(function (tasks, frame) {
+    tasks[frame.type] = tasks[frame.type] ? tasks[frame.type] + 1 : 1 }, {});
 
   var left =
-    [ h('button.Taskbar_Button' + (state.Workspace.MainMenu.visible ? '.active' : ''),
-        { onclick: toggle('MainMenu') },
-        $.lib.icon('th'))
-    , button([ $.lib.icon('refresh'), ' reload'  ], __.reload)
-    , button([ $.lib.icon('refresh'), ' refresh' ],    refresh) ];
+    [ button(icon('th'), toggle('MainMenu'), ifVisible('MainMenu', '.active'))
+    , button([ icon('refresh'), ' reload'  ], __.reload)
+    , button([ icon('refresh'), ' refresh' ],    refresh) ];
 
   var middle =
     taskbarButtons(state.Workspace.Frames);
 
   var right =
-    [ button($.lib.icon('cloud'))
-    , button($.lib.icon('volume-up'))
-    , button($.lib.icon('battery-half'))
-    , button($.lib.icon('cogs'))
+    [ button(icon('cloud'))
+    , button(icon('volume-up'))
+    , button(icon('battery-half'))
+    , button(icon('cogs'), toggle('PluginManager'), ifVisible('PluginManager', '.active'))
     , _.clock() ];
 
   return h('.Taskbar',
     [ h('.Taskbar_Group', left)
-    , __.model.MainMenu.visible() ? _.mainMenu(state) : null
+    , ifVisible('MainMenu', _.mainMenu(state))
     , h('.Taskbar_Group', middle)
-    , h('.Taskbar_Group', right) ])
+    , h('.Taskbar_Group', right)
+    , ifVisible('PluginManager',  _.pluginManager(state))
+    ])
+
+  function ifVisible (component, value) {
+    component = state.Workspace[component];
+    return (component && component.visible) ? value : null;
+  }
 
 }
 
-function button (body, onclick) {
-  return h('button.Taskbar_Button', { onclick: onclick }, body);
+function button (body, onclick, cls) {
+  return h('button.Taskbar_Button' + (cls || ''), { onclick: onclick }, body);
 }
 
 function taskbarButtons (frames) {
@@ -39,7 +44,7 @@ function taskbarButtons (frames) {
     , buttons = [];
   frames.forEach(function (f) { types[f.type] = (types[f.type] || 0) + 1 });
   buttons = Object.keys(types).map(function (type) {
-    var label = __.icons[type] ? $.lib.icon(__.icons[type]) : type
+    var label = __.icons[type] ? icon(__.icons[type]) : type
       , count = types[type]
     return button([ label, count > 1 ? ' ' + count : '' ])
   });

@@ -4,7 +4,7 @@ module.exports = $.lib.model(
 
   , MainMenu:      { visible: false }
 
-  , ModuleManager: { visible: false }
+  , PluginManager: { visible: false }
 
   , Launcher:      { visible: false
                    , focused: false

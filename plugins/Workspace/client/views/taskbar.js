@@ -7,9 +7,7 @@ module.exports = function (state) {
     tasks[frame.type] = tasks[frame.type] ? tasks[frame.type] + 1 : 1 });
 
   var left =
-    [ button(icon('th'), toggle('MainMenu'), ifVisible('MainMenu', '.active'))
-    , button([ icon('refresh'), ' reload'  ], __.reload)
-    , button([ icon('refresh'), ' refresh' ],    refresh) ];
+    [ button(icon('search'), toggle('MainMenu'), ifVisible('MainMenu', '.active')) ]
 
   var middle =
     taskbarButtons(state.Workspace.Frames);
@@ -19,6 +17,8 @@ module.exports = function (state) {
     , button(icon('volume-up'))
     , button(icon('battery-half'))
     , button(icon('cogs'), toggle('PluginManager'), ifVisible('PluginManager', '.active'))
+    , button([ icon('refresh'), ' reload'  ], __.reload)
+    , button([ icon('refresh'), ' refresh' ],    refresh)
     , _.clock() ];
 
   return h('.Taskbar',

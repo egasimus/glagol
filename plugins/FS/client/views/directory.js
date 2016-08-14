@@ -1,14 +1,17 @@
-(function (frame, index) {
+module.exports = function (frame, index) {
 
   var directory = App.Model.FS.Directories()[frame.address];
 
-  return [
-    //toolbar(),
-    $.plugins.Workspace.views.frameHeader(frame, index),
-    h('.Directory_Body',
-      [ toolbar()
-      , directory ? directory.items.length > 0 ? body() : empty() : noData()])
-  ];
+  return h('.Directory',
+    { hook: directory ? null : LoadHook(frame.address) },
+    [ $.plugins.Workspace.views.frameHeader(frame, index),
+        h('.Directory_Body',
+          [ toolbar()
+          , directory
+            ? directory.items.length > 0
+              ? body()
+              : empty()
+            : noData() ]) ]);
 
   // fragments
 
@@ -144,4 +147,8 @@
     }
   }
 
-})
+}
+
+function LoadHook (path) { return $.lib.hook(
+  function (element) { setTimeout(function () {
+    App.API('FS/GetInfo', path); }, 0) }) }

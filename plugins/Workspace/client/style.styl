@@ -214,7 +214,7 @@
     padding 6px
 
 .Workspace
-  padding 6px 6px 12px 0
+  padding 6px 12px 12px 6px
   flex-grow 1
   display flex
   flex-wrap wrap
@@ -350,6 +350,29 @@
       left 0
       width 100%
       height 100%
+  &_Dragger
+    &, &_Left, &_Right, &_Top, &_Bottom
+      position absolute
+      &:hover
+        background rgba(0,0,0,0.5)
+    &_Left, &_Right
+      top 0
+      bottom 0
+      width 12px
+      cursor ew-resize
+    &_Left
+      right 100%
+    &_Right
+      left 100%
+    &_Top, &_Bottom
+      left 0
+      right 0
+      height 12px
+      cursor ns-resize
+    &_Bottom
+      top 100%
+    &_Top
+      bottom 100%
 
 .Blank
   background rgba(255,255,255,0.9)
@@ -409,12 +432,12 @@
 
 .Taskbar
   height 48px
-  background rgba(0,0,0,0.5)
   display flex
   flex-direction row
   justify-content space-between
-  border-bottom 1px solid rgba(255,255,255,0.1)
-  box-shadow 0 3px 6px rgba(0,0,0,0.8)
+  //background rgba(0,0,0,0.5)
+  //border-bottom 1px solid rgba(255,255,255,0.1)
+  //box-shadow 0 3px 6px rgba(0,0,0,0.8)
   &_Group
     &:first-child > :first-child,
     &:last-child > :last-child

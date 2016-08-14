@@ -7,7 +7,15 @@ module.exports = function (frame, index) {
   return h('section' + cls, options,
     [ content
     , ['Top', 'Bottom', 'Left', 'Right'].map(function (direction) {
-        return h('.Frame_Dragger_'+direction);
-      }) ]);
+        return h(
+          '.Frame_Dragger_' + direction,
+          { draggable: true
+          , ondrag:    resize(direction) } ); }) ]);
+
+  function resize (direction) {
+    return function (event) {
+      console.log(direction, event);
+    }
+  }
 
 }

@@ -2,8 +2,9 @@ var icon = $.lib.icon;
 
 module.exports = function (state) {
 
-  var tasks = state.Workspace.Frames.reduce(function (tasks, frame) {
-    tasks[frame.type] = tasks[frame.type] ? tasks[frame.type] + 1 : 1 }, {});
+  var tasks = {};
+  state.Workspace.Frames.forEach(function (tasks, frame) {
+    tasks[frame.type] = tasks[frame.type] ? tasks[frame.type] + 1 : 1 });
 
   var left =
     [ button(icon('th'), toggle('MainMenu'), ifVisible('MainMenu', '.active'))

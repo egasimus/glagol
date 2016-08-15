@@ -5,11 +5,12 @@ module.exports = function (state) {
 
   return h('.Launcher.Visible',
     h('input.Launcher_Input',
-      { type:      'text'
-      , value:     state.input
-      , onblur:    hide
-      , onkeyup:   update
-      , hookFocus: require('focus-hook')() }));
+      { type:        'text'
+      , value:       state.input
+      , placeholder: 'Enter path, query or command'
+      , onblur:      hide
+      , onkeyup:     update
+      , hookFocus:   require('focus-hook')() }));
 
   function item (text) {
     var split = text.split('&');
@@ -26,28 +27,13 @@ module.exports = function (state) {
       hide();
       return; }
 
-
     if (event.code === 'Enter') {
       var value = document.getElementsByClassName('Launcher_Input')[0].value
       console.info('launch', value);
       hide();
       __.maps.opener(value)
-      return;
-    }
+      return; }
 
-    Launcher.input.set(el.value);
-
-  }
-
-  // ------------------------------------
-
-  //return h('.Launcher', state.Workspace.frames.map(function (frame, i) {
-    //var icon =
-      //frame.type === 'directory' ? $.lib.icon('folder-open-o') :
-      //frame.type === 'file'      ? $.lib.icon('music') : '???'
-    //return h('.Launcher_Button',
-      //[ icon, ' '
-      //, require('path').basename(frame.address) ]);
-  //}))
+    Launcher.input.set(el.value); }
 
 }

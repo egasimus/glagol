@@ -1,21 +1,14 @@
-(function (state) {
+module.exports = function (state) {
 
   state = state || {};
-
   if (state.Workspace.Status === "loading") return _.loading(state);
 
-  return state.Workspace.loading
-    ? _.loading(state)
-    : h('.App',
-        [ _.launcher(state)
-        , _.taskbar(state)
-        , h('.MainView',
-            [ _.switcher(state)
-            , h('.Workspace',
-                Object.keys(state.Workspace.Frames).map(
-                  function (i) {
-                    return _.frame(state.Workspace.Frames[i], i) }))
-            ])
-        ]);
+  var frames    = Object.keys(state.Workspace.Frames)
+    , workspace = h('.Workspace', frames.map(frame))
+    , mainView  = h('.MainView', [ _.switcher(state), workspace ]);
 
-})
+  return h('.App', [ _.taskbar(state), mainView ]);
+
+  function frame (i) { return _.frame(state.Workspace.Frames[i], i) }
+
+}

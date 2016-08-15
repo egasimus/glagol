@@ -15,7 +15,7 @@ function getClockValue () {
   var now = new Date()
   return '' +
     '<strong>' + now.getFullYear()   +
-    '-'    + pad(now.getMonth(), 2) +
+    '-'    + pad(now.getMonth() + 1, 2) +
     '-'    + pad(now.getDate(), 2) +
     '</strong>'                   +
     '<br>' + pad(now.getHours(), 2) +

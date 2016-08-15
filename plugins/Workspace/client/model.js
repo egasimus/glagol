@@ -9,15 +9,12 @@ module.exports = $.lib.model(
 
   , Launcher:      { visible: false
                    , focused: false
-                   , mode:    'menu'
-                   , input:   ''
-                   }
+                   , input:   '' }
 
   , Switcher:      { visible: false }
 
   , StatusBar:     { visible: true
-                   , text:    ''
-                   }
+                   , text:    '' }
 
   , Frames:        []
 

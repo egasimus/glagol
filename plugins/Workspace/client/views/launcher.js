@@ -26,20 +26,12 @@ module.exports = function (state) {
       hide();
       return; }
 
-    var el = document.getElementsByClassName('Launcher_Input')[0]
 
     if (event.code === 'Enter') {
-      console.info(state.mode, el.value);
+      var value = document.getElementsByClassName('Launcher_Input')[0].value
+      console.info('launch', value);
       hide();
-
-      switch (state.mode) {
-        case 'Open':
-          __.maps.opener(el.value)
-          break;
-        case 'Run':
-          break;
-      }
-
+      __.maps.opener(value)
       return;
     }
 

@@ -1,6 +1,6 @@
 module.exports = onKey;
 
-var modifierKey = false;
+var modKeyPressed = false;
 
 function onKey (state, direction, event) {
 
@@ -10,16 +10,17 @@ function onKey (state, direction, event) {
     , Launcher  = Workspace.Launcher
     , Switcher  = Workspace.Switcher;
 
-  if (isModifierKey(event)) {
-
-    modifierKey = down;
-
+  if (isModKey(event)) {
+    if (down) {
+      modKeyPressed = true;
+    } else {
+      if (modKeyPressed) Launcher.visible.set(true);
+      modKeyPressed = false;
+    }
   } else {
-
-    if (modifierKey) {
-
+    if (modKeyPressed) {
+      modKeyPressed = false;
       if (down) {
-
         switch (event.code) {
           case 'KeyO':
           case 'KeyR':
@@ -34,26 +35,19 @@ function onKey (state, direction, event) {
               Launcher.input.set('');
             }
             break;
-
           case 'KeyS':
             App.API('Workspace/Open', 'sequencer')
             break;
-
           case 'Tab':
             Switcher.visible.set(true);
         }
-
       } else if (up) {
-
         switch (event.code) {
           case 'Tab':
             Switcher.visible.set(false);
         }
-
       }
-
     } else {
-
       switch (event.code) {
         case 'Escape':
           if (down && Launcher.focused()) {
@@ -70,14 +64,11 @@ function onKey (state, direction, event) {
           }
           break;
       }
-
     }
-
   }
-
 }
 
-function isModifierKey (event) {
+function isModKey (event) {
   return (event.code === 'Backslash')
     ? true
     : process.versions.electron

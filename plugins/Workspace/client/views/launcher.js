@@ -1,43 +1,34 @@
-(function (state) {
+module.exports = function (state) {
 
-  var state = state.Workspace.Launcher;
-
-  if (!state.visible) return h('.Launcher.Hidden');
-
-  var Launcher = App.Model.Workspace.Launcher;
+  var state    = state.Workspace.Launcher
+    , Launcher = App.Model.Workspace.Launcher;
 
   return h('.Launcher.Visible',
-    [ h('.Launcher_Label', state.mode)
-    , h('input.Launcher_Input',
-        { type:      'text'
-        , value:     state.input
-        , onblur:    hide
-        , onkeyup:   update
-        , hookFocus: require('focus-hook')() })
-    ]);
+    h('input.Launcher_Input',
+      { type:      'text'
+      , value:     state.input
+      , onblur:    hide
+      , onkeyup:   update
+      , hookFocus: require('focus-hook')() }));
 
   function item (text) {
     var split = text.split('&');
     return h('.Launcher_Item',
       [ split[0]
       , h('strong', h('u', (split[1] || '')[0]))
-      , (split[1] || '').slice(1) ])
-  }
+      , (split[1] || '').slice(1) ]) }
 
   function hide () {
-    Launcher.visible.set(false);
-  }
+    Launcher.visible.set(false); }
 
   function update (event) {
     if (event.code === 'Escape') {
       hide();
-      return;
-    }
+      return; }
 
     var el = document.getElementsByClassName('Launcher_Input')[0]
 
     if (event.code === 'Enter') {
-
       console.info(state.mode, el.value);
       hide();
 
@@ -67,4 +58,4 @@
       //, require('path').basename(frame.address) ]);
   //}))
 
-})
+}

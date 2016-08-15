@@ -2,36 +2,38 @@ var icon = $.lib.icon;
 
 module.exports = function (state) {
 
-  var tasks = {};
+  var tasks, left, middle, right;
+
+  tasks = {};
   state.Workspace.Frames.forEach(function (tasks, frame) {
     tasks[frame.type] = tasks[frame.type] ? tasks[frame.type] + 1 : 1 });
 
-  var left =
-    [ button(icon('search'), toggle('MainMenu'), ifVisible('MainMenu', '.active')) ]
+  left = ifVisible('Launcher', _.launcher(state),
+    h('.Taskbar_Group',button(icon('search'), toggle('Launcher'))));
 
-  var middle =
-    taskbarButtons(state.Workspace.Frames);
+  middle = h('.Taskbar_Group', []);
 
-  var right =
-    [ button(icon('cloud'))
+  right = h('.Taskbar_Group',
+    [ taskbarButtons(state.Workspace.Frames)
+    , button(icon('cloud'))
     , button(icon('volume-up'))
     , button(icon('battery-half'))
     , button(icon('cogs'), toggle('PluginManager'), ifVisible('PluginManager', '.active'))
     , button([ icon('refresh'), ' reload'  ], __.reload)
     , button([ icon('refresh'), ' refresh' ],    refresh)
-    , _.clock() ];
+    , _.clock() ]);
 
   return h('.Taskbar',
-    [ h('.Taskbar_Group', left)
+    [ left
     , ifVisible('MainMenu', _.mainMenu(state))
-    , h('.Taskbar_Group', middle)
-    , h('.Taskbar_Group', right)
+    , middle
+    , right
     , ifVisible('PluginManager',  _.pluginManager(state))
     ])
 
-  function ifVisible (component, value) {
+  function ifVisible (component, value1, value2) {
     component = state.Workspace[component];
-    return (component && component.visible) ? value : null;
+    return (component && component.visible) ? value1 : value2 || null;
   }
 
 }

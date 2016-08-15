@@ -132,54 +132,24 @@
   transition transform 0.2s
 
 .Launcher
-  position absolute
-  left 0
-  right 0
-  top 0
-  z-index 10
-  height 24px
-
   overflow-x hidden
   background black
+  flex-grow 1
   flex-shrink 0
   display flex
   flex-direction row
-  background rgba(0,0,0,0.5)
-  background linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.65) 100%)
+  background linear-gradient(to top, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%)
   color white
   text-shadow 0 0 12px rgba(0,0,0,0.8)
   line-height 24px
-
-  transition transform 0.2s
-  &.Hidden
-    transform translateY(-24px)
-  &.Visible + .MainView
-    position relative
-    transform translateY(24px)
-
-  &_Item, &_Label
-    font-size 1em
-    padding 0 6px
-  &_Label
-    font-weight bold
-    background #555
-    margin-right 6px
-
-  &_Button
-    white-space nowrap
-    padding 0 6px
-    cursor pointer
-    background none
-    transition 0.2s background
-    &:hover
-      background black
+  padding 0 12px
 
   > input[type=text]
     flex-grow   1
     background  none
     color       white
     border      none
-    font-size   1.2em
+    font-size   18px
     line-height 24px
     text-align  left
     &:focus

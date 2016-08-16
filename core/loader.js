@@ -297,16 +297,15 @@ Loader.defaults =
   , log:
       { added:
           function logAddition (node) {
-            var type = node._glagol.type.toLowerCase().slice(0, 3).green;
-            if (node._glagol.link) type = "lnk".blue;
+            var type = node._glagol.link ? '@'.blue : '+'.green;
             console.log(type, require('./util').homedir(node._sourcePath)); }
 
       , changed:
           function logChange (node) {
-            console.log("mod".yellow,
+            console.log("~".yellow,
               node.path); }
 
       , removed:
           function logRemoval (node, parent) {
-            console.log("del".red,
+            console.log("x".red,
               path.join(parent ? parent.path : "", node.name)); } } };

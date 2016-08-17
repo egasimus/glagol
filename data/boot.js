@@ -1,5 +1,8 @@
 ;(function(deps, ice){
 
+  // if running in electron, we wanna keep this around to use elektron's modules
+  if (window.require) window.nativeRequire = window.require;
+
   var %REQUIRE%;
 
   var glagol = require('glagol')

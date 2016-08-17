@@ -2,7 +2,7 @@
 
   (var socket-id (../lib/shortid))
   (console.log "socket" socket-id "connected")
-  (= socket.onclose (lambda ()
+  (socket.add-event-listener "close" (lambda ()
     (console.log "socket" socket-id "closed")
     (routes.for-each untrack)))
 

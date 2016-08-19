@@ -26,7 +26,7 @@ function compile (file) {
 function evaluate (file, globals) {
   var context = vm.createContext(globals || this.globals(file))
     , source  = file.compiled //"(function(){return " + file.compiled + "})()"
-    , options = { filename: file._sourcePath || file.path }
+    , options = { filename: file._sourcePath || file.path, displayErrors: true }
     , result  = vm.runInContext(source, context, options);
   if (context.error) throw context.error;
   if (context.hasOwnProperty('exports')) return context.exports;

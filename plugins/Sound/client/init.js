@@ -15,14 +15,8 @@
 
   App.Workspace.registerFrameType('sequencer',
     function () { return _.views.sequencer.apply(null, arguments) });
-  App.Workspace.registerMenuItem('Seq&uencer',
-    function () { App.API('Workspace/Open', 'sequencer') });
-
   App.Workspace.registerFrameType('mixer',
     function () { return _.views.mixer.apply(null, arguments) });
-  App.Workspace.registerMenuItem('&Mixer',
-    function () { App.API('Workspace/Open', 'mixer') });
-
   App.Workspace.registerFrameType('sound',
     function () { return _.views.player.apply(null, arguments) });
 

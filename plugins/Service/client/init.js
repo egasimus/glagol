@@ -5,9 +5,6 @@ module.exports = function (App) {
   App.Workspace.registerFrameType('serviceDetail',
     function () { return _.views.detail.apply(null, arguments) });
 
-  App.Workspace.registerMenuItem('Service list',
-    function () { App.API('Workspace/Open', 'serviceList') });
-
   App.API.socket.addEventListener('open',
     function () {
       App.API('Service/GetSystemServices');

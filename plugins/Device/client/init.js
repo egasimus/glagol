@@ -5,7 +5,4 @@ module.exports = function (App) {
   App.Workspace.registerFrameType('deviceDetail',
     function () { return _.views.detail.apply(null, arguments) });
 
-  App.Workspace.registerMenuItem('Device list',
-    function () { App.API('Workspace/Open', 'deviceList') });
-
 }

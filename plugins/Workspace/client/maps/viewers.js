@@ -26,6 +26,6 @@ module.exports.collection =
 
   , [ /https:\/\/(.+)/,     nop('https') ]
 
-  ] );
+  ];
 
 function nop (op) { return function () { console.info(op, 'not implemented') } };

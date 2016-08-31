@@ -1,4 +1,4 @@
-(function (App) {
+module.exports = function (App) {
 
   // reload when this file changes
   Glagol.events.once('changed', reload);
@@ -61,4 +61,4 @@
     }
   }
 
-})
+}

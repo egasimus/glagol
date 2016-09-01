@@ -1,8 +1,19 @@
+var collection = [];
 
-module.exports = require('riko-route')(module.exports.collection);
+module.exports = function (value) {
+  return module.exports.collection.filter(match).map(render);
+  function match  (pair) { return pair[0].test(value) }
+  function render (pair) { return pair[1](value)      }
+}
 
-module.exports.collection =
-  [ [ /~(?:\/(.+))?/
+module.exports.collection = collection =
+  [ [ /~/ 
+    , function () {
+      return h('.Launcher_Helper',
+        { onclick: __.open('directory', '~') },
+        [ h('strong', 'open'), ' your home directory'])}]
+  
+  , [ /~(?:\/(.+))?/
     , function (input) {
         return h('.Launcher_Helper',
           { onclick: __.open('directory', input) },

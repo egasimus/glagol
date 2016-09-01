@@ -5,7 +5,7 @@ module.exports = function init (App) {
         _.maps.types.collection.push([ id, cb ])
       }
     , registerLauncherHelper: function (matcher, view) {
-          _.maps.viewers.collection.push([ matcher, view ]);
+        _.maps.launcher.collection.push([ matcher, view ]);
       }
     }
 

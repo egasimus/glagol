@@ -24,7 +24,7 @@ module.exports = function (frame, index) {
 
   function close (event) {
     event.preventDefault();
-    __.close(index);
+    App.API('Workspace/Close', index);
   }
 
 }

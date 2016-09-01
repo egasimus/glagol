@@ -40,7 +40,7 @@ module.exports = function (frame, index) {
           value > 0 ?  1 :
           value < 0 ? -1 : 0;
       }
-      console.log(axis, reverse * offset, frame)
+      //console.log(axis, reverse * offset, frame)
       if (axis === 'Y') {
         var height = __.model.Frames.get(index).height()
         __.model.Frames.get(index).put('height', height + reverse * offset)

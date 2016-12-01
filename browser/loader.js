@@ -15,11 +15,14 @@ function Loader (baseOptions) {
     { shorthands: true
     , formats: require('../formats/index.js') }, baseOptions);
 
-  load.nodes  = {};
-  load.add    = add;
-  load.update = update;
-  load.remove = remove;
-  load.events = new EE2();
+  load.nodes   = {};
+  load.add     = add;
+  load.update  = update;
+  load.remove  = remove;
+
+  load.connect = connect;
+
+  load.events  = new EE2();
   load.events.on('added',   Loader.logAdded);
   load.events.on('changed', Loader.logChanged);
   load.events.on('removed', Loader.logRemoved);
@@ -94,6 +97,20 @@ function Loader (baseOptions) {
     if (!Directory.is(node) && parent) {
       parent.events.emit('changed', node);
     }
+  }
+
+  function connect (url) {
+    url = url || 'wss://' + window.location.host;
+    var socket = new WebSocket(url);
+    socket.onopen = function () {
+      socket.send('glagol') }
+    socket.onmessage = function (msg) {
+      var data = JSON.parse(msg.data);
+      switch (data.event) {
+        case 'glagol.added':      add(data.path, data.value);
+        case 'glagol.changed': update(data.path, data.value);
+        case 'glagol.removed': remove(data.path, data.value); } }
+    return socket;
   }
 
 }

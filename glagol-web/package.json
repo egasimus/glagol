@@ -1,0 +1,30 @@
+{
+  "name": "glagol-web",
+  "version": "0.4.1",
+  "description": "All-in-one Web app pipeline with server, bundler, and client-side loader, for use with Glagol. Deprecated in favor of separate modules.",
+  "main": "index.js",
+  "browser": "./browser/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Adam Avramov <fallenblood@example.com> (http://github.com/egasimus)",
+  "license": "GPL-3.0",
+  "peerDependencies": {
+    "glagol": "git://github.com/egasimus/glagol.git"
+  },
+  "dependencies": {
+    "browser-resolve": "^1.11.1",
+    "browserify": "^12.0.1",
+    "browserify-incremental-plugin": "https://github.com/egasimus/browserify-incremental-plugin",
+    "detective": "^4.3.1",
+    "eslisp": "^0.7.2",
+    "eslisp-camelify": "^0.2.0",
+    "eslisp-dotify": "^0.1.3",
+    "eslisp-propertify": "^0.2.0",
+    "glagol-eslisp": "https://github.com/egasimus/glagol-eslisp",
+    "resolve": "^1.1.6",
+    "send-data": "^8.0.0",
+    "shortid": "^2.2.4",
+    "ws": "^1.0.1"
+  }
+}

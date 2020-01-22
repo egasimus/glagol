@@ -1,0 +1,5 @@
+(lambda (socket node)
+  (socket.send (JSON.stringify (object
+    event  "glagol.removed"
+    name   node.name
+    parent node.parent.path))))

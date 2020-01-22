@@ -1,0 +1,33 @@
+(lambda connected (routes socket)
+
+  (var socket-id (./shortid))
+  (console.log "socket" socket-id "connected")
+  (= socket.onclose (lambda ()
+    (console.log "socket" socket-id "closed")
+    (remove-listeners)))
+
+  (var events ./glagol/events)
+  (events.on "added"   on-added)
+  (events.on "changed" on-changed)
+  (events.on "removed" on-removed)
+
+  (function remove-listeners ()
+    (events.remove-listener "added"   on-added)
+    (events.remove-listener "changed" on-changed)
+    (events.remove-listener "removed" on-removed))
+
+  (function on-added (node)   (if (is-tracked node) (./added   socket node)))
+  (function on-changed (node) (if (is-tracked node) (./changed socket node)))
+  (function on-removed (node) (if (is-tracked node) (./removed socket node)))
+
+  (var path (require "path"))
+  (function is-tracked (node)
+    (return (.some (Object.keys routes) (lambda (id)
+      (var route (get routes id))
+      (if route.tracked
+        (block
+          (if (! node) (return false))
+          (var tracked (route.tracked.get (path.relative route.tracked.path node.path)))
+          (if (! tracked) (return false))
+          (return (=== node._sourcePath tracked._sourcePath)))
+        (return false)))))))

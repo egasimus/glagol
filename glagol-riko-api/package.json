@@ -1,0 +1,16 @@
+{
+  "name": "glagol-riko-api",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Adam Avramov <fallenblood@example.com> (http://github.com/egasimus)",
+  "license": "ISC",
+  "dependencies": {
+    "q": "^1.4.1",
+    "q-connection": "^0.6.1",
+    "riko-api": "^0.2.0"
+  }
+}

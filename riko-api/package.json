@@ -1,0 +1,12 @@
+{
+  "name": "riko-api",
+  "version": "0.1.0",
+  "description": "transport-agnostic, promise-based remote api",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Adam Avramov <fallenblood@example.com> (http://github.com/egasimus)",
+  "repository": "https://github.com/egasimus/riko-api",
+  "license": "GPL-3.0"
+}

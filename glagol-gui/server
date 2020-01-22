@@ -1,0 +1,4 @@
+(let [web (require "../etude/lib/web.wisp")]
+  (web.server { :port (+ 2055 @the-answer-to-life-the-universe-and-everything) 
+                :name "postmelodic-gui" }
+    (web.page "/" init.name)))

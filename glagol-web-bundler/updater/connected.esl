@@ -1,0 +1,25 @@
+(lambda connected (routes socket)
+
+  (var socket-id (../lib/shortid))
+  (console.log "socket" socket-id "connected")
+  (socket.add-event-listener "close" (lambda ()
+    (console.log "socket" socket-id "closed")
+    (routes.for-each untrack)))
+
+  (routes.for-each track)
+
+  (function track (route)
+    (if route.tracked (block
+      (route.tracked.events.on "added"   on-added)
+      (route.tracked.events.on "changed" on-changed)
+      (route.tracked.events.on "removed" on-removed))))
+
+  (function untrack (route)
+    (if route.tracked (block
+      (route.tracked.events.off "added"   on-added)
+      (route.tracked.events.off "changed" on-changed)
+      (route.tracked.events.off "removed" on-removed))))
+
+  (function on-added   (node) (./added   socket node))
+  (function on-changed (node) (./changed socket node))
+  (function on-removed (node) (./removed socket node)))

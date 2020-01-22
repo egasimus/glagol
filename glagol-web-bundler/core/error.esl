@@ -1,0 +1,10 @@
+(lambda error (req res e msg)
+  (console.error msg e e.stack)
+  (if (&& req req.headers req.headers.accept req.headers.accept.index-of
+          (< -1 (req.headers.accept.index-of "text/html")))
+    ((require "send-data/html") req res (object
+      "statusCode" 500
+      "body"       (./error-to-html e)))
+    ((require "send-data/error") req res (object
+      "body" e
+      "serializeStack" true))))

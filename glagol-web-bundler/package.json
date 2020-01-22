@@ -1,0 +1,26 @@
+{
+  "name": "glagol-web-bundler",
+  "version": "0.2.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Adam Avramov <fallenblood@example.com> (http://github.com/egasimus)",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "browser-resolve": "^1.11.1",
+    "browserify": "^13.0.0",
+    "browserify-incremental-plugin": "https://github.com/egasimus/browserify-incremental-plugin",
+    "detective": "^4.3.1",
+    "eslisp": "^0.7.2",
+    "eslisp-camelify": "^0.2.0",
+    "eslisp-dotify": "^0.1.3",
+    "eslisp-propertify": "^0.2.0",
+    "extend": "^3.0.0",
+    "glagol-eslisp": "git+https://github.com/egasimus/glagol-eslisp.git",
+    "resolve": "^1.1.7",
+    "send-data": "^8.0.0",
+    "shortid": "^2.2.4"
+  }
+}

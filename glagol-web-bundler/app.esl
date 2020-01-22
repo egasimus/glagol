@@ -1,0 +1,13 @@
+(lambda (options app)
+  (= app (to-glagol app))
+  (.for-each (Array.prototype.slice.call arguments 2) overlay)
+  (function to-glagol (x)
+    (return (?: (=== "string" (typeof x)) (./core/glagol x options) x)))
+  (function overlay (x)
+    (app.overlay (to-glagol x)))
+  (function handler (req res)
+    (try
+      (./core/bundle app req res)
+      (catch e (console.log e.stack))))
+  (= handler.tracked app)
+  (return handler))

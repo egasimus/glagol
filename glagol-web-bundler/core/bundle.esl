@@ -1,0 +1,44 @@
+(lambda (client req res)
+
+  (var bundler-options (|| client.options.bundler (object)))
+  (var client-boot (|| bundler-options.boot (Glagol.get "../data/boot.js")))
+
+  (var app (object
+    "boot"    client-boot
+    "formats" client.options.formats))
+
+  (try
+    (= app.ice (./freeze client))
+    (catch e (return (./error req res e
+      "Error freezing app:"))))
+
+  (try
+    (= app.deps (./deps client))
+    (catch e (return (./error req res e
+      "Error getting deps for app:"))))
+
+  (try
+    ; instantiate browserify and add common glagol dependencies
+    (var br ((require "browserify") (object "cache" (object))))
+    ((require "browserify-incremental-plugin") br)
+    (br.require "glagol" (object "expose" "glagol"))
+    (.for-each (array "plaintext" "javascript") (lambda (format)
+      (= format (+ "glagol/formats/" format ".js"))
+      (br.require format (object "expose" format))))
+
+    ; add client-specific dependencies, dependency map, and client source
+    (.map (Object.keys app.deps.ids) (lambda (module)
+      (br.require module (object "expose" (get app.deps.ids module)))))
+
+    ; roll it all into a big bundle
+    (var embed (. (.parse (require "url") req.url true) query embed))
+    (var ctype (+ "text/" (?: embed "javascript" "html") "; charset=utf-8"))
+    (br.bundle (lambda (err data)
+      (if err (return (./error req res err "Error bundling client code:")))
+      (var wrapped (./wrap-js (String data) app))
+      ((require "send-data") req res (object
+        "body"    (?: embed wrapped (./wrap-html wrapped))
+        "headers" (object "Content-Type" ctype)))))
+
+    (catch e (return (./error req res e
+      "Error preparing to bundle client code:")))))

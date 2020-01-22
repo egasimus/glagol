@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# WARNING: Not handling overlaps between repo names and files!
+set -ae #x
+
+Destination=${1:-merged}
+Message="Merging related repositories"
+mkdir -p $Destination
+cd $Destination
+git init
+git commit --allow-empty -m "$Message"
+
+Sources=`ls ../to-merge`$'\n'
+echo "Sources: $Sources"
+ExcludePattern="^(\.|\.\.|\.git|$(printf %s "$Sources" | tr "\n" "\|"))$"
+echo "Exclude: $ExcludePattern"
+
+merge () {
+  Repo="$1"
+  Origin="../to-merge/$Repo/.git"
+  echo; echo "Merging $Repo from $Origin"
+  git remote add -f $Repo $Origin
+  git merge $Repo/master --allow-unrelated-histories
+  mkdir $Repo
+  ls -a | grep -vE $ExcludePattern | while read -r File; do
+    echo "Moving $File into $Repo"
+    mv $File $Repo/
+  done
+  git add .
+  git commit --amend -m "$Message: $Repo"
+  git remote remove $Repo
+}
+
+printf %s "$Sources" | while read -r Repo; do
+  merge $Repo
+done
+ls

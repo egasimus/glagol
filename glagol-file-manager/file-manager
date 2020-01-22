@@ -1,0 +1,9 @@
+#!/usr/bin/env node
+
+// initalize core
+var glagol = require('glagol')
+  , app    = glagol(require('path').resolve(__dirname, 'server'), {})
+
+// start, or export
+module.exports = app;
+if (module === require.main) app().main();

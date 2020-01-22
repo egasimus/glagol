@@ -1,0 +1,16 @@
+{
+  "name": "etude-fuse",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/jasmine/bin/jasmine.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fusejs": "^1.2.5",
+    "jasmine": "^2.3.2",
+    "temp": "^0.8.3"
+  }
+}

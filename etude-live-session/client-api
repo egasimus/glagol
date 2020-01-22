@@ -1,0 +1,5 @@
+(let [api
+        { :emit (fn [evt arg] (./client-events/emit evt arg)) }
+      socket-path
+        (str "ws://localhost:2000/jack")]
+  ((require "q-connection") (WebSocket. socket-path) api))

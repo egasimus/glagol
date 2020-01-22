@@ -1,0 +1,5 @@
+(let [h ./lib-vdom/h]
+  (fn [s]
+    (h ".app"
+      [ (./client-template-toolbar    s)
+        (./client-template-sequencers s) ])))

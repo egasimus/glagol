@@ -1,0 +1,3 @@
+(fn [volume]
+  { :type   "Device.Channel"
+    :volume volume })

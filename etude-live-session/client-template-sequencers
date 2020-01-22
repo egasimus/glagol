@@ -1,0 +1,22 @@
+(let [h ./lib-vdom/h]
+  (fn [s] (s.tracks.map (fn [track track-no]
+    (if track.loading
+      (h ".sequencer" [
+        (h ".sequencer-label" "loading...") ])
+      (h ".sequencer" [
+        (h ".sequencer-label" track.name)
+        (h ".sequencer-mid"
+          (.map (or track.slots []) (fn [slot slot-no]
+            (h
+              (str
+                ".sequencer-body"
+                (if (= slot-no track.selected) ".active" ""))
+              (slot.map (fn [cell cell-no]
+                (h (str ".sequencer-cell" (if cell ".active" ""))
+                  { :dataset
+                      { :index cell-no }
+                    :onclick
+                      (./lib-emit "sequencer.click" track-no cell-no) 
+                  })))))))
+
+      ]) )))))

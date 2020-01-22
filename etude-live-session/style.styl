@@ -1,0 +1,123 @@
+jylto = #ccaa26
+
+*
+  position relative
+  box-sizing border-box
+
+body
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  margin      0
+  background  #111
+
+  color          white
+  font-family    sans-serif
+  text-transform uppercase
+  font-size      9px
+  letter-spacing 1px
+
+.toolbar
+  background  black
+  display     flex
+  align-items center
+
+  &-button, &-transport
+    padding 3px 6px
+    margin  3px 0 3px 3px
+    border  1px solid #333
+    color   #888
+    text-transform uppercase
+    font-size      9px
+    letter-spacing 1px
+
+  &-transport
+    border-color jylto
+    color        jylto
+
+  &-button
+    cursor  pointer
+    &:hover
+      border-color #555
+    &.on
+      border-color #aaa
+      color        #ccc
+
+.sequencer
+  margin      12px 0 0
+  padding     0 6px
+  display     flex
+
+  &-label
+    z-index      1
+    color        white
+    text-shadow  0 1px 0 black
+    margin       6px 6px 0 0
+    font-weight  bold
+    width        40px
+
+  &-slots
+    display        flex
+    flex-direction row
+    margin-left    -3px
+
+  &-slot
+    background  rgba(255,255,255,0.1)
+    height      6px
+    margin      3px 0 0 3px
+    flex-grow   1
+
+    &.selected
+      background rgba(255,255,255,0.2)
+
+  &-selector
+    position   absolute
+    top        0
+    bottom     3px
+    width      3px
+    background rgba(255,255,255,0.3)
+
+  &-mid
+    display    flex
+    flex-direction column
+    flex-grow  1
+
+  &-body
+    background rgba(255,255,255,0.1)
+    display    flex
+    height     7px
+    margin     1px 0
+    opacity    0.5
+    &.active
+      height  26px
+      margin  2px 0
+      opacity 1
+
+  &-cell
+    flex-grow 1
+    &:hover
+      background rgba(255,255,255,0.1)
+    &.active
+      background jylto
+      border-radius 2px
+      border-top    1px solid rgba(255,255,255,0.5)
+      &:hover
+        background    linear-gradient(to bottom, jylto, red)
+
+.play
+  cursor pointer
+  display inline-block
+  text-align center
+  border: none;
+  border-radius: 3px;
+  font-size 24px
+  line-height: 36px;
+  width: 40px;
+  color: #ccaa26;
+
+  &:hover
+    color white

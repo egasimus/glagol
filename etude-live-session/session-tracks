@@ -1,0 +1,16 @@
+[
+  (./track "kick"
+    (./device-sequencer)
+    (./device-synth)
+    (./device-channel))
+
+  (./track "snare"
+    (./device-sequencer)
+    (./device-sampler)
+    (./device-channel))
+
+  (./track "hihat"
+    (./device-sequencer)
+    (./device-sampler)
+    (./device-channel))
+]

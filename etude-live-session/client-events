@@ -1,0 +1,124 @@
+(let [emitter
+        (new (.-EventEmitter2 (require "eventemitter2"))
+          { :maxListeners 64 :wildcard true } )
+
+      update
+        (fn [k v] (set! ./client-state (assoc ./client-state k v)))
+
+      replace
+        (fn [array target new-value]
+          (array.map (fn [old-value index]
+            (if (= index target) new-value old-value))))
+
+      update-track
+        (fn [i & args] (let [tracks ./client-state/tracks]
+          (update :tracks (replace tracks i
+            (apply assoc (aget tracks i) args)))))
+      ]
+
+
+  ;; jack backend switch
+  (emitter.on "jack.init"
+    (fn []
+      (log "starting JACK backend...")
+      (let [init (.invoke (./client-api/get :api) :init)]
+        (init.catch (fn [err] (log "jack error" err)))
+        (init.progress (fn [& args] (log "jack progress" args)))
+        (init.then (fn [jack-state]
+          (log "JACK started.")
+          (update :jack jack-state))))))
+
+
+  ;; react to transport events
+  (emitter.on "transport.play"
+    (fn []
+      (log "pressing play...")
+      (.then (.invoke (./client-api/get "api") "start")
+        (fn []
+          (log "playing, transport rolling.")
+          (update :playing true)))))
+
+  (emitter.on "transport.stop"
+    (fn []
+      (log "pressing stop...")
+      (.then (.invoke (./client-api/get "api") "stop")
+        (fn []
+          (log "stopped, transport halted")
+          (update :playing false)))))
+
+  (emitter.on "transport.pulse"
+    (fn [t]
+      (update :position t)))
+
+  (let [last-tap   nil
+        taps       []
+        min-tempo  81]
+    (emitter.on "transport.tap"
+      (fn [t]
+        (if last-tap
+          (let [diff  (- t.time-stamp last-tap)
+                tempo (/ 60000 diff)]
+            (if (> diff (/ 60000 min-tempo))
+              (do
+                (set! taps      [])
+                (set! last-tap  nil)
+                (log "tap reset"))
+              (do
+                (taps.push tempo)
+                (update :tempo tempo)
+                (log "tap" tempo
+                  (/ (taps.reduce (fn [x y] (+ x y))) taps.length))))))
+        (set! last-tap t.time-stamp))))
+
+
+  ;; sequencer tracks
+  (emitter.on "sequencer.track"
+    (fn [args]
+      (let [i (aget args 0) t (aget args 1)]
+        (.then
+          (t.get "name")
+          (fn [n] (update-track i :name n :loading false)))
+        (.then (t.get "data") (fn [d]
+          (let [mount (fn [n] (.then (d.get n) (fn [s] (update-track i n s))))]
+            (mount :selector)
+            (mount :selected)
+            (mount :slots)))))))
+
+
+  ;; sequencer editing
+  (emitter.on "sequencer.click"
+    (fn [t n]
+      (let [tracks     ./client-state/tracks
+            track      (aget tracks t)
+            slot       (aget track.slots track.selected)
+            value      (aget slot n)
+            new-slot   (replace slot n (- 1 value))
+            new-slots  (replace track.slots track.selected new-slot)
+            new-track  (assoc track :slots new-slots)
+            new-tracks (replace tracks t new-track)]
+        (update :tracks new-tracks))))
+
+
+  ;; respond to midi control
+  (let [on-fader
+          (fn [t m1 track-num selector]
+            (let [track   (aget ./client-state/tracks track-num)
+                  track   (assoc track :selector (/ selector 127)
+                                       :selected (Math.floor (/ selector 16)))
+                  tracks  (replace ./client-state/tracks track-num track)]
+              (update :tracks tracks)))
+        on-knob
+          (fn [t m1 m2 m3]
+            (log "knob" (- m2 16)))]
+    (emitter.on "control.nano" (fn [msg]
+      (let [t  (aget msg 0)
+            m1 (aget msg 1)
+            m2 (aget msg 2)
+            m3 (aget msg 3)]
+        (if (= m1 189)
+          ((cond
+            (< m2 8)                  on-fader
+            (and (> m2 15) (< m2 24)) on-knob
+            ) t m1 m2 m3))))))
+
+  emitter)

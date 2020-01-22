@@ -1,0 +1,4 @@
+(fn [name & devices]
+  { :type    "Track"
+    :name    name
+    :devices devices })

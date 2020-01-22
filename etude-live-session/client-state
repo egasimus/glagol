@@ -1,0 +1,16 @@
+(let [
+  state
+   { :playing  false
+     :position 0
+
+     :tracks   []
+
+     :socket   ./client-api } ]
+
+  (.then (.get (state.socket.get "state") "tracks") (fn [v]
+    (set! ./client-state (assoc ./client-state
+      :tracks (./lib-times v.length
+        (fn [] { :loading true }))))
+    (v.map (fn [t i] (./client-events/emit "sequencer.track" [i t])))))
+
+  state)

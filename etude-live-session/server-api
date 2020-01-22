@@ -1,0 +1,55 @@
+(fn [emit]
+  (let [jack
+          (require "etude-jack")
+
+        ;; osc
+        osc
+          (require "osc")
+        osc-config
+          { :localAddress "localhost"
+            :localPort    11025 }
+        osc-client
+          (new osc.UDPPort osc-config)
+        send-osc
+          (fn [host port addr & args]
+            (osc-client.send { :address addr :args args } host port))
+
+        ;; transport
+        transport
+          (.make-transport (require "etude-time")
+            ./session-tempo ./session-meter)
+
+        ;; control
+        nano
+          ./server-nanoktrl2
+
+        api
+          { :init
+              (fn []
+                (let [init (jack.init)]
+                  (init.catch (fn [err] (log.as "jack error" err.stack)))
+                  (init.progress (fn [msg] (log.as "jack info" msg)))
+                  init))
+            :spawn   jack.spawn
+            :client  jack.client
+            :connect jack.connect-by-name
+            :system  jack.system
+            :play    (fn [port] (send-osc "localhost" port "/play" 0 0))
+            :stop    (fn [port] (send-osc "localhost" port "/stop" 0 0))
+            :listen  (fn [port] (send-osc "localhost" port "/listen")) 
+
+            :start   (fn [] (transport.play))
+            :stop    (fn [] (transport.stop)) }]
+
+    (log "transport" transport)
+
+    (osc-client.on "message" (fn [msg] (emit msg.address msg.args)))
+    (osc-client.open)
+
+    (transport.events.on "pulse" (fn []
+      (emit "transport.pulse" transport.state.beats)))
+
+    (nano.events.on "input" (fn [dt m1 m2 m3]
+      (emit "control.nano" [(Math.round (Date.)) m1 m2 m3])))
+
+    api))

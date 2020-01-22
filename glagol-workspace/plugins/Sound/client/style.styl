@@ -1,0 +1,235 @@
+@import '../../../core/client/styles/vars.styl'
+@import '../../../core/client/styles/mixins.styl'
+
+.AudioPlayer
+  flex-grow 1
+  display flex
+  flex-flow column wrap
+  color white
+  align-items flex-start
+  &_Section
+    display flex
+    flex-flow row wrap
+    padding 3px
+    width 100%
+  &_Header
+    display flex
+    flex-flow row wrap
+    align-items center
+    padding 3px 6px 3px 0
+    &>i
+      margin-left 3px
+  &_Toolbar
+    frame-toolbar()
+    padding 0
+    button
+      width 42px
+  &_ControlBar
+    display flex
+    &_Group
+      flex-grow 1
+      display flex
+      margin 0 1px
+      .Knob_WithLabel, button
+        margin 0 1px
+        flex-grow 1
+      &, .Knob_WithLabel, button
+        &:first-child
+          margin-left 0
+        &:last-child
+          margin-right 0
+      button
+        margin 0 1px
+        height 48px
+        background rgba(0,0,0,0.3)
+  svg.waveform
+    display block
+    width 100%
+    height 72px
+  &_Title
+    margin-left 6px
+    line-height 42px
+    height 42px
+    font-size 1.2em
+    font-weight bold
+    flex-grow 1
+  &_Position
+    margin-left 6px
+    height 48px
+    line-height 14px
+    padding 3px 0
+    flex-shrink 0
+    text-align center
+    white-space pre
+    letter-spacing 1px
+    font-size 13px
+  &_Button
+    &_Play, &_Cue
+      margin-right 3px
+      width 48px
+      height 48px
+      font-size 30px
+      line-height 30px
+    &_Play
+      &.Playing
+        background rgba(255,255,255,0.4)
+        animation pulse 1s infinite
+        color white
+        &:hover
+          text-shadow 0 0 3px white, 0 0 3px white
+    &_Cue
+      font-size 1.2em
+      letter-spacing 1px
+      font-weight bold
+  &_ProgressBar
+    flex-grow 10
+    height 48px
+    cursor text
+    margin 0 2px
+    &_Background
+      background #222
+      background rgba(255,255,255,0.1)
+      width 100%
+      height 100%
+    &_Foreground
+      background rgba(255,255,255,0.25)
+      //background #ccaa26
+      position absolute
+      left 0
+      top 0
+      bottom 0
+  audio
+    display none
+  &_Waveform, canvas
+    width 100%
+    height 100px
+  &_Spectrogram
+    margin 6px
+  &_Info, &_Cues
+    width 50%
+    display flex
+    flex-direction row
+  &_Info
+    border-left 1px solid rgba(255,255,255,0.2)
+    &_Table
+      color #ddd
+      margin 0 3px
+      line-height 14px
+    &_Toggle
+      button()
+      width 42px
+      height 36px
+      margin 3px
+  &_Cues
+    &_Toolbar
+      flex-shrink 0
+    &_Add
+      button()
+      width 42px
+      height 36px
+    &_List
+      display flex
+      flex-direction column
+      width 100%
+  &_Cue
+    line-height 12px
+    display flex
+    flex-direction row
+    justify-content space-between
+    align-items center
+    margin-left 6px
+    &:hover
+      background rgba(255,255,255,0.2)
+    &_Number
+      padding 3px
+      font-size 1.2em
+      cursor pointer
+      margin-right 6px
+      width 36px
+      display inline-block
+      text-align center
+      &:hover
+        background rgba(255,255,255,0.2)
+    &_Time
+      padding 0 3px
+      letter-spacing 1px
+
+.Sequencer
+  &_Button
+    &_Play, &_Stop
+      margin-right 3px
+      line-height 36px
+  &_Section
+    display flex
+    flex-flow row
+    align-items center
+    padding 0 3px
+  &_Title
+    flex-grow 1
+    margin-left 3px
+  &_Patterns
+    padding 0 6px 0 3px
+  &_Pattern
+    padding 6px 3px
+    margin 6px 0
+    border 1px solid #888
+  &_Sequence
+    flex-grow 1
+    border-top 1px solid rgba(0,0,0,0.5)
+    margin 0 3px 6px
+    background #333
+    border 1px solid #555
+    box-shadow 0 1px 2px #000
+    min-width 400px
+  &_Track
+    height 23px
+    border-bottom 1px solid rgba(0,0,0,0.5)
+    display flex
+    &_Label
+      background rgba(0,0,0,0.2)
+      line-height 23px
+      padding 0 8px
+  &_Grid
+    border-right 1px solid rgba(0,0,0,0.9)
+    &:nth-child(2n)
+      border-right 1px solid rgba(0,0,0,0.3)
+  &_Track, &_Grid
+    &:hover
+      background rgba(255,255,255,0.05)
+
+.Mixer
+  -webkit-user-select none
+  min-width 330px
+  &_Toolbar
+    line-height 38px
+    padding 0 9px 0 12px
+    font-weight bold
+  &_Selector
+    flex-grow 1
+    margin-left 9px
+    background none
+    color #ddd
+    border none
+    &:focus
+      background rgba(255,255,255,0.2)
+      outline none
+  &_Channels
+    display flex
+    flex-direction row
+    margin-right 6px
+  &_Sidebar
+    &_Channel
+      background rgba(0,0,0,0.3)
+      padding 6px
+      margin-bottom 3px
+  &_ChannelStrip
+    &, &_Master
+      display flex
+      flex-direction column
+      margin 0 0 0 3px
+      background rgba(0,0,0,0.3)
+      width 210px
+      flex-wrap wrap
+      height 396px
+    &_Master
+      width 100px

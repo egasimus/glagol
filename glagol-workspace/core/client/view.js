@@ -1,0 +1,1 @@
+$.plugins.Workspace.views.app

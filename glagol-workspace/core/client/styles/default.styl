@@ -1,0 +1,49 @@
+@import './mixins'
+
+*
+  position relative
+  box-sizing border-box
+
+body, table
+  font-size 10px
+  line-height 18px
+
+button
+  button()
+
+.ToolbarButton
+  toolbar-button()
+
+.Frame_Header > .ToolbarButton
+  margin-right 6px
+
+.ScrollShadow
+  &:before, &:after
+    pointer-events none
+    content ''
+    position absolute
+    left 0
+    right 0
+    height 48px
+    opacity 0
+    transition opacity 0.2s ease-in-out
+  &:before
+    top 0
+    background linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 100%)
+  &:after
+    bottom 0
+    background linear-gradient(to top,    rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 100%)
+  &_Above:before
+    opacity 1
+  &_Below:after
+    opacity 1
+
+@keyframes pulse
+  0%
+    opacity 0.9
+  25%
+    opacity 1
+  75%
+    opacity 0.9
+  100%
+    opacity 0.8

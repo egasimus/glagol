@@ -1,0 +1,94 @@
+@import 'styles/vars.styl'
+@import 'styles/mixins.styl'
+
+*
+  box-sizing border-box
+  position relative
+
+body
+  background-color    #444
+  background-size     cover
+  background-position center
+  overflow            hidden
+
+body, table, input, select, textarea, button
+  font-size 11px
+  margin 0
+  padding 0
+  font-family sans-serif
+  //font-family monospace
+
+td, th
+  text-align left
+  vertical-align top
+  padding 0
+
+th
+  font-weight bold
+  text-transform uppercase
+  letter-spacing 1px
+  padding-bottom 3px
+  color #777
+  font-size 12px
+
+hr
+  border-top 1px solid #bbb
+  border-bottom none
+
+input[type=text]
+  font-weight bold
+  background white
+  border none
+  border-bottom 2px solid #aaa
+  text-align center
+  color #333
+  &:focus
+    outline none
+
+.Highlight
+  highlight()
+
+.Flex
+  &Row
+    display flex
+    flex-direction row
+  &Col
+    display flex
+    flex-direction column
+  &Spacer
+    flex-grow 1
+
+button
+  button()
+  font-weight bold
+  margin 3px
+  padding 3px 6px
+  cursor pointer
+  text-transform uppercase
+  color #ddd
+
+.Button
+  button()
+
+.ButtonLink
+  color #888
+  text-decoration none
+  border-bottom 1px dotted #888
+  cursor pointer
+  &:hover
+    color #555
+    border-bottom-style solid
+
+.Command
+  &Hints
+    display flex
+    flex-direction row
+    flex-wrap wrap
+  &Hint
+    color #777
+    display block
+    padding 12px
+    font-size 14px
+    &Title
+      font-weight bold
+      color #555

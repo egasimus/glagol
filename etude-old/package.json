@@ -1,0 +1,38 @@
+{
+  "name": "etude",
+  "version": "0.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "browserify": "^10.2.4",
+    "chokidar": "^1.0.3",
+    "colors": "^1.1.0",
+    "detective": "^4.1.1",
+    "dom-delegator": "^13.1.0",
+    "eventemitter2": "^0.4.14",
+    "glob": "^5.0.10",
+    "http-browserify": "^1.7.0",
+    "insert-css": "^0.2.0",
+    "observ": "^0.2.0",
+    "prettyjson": "^1.1.2",
+    "q": "^1.4.1",
+    "resolve": "^1.1.6",
+    "send-data": "^7.0.0",
+    "shortid": "^2.2.2",
+    "source-map-support": "^0.3.2",
+    "stylify": "^1.2.0",
+    "through": "^2.3.7",
+    "uglifyify": "^3.0.1",
+    "virtual-dom": "^2.0.1",
+    "watchify": "^3.2.2",
+    "wisp": "^0.10.0",
+    "wispify": "^0.2.0",
+    "ws": "^0.7.2"
+  }
+}

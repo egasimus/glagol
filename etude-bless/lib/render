@@ -1,0 +1,16 @@
+(fn render [node]
+  (cond
+    (not node)
+      nil
+    (not node.widget)
+      (throw (Error (str "can't render unparsed node" (keys node))))
+    (= :MissingWidget node.widget)
+      (throw (Error (str "can't render missing widget " node.name)))
+    :else
+      (let [rendered (node.widget node.options node.content)]
+        (set! node.rendered rendered)
+        (if node.children (node.children.map (fn [child-node]
+          (let [rendered-child-node (render child-node)]
+            (rendered.append rendered-child-node)
+            (set! rendered-child-node.parent rendered)))))
+        rendered)))

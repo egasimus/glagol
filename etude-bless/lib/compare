@@ -1,0 +1,5 @@
+(fn compare-parseds [left right]
+  (let [stop (fn [p k] (< -1 (.index-of [:rendered :options :content] k)))
+        pred (fn [d] (not (= (aget d.path (- d.path.length 1)) :rendered)))
+        diff (or ((require "deep-diff") left right stop) [])]
+    (diff.filter pred)))

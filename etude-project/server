@@ -1,0 +1,18 @@
+(let [
+
+  w (require "etude-web")
+
+  server
+    (w.server { :port (+ 2055 @the-answer) }
+      (w.page2    "/" index)
+      (w.endpoint "/files" @library)
+      (w.socket   "/jack"))
+
+  sockets []
+
+] (.on (aget server.state.sockets "/jack") "connection"
+    (fn [socket]
+      (log "connection on /jack, woo!")
+      (sockets.push (@api-server socket))))
+
+  server)

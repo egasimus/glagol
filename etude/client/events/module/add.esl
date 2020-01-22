@@ -1,0 +1,7 @@
+(lambda (device data)
+  (Q.done (/api (+ device "/add"))
+    (lambda (data)
+      (var state ((get /state/devices device)))
+      (= (get state data.id) ((get /models device) data))
+      (.set (get /state/devices device) state))
+    (/lib/error (+ "could not add " device))))

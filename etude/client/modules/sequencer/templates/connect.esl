@@ -1,0 +1,40 @@
+(./widget (lambda (id)
+
+  (var model (/lib/observ/Obj
+    "visible" (/lib/observ/Var false)
+    "id"      (/lib/observ/Var id)))
+  (var vtree   (render (model)))
+  (var element (/lib/vdom/create vtree))
+  (model refresh)
+
+  (function render (state)
+    (var samplers (/state/session/sampler))
+    (return (./h "label.device-info" (array
+      (./h "a.device-info-icon"
+        (object "onclick" (lambda (e)
+          (e.stop-propagation)
+          (model.visible.set (! state.visible)))) "⌖")
+      (?: state.visible
+        (./h ".device-info-dropdown" (.map (Object.keys samplers) menu-sampler))
+        null)))))
+
+  (function menu-sampler (sampler-id)
+    (var sampler (get (/state/session/sampler) sampler-id))
+    (return (./h ".device-info-dropdown-option-group"
+      (.concat
+        (array (./h ".device-info-dropdown-option-group-label" (String id)))
+        (sampler.clips.map (lambda (clip i)
+          (return (./h ".device-info-dropdown-option"
+            (object "onclick" (./emit "sequencer.connect" id sampler-id i))
+            (array
+              (./h ".device-info-dropdown-option-label" (String i))
+              (./h ".device-info-dropdown-option-value" (String clip.id)))))))))))
+
+  (function refresh (state)
+    (var next-vtree (render state))
+    (= element (/lib/vdom/patch element (/lib/vdom/diff vtree next-vtree)))
+    (= vtree next-vtree))
+
+  (return (object
+    "element" element
+    "update" (lambda (prev) (model.id.set prev.options))))))

@@ -1,0 +1,4 @@
+(lambda (device)
+  (return (/h ".sidebar-device" (array
+    device.type " "
+    (/h "span.sidebar-device-label" (|| device.id device.label))))))

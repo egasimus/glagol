@@ -1,0 +1,6 @@
+(lambda ()
+  (var connected (/state/server))
+  (if (! connected) (block
+    (console.log "reconnecting")
+    (/connect)
+    (/events/init))))

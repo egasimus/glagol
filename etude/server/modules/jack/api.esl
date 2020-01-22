@@ -1,0 +1,12 @@
+(object
+
+  "control"
+    (lambda () (return ./control))
+
+  "patchbay"
+    (lambda () (return ./patchbay))
+
+  "subscribe"
+    (lambda (cb)
+      (if cb (./state (lambda (val) (cb (JSON.stringify val)))))
+      (return (JSON.stringify (./state)))))

@@ -1,0 +1,6 @@
+(lambda (device results)
+  (if (=== "string" (typeof results)) (= results (JSON.parse results)))
+  (var state ((get /state/devices device)))
+  (.map (Object.keys results) (lambda (id)
+    (= (get state id) ((get /models device) (get results id)))))
+  (.set (get /state/devices device) state))

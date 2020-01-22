@@ -1,0 +1,17 @@
+#!/usr/bin/env node
+
+var resolve =
+      require('path').resolve
+  , glagol =
+      require('glagol')
+  , options =
+      { formats: { '.esl': require('../server/util/eslisp.js') } }
+  , app =
+      glagol(resolve(__dirname, '../server'), options)
+  , common =
+      glagol(resolve(__dirname, '../common'), options)
+
+app.nodes.lib    = common.nodes.lib;
+app.nodes.models = common.nodes.models;
+
+app().main(app);

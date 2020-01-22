@@ -1,0 +1,101 @@
+((lambda ()
+
+  (var freeport (require "freeport"))
+  (var path     (require "path"))
+
+  (return (object
+
+    "create" (lambda () (return (object
+      "id"         (/lib/shortid)
+      "type"       "sampler"
+      "proc"       null
+      "osc"        null
+      "localPort"  null
+      "remotePort" null
+      "clips"      (array))))
+
+    "spawn" (lambda (sampler-id) (return (/lib/q/Promise (lambda (win fail)
+      (.done (.spread (/lib/q/all (array
+        (/lib/q/nfcall freeport) (/lib/q/nfcall freeport)
+        /jack/control /jack/patchbay)) do-spawn))
+
+      (function do-spawn (local-p remote-p control patchbay)
+        (var sampler (get-sampler sampler-id))
+        (/jack/after-start/done (lambda ()
+          (sampler.put "localPort" local-p)
+          (sampler.put "remotePort" remote-p)
+          (var args (array "-n" (sampler.id) "-p" remote-p "-c" "system:playback_1"))
+          (var opts (object "stdio" "inherit"))
+          (sampler.put "proc" ((. (require "child_process") spawn)
+            ./options/sampler-path args opts))
+          (.on (sampler.proc) "exit" (lambda (code sig)
+            (console.log "sampler" sampler-id "died")))
+          (patchbay.on "ClientAppeared" (lambda client-appeared (ver id name)
+            (patchbay.GetClientPID id (lambda (e pid)
+              (if e (throw e))
+              (if (=== pid sampler.proc.pid) (block
+                (control.removeListener "ClientAppeared" client-appeared)
+                (sampler.put "jackId" id)
+                (sampler.put "jackName" name)
+                (sampler.put "osc" (new (.-UDPPort (require "osc")) (object
+                  "localAddress"  "127.0.0.1" "localPort"  local-p
+                  "remoteAddress" "127.0.0.1" "remotePort" remote-p)))
+                (.open (sampler.osc))
+                (win (sampler)))))))))))))))
+
+    "kill" (lambda (sampler-id) (return (/lib/q/Promise (lambda (win fail)
+      (var sampler (get-sampler sampler-id))
+      (if (! (sampler.proc))
+        (return (fail (+ "sampler " sampler-id " not started"))))
+      (if (!== null (.-exit-code (sampler.proc)))
+        (return (fail (+ "sampler " sampler-id " already exited"))))
+      (.once (sampler.proc) "close" (lambda (code signal)
+        (sampler.put "proc" (sampler.proc))
+        (win "sampler killed")))
+      (.kill (sampler.proc))))))
+
+    "clip" (object
+
+      "add" (lambda (sampler-id)
+        (console.log "add clip to" sampler-id)
+        (var sampler (get-sampler sampler-id))
+        (var clip (object "id" (/lib/shortid) "path" null "cues" (array)))
+        (sampler.clips.push clip)
+        (return clip.id))
+
+      "load" (lambda (sampler-id clip-no sample)
+        (console.log "load clip" sample "in slot" clip-no "of" sampler-id)
+        (var sampler (get-sampler sampler-id))
+        (.path.set (sampler.clips.get clip-no) sample)
+        (if (sampler.proc)
+          (.send (sampler.osc) (object
+            "address"   "/load"
+            "args"      (array clip-no (path.join /library/options/dir sample)))
+            "localhost" (.-options.remote-port (sampler.osc)))))
+
+      "cue" (lambda (sampler-id clip-no cue-no position)
+        (return (./set-cue ((get (./state) sampler-id)) clip-no cue-no position)))
+
+      "play" (lambda (sampler-id clip-no cue-no)
+        (console.log "play" sampler-id clip-no cue-no)
+        (var sampler (get ./state sampler-id))
+        (console.log (sampler.proc))
+        (if (sampler.proc)
+          (.send (sampler.osc) (object
+            "address"   "/play"
+            "args"      (array (|| clip-no 0) (|| cue-no 0)))
+            "localhost" (.-options.remote-port (sampler.osc)))))
+
+    )
+
+  ))
+
+  (function get-sampler (id)
+    (var device (get /session/state/devices id))
+    (if (! device)
+      (throw (Error (+ "no sampler at " id))))
+    (if (!== "sampler" (device.type))
+      (throw (Error (+ "device at " id " is not sampler but: " (device.type)))))
+    (return device))
+
+))

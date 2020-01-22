@@ -1,0 +1,10 @@
+(lambda (s)
+
+  (var options  (object "oncontextmenu" (/emit /events/context-menu/show)))
+  (var elements (array))
+
+  (.map (Object.keys s.session.devices) (lambda (id)
+    (var device (get s.session.devices id))
+    (elements.push ((get /modules device.type "template") device))))
+
+  (return (/h ".session" options elements)))

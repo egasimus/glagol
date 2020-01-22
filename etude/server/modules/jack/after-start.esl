@@ -1,0 +1,20 @@
+((lambda ()
+
+  (var started)
+
+  (function reset ()
+    (= started (/lib/q/Promise (lambda (resolve reject)
+      (./control/done (lambda (control)
+        (control.IsStarted (lambda (e is-it)
+          (if e (reject e))
+          (if is-it
+            (resolve)
+            (control.on "ServerStarted" (lambda on-start ()
+              (control.remove-listener "ServerStarted" on-start)
+              (resolve)))))))))))
+    (= started.reset reset)
+    (return started))
+
+  (return (reset))
+
+))

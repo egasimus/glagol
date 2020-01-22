@@ -1,0 +1,50 @@
+(lambda (transport s)
+
+  (function group () (return
+    (/h ".btngroup" (Array.prototype.slice.call arguments))))
+
+  (function btn (name text highlighted disabled)
+    (var selector (+ "button.btn." name))
+    (if (&& highlighted (! disabled)) (+= selector ".green"))
+    (var attrs (object))
+    (if (get ./events name) (= attrs.onclick (/emit (get ./events name))))
+    (if disabled (= attrs.disabled "disabled"))
+    (return (/h selector attrs text)))
+
+  (return (/h ".toolbar" (array
+
+    (group
+      (btn "rewind"
+        "REW")
+      (btn (?: transport.rolling "stop" "play")
+        "PLAY" transport.rolling)
+      (btn "record"
+        "REC"))
+
+    (group
+      (btn "server"
+        "Server" s.server)
+      (btn "jack"
+        "JACK"   s.jack.started (! s.server))
+      (btn "fps"
+        (+ (|| transport.fps "?????") " Hz") false (! s.server)))
+
+    (group
+      (btn "bpm"
+        (+ (|| transport.bpm "???") " BPM"))
+      (btn "meter"
+        (+ (|| transport.meter-top    "?") "/"
+           (|| transport.meter-bottom "?")))
+      (btn "quant"
+        "Q 1 bar"))
+
+  ))))
+
+;      (/h ".btngroup" (array
+;        (/h ".btn.osc"   "OSC")
+;        (/h ".btn.midi"  "MIDI")
+;        (/h ".btn.kbd"   "KBD")))
+;      (/h ".btngroup" (array
+;        (/h ".btn.cpu"   "CPU")
+;        (/h ".btn.mem"   "RAM")
+;        (/h ".btn.audio" "Audio")))))))

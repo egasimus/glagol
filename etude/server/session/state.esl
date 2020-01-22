@@ -1,0 +1,6 @@
+(/lib/riko/M (object
+  "title"   "Untitled Session"
+  "version" (.-version (require "../../package.json"))
+  "devices" (object)
+  "ports"   (object)))
+

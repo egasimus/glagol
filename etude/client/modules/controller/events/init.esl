@@ -1,0 +1,4 @@
+(lambda ()
+  (.done (/api "controller/scripts")
+    (lambda (res) (/state/controller-scripts/set (JSON.parse res)))
+    (/lib/error (+ "could not subscribe to session"))))

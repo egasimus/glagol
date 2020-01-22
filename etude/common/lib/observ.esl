@@ -1,0 +1,28 @@
+((lambda ()
+
+  (function Var (val)
+    (return ((require "observ") val)))
+
+  (function Arr ()
+    (var values (Array.prototype.slice.call arguments 0))
+    (return ((require "observ-array") values)))
+
+  (= Arr.from (lambda (values-array)
+    (return ((require "observ-array") values-array))))
+
+  (function Obj ()
+    (var args (Array.prototype.slice.call arguments 0))
+    (if (== 1 (% args 2)) (throw (Error "odd number of args to Obj")))
+    (return ((require "observ-struct")
+      (args.reduce
+        (lambda (x y i)
+          (if (== 1 (% i 2)) (= (get x (get args (- i 1))) y))
+          (return x))
+        (object)))))
+
+  (= Obj.from (lambda (values-object)
+    (return ((require "observ-struct") values-object))))
+
+  (return (object "Var" Var "Arr" Arr "Obj" Obj))
+
+))

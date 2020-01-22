@@ -1,0 +1,8 @@
+(lambda (msg)
+  (switch msg.address
+    ("/tick"         (./tick/apply      null msg.args) (break))
+    ("/pulse"        (./pulse/apply     null msg.args) (break))
+    ("/drift"        (./drift/apply     null msg.args) (break))
+    ("/transport"    (./transport/apply null msg.args) (break))
+    ("/status.reply" (./status/apply    null msg.args) (break))
+    (default msg.address msg.args)))

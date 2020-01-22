@@ -1,0 +1,13 @@
+(object
+
+  "create" (lambda () (return (object
+    "id"     (/lib/shortid)
+    "type"   "controller"
+    "label"  null
+    "input"  null
+    "output" null
+    "script" null)))
+    
+  "scripts" (lambda () ; (cb)
+    ;; (if cb (./state/clients (lambda (val) (cb (JSON.stringify val)))))
+    (return (JSON.stringify (Object.keys ./scripts)))))

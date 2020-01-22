@@ -1,0 +1,8 @@
+(lambda (device)
+  (var state (/state/devices))
+  (= (get state device) (/lib/observ/Obj))
+  (/state/devices/set state)
+  (var update (.bind ./update null device))
+  (.done (/api (+ device "/list") update)
+    update
+    (/lib/error (+ "could not subscribe to " device " device list"))))

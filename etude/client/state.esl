@@ -1,0 +1,21 @@
+(/lib/riko/M (object
+
+  "connection"
+    null
+
+  "server"
+    null
+
+  "jack"
+    (object "started" null "clients" (array) "connections" (array))
+
+  "contextMenu"
+    (object "x" null "y" null)
+
+  "session"
+    (object "devices" (object))
+
+  "controllerScripts"
+    (array)
+
+))

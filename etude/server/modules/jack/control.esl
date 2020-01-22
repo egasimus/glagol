@@ -1,0 +1,18 @@
+(.Promise (require "q") (lambda (resolve reject)
+  (./dbus "org.jackaudio.JackControl" (lambda (err c)
+    (if err (reject err))
+
+    (console.log "connected to jack control")
+
+    (c.IsStarted (lambda (err s)
+      (if err (reject err))
+      (console.log "is jack started?" s)
+      (./state/started/set s)))
+
+    (c.on "ServerStarted" (lambda ()
+      (./state/started/set true)))
+
+    (c.on "ServerStopped" (lambda ()
+      (./state/started/set false)))
+
+    (resolve c)))))

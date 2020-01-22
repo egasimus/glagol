@@ -1,0 +1,9 @@
+(lambda (req res)
+  (if (!== req.url "/favicon.ico") (return false))
+
+  (var body "data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAYAAABPYyMiAAAABmJLR0T///////8JWPfcAAAACXBIWXMAAABIAAAASABGyWs+AAAAF0lEQVRIx2NgGAWjYBSMglEwCkbBSAcACBAAAeaR9cIAAAAASUVORK5CYII=")
+  (var headers (object))
+
+  ((require "send-data") req res (object "body" body "headers" headers))
+
+  (return true))

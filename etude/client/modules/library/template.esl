@@ -1,0 +1,29 @@
+(lambda (s)
+  (var path (require "path"))
+  (var results (s.results.reduce group (object)))
+
+  (return (./h ".device.library" (array
+    (?: s.target (./h "div" (array "picking sample for " (./h "strong" s.target))) null)
+    (./h "input" (object "oninput" oninput))
+    (./h ".results" (.map (Object.keys results) render-group)))))
+
+  (function oninput (evt) ;; WTF ?!
+    ((./emit "library.input" s.id) evt))
+
+  (function render-group (dir)
+    (var items (get results dir))
+    (return (./h ".result-group" (array
+      (./h ".result-group-header" dir)
+      (./h "ul.result-group-items"
+        (items.map (lambda (result) (return
+          (./h "li.result"
+            (object "onclick" (./emit "library.pick" s.id (path.join dir result)))
+            (./h ".result-title" (path.basename result)))))))))))
+
+  (function group (groups fullpath)
+    (var name (path.basename fullpath))
+    (var dir  (path.dirname fullpath))
+    (if (get groups dir)
+      ((. (get groups dir) push) name)
+      (= (get groups dir) (array name)))
+    (return groups)))

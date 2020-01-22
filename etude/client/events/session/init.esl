@@ -1,0 +1,4 @@
+(lambda ()
+  (.done (/api "session/list" ./update)
+    ./update
+    (/lib/error (+ "could not subscribe to session"))))

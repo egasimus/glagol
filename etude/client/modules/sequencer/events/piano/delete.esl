@@ -1,0 +1,2 @@
+(lambda (id time note event)
+  (.done (/api "modules/sequencer/piano/delete" id time note)))

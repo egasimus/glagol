@@ -1,0 +1,2 @@
+(lambda tick (ntp utc frm frame pulse))
+  ;(console.log "TICK" pulse frame frm utc ntp))

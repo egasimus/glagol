@@ -1,0 +1,16 @@
+(lambda (s)
+  (var ids (Object.keys s.tracks))
+  (return (./h ".tracks" (ids.map render-track)))
+  (function render-track (id)
+    (var track ((get s.tracks id)))
+    (return
+      (./h ".track" (array
+        (./h ".track-header" (array
+          (./h ".track-label" track.label)
+          (./h ".track-controls" (array
+            (./h ".btngroup" (array
+              (./h ".btn" "M")
+              (./h ".btn" "S")))
+            (./h ".knob")))))
+        (./h ".track-body"
+          (./sequencer track)))))))

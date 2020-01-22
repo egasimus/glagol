@@ -1,0 +1,7 @@
+(lambda (id q)
+  (./results id (object "query" q "results" (array)))
+  (return (.then (/api "library/search" q)
+    (lambda (results)
+      (./results id (object "query" q "results" results)))
+    (lambda (error)
+      (console.log "search error" error error.stack)))))

@@ -1,0 +1,34 @@
+(lambda (data)
+
+  (var state     (/state))
+  (var midi-ins  (array))
+  (var midi-outs (array))
+
+  (state.jack.clients.for-each get-midi-ports)
+  (function get-midi-ports (client)
+    (var ports (get client 2))
+    (.for-each (ports.filter is-midi-port) add-midi-port))
+  (function is-midi-port (port)
+    (return (=== 1 (get port 3))))
+  (function add-midi-port (port)
+    (if (=== 22 (get port 2)) (midi-ins.push port))
+    (if (=== 21 (get port 2)) (midi-outs.push port)))
+
+  (var info (array
+    (array "text" "Type"  "Controller")
+    (array "text" "ID"    data.id)))
+
+  (function select (label options)
+    (return (/h "div" (/h "label" (array label " " (/h "select"
+      (.concat (array (/h "option" "(none)")) options)))))))
+  (function option-port (port)
+    (return (/h "option" (object "value" (get port 0)) (get port 1))))
+  (function option-script (script i)
+    (return (/h "option" (object "value" i) script)))
+
+  (return (/h ".device.controller" (array
+    (/h ".device-header" (array
+      (./device/label data.label (+ "Controller " data.id))))
+    (select "Script" (state.controller-scripts.map option-script))
+    (select "Input"  (midi-ins.map                 option-port))
+    (select "Output" (midi-outs.map                option-port))))))

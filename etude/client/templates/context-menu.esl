@@ -1,0 +1,29 @@
+(lambda (s)
+  (if (&& s.x s.y) (block
+    (var style (+ "position:fixed;left:" s.x "px;top:" s.y "px;"))
+    (var options (object "attributes" (object "style" style)))
+    (var elements (array
+      (item (/emit "session.new") "New session")
+      (separator)
+      (item-device "console"    "Console")
+;      (item-device "transport"  "Transport")
+      (item-device "sequencer"  "Sequencer")
+      (item-device "sampler"    "Sampler")
+      (item-device "library"    "Library")
+      (item-device "editor"     "Editor")
+      (item-device "port"       "Port")
+      (item-device "controller" "Controller")))
+    (return (/h ".context-menu" options elements))))
+
+  (function separator ()
+    (return (/h ".separator")))
+    
+  (function item (command text)
+    (return (/h "a"
+      (object "onclick" (lambda ()
+        ((/emit /events/context-menu/hide))
+        (command)))
+      text)))
+
+  (function item-device (device text)
+    (return (item (/emit /events/session/add device) text))))

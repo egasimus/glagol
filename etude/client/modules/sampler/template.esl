@@ -1,0 +1,39 @@
+(lambda (data)
+
+  (var alive (&& data.proc data.proc.pid (=== null data.proc.exit-code)))
+  (var pid   (?: alive data.proc.pid null))
+
+  (var info (array
+    (array "text"   "Type"  "Sampler"        )
+    (array "text"   "ID"    data.id          )
+    (array "text"   "PID"   pid              )
+    (array "text"   "JACK"  data.jack-client )
+    (array "text"   "OSC1"  data.local-port  )
+    (array "text"   "OSC2"  data.remote-port )))
+
+  (var elements (array))
+  (function el (x y z) (elements.push (/h x y z)))
+
+  (el ".device-header" (array
+    (/templates/module/label data.label (+ "Sampler " data.id))
+    (/h ".device-buttons" (array
+      (/h (+ ".device-power" (?: alive ".active" ""))
+        (object "onclick" (/emit (get ./events (?: alive "kill" "spawn")) data.id))
+        (?: alive "on" "off"))
+      (new /templates/module/info info)))))
+
+  (el "table.sampler-clips"
+    (data.clips.map (lambda (clip i)
+      (return (/h "tr.sampler-clip" (array
+        (/h "td.sampler-clip-number" (String i))
+        (/h "td.sampler-clip-id"     clip.id)
+        (/h "td.sampler-clip-path"
+          (/h "a" (object "onclick" (/emit ./events/clip/browse data.id i))
+            (|| clip.path "load..."))
+          )))))))
+
+  (el "a.sampler-clip-add"
+    (object "onclick" (/emit ./events/clip/add data.id))
+    "Add clip...")
+
+  (return (/h ".device.sampler" elements)))

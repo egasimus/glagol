@@ -1,0 +1,22 @@
+(lambda (req res)
+
+  (if (!== req.url "/thangka") (return false))
+
+  ((require "glob")
+    "/home/epimetheus/Pictures/*.@(jpg|png|gif|webm)"
+    (object "nodir" true)
+    pick-file)
+
+  (function pick-file (err files)
+    (if err (throw err))
+    (var i (Math.floor (* files.length (Math.random))))
+    (var file (get files i))
+    (.read-file (require "fs") file serve-file))
+
+  (function serve-file (err data)
+    (if err (throw err))
+    ((require "send-data") req res (object "body" data)))
+
+  (return true)
+
+)

@@ -1,0 +1,54 @@
+((lambda ()
+
+  (function stringify (state)
+    (return (JSON.stringify state (lambda (key val)
+      (if (instanceof val (.-ChildProcess (require "child_process")))
+        (return (?: val.killed null val.pid)))
+      (if (=== key "oscClient")
+        (return val.options))
+      (return val)))))
+
+  (return (object
+
+    "create" (lambda () (return (object
+      "id"          (/lib/shortid)
+      "oscClient"   null
+      "daemons"     (object
+        "klick"       (object "port" null "proc" null)
+        "jackOsc"     (object "port" null "proc" null))
+      "rolling"     false
+      "bpm"         140
+      "meterTop"    4
+      "meterBottom" 4
+      "bars"        0
+      "beats"       0
+      "seconds"     0
+      "frames"      0
+      "fps"         0)))
+
+    "init" (lambda (cb)
+      (if cb (./state (lambda (val) (cb (stringify val)))))
+      (return (stringify (./state))))
+
+    "spawn" ./spawn
+
+    "start" (lambda ()
+      (.send (./state/osc-client) (object
+        "address"   "/start"
+        "args"      (array))
+        "localhost" (./state/daemons/jack-osc/port)))
+
+    "stop" (lambda ()
+      (.send (./state/osc-client) (object
+        "address"   "/stop"
+        "args"      (array))
+        "localhost" (./state/daemons/jack-osc/port)))
+
+    "seek" (lambda (pos)
+      (console.log "TRANSPORT SEEK" pos)
+      (.send (./state/osc-client) (object
+        "address"   "/locate"
+        "args"      (array pos))
+        "localhost" (./state/daemons/jack-osc/port)))
+
+  ))))

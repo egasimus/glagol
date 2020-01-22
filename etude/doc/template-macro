@@ -1,0 +1,15 @@
+(./h ".result-group" (array
+  (./h ".result-group-header" dir)
+  (./h "ul.result-group-items"
+    (items.map (lambda (result) (return
+      (./h "li.result"
+        (object "onclick" (./emit "track.add" result))
+        (./h ".result-title" (path.basename result)))))))))
+
+(".result-group"
+  (".result-group-header" dir)
+  ("ul.result-group-items"
+    (items.map (lambda (i) (return
+      ("li.result"
+        (object "onclick" (./emit "track.add" i))
+        (".result-title" (path.basename result)))))))))

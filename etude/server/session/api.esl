@@ -1,0 +1,14 @@
+(object
+
+  "list"
+    (lambda (cb)
+      (if cb (./state (lambda (val) (cb (./serialize val)))))
+      (return (./serialize (./state))))
+
+  "add"
+    (lambda (device-type args)
+      (/lib/q/done (/api (+ "modules/" device-type "/create") args)
+        (lambda (device)
+          (console.log "session/add" device.id device-type args)
+          (./state/devices/put device.id device))
+        (/lib/error (+ "error adding " device-type " to session")))))

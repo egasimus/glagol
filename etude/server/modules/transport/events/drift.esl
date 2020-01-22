@@ -1,0 +1,3 @@
+(lambda (ntp utc frm ntp-dif utc-dif))
+  ;(console.log "DRIFT" pulse))
+

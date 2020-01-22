@@ -1,0 +1,4 @@
+(lambda ()
+  (if (.-started (/state/jack)) ;; WTF ?! model bug
+    (.done (/api "jack/control/StopServer"))
+    (.done (/api "jack/control/StartServer"))))

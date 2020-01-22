@@ -1,0 +1,9 @@
+(lambda error ()
+  (var msg (Array.prototype.join.call arguments " "))
+  (return (lambda (e)
+    (if (instanceof e Error)
+      (block
+        (console.error msg)
+        (console.log e.message)
+        (console.log e.stack))
+      (console.error e)))))

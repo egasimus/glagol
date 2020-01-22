@@ -1,0 +1,5 @@
+(lambda (event)
+  (event.prevent-default)
+  (if (=== event.target.class-name "session") (block
+    (/state/context-menu/x/set event.client-x)
+    (/state/context-menu/y/set event.client-y))))

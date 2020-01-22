@@ -1,0 +1,8 @@
+(lambda update ()
+  (return (/lib/q/Promise (lambda (win fail)
+    (./patchbay/then (lambda (p)
+      (p.GetGraph 0 (lambda (err ver clients connections)
+        (if err (fail err))
+        (./state/clients/set clients)
+        (./state/connections/set connections)
+        (win "updated jack graph")))))))))

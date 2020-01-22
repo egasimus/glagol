@@ -1,0 +1,2 @@
+((require "riko-api/client") (lambda ()
+  (return (/state/connection))))

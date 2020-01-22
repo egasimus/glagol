@@ -1,0 +1,8 @@
+(lambda ()
+
+  (.done (/api "jack/subscribe" update) update
+    (/lib/error (+ "could not subscribe to jack state")))
+
+  (function update (state) (/state/jack/set (JSON.parse state)))
+
+)

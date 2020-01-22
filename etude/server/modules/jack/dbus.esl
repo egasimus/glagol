@@ -1,0 +1,7 @@
+((lambda ()
+  (var dbus         (.session-bus (require "dbus-native")))
+  (var dbus-name    "org.jackaudio.service")
+  (var dbus-path    "/org/jackaudio/Controller")
+  (var dbus-service (dbus.get-service dbus-name))
+  (return (lambda (iface cb)
+    (dbus-service.get-interface dbus-path iface cb)))))

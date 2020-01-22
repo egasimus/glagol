@@ -1,0 +1,13 @@
+(lambda (new-state)
+  (= new-state (JSON.parse new-state))
+
+  (.map (Object.keys new-state) (lambda (device-type-name)
+    (var device-type (introduce device-type-name))
+    (var new-devices (get new-state device-type-name))
+    (.map (Object.keys new-devices) (lambda (device-id)
+      (device-type.put device-id (get new-devices device-id))))))
+
+  (function introduce (device-type)
+    (if (! (get /state/session device-type))
+      (/state/session/put device-type (object)))
+    (return (/state/session/get device-type))))

@@ -1,0 +1,4 @@
+(lambda (id)
+  (.done (/api "sampler/kill" id)
+    (lambda (state) (console.log "killed sampler" id state))
+    (/lib/error (+ "could not kill sampler " id))))

@@ -1,0 +1,45 @@
+{
+  "name": "etude-demo",
+  "version": "0.0.0",
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/egasimus/etude-demo.git"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Adam Avramov <fallenblood@example.com> (http://github.com/egasimus)",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "dbus-native": "^0.2.0",
+    "eslisp-camelify": "^0.2.0",
+    "eslisp-dotify": "^0.1.2",
+    "eslisp-propertify": "^0.2.0",
+    "eventemitter2": "^0.4.14",
+    "freeport": "^1.0.5",
+    "glagol": "git://github.com/egasimus/glagol.git",
+    "glagol-eslisp": "git://github.com/egasimus/glagol-eslisp.git",
+    "glagol-stylus": "git://github.com/egasimus/glagol-stylus.git",
+    "glagol-web": "git://github.com/egasimus/glagol-web.git",
+    "glob": "^6.0.0",
+    "nanotimer": "^0.3.12",
+    "observ": "^0.2.0",
+    "observ-array": "^3.2.1",
+    "observ-struct": "^6.0.0",
+    "osc": "^2.0.1",
+    "q": "^1.4.1",
+    "q-connection": "^0.6.1",
+    "resolve": "^1.1.6",
+    "riko-mvc": "git://github.com/egasimus/riko-mvc.git",
+    "riko-api": "git://github.com/egasimus/riko-api.git",
+    "send-data": "^8.0.0",
+    "shortid": "^2.2.4",
+    "virtual-dom": "^2.1.1",
+    "ws": "^1.0.1"
+  },
+  "devDependencies": {
+    "sleep": "^3.0.0"
+  }
+}

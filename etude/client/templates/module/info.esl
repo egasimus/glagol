@@ -1,0 +1,32 @@
+(../widget (lambda (options)
+
+  (var model (/lib/observ/Obj
+    "visible" (/lib/observ/Var false)
+    "options" (/lib/observ/Var options)))
+  (var vtree   (render (model)))
+  (var element (/lib/vdom/create vtree))
+  (model refresh)
+
+  (function render (state) (return (/h "label.device-info" (array
+    (/h "a.device-info-icon"
+      (object "onclick" (lambda (e)
+        (e.stop-propagation)
+        (model.visible.set (! state.visible)))) "ℹ")
+    (?: state.visible (/h ".device-info-dropdown"
+      (state.options.map (lambda render-option (o)
+        (var type  (get o 0))
+        (var label (get o 1))
+        (var value (get o 2))
+        (var event (get o 3))
+        (return (/h ".device-info-dropdown-option" (array
+          (/h ".device-info-dropdown-option-label" (String label))
+          (/h ".device-info-dropdown-option-value" (String value)))))))) null)))))
+
+  (function refresh (state)
+    (var next-vtree (render state))
+    (= element (/lib/vdom/patch element (/lib/vdom/diff vtree next-vtree)))
+    (= vtree next-vtree))
+
+  (return (object
+    "element" element
+    "update" (lambda (prev) (model.options.set prev.options))))))

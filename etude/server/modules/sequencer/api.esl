@@ -1,0 +1,38 @@
+((lambda ()
+
+  (return (object
+
+    "create" (lambda () (return (object
+      "id"     (/lib/shortid)
+      "type"   "sequencer"
+      "label"  null
+      "seq"    (array 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+      "events" (object)
+      "step"   0
+      "target" (array))))
+
+    "piano" (object
+      "draw" (lambda (id time note)
+        (.events.put (get-sequencer id) time note))
+      "delete" (lambda (id time note)
+        (.events.delete (get-sequencer id) time)))
+
+    "set" (lambda (id step value)
+      (.seq.put (get /session/state/sequencer id) step value))
+
+    "connect" (lambda (sequencer-id sampler-id clip-no)
+      (var sequencer (get /session/state/sequencer sequencer-id))
+      (var sampler ((get /session/state/sampler sampler-id)))
+      (sequencer.targets.push (array sampler-id clip-no))
+      (console.log (sequencer))
+      (console.log sequencer-id "controls" sampler-id clip-no))))
+
+  (function get-sequencer (id)
+    (var device (get /session/state/devices id))
+    (if (! device)
+      (throw (Error (+ "no sequencer at " id))))
+    (if (!== "sequencer" (device.type))
+      (throw (Error (+ "device at " id " is not sequencer but: " (device.type)))))
+    (return device))
+
+))

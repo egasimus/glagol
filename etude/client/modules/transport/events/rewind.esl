@@ -1,0 +1,3 @@
+(lambda ()
+  (.done (/api "transport/seek" 0)))
+

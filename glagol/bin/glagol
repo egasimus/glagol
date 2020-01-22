@@ -1,0 +1,36 @@
+#!/usr/bin/env node
+var glagol = require('..')
+  , fs     = require('fs')
+  , path   = require('path');
+
+console.log('starting in node.js');
+
+var arg1 = process.argv[2];
+
+if (!arg1) {
+
+  var usage =
+    [ "usage:"
+    , "  glagol <dir>"
+    , "  glagol <file>"
+    , "  glagol <dir> <file>" ];
+  console.log(usage.join("\n"));
+
+} else {
+
+  arg1 = path.resolve(arg1);
+
+  if (!fs.existsSync(arg1)) {
+    console.log("\"" + arg1 + "\"", "doesn't seem to exist.");
+    process.exit();
+  }
+
+  process.argv = process.argv.slice(3);
+
+  var root = glagol(path.dirname(arg1))
+    , main = root.get(path.basename(arg1))
+    , val  = main.value;
+
+  return (typeof val === "function") ? val(root) : val;
+
+}

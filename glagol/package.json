@@ -1,0 +1,32 @@
+{
+  "name": "glagol",
+  "version": "2.0.0-rc9",
+  "description": "",
+  "main": "index.js",
+  "browser": {
+    "./core/loader.js": "./browser/loader.js",
+    "require-like": "./browser/require.js",
+    "vm": "./browser/vm.js"
+  },
+  "bin": {
+    "glagol": "./bin/glagol"
+  },
+  "scripts": {
+    "test": "node test/index.js"
+  },
+  "author": "Adam Avramov <fallenblood@gmail.com> (http://github.com/egasimus)",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "chokidar": "^1.4.2",
+    "colors": "^1.1.2",
+    "eventemitter2": "^0.4.14",
+    "extend": "^3.0.0",
+    "glob": "^7.0.0",
+    "require-like": "^0.1.2",
+    "source-map-support": "^0.4.0",
+    "tape": "^4.5.1"
+  },
+  "testDependencies": {
+    "jasmine": "^2.3.2"
+  }
+}

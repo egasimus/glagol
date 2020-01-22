@@ -1,0 +1,212 @@
+* 
+  box-sizing border-box
+  position   relative
+
+body
+  background #fafafa
+  color #000
+  margin 0
+
+body, input, textarea, button, table, select
+  font-family "PT Sans", sans-serif
+  font-size 14px
+  line-height 18px
+
+input[type=text], input[type=password]
+  border 1px solid #aaa
+  border-top none
+  background none
+  text-align center
+  &:focus
+    outline none
+    border-color white
+
+textarea
+  background none
+  border 1px dotted #aaa
+  padding 0 6px
+  &:focus
+    outline none
+
+a
+  color inherit
+
+button
+  background #ccc
+  font-weight bold
+  border none
+
+.status
+  position fixed
+  top 0
+  bottom 0
+  right 0
+  width 240px
+  z-index 1
+  background #ddd
+  padding 6px 0
+  input[type=text], input[type=password]
+    font-weight bold
+    padding 0 3px
+    display block
+    margin 6px auto
+  input[type=password]
+    border-top none
+    font-size 0.7em
+  &Item, &Thread
+    font-size 0.87em
+    line-height 18px
+  &Item
+    padding 4px 0
+    text-align center
+    text-transform uppercase
+    color #777
+  &Threads
+    margin-top 6px
+  &Thread
+    display flex
+    flex-direction row
+    align-items center
+    padding 4px 6px
+    white-space nowrap
+    overflow hidden
+    cursor pointer
+    text-decoration none
+    &:hover
+      background white
+    &User, &Text
+      display inline-block
+    &User
+      font-weight bold
+      margin-right 3px
+    &NewPosts
+      margin-right 6px
+      padding 6px 3px
+      font-weight bold
+      background tomato
+      border-radius 6px
+
+.content
+  padding-right 240px
+
+.replyForm, .submitForm
+  clear both
+  margin 12px 0
+  textarea, button
+    height 36px
+    vertical-align top
+
+.submitForm
+  padding 12px 12px 0
+  margin 0
+
+.mediaUploader
+  font-size 0.7em
+  display inline-block
+  cursor pointer
+  border-right none
+  text-transform uppercase
+  input[type=file]
+    display none
+  img
+    max-width 100%
+    max-height 100%
+  &Add
+    line-height 36px
+    border 1px dotted #aaa
+    margin-right -1px
+    margin-bottom -1px
+    line-height 34px
+    padding 0 5px 0 6px
+  &Preview
+    max-width 300px
+  &Progress, &Cancel
+    z-index 1
+    padding 3px 6px
+    border-radius 1px
+    font-weight bold
+    color #fff
+  &Progress
+    background #2c3
+  &Cancel
+    background #c32
+
+.thread
+  padding 0 12px
+  border-top 1px solid #ccc
+  clear both
+  margin-top 24px
+  &Collapse
+    position absolute
+    font-size 0.8em
+    cursor pointer
+    background #fafafa
+    top -9px
+    color #777
+    & > .postUserName, & > .postText
+      display inline-block
+    & > .postText
+      margin-left 6px
+  &NewPosts
+    text-decoration none
+    margin-left 3px
+    margin-right -3px
+    padding 6px 3px
+    font-weight bold
+    background tomato
+    border-radius 6px
+
+.post
+  margin 12px 0
+  display flex
+  flex-direction row
+  &:before
+    content ''
+    position absolute
+    top 0
+    bottom 0
+    left -12px
+    width 0
+    background tomato
+    transition width 1s
+    .notSeen&
+      width 6px
+  &Text
+    white-space pre-line
+    & > p
+      margin 0
+    & > ul, & > ol
+      font-size 0
+      line-height 0
+      & > li
+        font-size 14px
+        line-height 18px
+  &Media
+    max-width 300px
+    margin-right 6px
+    z-index 1
+    flex-shrink 0
+    &Image, &Audio, &Video
+      max-width 100%
+      max-height 100%
+  &UserPic
+    margin-right 3px
+    vertical-align top
+    float left
+  &UserName, &Info, &Date, &TripCode
+    display inline-block
+    vertical-align baseline
+  &UserName
+    font-weight bold
+  &Date, &TripCode
+    color #ccc
+    font-size 0.8em
+  &:hover &Date, &:hover &TripCode
+    color #888
+  &Date
+    padding 0 3px
+    margin 0 3px
+    text-decoration none
+    &:hover
+      border-bottom 1px solid #ccc
+      margin-bottom -1px

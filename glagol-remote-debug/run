@@ -1,0 +1,10 @@
+#!/usr/bin/env node
+
+var glagol = require('glagol')
+  , app    = glagol(require('path').resolve(__dirname, 'src'), {})
+
+module.exports = app;
+
+if (require.main === module) {
+  app().main();
+}

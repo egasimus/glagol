@@ -1,0 +1,206 @@
+body-bg          = #f2f2f2
+body-fg          = #424242
+button-active-bg = #ffffff
+button-border-fg = #dddddd
+form-active-bg   = #fafafa
+form-label-fg    = #5f5f5f
+tab-active-bg    = #f2f2f2
+tab-bar-bg       = #dddddd
+
+.container
+
+  width          100%
+  height         100%
+  display        flex
+  flex-direction row
+
+  font-family Inconsolata, monospace
+  font-size   13px
+  line-height 18px
+
+  background  body-bg
+  color       body-fg
+
+  input, textarea, pre
+    font-family Inconsolata, monospace
+    font-weight normal
+    font-size   13px
+    line-height 18px
+
+  .editor
+    flex-grow   1.618
+    overflow-y  auto
+    border-left 1px solid #f8f8f8
+    box-shadow  0 0 6px rgba(0,0,0,0.1)
+    z-index     2
+
+    &-atom
+      padding 12px
+
+      &.selected
+        background white
+
+      &-head
+        display flex
+        flex-direction row
+
+      &-separator
+        border none
+        border-top   1px solid #ccc
+        margin       9px 0 0 6px
+        flex-grow    1
+        height       0
+
+      &-name
+        font-weight bold
+
+      &-btn
+        display       none
+        padding       0 6px
+        margin-bottom -2px
+        border        1px solid #ccc
+
+        & + .editor-atom-btn
+          margin-left 6px
+
+      &:hover .editor-atom-btn
+        display  block
+        cursor   pointer
+
+      &-source, &-info
+        padding     0 0 0 12px
+        white-space pre
+
+      &-result
+        padding     0px 12px
+        font-weight bold
+        margin      0px 0px
+        background  #66ff99
+        white-space pre
+        overflow    auto
+
+        &.error
+          background  #ff9966
+
+      & .renderjson
+        & .key
+          font-weight bold
+        & .disclosure
+          text-decoration none
+          font-weight bold
+
+  .sidebar
+    width          250px
+    z-index        1
+    background     tab-bar-bg
+    display        flex
+    flex-direction column
+    flex-shrink    0
+    overflow       hidden
+
+    &-disconnected
+      font-weight bold
+      color       white
+      background  #ff9966
+      padding     6px
+
+    &-atom-label
+      display       inline-block
+      width         12px
+      height        12px
+      background    #6f9
+      border-radius 16px
+      position      absolute
+      right         2px
+      top           3px
+      &.ok
+        background #66ff99
+      &.error
+        background #ff9966
+
+    &-list-title
+      text-transform uppercase
+      font-weight    bold
+      padding        6px 6px 0
+
+      &.inactive
+        color #777
+
+    &-list-body
+      list-style none
+      margin     0
+      padding    0
+
+    &-list-item
+      cursor      pointer
+      white-space pre
+      padding     0 6px
+
+      &.selected
+        background body-bg
+
+      &:hover
+        color black
+
+    .tab
+      height      24px
+      line-height 24px
+      padding     0 6px
+      cursor      pointer
+
+      &.active
+        background  tab-active-bg
+        font-weight bold
+
+  .form
+    position relative
+    padding  5px 5px 5px 48px
+    display  block
+    cursor   pointer
+
+    &.active
+      background form-active-bg
+
+    .type
+      position absolute
+      display inline-block
+      height 24px
+      width auto
+      left 8px
+      text-transform uppercase
+      font-size 0.75em
+      text-align right
+      color form-label-fg
+      padding-right 6px
+
+    .name
+      font-weight bold
+      width 100%
+      border none
+      background none
+      &:focus
+        outline none
+
+    .code
+      margin-left 16px
+
+  .toolbar
+    flex-shrink 0
+    z-index 0
+    height 36px
+    display flex
+    padding 3px 0
+    justify-content flex-end
+
+    &-button
+      display inline-block
+      //height 36px
+      line-height 24px
+      padding 3px 6px
+      margin 0
+      cursor pointer
+      &:hover
+        border 2px solid button-border-fg
+        padding 1px 4px
+      &:active
+        background button-active-bg

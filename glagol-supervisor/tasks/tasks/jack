@@ -1,0 +1,2 @@
+(service "JACK Audio Connection Kit"
+  (description "is a low-latency pro audio system"))

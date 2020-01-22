@@ -1,0 +1,2 @@
+(service "Wayland"
+  (description "is the next-generation graphics server"))

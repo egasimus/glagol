@@ -1,0 +1,4 @@
+#!/usr/bin/node
+
+module.exports = require('glagol')(require('path').resolve(__dirname, 'src'));
+if (module === require.main) module.exports().main();

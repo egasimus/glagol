@@ -1,0 +1,3 @@
+(service "Workspace"
+  (description "is an HTML5-based desktop environment")
+  (command "/opt/glagol/workspace/workspace"))

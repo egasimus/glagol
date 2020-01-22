@@ -1,0 +1,20 @@
+function addLeftPane (layout, width) {
+  return {
+    width:    layout.width,
+    height:   layout.height,
+    offset:   layout.offset,
+    wtf:      layout.wtf,
+    split:    "vertical",
+    children: [ { width:    width
+                , height:   layout.height
+                , offset:   0
+                , wtf:      0
+                , split:    "vertical"
+                , children: []
+                , window:   0 }
+              , shrinkX(layout, width, -(width + 1)) ],
+    window:   null
+  }
+  return shrinkX (layout, width);
+}
+

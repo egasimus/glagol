@@ -1,0 +1,21 @@
+function write (layout) {
+  var output = layout.width + "x" + layout.height
+          + "," + layout.offset + "," + layout.wtf;
+
+  if (layout.children.length > 0) {
+    if (layout.split === "vertical") {
+      return output + "{" + layout.children.map(write).join(",") + "}";
+    } else if (layout.split === "horizontal") {
+      return output + "[" + layout.children.map(write).join(",") + "]";
+    } else err("invalid layout split: " + layout.split + " in ");
+  } else if (layout.window !== null) {
+    return output + "," + layout.window
+  } else {
+    err("invalid layout tree: ");
+  }
+
+  function err (txt) {
+    throw new Error(txt + JSON.stringify(layout))
+  }
+}
+
